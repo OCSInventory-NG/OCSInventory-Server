@@ -1,0 +1,9 @@
+ocsinventory-NG 1.0-RC1
+
+Note
+
+ipdiscover-util.pl is designed to manage the ipdiscover data stored in the database. 
+update the connection data elements at the beginning of the script to make it work for you.
+The GUI ipdiscover feature is improved since this version. If you want more (analyze button (per subnet) and ip querying), put it in ocsreports. 
+The script require Net::IP perl module, nmap and samba. 
+Read documentation for further details.

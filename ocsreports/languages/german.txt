@@ -1,0 +1,368 @@
+1 Anfragen  
+2 Alle Computer
+3 Computer mit Software...
+4 Computer ohne Software...
+5 Unity codes under my responsibility
+6 Geraete m. abgelaufener Garantie
+7 Details zu Geraeten m. abgel. Garantie
+8 Waehlen Sie Ihre Anfrage 
+9 Suche mit verschiedenen Kriterien 
+10 Computer nach tags
+11 Computer nach tags
+12 Tag Wert
+13 Senden
+14 Management 
+15 Tags
+16 Admins
+17 Agent
+18 Datum hinzufuegen
+19 Software version
+20 Software
+21 erstes Datum 
+22 Garantiezeit abgelaufen
+23 Computer
+24 Benutzer
+25 Betriebssystem
+26 Speicher
+27 CPU Takt (MHz)
+28 Anzahl Maschinen
+29 Der LDAP-Server antwortet nicht
+30 Suche
+31 Parameter auswaehlen
+32 Auswaehlen
+33 Domaene
+34 IP Addresse
+35 Computer Name
+36 Seriennummer
+37 Command letter
+38 Delivery order 
+39 Quelle
+40 Code 
+41 Zuruecksetzen
+42 Kein Ergebnis
+43 Hauptmenue
+44 Optionen auswaehlen
+45 Freier Speicherplatz auf C:
+46 Letze Inventarisierung
+47 Letzte Seite
+48 Computer Details
+49 Name
+50 Swap
+51 Kommentare
+52 Lizenz
+53 Beschreibung
+54 Prozessor(en)
+55 Nummer
+56 Administrative Infos
+57 Kommando Nummer
+58 Kommando Datum
+59 Code
+60 Auslieferungsauftrag
+61 Graphikkarte
+62 Aufloesung
+63 Storage
+64 Hersteller
+65 Modell
+66 Typ
+67 Festplattenkapazitaet
+68 Ordner
+69 Editor
+70 Designation
+71 Garantie
+72 Intervention(s)
+73 Preis
+74 Anforderungsdatum
+75 Anforderungstyp
+76 Eingriff Date
+77 Eingriff Typ
+78 Konto
+79 Drucker
+80 Ueberschrift
+81 Status
+82 Netzwerk(e)
+83 Kapazitaet
+84 Schnittstelle
+85 Letter
+86 Dateisystem
+87 Gesamt
+88 Frei
+89 Auslieferungsdatum
+90 Ergebnis
+91 Eingabegeraete
+92 Festplatte(n)
+93 Controller
+94 Einschub Nummer
+95 MAC Adresse
+96 Soundkarte
+97 Monitor(e)
+98 Achtung, Sie koennen nur 8 Optionen waehlen!
+99 Computer Details
+100 Parameter initialisieren
+101 Sortieren
+102 Neue Suche
+103 Update
+104 direkt betroffen
+105 in units
+106 Konfigurationsoptionen
+107 Konfiguration
+108 Registry Abfragen
+109 Computer typ
+110 zu
+111 Windows ProductKey
+112 Garantiedatum
+113 Abbrechen
+114 Register
+115 Update
+116 Hinzufuegen
+117 Registry
+118 Gehe zu Seite
+119 Wollen Sie wirklich ID loeschen n° 
+120 null
+121 Computer loeschen
+122 Loeschen
+123 Computertyp Aenderung
+124 Neuen GeraeteTyp hinzufuegen
+125 Letzte
+126 Naechste
+127 Erste
+128 Zurueck
+129 GLEICH
+130 NICHT GLEICH
+131 Icon Datei
+132 Bilddateie
+133 Inventory
+134 Neue Datei in Basis einfuegen
+135 Vorsicht, sie sind dabei diese Datei endgueltig zu loeschen!
+136 Download
+137 Datei
+138 Erstellen
+139 Erstellung / Loeschen von
+140 Super Administratoren
+141 Administratoren
+142 Lokale Administratoren
+143 Die Super Administratoren sehen alle Geraete und koennen den Unity Tag vergeben
+144 Die Administratoren sehen alle Geraete aber koennen den Unity Tag nicht vergeben
+145 Die Lokalen Administratoren sehen nur Ihre Geraete und koennen den Unity Tag nicht vergeben
+146 Administrator waehlen
+147 Vorsicht, Sie werden die Rechte wirklich loeschen!
+148 UNBEKANNTER TAG
+149 Unity Tags unter Verantwortung von
+150 Recht(e) vergeben 
+151 Recht(e) geloescht
+152 Vorsicht, Sie werden die Rechte des Ziel Administrators loeschen!
+153 Keine tag unity bestimmt fuer diesen Administator
+154 Tag zu Administrator zuordnen
+155 Administrator zu Tag zuordnen
+156 Unity Tag hinzufuegen
+157 Kopieren
+158 Kopiere Rechte auf
+159 Rechte kopiert von 
+160 Kein Administrator zu diesem Tag
+161 Unity Tag unter Verantwortung von
+162 Auswahl loeschen
+163 Service Grade Name
+164 Personen verantwortlich fuer Unity Tag
+165 You have to enter a name or a diffusion list to search !
+166 You have to choose an element from the list !
+167 Details anzeigen
+168 Das Format dieser Datei ist ungueltig (entweder zip, pl oder unix-Binärdatei)
+169 zur Basis hinzufuegen
+170 Eine gleiche Datei existiert bereits !
+171 Datei geloescht
+172 Fehler ist aufgetreten, die Datei
+173 wird nicht zur Basis hinzugefuegt
+174 IpDisc.
+175 Duplikate
+176 IPs
+177 Redundante Geraete zusammenfuehren
+178 Summe der PCs mit Tag
+179 Unit Name
+180 User nicht registriert
+181 Login Problem
+182 Computer mit bestimmtem Tag
+183 Download
+184 Diese Datei enthaelt kein \"use constant version\"
+185 Version muss groesser 1 sein
+186 Diese Datei enthaelt keine \"ver\"-Datei
+187 Diese Datei ist keine gueltige ZIP-Datei
+188 Zurueck
+189 Sie muessen mind. 2 Computer waehlen 
+190 Kontoinfo:
+191 geloescht
+192 Zusammenfassung Redundanz
+193 Hostname + Serial number
+194 Hostname + Mac address
+195 MAC-Adresse + Seriennummer
+196 Nur Hostname
+197 Nur Seriennummer
+198 Nur MAC-Adresse
+199 Redundanz
+200 Corresponding relay decremented
+201 KLEINER
+202 GROESSER
+203 ZWISCHEN
+204 OUT OF
+205 Aktiviert
+206 gespeichert fuer
+207 Gateway
+208 Maske
+209 BIOS Version
+210 BIOS Datum
+211 Registrierung
+212 Schluessel Name
+213 Schluessel Wert
+214 Seite ausdrucken
+215 Alles anzeigen
+216 Passwort Fehler
+217 Passwort
+218 Agenten Versionen
+219 Unbekannte IPs
+220 geloescht
+221 IP sammelnde Computer
+222 Warnung ! Alle gewaehlten Computer werden zu einem Computer zusammengefasst! Sind die sicher?
+223 Information
+224 Werte
+225 Admininfo
+226 wurde erfolgreich aus Kontoinfo-Tabelle geloescht
+227 Sind sie sicher das sie die Spalte loeschen wollen?
+228 Neue Administrative Informationen eingeben
+229 Text (255)
+230 Integer
+231 Real
+232 Datum
+233 aktuelle Daten
+234 wurde erfolgreich eingefuegt
+235 Users
+236 Passwort aendern
+237 Neues Passwort
+238 Bestaetigung
+239 Sie muessen jedes Feld ausfuellen
+240 Ihr Passwort ist unterschiedlich
+241 Ihr Passwort wurde erfolgreich geaendert
+242 Administrator
+243 User
+244 Neuen User hinzufuegen
+245 wurde erfolgreich geloescht
+246 Sind sie sicher das sie den User loeschen wollen?
+247 MySql login
+248 MySql password
+249 Kann nicht zu MySQL verbinden, bitte gueltigen Benutzer und Passwort eingeben
+250 MySQL HostName
+251 Logout
+252 Name (sie waehlen)        	
+253 Registry "hive"    	
+254 Pfad des Schluessels (z.B. SOFTWARE\Mozilla)  	
+255 Name des Schluessels der gelesen wird (* für alles)
+256 Auswaehlen
+257 Registrierungsschluessel
+258 Registrierungsschluessel-Wert
+259 Fehler, die Daten konnten nicht eingefuegt werden (Sonderzeichen sind nicht erlaubt)
+260 Aenderung an Label ok
+261 Label Datei geloescht
+262 Label eingeben
+263 Konfiguration des Labels
+264 Kein Label vorhanden
+265 Alles
+266 ungueltiges Datum
+267 mm/dd/yyyy
+268 Geschwindigkeit
+269 %d/%m/%Y
+270 Modem(s)
+271 Slot(s)
+272 Port(s)
+273 BIOS
+274 OS Name
+275 OS Version
+276 Chipsatz
+277 Version
+278 Treiber
+279 Port
+280 MIB Typ 
+281 DHCP IP
+282 Gateways
+283 Zweck
+284 BIOS Hersteller
+285 Wählen Sie einen zu modifizierenden Parameter
+286 Servicepack
+287 Lokaler Import
+288 Lokale Importierung
+289 Netzwerkinformation
+290 Ip Abfrage
+291 Experten Modus
+292 Hinzufuegen / Loeschen von Netzwerkgeraeten
+293 Netzwerkgeräte Typen
+294 Subnetz Namen
+295 Lokalisierung
+296 Uid
+297 Kann nicht in Verzeichnis schreiben
+298 Alle Felder muessen ausgefuellt werden
+299 Ungueltige IP Adresse (muss sein: x.x.x.x)
+300 Ungueltige Maske (muss sein: x.x.x.x or xx)
+301 Neues Netzwerk eingefuegt
+302 Netzwerk geloescht
+303 Hinzufuegen eines Subnetz
+304 Netzwerk Name
+305 Uid
+306 Subnetz Liste
+307 Hinzufuegen eines Typs
+308 Typ Name
+309 Netzwerkgeraete Typen
+310 IpDiscover weniger als
+311 Hosts
+312 IpDiscover
+313 Gateway Computer
+314 IpDiscover gateway Computer
+315 Nicht inventarisierte Computer
+316 Subnetz
+317 ANALYSIEREN
+318 DNS Name
+319 Netzwerk Ergebnisse analysieren
+320 Diese Analyse wurde bereits gemacht auf
+321 Wollen Sie Cache-Daten sehen ?
+322 Daten aus Cache
+323 generiert auf
+324 HOSTS AUSGEWERTET ALS
+325 leer
+326 keine Maske eingegeben
+327 Computer Details
+328 Entdeckt
+329 Inventarisiert
+330 NetBIOS Name
+331 Netzwerk Nummer
+332 Bitte warten...
+333 Hinzufuegen eines neuen Netzwerkgeraets
+334 Netzwerkgeraete Liste
+335 Geraetetyp
+336 Geraetebeschreibung
+337 DAS PROGRAMM SENDETE NICHTS
+338 Eingeschraenkter Modus
+339 Sie benoetigen ipdiscover-util.pl (nur Linux) fuer den Experten Modus
+340 Zeigen
+341 kann nicht gestartet werden, sie muessen die Berechtigung zum Ausfuehren erteilen
+342 Sie muessen Schreibberechtigung auf das root Verzeichnis erteilen zur Nutzung von
+344 Fehler
+345 DIESE ANALYSE LAEUFT GERADE, BITTE VERSUCHEN SIE ES IN EIN PAAR MINUTEN WIEDER
+346 VORHER
+347 NACHHER
+348 Windows Benutzer
+349 Hinzufuegen einer Spalte
+350 CPU Typ
+351 CPU Nummer
+352 Letzer
+353 Qualitaet
+354 Genauigkeit
+355 Firma
+356 Besitzer
+357 User agent
+358 Jokers: ? (ein Zeichen), * (mehrere Zeichen)
+359 Monitor Seriennummer
+360 Hergestellt am (Woche/Jahr)
+362 Das Netzwerk
+363 existiert bereits
+364 Inventarisiert
+365 Nicht- Inventarisiert
+366 Identifiziert
+367 Geraete von Netzwerk
+368 von Netzwerk
+369 Uebermittelt von
+370 Entfaltung

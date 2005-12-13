@@ -1,0 +1,276 @@
+2 Toutes les machines
+3 Machines ayant un logiciel
+5 Les codes unité dont je suis responsable
+9 Recherche multicritères
+12 Tag
+13 Envoyer
+17 Client
+19 Version du logiciel
+20 Logiciel
+23 Machine
+24 Utilisateur
+25 Système
+26 Mémoire
+27 Vitesse CPU (MHz)
+28 Nombre de machines
+30 Recherche
+31 Choisissez un paramètre
+32 Choisissez
+33 Domaine
+34 Adresse IP
+35 Nom machine
+36 Numéro de série
+41 Réinitialiser
+42 Aucun résultat
+43 Menu principal
+46 Dernier inventaire
+48 Affichage système
+49 Nom
+50 Espace de Swap 
+51 Commentaires
+53 Description
+54 Processeur(s)
+55 Nombre
+56 Données administratives
+61 Carte vidéo
+62 Résolution
+63 Stockage
+64 Fabricant
+65 Modèle
+66 Type
+67 Taille disque
+69 Editeur
+70 Designation
+79 Imprimante(s)
+80 Libellé
+81 Etat
+82 Réseau(x)
+83 Capacité
+84 Interface
+85 Lettre
+86 Système de fichier
+87 Total
+88 Libre
+90 résultat(s)
+91 Périphérique(s) d'entrée
+92 Disque(s)
+93 Contrôleur(s)
+94 Nombre de slots
+95 Adresse MAC
+96 Son
+97 Moniteur(s)
+103 Mettre à jour
+107 Configuration
+108 Requêtes de registre
+111 Licence Windows
+113 Annuler
+114 Enregistrer
+115 Modifier
+116 Ajouter
+117 Reg
+119 Voulez-vous vraiment supprimer l'ID n° 
+122 Supprimer
+129 EGAL
+130 DIFFERENT
+134 Ajout d'un nouveau fichier dans la base
+135 Attention, vous allez supprimer ce fichier définitivement !
+136 Télécharger
+137 Fichier
+168 Ce format de fichier n'est pas utilisable (il doit être: ocsagent.exe, zip, pl ou binaire unix)
+170 Un fichier correspondant existe déjà !
+171 Fichier supprimé
+172 Une erreur est survenue, le fichier
+173 n'a pas été inséré dans la base
+174 Securité
+175 Doubles
+176 IPs
+177 Fusionner les lignes redondantes
+178 Répartition code/machines
+180 Utilisateur non enregistré dans la base OCS
+182 Machines ayant un tag donné
+183 Telecharger
+184 Ce fichier ne contient pas \"use constant version\"
+185 La version doit être supérieure ou égale à 1
+186 Cette archive ne contient pas ver
+187 Ce fichier n'est pas une archive zip valide
+188 Retour
+189 Vous devez selectionner au moins deux machines
+190 Accountinfo:
+191 supprimées
+192 Résumé redondance
+193 Hostname + Serial number
+194 Hostname + Mac address
+195 Mac address + Serial number
+196 Hostname seul
+197 Serial seul
+198 Mac address seule
+199 Redondances
+200 Relai correspondant diminué
+201 PLUS PETIT
+202 PLUS GRAND
+203 ENTRE
+204 HORS DE
+205 Actif
+206 récupérées pour
+207 Passerelle
+208 masque
+209 Version BIOS
+210 Date BIOS
+211 Registre
+212 Nom de la clé
+213 Valeur de la clé
+214 Imprimer cette page
+215 Tout afficher
+216 Erreur dans le mot de passe
+217 Mot de passe
+218 Versions des agents
+219 interfaces réseau non inventoriées
+220 supprimé
+221 Machines renvoyant des IPs
+222 Attention ! Toutes les machine cochées seront fusionnées en une seule machine ! Etes vous sur ?
+223 Information
+224 Valeur
+225 Admininfo
+226 a bien été supprimé de la table accountinfo
+227 Etes vous sur de vouloir supprimer la colonne 
+228 Entrer le nom de la nouvelle donnée administrative
+229 Texte (255)
+230 Entier
+231 Réel
+232 Date
+233 Données actuelles
+234 a bien été enregistré dans la table
+235 Users
+236 Changer mot de passe
+237 Nouveau mot de passe
+238 Confirmation
+239 Vous devez remplir tous les champs
+240 Vos mots de passe sont différents
+241 Votre mot de passe a bien été changé
+242 Administrateur
+243 Utilisateur
+244 Ajouter un nouvel utilisateur
+245 a bien été supprimé
+246 Etes vous sur de vouloir supprimer l'utilisateur
+247 Login mysql
+248 Mot de passe MySql
+249 Impossible de se connecter à MySql sur localhost, merci d'entrer un login/mot de passe MySql valide
+250 MySql HostName
+251 Deconnexion
+252 Nom (au choix)        	
+253 Ruche registre     	
+254 Chemin de la clé (Ex: SOFTWARE\Mozilla)  	
+255 Nom de la clé à lire (* pour toutes)
+256 Selectionnez la requête registre à modifier
+257 Clé de registre
+258 Valeur clé de registre
+259 Erreur, la donnée n'a pas pu être créée (merci de ne pas mettre de caractères spéciaux)
+260 Fichier label modifié
+261 Fichier label détruit
+262 Entrez un label
+263 Modifier le label
+264 Actuellement aucun fichier label
+265 Peu importe
+266 Date invalide
+267 jj/mm/yyyy
+268 Vitesse
+269 %d/%m/%Y
+270 Modem(s)
+271 Slot(s)
+272 Port(s)
+273 BIOS
+274 Nom du système
+275 Version du système
+276 Chipset
+277 Version
+278 Driver
+279 Port
+280 Type MIB
+281 IP DHCP
+282 Passerelles
+283 Fonction
+284 Fabricant du BIOS
+285 Selectionnez le paramètre à modifier
+286 Service pack
+287 Import local
+288 Import d'un fichier local
+289 Détail des réseaux interconnectés
+290 Interrogation par IP
+291 Mode expert
+292 Ajout / supression d'un périphérique
+293 Types de périphériques
+294 Noms des sous réseaux
+295 Localisation
+296 Id
+297 Ne peut écrire dans le répertoire
+298 Tous les champs doivent être remplis
+299 Adresse IP invalide (format valide: x.x.x.x)
+300 Masque invalide (format valide: x.x.x.x ou xx)
+301 Nouveau réseau inséré
+302 Réseau supprimé
+303 Ajouter un sous-réseau
+304 Nom réseau
+305 Département
+306 Liste des sous-réseaux
+307 Ajouter un type
+308 Nom du type
+309 Types de périphériques
+310 IpDiscover inferieur a
+311 Hôtes
+312 IpDiscover
+313 Machines de la passerelle
+314 Machines IpDiscover de la passerelle
+315 Hôtes non inventoriés
+316 Sous-reseau
+317 ANALYSE
+318 Nom DNS
+319 Resultat d'analyse du reseau
+320 Cette analyse a déja été effectué le
+321 voulez vous voir les données en cache ?
+322 Données issues du cache
+323 datent du
+324 HOTES EVALUES
+325 vide
+326 pas de masque entré
+327 Details de la machine
+328 Découverte
+329 Inventoriée
+330 Nom NetBIOS
+331 Numéro réseau
+332 Patientez...
+333 Ajout d'un nouveau périphérique
+334 Liste des périphériques
+335 Type de matériel
+336 Description du périphérique
+337 L'EXECUTABLE N'A RIEN RENVOYE
+338 Mode limité
+339 Vous devez disposer de ipdiscover-util.pl (Linux uniquement) pour plus de fonctionnalités
+340 Afficher
+341 ne peut être lancé, vous devez mettre les droits d'execution
+342 Vous devez mettre les droits d'ecriture sur le repertoire racine pour pouvoir utiliser
+344 Erreur
+345 L'ANALYSE EST DEJA EN COURS, MERCI DE RESSAYER PLUS TARD
+346 AVANT
+347 APRES
+348 Utilisateur Windows
+349 Ajouter colonne
+350 Type de processeur
+351 Nombre de processeurs
+352 Dernière visite
+353 Qualité
+354 Fidélité
+355 Société
+356 Propriétaire
+357 Type d'agent
+358 Jokers: ? pour un caractère et * pour plusieurs
+359 Numéro de série écran
+360 Fabrication (semaine/année)
+362 Le réseau
+363 existe déjà
+364 Inventoriés
+365 Non- inventoriés
+366 Identifiés
+367 Machines du réseau
+368 du réseau
+369 Saisi par
+370 Déploiement

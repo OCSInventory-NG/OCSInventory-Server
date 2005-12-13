@@ -1,0 +1,176 @@
+/* OCSReports Style Sheet */
+body {
+	background-color:#FFFFFF;
+	font-family: Verdana;
+	font-size: 8pt;
+}
+
+a, img, .lienBleu, .norm, td, b {  
+	text-decoration: none;
+	border-width: 0px;
+	font-family: Verdana;
+	font-size: 8pt;
+}
+
+b {
+	font-style: bold;
+}
+
+a,a:visited, .lienBleu {
+	cursor: pointer;
+	color: blue;	
+}
+
+a:hover {
+	color: red;
+}
+
+a.deco {
+	color:#C7D9F5;
+	font-size: 8pt;
+}
+
+input 
+{
+	cursor: pointer;
+}
+
+.lienBleu  {
+	color: blue;
+}
+
+.bouton,input,select,textarea,option {
+	background-color:#C7D9F5;
+	border-color:#A1B1F9; 
+	border-width:2px;	
+}
+
+option.hi {
+	background-color:#FFFFFF;
+}
+
+.dropdown {
+	border: thin solid;
+}
+
+.Items {
+	border-width: 2px;
+	border-bottom-color:#666666;
+	border-left-color:#D6D6D6;
+	border-right-color:#666666;
+	border-top-color:#D6D6D6;
+}
+
+.textbox 
+{
+	border: thin solid;
+}
+
+table.Erreur 
+{
+	border-color: #A1B1F9;
+	border-spacing: 0px;
+	border-style: solid;
+	border-width: 2px;
+	border-collapse: collapse;
+}
+
+th.Erreur 
+{
+	background-color: #C7D9F5;
+	border-bottom-color: #A1B1F9;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-collapse: collapse;
+}
+
+td.Machine
+{
+	 vertical-align:top ;
+	 font-size:8pt;
+}
+
+td#color
+{
+	background-color:#C7D9F5 ;
+}
+
+td#type
+{
+font-family:Tahoma;
+font-size:8pt;
+text-align:center;
+font-weight:bold;
+}
+	
+table.Fenetre 
+{
+	background-color: white;
+	border-color: #A1B1F9;
+	border-spacing: 0px;
+	border-style: solid;
+	border-width: 2px;
+	border-collapse: collapse;
+	width:62%;
+}
+
+table.headfoot 
+{
+	background-color: #C7D9F5;
+	border-color: #000000;
+	border-spacing: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	width:100%;
+}
+
+select.ge {
+	background-color: #C7D9F5;
+	height: 246px;
+	width: 250px;
+}
+
+.boutonP {
+	background-color: #C7D9F5;
+	border-color: #A1B1F9;
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+	font-size: 8pt;
+}
+
+.boutonG {
+	background-color: #C7D9F5;
+	border-color: #A1B1F9;
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+}
+
+.Lien {
+	border-left-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+	border-top-color: #FFFFFF;
+	border-right-color: #FFFFFF;
+}
+
+.Main {
+	cursor: pointer;
+}
+
+#fenetre 
+{
+	position: absolute;
+	top: 20%;
+	left: 30%;
+}
+
+#search {
+	background-color: #C7D9F5;
+	border-color: #A1B1F9;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	width: 240px;
+}

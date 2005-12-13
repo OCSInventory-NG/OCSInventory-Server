@@ -1,0 +1,368 @@
+1 Solicitudes
+2 Todos los computadores
+3 Computadores con sotfware...
+4 Computadores sin software...
+5 Códigos de elementos bajo mi responsabilidad
+6 Máquinas sin garantía
+7 Detalles de garantía de máquinas
+8 Seleccione su solicitud
+9 Búsqueda por varios criterios
+10 Computadores con etiquetas
+11 Computadores con etiquetas
+12 Valor de la etiqueta
+13 Enviar
+14 Administración
+15 Etiquetas
+16 Admins
+17 Agente
+18 Adición de fecha
+19 Versión del software
+20 Software
+21 primera fecha
+22 Fecha fin de garantía
+23 Computador
+24 Usuario
+25 Sistema Operativo
+26 Memoria
+27 Velocidad CPU (MHz)
+28 Número de máquinas
+29 El servidor LDAP no responde
+30 Buscar
+31 Seleccionar un parámetro
+32 Seleccionar
+33 Dominio
+34 Dirección IP
+35 Nombre del computador
+36 Número serial
+37 Orden
+38 Orden de entrega
+39 Origen
+40 Código
+41 Inicializar
+42 No hay resultados
+43 Menú principal
+44 Seleccione sus opciones
+45 Espacio libre (en C:)
+46 Último inventario
+47 Última página
+48 Detalles del computador
+49 Nombre
+50 Memoria virtual
+51 Comentarios
+52 Licencia
+53 Descripción
+54 Procesador(es)
+55 Número
+56 Datos administrativos
+57 Número de orden
+58 Fecha de la orden
+59 Código
+60 Orden de entrega
+61 Tarjeta de video
+62 Resolución
+63 Almacenamiento
+64 Fabricante
+65 Modelo
+66 Tipo
+67 Tamaño del disco
+68 Carpeta
+69 Editor
+70 Designación
+71 Garantía
+72 Intervenciones
+73 Precio
+74 Fecha de solicitud
+75 Tipo de solicitud
+76 Fecha de intervención
+77 Tipo de intervención
+78 Cuenta
+79 Impresora(s)
+80 Caption
+81 Estado
+82 Red(es)
+83 Capacidad
+84 Interfaz
+85 Letra
+86 Sistema de archivos
+87 Total
+88 Libre
+89 Fecha de orden de entrega
+90 Resultado
+91 Dispositivos entrada
+92 Disco(s)
+93 Controlador(s)
+94 Número de ranuras
+95 Dirección MAC
+96 Sonido
+97 Monitor(es)
+98 Atención, ¡solamente puede seleccionar 8 opciones!
+99 Detalles del computador
+100 Inicializar parámetros
+101 Ordenar
+102 Nueva búsqueda
+103 Actualizar
+104 directamente afectados
+105 en elementos
+106 Opciones de configuración
+107 Config
+108 Solicitudes de registro
+109 Tipo de computador
+110 para
+111 Número licencia Windows
+112 Fecha garantía
+113 Cancelar
+114 register
+115 Actualizar
+116 Adicionar
+117 Registro
+118 Ir a página
+119 ¿Realmente desea borrar el ID n°
+120 nulo
+121 Borrar el computador
+122 Borrar
+123 Modificación tipo computador
+124 Adicionar nuevo tipo máquina
+125 Último
+126 Siguiente
+127 Primero
+128 Volver
+129 IGUALES
+130 DIFERENTE
+131 Archivo de icono
+132 Archivo de imagen
+133 Inventario
+134 Adicionar un nuevo archivo a la base
+135 Tenga cuidado, ¡está a punto de borrar este archivo en forma definitiva!
+136 Descargar
+137 Archivo
+138 Crear
+139 Creación / borrado de
+140 Super administradores
+141 Administradores
+142 Administradores locales
+143 Los super administradores miran todas las máquinas y pueden dar etiquetas de elemento a los administradores.
+144 Los administradores miran todas las máquinas pero no puede dar etiquetas a los elementos.
+145 Los administradores locales miran únicamente su máquina y no pueden dar etiquetas de elementos.
+146 Escoja un administrador
+147 Tenga cuidado, ¡está a punto de borrar los derechos en forma permanente!
+148 ETIQUETA DESCONOCIDA
+149 Etiquetas de elementos bajo la responsabilidad de
+150 derecho(s) adicionado(s)
+151 derecho(s) borrado(s)
+152 Tenga cuidado, ¡esta operación borra los derechos del administrador seleccionado!
+153 No hay etiqueta de elementos afectada para este administrador
+154 Adicionar una etiqueta a un administrador
+155 Adicionar un administrador a una etiqueta
+156 Adicionar una etiqueta de elemento
+157 Copiar
+158 Copiar los derechos a
+159 derechos copiados de
+160 No hay administrador para este elemento
+161 Etiqueta del elemento bajo la responsabilidad de
+162 Borrar la selección
+163 Número de Tipo de Servicio
+164 Personas responsables de la etiqueta del elemento
+165 ¡Tiene que entrar un nombre o un lista de {difusion} para buscar!
+166 ¡Tiene que selecionar un elemento de la lista!
+167 Mirar los detalles
+168 Este formato de archivo no es válido (debe ser zip, pl o binario unix)
+169 adicionar a la base
+170 ¡Ya existe el mismo archivo!
+171 Archivo borrado
+172 Apareció un error, el archivo
+173 no se adicionó a la base
+174 Descubrir IPs
+175 Duplicados
+176 Ips
+177 Mezclar computadores redundantes
+178 Etiqueta / Distribución de PCs
+179 Nombre del elemento
+180 Usuario no registrado
+181 Problema de ingreso
+182 Computadores que tienen una etiqueta dada
+183 Descargar
+184 Este archivo no contiene \"use versión constante\"
+185 La versión debe ser mayor de 1
+186 Este archivo no contiene el archivo ver
+187 Este archivo no es un archivo zip válido
+188 Volver
+189 Debe seleccionar al menos 2 computadores
+190 Cuentainfo:
+191 borrado
+192 Resumen redundancia
+193 Nombre del computador + Número serial
+194 Nombre del computador + Dirección MAC
+195 Dirección MAC + Número serial
+196 Sólo nombre del computador
+197 Sólo serial
+198 Sólo dirección MAC
+199 Redundancia
+200 Reenvío correspondiente decrementado
+201 MÁS PEQUEÑO
+202 MÁS GRANDE
+203 ENTRE
+204 FUERA DE
+205 Habilitado
+206 grabado para
+207 Puerta de enlace
+208 Máscara
+209 Versión BIOS
+210 Fecha BIOS
+211 Registro
+212 Nombre clave
+213 Valor clave
+214 Imprimir esta página
+215 Mostrar todo
+216 Error de contraseña
+217 Contraseña
+218 Versiones de agentes
+219 IPs desconocidas
+220 borrado
+221 Recolección de IPs de computadores
+222 ¡Aviso! ¡Todos los computadores seleccionados se van a mezclar como un único computador! ¿Está seguro?
+223 Información
+224 Valor
+225 Infoadmin
+226 se borró exitosamente de la tabla accountinfo
+227 ¿Esta seguro que desea borrar la columna
+228 Introduzca el nuevo campo a agregar
+229 Texto (255)
+230 Entero
+231 Real
+232 Fecha
+233 Fecha actual
+234 se insertó exitosamente
+235 Usuarios
+236 Cambiar contraseña
+237 Nueva contraseña
+238 Confirmación
+239 Debe llenar todos los campos
+240 Sus contraseñas son diferentes
+241 Se modificó su contraseña exitosamente
+242 Administrador
+243 Usuario
+244 Adicionar un nuevo usuario
+245 se borró exitosamente
+246 ¿Está seguro que desea borrar el usuario
+247 Usuario MySQL
+248 Contraseña MySQL
+249 No se puede conectar a MySQL. Por favor entre un usuario/contraseña válidos.
+250 Nombre del servidor MySQL
+251 Salir
+252 Nombre (usted elije)
+253 La rama del registro
+254 Ubicación de la clave (Ej: SOFTWARE\Mozilla)
+255 Nombre de la clave que se va a leer (* for all)
+256 Elegir
+257 Nombre de la clave del Registro
+258 Valor de la clave del Registro
+259 Error, no se pudieron insertar los datos (no se permite caracteres especiales)
+260 Modificación exitosa del archivo de etiqueta
+261 Archivo de etiqueta borrado
+262 Texto de la etiqueta
+263 Archivo de configuración de la etiqueta
+264 No existe archivo de etiqueta
+265 Algo
+266 Fecha inválida
+267 dd/mm/yyyy
+268 Velocidad
+269 %d/%m/%Y
+270 Módem(s)
+271 Ranura(s)
+272 Puerto(s)
+273 BIOS
+274 Nombre del SO
+275 Versión del SO
+276 Chipset
+277 Versión
+278 Controlador
+279 Puerto
+280 Tipo de MIB
+281 IP DHCP
+282 Puertas de enlace
+283 Propósito
+284 Fabricante del BIOS
+285 Seleccione un parámetro a ser modificado
+286 Service pack
+287 Importar localmente
+288 Importación local
+289 Información de la red
+290 Consultas por IP
+291 Modo experto
+292 Adicionar / borrar un dispositivo de red
+293 Tipo de dispositivos de red
+294 Nombres de subredes
+295 Localización
+296 Uid
+297 No puedo escribir en el directorio
+298 Se deben llenar todos los campos
+299 Dirección IP inválida (debe ser: x.x.x.x)
+300 Máscara inválida (debe ser: x.x.x.x o xx)
+301 Nueva red insertada
+302 Red borrada
+303 Adicionar una subred
+304 Nombre de red
+305 Uid
+306 Lista de subredes
+307 Adicionar un tipo
+308 Nombre del tipo
+309 Tipo de dispositivos de red
+310 IpDiscover menor de
+311 MÁQUINAS
+312 IpDiscover
+313 Computadores puerta de enlace
+314 Computadores puerta de enlace IpDiscover
+315 Computadores sin inventariar
+316 Subred
+317 ANALIZAR
+318 Nombre DNS
+319 Resultados del análisis de red
+320 Este análisis ya se hizo el
+321 ¿desea mirar los datos del caché?
+322 Datos del caché
+323 generado el
+324 MÁQUINAS EVALUADAS COMO
+325 vacío
+326 no se especificó la máscara
+327 Detalles del computador
+328 Descubiertos
+329 Inventariados
+330 Nombre NetBIOS
+331 Número de red
+332 Por favor espere...
+333 Adicionar un nuevo dispositivo de red
+334 Lista de dispositivos de red
+335 Tipo de dispositivo
+336 Descripción del dispositivo
+337 EL PROGRAMA NO ENVIÓ NADA
+338 Modo limitado
+339 Para modo experto necesita ipdiscover-util.pl (solo Linux)
+340 Mostrar
+341 no se puede correr, debe revisar los permisos de ejecución
+342 Necesita asignar permisos de escritura en el directorio raíz para usar
+344 Error
+345 ESTE ANÁLISIS ESTÁ EN EJECUCIÓN, INTENTE NUEVAMENTE DENTRO DE UNOS MINUTOS
+346 ANTES
+347 DESPUÉS
+348 Usuario Windows
+349 Adicionar columna
+350 Tipo de CPU
+351 Número de CPU
+352 Last come
+353 Calidad
+354 Fidelidad
+355 Entidad
+356 Propietario
+357 Agente
+358 Comodines: ? (un caracter), * (varios caracteres)
+359 Serial del monitor
+360 Fabricado en (semana/año)
+362 La red
+363 ya existe
+364 Inventariado
+365 Sin inventariar
+366 Identificado
+367 Dispositivos de red
+368 de red
+369 Enviado por
+370 Despliegue

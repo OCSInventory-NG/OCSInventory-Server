@@ -1,0 +1,375 @@
+1 Requisições
+2 Todos os Computadores
+3 Computadores sotfware...
+4 Computadores sem software...
+5 Códigos de unidade sob minha responsabilidade
+6 Equipamentos fora de garantia
+7 Detalhe de equipamentos fora de garantia
+8 Escolha sua requisição
+9 Escolha com vários critérios
+10 Computadores por etiquetas
+11 Computadores por etiquetas
+12 Nome da Etiqueta
+13 Envio
+14 Gerenciamento
+15 Etiquetas
+16 Admins
+17 Agente
+18 Adicionando Data
+19 Versão de software
+20 Software
+21 Primeira data
+22 Data fora da garantia
+23 Computador
+24 Usuário
+25 Sistema Operacional
+26 Memoria
+27 Velocidade de CPU (MHz)
+28 Número de Máquina
+29 O servidor LDAP não responde
+30 Procura
+31 Escolha um parâmetro
+32 Escolha
+33 Domínio
+34 Endereço IP
+35 Nome do Computador
+36 No de série
+37 Command letter
+38 Ordem de entrega
+39 Origem
+40 Código
+41 Reset
+42 Nenhum resultado
+43 Menu Principal
+44 Escolha Opção
+45 Espaço Livre (no C:)
+46 Último Inventário
+47 Última página
+48 Detalhes do Computador
+49 Nome
+50 Swap
+51 Comentários
+52 Licença
+53 Descrição
+54 Processador(s)
+55 Número
+56 Dado Administrativo
+57 Número comando
+58 Data comando
+59 Código
+60 Ordem de Entrega
+61 Placa de Vídeo
+62 Resolução
+63 Armazenamento
+64 Fabricante
+65 Modelo
+66 Tipo
+67 Tamanho do disco
+68 Pasta
+69 Editor
+70 Designação
+71 Garantia
+72 Intervenção(es)
+73 Valor
+74 Demand date
+75 Demand type
+76 Data de Intervenção
+77 Tipo de Intervenção
+78 Conta
+79 Impressora(s)
+80 Caption
+81 Status
+82 Rede(s)
+83 Capacidade
+84 Interface
+85 Letter
+86 Sistema de arquivos
+87 Total
+88 Livre
+89 Delivery order date
+90 Resultado
+91 Dispositivos de entrada
+92 HD(s)
+93 Controladora (s)
+94 Slot number
+95 MAC address
+96 Som
+97 Monitor(es)
+98 Cuidado, você só pode selecionar 8 opções!
+99 Detalhes do computador
+100 Parâmetros de inicialização
+101 Sort
+102 Nova Busca
+103 Atualizar
+104 diretamente afetados
+105 in units
+106 Opções de configuração
+107 Configuração
+108 Registry requests
+109 Tipo de Computador
+110 para
+111 Número de licença Windows
+112 Data garantia
+113 Cancela
+114 Register
+115 Atualiza
+116 Adicione
+117 Registro
+118 Vá para pág.
+119 Você realmente quer apagar o ID n°
+120 nulo
+121 Apaga o computador
+122 Apaga
+123 Modificação de tipo de computador
+124 Adicione novo tipo de máquina
+125 Último
+126 Próximo
+127 Primeiro
+128 Volta
+129 IGUAL
+130 DIFERENTE
+131 Arquivo de Ícone
+132 Arquivo de imagem
+133 Inventário
+134 Adicione novo arquivo na base
+135 Cuidado, você ira deletar este arquivo permanentemente !!
+136 Download
+137 Arquivo
+138 Cria
+139 Criação / Deleção de
+140 Super administradores
+141 Administradores
+142 Administradores locais
+143 Os super administradores visualizam todas as máquinas e podem fornecer 
+etiqueta de unidade aos administradores.
+144 Os administradores visualizam todas as máquinas, mas não dão etiqueta de 
+unidade.
+145 Os administradores locais visualizam somente suas máquinas e não podem 
+dar etiqueta de unidade.
+146 Escolha um administrador
+147 Cuidado, você está apagando os direitos definitivamente !!
+148 ETIQUETA DESCONHECIDA
+149 Etiqueta de unidade sob a responsabilidade de
+150 direito (s) adicionados
+151 direito (s) apagados
+152 Cuidado, esta operação elimina os direitos desse administrador!!!
+153 Nenhuma etiqueta de unidade relacionada a esse administrador
+154 Adiciona uma etiqueta a um administrador
+155 Adiciona um administrador à uma etiqueta
+156 Adiciona uma etiqueta de unidade
+157 Copia
+158 Copia os direitos para
+159 direitos copiados de
+160 Nenhum administrador para essa etiqueta
+161 Etiqueta de unidade sob responsabilidade de
+162 Apague a seleção
+163 Service Grade Name
+164 Pessoas responsávais pela etiqueta de unidade
+165 Você deve entrar com um nome ou uma lista para procurar !
+166 Você deve escolher um ítem da lista !
+167 Veja os detalhes
+168 Este formato de arquivo é inválido (deve ser um .zip, pl ou binário 
+UNIX)
+169 adiciona à base
+170 O mesmo arquivo já existe!
+171 Arquivo apagado
+172 Um erro aconteceu. O arquivo
+173 não foi adicionado à base.
+174 IpDisc.
+175 Duplicados
+176 Ips
+177 Reune (merge) computadores redundantes
+178 Etiqueta / Número de divisões de PCs
+179 Nome da Unidade
+180 Usuário não registrado
+181 Problema de Login
+182 Computers having a given tag
+183 Download
+184 This file does not contain \"use constant version\"
+185 Versão deve ser maior que 1
+186 Este arquivo não contém o arquivo .ver
+187 Este arquivo, não é um arquivo zipado válido
+188 Volta
+189 Você deve selecionar pelo menos 2 computadores
+190 infoconta:
+191 apagado
+192 Sumário de Redundância
+193 Hostname + No Serial
+194 Hostname + Mac address
+195 Mac address + No Serial
+196 Somente Hostname
+197 Só Serial
+198 Só Mac address
+199 Redundância
+200 Corresponding relay decremented
+201 MENOR
+202 MAIOR
+203 ENTRE
+204 FORA DE
+205 Habilitado
+206 salvo por
+207 Gateway
+208 máscara
+209 Versão de BIOS
+210 Data de BIOS
+211 Registro
+212 Nome da chave
+213 Valor da chave
+214 Imprime essa página
+215 Mostra todos
+216 Senha incorreta
+217 Senha
+218 Versões de agentes
+219 IPs desconhecidos
+220 apagado
+221 Computadores coletados pelo IP
+222 Atenção ! Todos os computadores selecionados serão reunidos num único 
+computador ! Tem certeza ?!
+223 Informação
+224 Valor
+225 Admininfo
+226 foi deletado com sucesso da tabela infoconta
+227 Tem certeza que quer deletar a coluna
+228 Entre a nova info administrativa
+229 Texto (255)
+230 Integer
+231 Real
+232 Dado
+233 Dado atual
+234 foi inserido com sucesso
+235 Usuários
+236 Muda senha
+237 Nova senha
+238 Confirmação
+239 Você deve preencher todos os campos
+240 Sua senha não confere
+241 Sua senha foi modificada com sucesso.
+242 Administrador
+243 Usuário
+244 Adicione novo usuário
+245 foi apagado com sucesso
+246 Tem certeza que quer apagar o usuário?
+247 MySql usuário
+248 MySql senha
+249 Não foi possível conectar-se ao MYSql. Por favor entre com um 
+usuário/senha válidos.
+250 MySql HostName
+251 Sair
+252 Nome (você escolhe)
+253 Registro "hive"
+254 Caminho da chave (Ex: SOFTWARE\Mozilla)
+255 Nome da chave que será lida (* for all)
+256 Escolha
+257 Nome da chave do registro
+258 Valor da chave do registro
+259 Erro, o dado não pode ser inserido (Caracteres especiais não são 
+permitidos)
+260 Descrição modificada com sucesso
+261 Descrição apagada
+262 Digite uma descrição
+263 Configuração do arquivo descrição
+264 Nenhum arquivo "descrição" agora
+265 Anything
+266 Invalid date
+267 dd/mm/yyyy
+268 Speed
+269 %d/%m/%Y
+270 Modem(s)
+271 Slot(s)
+272 Port(s)
+273 BIOS
+274 OS Name
+275 OS Version
+276 Chipset
+277 Version
+278 Driver
+279 Port
+280 MIB Type 
+281 DHCP IP
+282 Gateways
+283 Purpose
+284 BIOS Manufacturer
+285 Select a parameter to be modified
+286 Service pack
+287 Local import
+288 Local Importation
+289 Network information
+290 Ip querying
+291 Expert mode
+292 Add / delete a network device
+293 Network devices types
+294 Subnet names
+295 Localisation
+296 Uid
+297 Can't write in directory
+298 All fields must be filled
+299 Invalid IP adress (must be: x.x.x.x)
+300 Invalid mask (must be: x.x.x.x or xx)
+301 New network inserted
+302 Network deleted
+303 Add a subnet
+304 Network name
+305 Uid
+306 Subnet list
+307 Add a type
+308 Type name
+309 Network devices types
+310 IpDiscover less than
+311 Hosts
+312 IpDiscover
+313 Gateway computers
+314 IpDiscover gateway computers
+315 Non inventoried computers
+316 Subnet
+317 ANALYZE
+318 DNS name
+319 Network analyze results
+320 This analyze was already done on
+321 do you want to see cached data ?
+322 Data from cache
+323 generated on
+324 HOSTS EVALUATED AS
+325 empty
+326 no mask typed
+327 Computer details
+328 Discovered
+329 Inventoried
+330 NetBIOS Name
+331 Network number
+332 Please wait...
+333 Add a new network device
+334 Network devices list
+335 Device type
+336 Device description
+337 THE PROGRAM DID NOT SEND ANYTHING
+338 Limited mode
+339 You need ipdiscover-util.pl (Linux only) for expert mode
+340 Show
+341 can't be launched, you must set execution rights
+342 You need to set writing rights on the root directory in order to use
+344 Error
+345 THIS ANALYZE IS CURRENTLY RUNNING, PLEASE TRY AGAIN IN A FEW MINUTES
+346 BEFORE
+347 AFTER
+348 Windows user
+349 Add column
+350 CPU type
+351 CPU number
+352 Last come
+353 Quality
+354 Fidelity
+355 Company
+356 Owner
+357 User agent
+358 Jokers: ? (one character), * (several characters)
+359 Monitor serial
+360 Manufactured on (week/year)
+362 The network
+363 already exists
+364 Inventoried
+365 Non- inventoried
+366 Identified
+367 Devices of network
+368 of network
+369 Submitted by
+370 Despregadura

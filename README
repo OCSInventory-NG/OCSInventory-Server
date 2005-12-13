@@ -1,0 +1,3 @@
+Ocsinventory-NG RC1
+#
+If your mod_perl is upper than 1.999_21, use Ocsinventory.pm located in Ocsinventory.pm_4_mp_since_1.999_22 instead of the one in ocsinventory-ng.

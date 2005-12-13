@@ -1,0 +1,121 @@
+ver RC1 (4010)
+
+Added deploy file in client view
+Added automatic subnet import in installer
+Added automatic network id calculation in installer
+Fixed IE download client bug
+Fixed xml-tag-like software names bug
+Lot of bug fixes
+
+ver 1.0b-12 (4009)
+
+Added network name in computer summary
+Added automatic language choosing
+Added custom file name upload option
+Fixed IE popup bug
+
+ver 1.0b-11 (4005)
+
+Added ipsubnet in network display
+Added monitor serial in monitor display
+Added search by monitor serial
+Added search by user agent
+Added install checkings (session and xml packages)
+Fixed disappearing parameters of the multi criteria search
+Fixed internet explorer csv downloading bug
+New Ipdiscover interface with all data on the same page
+Improved Ipdiscover windows compatibility
+Lot of minor bug fixes
+
+ver 1.0b-10 (4004)
+
+Added column choosing
+Added proper date formatting
+Added search by system manufacturer, bios manufacturer and system model
+Added automatic install feature when GUI version changes
+Added a date picker for every date input
+Added "smaller/bigger" search for date type
+Added full php local import system (do not need pl script anymore)
+Added deploy.exe isntaller support
+Added line color in combo boxes
+Added two mysql database support (read / write)
+Added php zip module checking in install.php
+Fixed computer summary header resizing bug
+Fixed deviceid containing a quote bug
+Fixed local import bug
+Fixed $userfile bug
+Fixed the logging bug (impossible to log after logout)
+Fixed charset .sql bug
+Fixed css problems
+Lot of minor bug fixes
+
+ver 1.0b-8
+Added latest spanish translation
+Added "type" information in ip querying (needs ipdiscover-util.pl)
+Fixed "glob" function call (incompatible with php<4.3)
+Fixed utf8_decode problem
+
+ver 1.0b-7 (LAST RELEASE)
+Fixed deployed files insertion bug
+Fixed ipdiscover combo box (limited mode) bug
+
+ver 1.0b-6
+Added non-inventoried ip interface (limited mode)
+Added network devices managing interface (limited mode)
+Added network device type interface (limited mode)
+Added date information on gathered IP
+Fixed security issue with machine.php
+
+ver 1.0b-5
+Added IpDiscover GUI (needs ipdiscover-util.pl)
+Added security tab (shows gateways and hosts/ ipdiscover computers)
+Added number of results shown selection
+Added local inventory importation system
+Added MD5 password hash
+Added combo for hive registry insertion
+Modified database for the upcoming monitor serial number retrieving system
+Modified database to add a new 'devicetype' table
+Fixed linux client update bug
+Minor bug fixes
+
+ver 1.0b-4
+Fixed E_STRICT bug
+Fixed IE + csv export bug
+Fixed date checking bug
+Added ip mask search in various criteria search
+Added ip gateway search in various criteria search
+Added net mask in unknown ip interface
+Added brazilian portuguese translation (thanks to Rogério Barberi)
+Added spanish translation (thanks to Pablo Chamorro)
+Added german translation (thanks to Drasch Werner)
+Added automatic translation integration (languages directory)
+
+Installer:
+old_password problem recognition
+
+ver 1.0b-3 
+added registry search
+added serial number search
+added date validation functions (when modifying administrative data)
+fixed "undefined index" error
+fixed upload file bug
+minor bug fixes
+
+Installer:
+fixed mfc42.dll insertion problem
+added bad mysql installation detection
+improved error checkings
+
+ver 1.0b-2 17/06/2005
+new banner
+minor look & feel improvements 
+improved installation system
+added label configuration interface
+fixed admininfo insertion bug
+
+ver 1.0b-1 15/06/2005
+finished translation
+fixed missing print.gif
+fixed sorting bug
+fixed several minor bugs
+lots of look & feel improvements 
