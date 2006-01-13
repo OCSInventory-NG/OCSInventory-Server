@@ -1,4 +1,4 @@
-#!/usr/bin/perl 
+#!/usr/bin/perl -w
 ###############################################################################
 ##IPDISCOVER Version 1.0 Beta
 ##Copyleft Pascal DANEK 2005
@@ -30,9 +30,9 @@ my $net;
 #Subnet name
 my $filter;
 #Analyse and class the computers
-my $analyse = 0;
+my $analyse;
 #Net for a given ip
-my $iptarget = 0;
+my $iptarget;
 my $masktarget;
 #If auto flag, running for all the subnet.csv subnet and generate files
 my $auto;
@@ -744,8 +744,11 @@ sub _network{
 } 
 
 sub _bintoascii{
-  my $bin = shift;
-  return(&ip_bintoip($bin, 4)) or die(Error());
+  my $binmask = shift;
+  my $binstring = "1" x $binmask;
+  $binstring .= "0" for(1..(32 - $binmask));
+  
+  return(&ip_bintoip($binstring, 4)) or die(Error());
 }
 
 sub _binmask{
