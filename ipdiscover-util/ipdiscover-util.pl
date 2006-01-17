@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl 
 ###############################################################################
 ##IPDISCOVER Version 1.0 Beta
 ##Copyleft Pascal DANEK 2005
