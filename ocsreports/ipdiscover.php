@@ -210,6 +210,7 @@ else if( $_GET["mode"] == 10 ) {
 	}
 
 }
+// Page with all detailed networks
 else if( $_GET["mode"] == 1 ) {
 			
 	$reqIpConf = "SELECT ivalue FROM config WHERE name='IPDISCOVER'";
@@ -233,111 +234,100 @@ else if( $_GET["mode"] == 1 ) {
 	$totNinvRes = mysql_query( $totNinvReq, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$totNinvVal = mysql_fetch_array( $totNinvRes );
 
+	$t[0]    = Array("",$l->g(295),"","Uid","",$l->g(304),"",$l->g(364),"",$l->g(365),"",$l->g(312),"",$l->g(366));
+	$types   = Array("","SORT_STRING","","SORT_NUMERIC","","SORT_STRING","","SORT_NUMERIC","","SORT_NUMERIC","","SORT_NUMERIC","","SORT_NUMERIC");
+	$tailles = Array( 0,250,0,50,0,250,0,70,0,70,0,70,0,70);	
+	
+	$cptL = 1;
+	$reqGateway = "SELECT ipsubnet as nbrez, COUNT(deviceid) AS nbc FROM networks WHERE deviceid NOT LIKE 'NETWORK_DEVICE-%' AND ipsubnet<>'0.0.0.0' GROUP BY(ipsubnet)";
 	$strEnTete = $l->g(289)."<br><br>(<font color='red'>".$totNinvVal["total"]."</font> ".$l->g(219).")";
-	/*if( isset( $_SESSION["maxipd"] ) ){
-		$strEnTete .= " <font color='red'>(IpDiscover < ".$_SESSION["maxipd"].")</font>";
-	}*/
 	
 	printEnTete($strEnTete);
-	
 	echo "<br><center><a href=index.php?multi=3><= ".$l->g(188)."</a></center><br>";
-	/*
-		$valIpdisc = array (1,2,$maxIpConfig);
-	
-		<center><br><? echo $l->g(310)?> :
-		<form name='ipdisc' method='POST' action='index.php?multi=3&mode=1'>
-		<select name='maxipd' OnChange='ipdisc.submit();'><option><? echo $l->g(215)?></option>
-	
-		foreach( $valIpdisc as $optVal ) {
-			echo "<option".($_SESSION["maxipd"]==$optVal?" selected":"").">$optVal</option>";
-		}		
-		echo "</select></form></center><br>";
-	*/	
-		$t[0]    = Array("",$l->g(295),"","Uid","",$l->g(304),"",$l->g(364),"",$l->g(365),"",$l->g(312),"",$l->g(366));
-		$types   = Array("","SORT_STRING","","SORT_NUMERIC","","SORT_STRING","","SORT_NUMERIC","","SORT_NUMERIC","","SORT_NUMERIC","","SORT_NUMERIC");
-		$tailles = Array( 0,250,0,50,0,250,0,70,0,70,0,70,0,70);	
-		
-		$cptL = 1;
-		$resGateway = mysql_query("SELECT ipsubnet as nbrez, COUNT(deviceid) AS nbc FROM networks WHERE deviceid NOT LIKE 'NETWORK_DEVICE-%' AND ipsubnet<>'0.0.0.0' GROUP BY(ipsubnet)", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));	
-		while( $arrGateway = mysql_fetch_array($resGateway) ) {
-			$resIpd = mysql_query("SELECT COUNT(*) AS nbi FROM devices WHERE name='IPDISCOVER' AND tvalue='".$arrGateway["nbrez"]."'", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
-			$arrIpd = mysql_fetch_array( $resIpd );
-	
-			/*if( isset($_SESSION["maxipd"]) && $_SESSION["maxipd"]<=$arrIpd["nbi"] )			
-				continue;*/
-			
-			if( ! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$",$arrGateway["nbrez"]) ) {
-				continue ;
-			}
-			$masque = getMask( $arrGateway["nbrez"] ) ;							
+	$auMoinsUnRezo = false;
+	$resGateway = mysql_query($reqGateway, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));	
 
-			$reqSubnet = "SELECT name,id FROM subnet WHERE NETID='".$arrGateway["nbrez"]."'";
-			$resSubnet = mysql_query($reqSubnet, $_SESSION["readServer"]) or die(mysql_error());
-			if( $valSubnet = mysql_fetch_array( $resSubnet ) ) {			
-				$t[ $cptL ][] = "";
-				$t[ $cptL ][] = $valSubnet["name"];
-				$t[ $cptL ][] = "";
-				$t[ $cptL ][] = $valSubnet["id"];
-			}
-			else {				
-				$t[ $cptL ][] = "";
-				$t[ $cptL ][] = "-";
-				$t[ $cptL ][] = "";
-				$t[ $cptL ][] = "0";
-			}
-			
+	while( $arrGateway = mysql_fetch_array($resGateway) ) {
+		$auMoinsUnRezo = true;
+		$resIpd = mysql_query("SELECT COUNT(*) AS nbi FROM devices WHERE name='IPDISCOVER' AND tvalue='".$arrGateway["nbrez"]."'", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		$arrIpd = mysql_fetch_array( $resIpd );
+
+		if( ! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$",$arrGateway["nbrez"]) ) {
+			continue ;
+		}
+		$masque = getMask( $arrGateway["nbrez"] ) ;							
+
+		$reqSubnet = "SELECT name,id FROM subnet WHERE NETID='".$arrGateway["nbrez"]."'";
+		$resSubnet = mysql_query($reqSubnet, $_SESSION["readServer"]) or die(mysql_error());
+		if( $valSubnet = mysql_fetch_array( $resSubnet ) ) {			
 			$t[ $cptL ][] = "";
-			$t[ $cptL ][] = $arrGateway["nbrez"];
-			
-			$t[ $cptL ][] = popup("multi=3&mode=4&pas=".urlencode($arrGateway["nbrez"]));
-			$t[ $cptL ][] = $arrGateway["nbc"];
-			
-			$reqNonInv = "SELECT COUNT(*) AS nbnoninv FROM netmap WHERE NETID='".$arrGateway["nbrez"]."' AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks)";
-			$resNonInv = mysql_query($reqNonInv, $_SESSION["readServer"]) or die(mysql_error());
-			
-			if( $valNonInv = mysql_fetch_array( $resNonInv ) ) {	
-				if( $valNonInv["nbnoninv"] > 0)
-					$t[ $cptL ][] = popup("multi=3&mode=2&pas=".$arrGateway["nbrez"]);
-				else
-					$t[ $cptL ][] = "";
-					
-				$t[ $cptL ][] = $valNonInv["nbnoninv"]."</a>";
-			}
-			else {
-				$t[ $cptL ][] = "";
-				$t[ $cptL ][] = "-";
-			}
-			
-			if($arrIpd["nbi"]>0) {
-				$t[ $cptL ][] = popup("multi=3&mode=5&pas=".urlencode($arrGateway["nbrez"]));
-				$t[ $cptL ][] = $arrIpd["nbi"]."</a>";
-			}
-			else {
-				$t[ $cptL ][] = "" ;
-				$t[ $cptL ][] = "0" ;
-			}
-			
-			$reqSais = "SELECT COUNT(deviceid) as nbSais FROM networks n,netmap a WHERE 
-			n.deviceid like 'NETWORK_DEVICE-%' 
-			AND a.netid='".$arrGateway["nbrez"]."' AND n.macaddr=a.mac";
-			$resSais = mysql_query($reqSais, $_SESSION["readServer"]) or die(mysql_error());
-			if( ($valSais = mysql_fetch_array( $resSais )) && ($valSais["nbSais"] > 0)) {
-				$t[ $cptL ][] = popup("multi=3&mode=8&direct=2&pas=".urlencode($arrGateway["nbrez"]));
-				$t[ $cptL ][] = $valSais["nbSais"]."</a>";
-			}
-			else {
-				$t[ $cptL ][] = "" ;
-				$t[ $cptL ][] = "0" ;
-			}
-			
-			$cptL++;
-		}	
-		$toPrint = $t;
+			$t[ $cptL ][] = $valSubnet["name"];
+			$t[ $cptL ][] = "";
+			$t[ $cptL ][] = $valSubnet["id"];
+		}
+		else {				
+			$t[ $cptL ][] = "";
+			$t[ $cptL ][] = "-";
+			$t[ $cptL ][] = "";
+			$t[ $cptL ][] = "0";
+		}
 		
+		$t[ $cptL ][] = "";
+		$t[ $cptL ][] = $arrGateway["nbrez"];
+		
+		$t[ $cptL ][] = popup("multi=3&mode=4&pas=".urlencode($arrGateway["nbrez"]));
+		$t[ $cptL ][] = $arrGateway["nbc"];
+		
+		$reqNonInv = "SELECT COUNT(*) AS nbnoninv FROM netmap WHERE NETID='".$arrGateway["nbrez"]."' AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks)";
+		$resNonInv = mysql_query($reqNonInv, $_SESSION["readServer"]) or die(mysql_error());
+		
+		if( $valNonInv = mysql_fetch_array( $resNonInv ) ) {	
+			if( $valNonInv["nbnoninv"] > 0)
+				$t[ $cptL ][] = popup("multi=3&mode=2&pas=".$arrGateway["nbrez"]);
+			else
+				$t[ $cptL ][] = "";
+				
+			$t[ $cptL ][] = $valNonInv["nbnoninv"]."</a>";
+		}
+		else {
+			$t[ $cptL ][] = "";
+			$t[ $cptL ][] = "-";
+		}
+		
+		if($arrIpd["nbi"]>0) {
+			$t[ $cptL ][] = popup("multi=3&mode=5&pas=".urlencode($arrGateway["nbrez"]));
+			$t[ $cptL ][] = $arrIpd["nbi"]."</a>";
+		}
+		else {
+			$t[ $cptL ][] = "" ;
+			$t[ $cptL ][] = "0" ;
+		}
+	
+		$reqSais = "SELECT COUNT(deviceid) as nbSais FROM networks n,netmap a WHERE 
+		n.deviceid like 'NETWORK_DEVICE-%' 
+		AND a.netid='".$arrGateway["nbrez"]."' AND n.macaddr=a.mac";
+		$resSais = mysql_query($reqSais, $_SESSION["readServer"]) or die(mysql_error());
+		if( ($valSais = mysql_fetch_array( $resSais )) && ($valSais["nbSais"] > 0)) {
+			$t[ $cptL ][] = popup("multi=3&mode=8&direct=2&pas=".urlencode($arrGateway["nbrez"]));
+			$t[ $cptL ][] = $valSais["nbSais"]."</a>";
+		}
+		else {
+			$t[ $cptL ][] = "" ;
+			$t[ $cptL ][] = "0" ;
+		}
+		
+		$cptL++;
+	}	
+	$toPrint = $t;
+	
+	if( $auMoinsUnRezo ) {
 		if( isset($_GET["tri"] ) )
 			$toPrint = trieTab($t,$_GET["tri"],$types );			
 		
 		printTab($toPrint,false,$tailles,true,true);
+	}
+	else
+		echo "<div align=center><b>".$l->g(42)."</b></div>";
 }
 else if( $_GET["mode"] == 4 ) {
 
@@ -389,6 +379,7 @@ else  if( $_GET["mode"] == 5 ) {
 	$_SESSION["query"] = $req ;
 	ShowResults($requete,true,false,false,false);
 }
+// Network analyze
 else  if( $_GET["mode"] == 3 ) {
 	
 	$tabBalises = Array("LABEL","UID","NETNAME","NETNUMBER");
@@ -583,10 +574,18 @@ else  if( $_GET["mode"] == 8 ) { // insertion network device
 		$resIp = mysql_query($reqIp, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		$valIp = mysql_fetch_array( $resIp );
 		unset($_SESSION["lastTri"]);
-		$reqNet = "INSERT INTO networks(deviceid, description, type, macaddr, ipaddress, ipsubnet, typemib) 
-		VALUES ('NETWORK_DEVICE-".addslashes($_POST["macaddr"])."','".addslashes($_POST["description"])."','".addslashes($_POST["type"])."','".addslashes($_POST["macaddr"])."'
-		,'".addslashes($valIp["ip"])."','".addslashes($valIp["netid"])."','".addslashes($_SESSION["loggeduser"])."');";
-		mysql_query($reqNet, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+		
+		if( checkNetwork(addslashes($_POST["macaddr"])) ) {
+			$reqNet = "INSERT INTO networks(deviceid, description, type, macaddr, ipaddress, ipsubnet, typemib) 
+			VALUES ('NETWORK_DEVICE-".addslashes($_POST["macaddr"])."','".addslashes($_POST["description"])."','".addslashes($_POST["type"])."','".addslashes($_POST["macaddr"])."'
+			,'".addslashes($valIp["ip"])."','".addslashes($valIp["netid"])."','$user');";
+			mysql_query($reqNet, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+			//GEND
+			AddLog("IPD_ADDDEVICE",$_POST["macaddr"]);	
+			//FGEND
+		}
+		else
+			echo "<br><center><font color=red><b>".$_POST["macaddr"]." ".$l->g(363)."</b></font></center><br>";
 	}
 	
 	if( isset($_GET["mac"]) ) {
@@ -877,9 +876,9 @@ function getMask( $ip ) {
 }
 
 function popup($val) {
-global $l,$nbpop;
-$nbpop++;
-return "<a href=\"index.php?popup=1&$val\" OnClick=\"window.open('index.php?popup=1&$val','popup$nbpop','location=0,status=0,scrollbars=1,menubar=0,resizable=1,width=1024,height=668');return false;\">";
+	global $l,$nbpop;
+	$nbpop++;
+	return "<a href=\"index.php?popup=1&$val\" OnClick=\"window.open('index.php?popup=1&$val','popup$nbpop','location=0,status=0,scrollbars=1,menubar=0,resizable=1,width=1024,height=668');return false;\">";
 }
 
 function getNameFromRes($nbrez) {
@@ -891,4 +890,9 @@ function getNameFromRes($nbrez) {
 	return "";
 }
 
+function checkNetwork($mac) {
+	$reqMac = "SELECT deviceid FROM networks WHERE macaddr='$mac'";
+	$resMac = mysql_query( $reqMac, $_SESSION["readServer"] ) or die(mysql_error(mysql_error($_SESSION["readServer"])));	
+	return( mysql_num_rows( $resMac ) == 0 );
+}
 ?>

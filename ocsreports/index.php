@@ -12,8 +12,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 
 // First installation checking
-if(   (!$fconf=@fopen("dbconfig.inc.php","r")) || (!function_exists('session_start')) || (!function_exists('xml_parser_create'))
-   || (!function_exists('mysql_connect'))      || (!function_exists('zip_read'))) {
+if( (!$fconf=@fopen("dbconfig.inc.php","r")) || (!function_exists('session_start')) || (!function_exists('mysql_connect'))) {
 	include('install.php');
 	die();
 }
@@ -59,24 +58,8 @@ if($_GET["page"])
 else if($_GET["multi"]!=6)
 	$_SESSION["pageCur"] = 1;
 
-if($_GET["supp"]) {
-		// netmap deletion		
-		if( strpos ( $_GET["supp"], "NETWORK_DEVICE-" ) === false ) {
-			$resNetm = @mysql_query("SELECT macaddr FROM networks WHERE deviceid='".$_GET["supp"]."'", $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
-			while( $valNetm = mysql_fetch_array($resNetm)) {
-				@mysql_query("DELETE FROM netmap WHERE mac='".$valNetm["macaddr"]."';");
-			}		
-		}
-		
-		$tables=Array("accesslog","accountinfo","bios","controllers","drives","hardware",
-		"inputs","memories","modems","monitors","networks","ports","printers","registry",
-		"slots","softwares","sounds","storages","videos","devices");	
-		
-		foreach ($tables as $table) {
-			@mysql_query("DELETE FROM $table WHERE deviceid='".$_GET["supp"]."';", $_SESSION["writeServer"]);		
-		}
-				
-		echo "<center><font color=red><b>".$_GET["supp"]." ".$l->g(220)."</b></font></center>";
+if($_GET["supp"] && $_GET["multi"] != 8) {
+		deleteDid($_GET["supp"]);
 }
 if( isset($_GET["cuaff"])) {
 		$_POST["lareq"]=$l->g(182);
@@ -192,4 +175,5 @@ function tab( $label, $multi, $lien=null ) {
 	echo "<td><a href='$llink'>
 	<b>&nbsp;&nbsp;{$label}&nbsp;&nbsp;</b></a></td>";
 }
+
 ?>

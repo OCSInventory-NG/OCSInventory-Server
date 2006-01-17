@@ -274,3 +274,8 @@
 368 du réseau
 369 Saisi par
 370 Déploiement
+371 Tous les composants de machine
+372 Choisissez les composants à afficher
+373 Utilisateur enregistré
+374 Société enregistrée
+375 Version Agent OCS NG

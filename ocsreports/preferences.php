@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 11/30/2005
+//Modified on 12/13/2005
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -26,7 +26,7 @@ if(isset($_GET["lang"])) {
 	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"]);
 }
 
-define("GUI_VER", "4010");
+define("GUI_VER", "4011");
 define("SADMIN", 1);
 define("LADMIN", 2);   
 define("ADMIN", 3);
@@ -40,7 +40,7 @@ $_SESSION["SERVER_WRITE"] = $_SESSION["SERVEUR_SQL"];
 define("DB_NAME", "ocsweb");
 //////////
 
-define("TAG_LBL", "TAG");
+define("TAG_LBL", "Tag");
 define("DEFAULT_LANGUAGE", "english" );
 
 $l = new FichierConf(getBrowserLang());
@@ -54,7 +54,7 @@ if(!isset($_SESSION["availFieldList"])) {
 	"h.workgroup"=>$l->g(33), "h.osversion"=>$l->g(275), "h.oscomments"=>$l->g(286), "h.processort"=>$l->g(350), "h.processorn"=>$l->g(351),
 	"h.swap"=>"Swap", "lastcome"=>$l->g(352), "h.quality"=>$l->g(353), "h.fidelity"=>$l->g(354),"h.description"=>$l->g(53), 
 	"h.wincompany"=>$l->g(355), "h.winowner"=>$l->g(356), "h.useragent"=>$l->g(357), "b.smanufacturer"=>$l->g(64),
-	"b.bmanufacturer"=>$l->g(284),"b.ssn"=>$l->g(36),"b.smodel"=>$l->g(65),"h.ipaddr"=>$l->g(34));
+	"b.bmanufacturer"=>$l->g(284),"b.ssn"=>$l->g(36),"b.smodel"=>$l->g(65),"b.bversion"=>$l->g(209),"h.ipaddr"=>$l->g(34));
 	
 	$reqCol = "SELECT * FROM accountinfo LIMIT 0,1";
 	$resCol = mysql_query($reqCol, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
@@ -366,7 +366,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			foreach($tabChamps as $chmp) // Affichage de toutes les valeurs résultats
 			{
 				echo "<td align='center'>";								
-				if($chmp==$l->g(12))
+				if($chmp==TAG_LBL)
 				{
 					$leCuPrec=$item->$chmp;					
 				}
@@ -386,7 +386,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					echo dateTimeFromMysql($item->$chmp)."</span></a></td>\n";				
 
 				else if(!$toutAffiche)
-					echo utf8_decode($item->$chmp)."</span></a></font></td>\n";
+					echo $item->$chmp."</span></a></font></td>\n";
 				
 			}
 			
@@ -490,13 +490,13 @@ function getBrowser() {
 
 function getBrowserLang() {
 	$bro = $_SERVER['HTTP_USER_AGENT'];
-	if( strpos ( $bro, "fr-") >= 0 ) {
+	if( strpos ( $bro, "; fr-") > 0 ) {
 		return "french";
 	}
-	else if( strpos ( $bro, "es-") >= 0 ) {
+	else if( strpos ( $bro, "; es-") > 0 ) {
 		return "spanish";
 	}
-	else if( strpos ( $bro, "pt-") >= 0 ) {
+	else if( strpos ( $bro, "; pt-") > 0 ) {
 		return "brazilian_portuguese";
 	}
 	return "english";
@@ -528,5 +528,54 @@ function printNavigation( $lesGets, $numPages) {
 			}
 		}
 		echo "</center><br>";
+}
+
+function deleteDid($did, $checkLock = true) {
+	global $l;
+	
+	if( ! $checkLock || lock($did) ) {
+		if( strpos ( $did, "NETWORK_DEVICE-" ) === false ) {
+			$resNetm = @mysql_query("SELECT macaddr FROM networks WHERE deviceid='$did'", $_SESSION["writeServer"]);
+			while( $valNetm = mysql_fetch_array($resNetm)) {
+				@mysql_query("DELETE FROM netmap WHERE mac='".$valNetm["macaddr"]."';");
+			}		
+		}
+		
+		$tables=Array("accesslog","accountinfo","bios","controllers","drives","hardware",
+		"inputs","memories","modems","monitors","networks","ports","printers","registry",
+		"slots","softwares","sounds","storages","videos","devices");	
+		
+		echo "<center><font color=red><b>$did ".$l->g(220)."</b></font></center>";
+		
+		foreach ($tables as $table) {
+			mysql_query("DELETE FROM $table WHERE deviceid='$did';", $_SESSION["writeServer"]);		
+		}
+		if( $checkLock ) 
+			unlock($did);
+	}
+	else
+		errlock();
+}
+
+function lock($did) {
+	//echo "<br><font color='red'><b>LOCK $did</b></font><br>";
+	$reqClean = "DELETE FROM locks WHERE unix_timestamp(since)<(unix_timestamp(NOW())-60)";
+	$resClean = mysql_query($reqClean, $_SESSION["writeServer"]);
+	
+	$reqLock = "INSERT INTO locks(deviceid) VALUES ('$did')";
+	if( $resLock = mysql_query($reqLock, $_SESSION["writeServer"]))
+		return( mysql_affected_rows ( $_SESSION["writeServer"] ) == 1 );
+	else return false;
+}
+
+function unlock($did) {
+	//echo "<br><font color='green'><b>UNLOCK $did</b></font><br>";
+	$reqLock = "DELETE FROM locks WHERE deviceid='$did'";
+	$resLock = mysql_query($reqLock, $_SESSION["writeServer"]);
+	return( mysql_affected_rows ( $_SESSION["writeServer"] ) == 1 );
+}
+
+function errlock() {
+	echo "<br><center><font color=red><b>".$l->g(371)."</b></font></center><br>";
 }
 ?>

@@ -31,10 +31,10 @@ include ('req.class.php');
 /**********************************************/
 	$lbl=$l->g(182);		//Nom de la requete
 	
-	$rqq="SELECT $selectH FROM hardware h, accountinfo a 
-	WHERE a.deviceid=h.deviceid  AND a.".TAG_NAME." = 'option0' $mesMachines";
-	$rqqc="SELECT COUNT(h.deviceid) FROM hardware h, accountinfo a 
-	WHERE a.deviceid=h.deviceid  AND a.".TAG_NAME." = 'option0' $mesMachines";	
+	$rqq="SELECT $selectH FROM hardware h, accountinfo a, bios b 
+	WHERE a.deviceid=h.deviceid AND b.deviceid=h.deviceid AND a.".TAG_NAME." = 'option0' $mesMachines";
+	$rqqc="SELECT COUNT(h.deviceid) FROM hardware h, accountinfo a, bios b
+	WHERE a.deviceid=h.deviceid AND b.deviceid=h.deviceid AND a.".TAG_NAME." = 'option0' $mesMachines";	
 		
 	// Commande SQL de la requete
 	$lblChmp[0]=TAG_LBL; // Nom du parametre 1

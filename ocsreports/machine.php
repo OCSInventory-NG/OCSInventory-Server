@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/01/2005
+//Modified on 12/13/2005
+
 if( isset($_GET["sessid"])){
 	session_id($_GET["sessid"]);
 	session_start();
@@ -71,7 +72,7 @@ echo "<table width='100%' border='0' bgcolor='#C7D9F5' style='border: solid thin
 echo "<table width='70%' align='center' border='0' bgcolor='#C7D9F5'>";
 echo "<tr>".$tdhd.$l->g(49).$tdhf.$tdhdpb.utf8_decode($item->NAME).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(33).$tdhf.$tdhdpb.utf8_decode($item->WORKGROUP).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(46).$tdhf.$tdhdpb.utf8_decode($item->LASTDATE).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(46).$tdhf.$tdhdpb.dateTimeFromMysql(utf8_decode($item->LASTDATE)).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(34).$tdhf.$tdhdpb.utf8_decode($item->IPADDR).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(24).$tdhf.$tdhdpb.utf8_decode($item->USERID).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(26).$tdhf.$tdhdpb.utf8_decode($item->MEMORY).$tdhfpb."</tr>";
@@ -498,7 +499,7 @@ function print_memories($systemid)
 {	
 	global $l, $td1, $td2, $td3, $td4;
 
-	$queryDetails  = "SELECT * FROM memories WHERE (DEVICEID='$systemid')";
+	$queryDetails  = "SELECT * FROM memories WHERE (DEVICEID='$systemid') ORDER BY capacity ASC";
 	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		
 	print_item_header($l->g(26));
@@ -508,7 +509,7 @@ function print_memories($systemid)
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr>";
 	echo "$td1 ".$l->g(80)."  </td>  $td1 ".$l->g(53)."  </td>  $td1 ".$l->g(83)." (MB)  </td> $td1 ".$l->g(283)."    </td>
-	      $td1 ".$l->g(66)."  </td>  $td1 ".$l->g(27)."  </td>  $td1 ".$l->g(94)."      </td> </tr>";
+	      $td1 ".$l->g(66)."  </td>  $td1 ".$l->g(268)."  </td>  $td1 ".$l->g(94)."      </td> </tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 11/29/2005
+//Modified on 12/13/2005
 	
 include("preferences.php");
 
@@ -49,7 +49,7 @@ function writeTab ($fich,$tab,$rgn=-1) {
 	global $toBeWritten;
 	$colnb = 0;
 	foreach($tab as $t) {
-			$toBeWritten .= utf8_decode($t);
+			$toBeWritten .= $t;
 
 		$toBeWritten .= ",";
 		$colnb++;

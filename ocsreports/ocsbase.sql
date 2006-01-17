@@ -26,8 +26,10 @@ CREATE TABLE hardware (
   WINOWNER VARCHAR(255) default NULL,
   WINPRODID VARCHAR(255) default NULL,
   USERAGENT VARCHAR(50) default NULL,
+  CHECKSUM VARCHAR(255) default NULL,
   PRIMARY KEY  (DEVICEID),
-  INDEX NAME (NAME)
+  INDEX NAME (NAME),
+  INDEX CHECKSUM (CHECKSUM)  
 ) ENGINE=MyISAM ;
 
 CREATE TABLE accesslog (
@@ -340,6 +342,31 @@ CREATE TABLE subnet (
   PRIMARY KEY (NETID)
 ) ENGINE=MyISAM ;
 
+CREATE TABLE locks(
+  DEVICEID VARCHAR(255) NOT NULL,
+  ID INTEGER DEFAULT NULL,
+  SINCE TIMESTAMP,
+  PRIMARY KEY(DEVICEID)
+);
+
+CREATE TABLE dico_cat(
+  NAME VARCHAR(255) NOT NULL,
+  PERMANENT TINYINT DEFAULT 0,
+  PRIMARY KEY(NAME)
+);
+
+CREATE TABLE dico_ignored(
+  EXTRACTED VARCHAR(255) NOT NULL,
+  PRIMARY KEY(EXTRACTED)
+);
+
+CREATE TABLE dico_soft( 
+  EXTRACTED VARCHAR(255) NOT NULL,
+  FORMATTED VARCHAR(255) NOT NULL,
+  PRIMARY KEY(EXTRACTED)
+);
+
+
 ALTER TABLE monitors ADD COLUMN SERIAL VARCHAR(255);
 ALTER TABLE netmap ADD COLUMN MASK VARCHAR(15);
 ALTER TABLE netmap ADD COLUMN NETID VARCHAR(15);
@@ -357,7 +384,7 @@ INSERT INTO `config` VALUES ('IPDISCOVER', 2, '', 'Max number of computers per g
 INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry query function');
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4010', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4011', 'Version of the installed GUI and database');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 

@@ -54,7 +54,7 @@ AND n1.macaddr <> '44:45:53:54:00:00'
 AND n1.macaddr <> '44:45:53:54:00:01'
 AND n1.macaddr <> '00:00:00:00:00:00'";
 
-$from="FROM accountinfo a,hardware h, bios b1, networks n1,";
+$from="FROM accountinfo a,hardware h, bios b1 LEFT OUTTER JOIN networks n1 on b1.deviceid=n1.deviceid,";
 
 $where="WHERE a.deviceid = h.deviceid
 AND b1.deviceid = h.deviceid
@@ -205,19 +205,6 @@ else {
 	echo "</table><br>";
 }
 
-function deleteDid($did) {
-	global $l;
-	$tables=Array("accesslog","accountinfo","bios","controllers","drives","hardware",
-	"inputs","memories","modems","monitors","networks","ports","printers","registry",
-	"slots","softwares","sounds","storages","videos","devices");	
-	echo "<center><font color=green>".$l->g(23).": $did ".$l->g(191)."</font></center>";	
-	
-	foreach ($tables as $table) {
-		mysql_query("DELETE FROM $table WHERE deviceid='$did';", $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));		
-	}
-
-}
-
 function fusionne($afus) {
 	global $l;
 	$i=0;
@@ -237,21 +224,37 @@ function fusionne($afus) {
 		}		
 		$i++;
 	}
-	if($afus[$minInd]["deviceid"]!="") {	
-		$reqDelAccount = "DELETE FROM accountinfo WHERE deviceid='".$afus[$maxInd]["deviceid"]."'";
-		mysql_query($reqDelAccount, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
-		echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
-		$reqRecupAccount = "UPDATE accountinfo SET deviceid='".$afus[$maxInd]["deviceid"]."' WHERE deviceid='".$afus[$minInd]["deviceid"]."'";
-		mysql_query($reqRecupAccount, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
-		//echo $reqRecupAccount;
-		echo "<center><font color=green>".$l->g(190)." ".$afus[$minInd]["deviceid"]." ".$l->g(206)." ".$afus[$maxInd]["deviceid"]."</font></center>";
-		$i=0;
+	if($afus[$minInd]["deviceid"]!="") {
+		$okLock = true;
 		foreach($afus as $a) {
-			if($i != $maxInd) {
-				deleteDid($a["deviceid"]);
-			}			
-			$i++;
+			if( ! $okLock = ($okLock && lock($a["deviceid"])) )
+				break;
+			else
+				$locked[] = $a["deviceid"];
 		}
+		
+		if( $okLock ) {
+			$reqDelAccount = "DELETE FROM accountinfo WHERE deviceid='".$afus[$maxInd]["deviceid"]."'";
+			mysql_query($reqDelAccount, $_SESSION["writeServer"]);
+			echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
+			$reqRecupAccount = "UPDATE accountinfo SET deviceid='".$afus[$maxInd]["deviceid"]."' WHERE deviceid='".$afus[$minInd]["deviceid"]."'";
+			mysql_query($reqRecupAccount, $_SESSION["writeServer"]);
+			//echo $reqRecupAccount;
+			echo "<center><font color=green>".$l->g(190)." ".$afus[$minInd]["deviceid"]." ".$l->g(206)." ".$afus[$maxInd]["deviceid"]."</font></center><br>";
+			$i=0;
+			foreach($afus as $a) {
+				if($i != $maxInd) {
+					deleteDid($a["deviceid"], false);
+				}			
+				$i++;
+			}
+		}
+		else
+			errlock();
+		
+		foreach($locked as $a) {
+			unlock($a);	
+		}		
 	}
 }
 

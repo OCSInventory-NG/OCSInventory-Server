@@ -8,14 +8,15 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 07/12/2005
+//Modified on 12/14/2005
 
 	printEnTete($l->g(9));
 	if( !isset($_SESSION["optCol"]) ) {
 		$reqCol = "SELECT * FROM accountinfo LIMIT 0,1";
 		$resCol = mysql_query($reqCol, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		while($colname=mysql_fetch_field($resCol))
-			$_SESSION["optCol"][] = $colname->name;	
+			if( $colname->name != TAG_NAME )
+				$_SESSION["optCol"][] = $colname->name;	
 	}	
 	
 	include("req.class.php");
@@ -44,7 +45,7 @@
 		for($i=0;$i<$_POST["max"];$i++)	{				
 
 			$_SESSION["reqs"][ urldecode($_POST["lbl_".$i]) ] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i], 
-			$_POST["val_".$i], $_POST["val2_".$i], $_POST["valreg_".$i] ); 
+			strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] ); 
 							
 			if(!isset($_POST["act_".$i]))
 				continue;
@@ -131,6 +132,7 @@
 				{
 					case "ssn": $laRequete.="b.ssn";break;
 					case "bmanufacturer": $laRequete.="b.bmanufacturer";break;
+					case "bversion": $laRequete.="b.bversion";break;
 					case "smanufacturer": $laRequete.="b.smanufacturer";break;
 					case "smodel": $laRequete.="b.smodel";break;
 					case "ipmask": $laRequete.="n.deviceid=h.deviceid AND n.ipmask";break;
@@ -169,13 +171,8 @@
 				
 				switch($_POST["ega_".$i])
 				{
-					case $l->g(129): 
-						if(!$forceEgal)
-							$laRequete.=" LIKE ";
-						else
-							$laRequete.=" = ";
-							break;
-					case $l->g(130): $laRequete.="<>";break;					
+					case $l->g(129): $laRequete.=" LIKE ";$forceLike=true; break;						
+					case $l->g(130): $laRequete.=" NOT LIKE ";$forceLike=true; break;					
 					case $l->g(346):
 					case $l->g(201): $laRequete.="<";break;
 					case $l->g(347):
@@ -184,12 +181,10 @@
 					//case $l->g(204): $laRequete.=">'".$_POST["val2_".$i]."' OR h.".$_POST["chm_".$i]."<";break;
 					default: $laRequete.=" LIKE "; $forceLike=true;break;
 				}
-				
-				if( ($_POST["ega_".$i]==$l->g(129) || $forceLike) && !$forceEgal)
-					$laRequete.="'%".$_POST["val_".$i]."%'";
+				if( $forceEgal || !$forceLike )
+					$laRequete.="'".$_POST["val_".$i]."'";	
 				else
-					$laRequete.="'".$_POST["val_".$i]."'";		
-				
+					$laRequete.="'%".$_POST["val_".$i]."%'";				
 			}			
 		}
 		
@@ -250,7 +245,7 @@
 
 $optArray = array($l->g(34), $l->g(33), $l->g(20)." (1)", $l->g(20)." (2)", $l->g(26), $l->g(35),
 $l->g(36), $l->g(207), $l->g(25), $l->g(24), $l->g(27), $l->g(65), $l->g(284), $l->g(64), $l->g(359), 
-TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331));
+TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331),$l->g(209));
 
 $optArray  = array_merge( $optArray, $_SESSION["optCol"]);
 sort($optArray);
@@ -258,7 +253,7 @@ $countHl++;
 echo "<option".($countHl%2==1?" class='hi'":"").">".$l->g(32)."</option>"; $countHl++;
 
 foreach( $optArray as $val) {
-	if( !in_array($val,$_SESSION["OPT"]) && $val!="TAG" && $val!="DEVICEID") {
+	if( !in_array($val,$_SESSION["OPT"]) && $val!="DEVICEID") {
 		$countHl++;
 		echo "<option".($countHl%2==1?" class='hi'":"").">$val</option>";
 	}
@@ -297,6 +292,7 @@ if($_SESSION["OPT"]!=0)
 	$ligne[] = array( $l->g(27),"processors","hardware","",2,3,"MHZ");
 	$ligne[] = array( $l->g(257),"regname","hardware","SELECT DISTINCT(name) FROM registry",1,6);	
 	$ligne[] = array( $l->g(359),"smonitor","hardware","",2,1);
+	$ligne[] = array( $l->g(209),"bversion","bios","",2,1);
 
 	$ligne[] = array( TAG_LBL,"cu","accountinfo","",2,1);
 
@@ -415,7 +411,7 @@ function afficheLigne($ligne)
 			echo "<input READONLY ".dateOnClick("val$suff","act$suff")." OnClick='act$suff.checked=true' name='val$suff' id='val$suff' value='"./*dateFromMysql(*/$_SESSION["reqs"][$label][3]/*)*/."'>".datePick("val$suff","act$suff");
 		}
 		else
-			echo "<input OnClick='act$suff.checked=true' name='val$suff' value='".$_SESSION["reqs"][$label][3]."'>";
+			echo "<input OnClick='act$suff.checked=true' name='val$suff' value=\"".stripslashes($_SESSION["reqs"][$label][3])."\">";
 		
 		if ($type==3) // deux inputs pour "entre machin et truc"
 		{

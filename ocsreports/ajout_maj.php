@@ -74,9 +74,13 @@ function MAJ_Inventory($systemid)
 	$requeteSQL = substr($requeteSQL,0,strlen($requeteSQL)-1);
 	$requeteSQL.=" WHERE deviceid='$systemid'";
 	// Exécution de la requête SQL
-	
-	$resultat = mysql_query( $requeteSQL, $_SESSION["writeServer"] ) or die(mysql_error($_SESSION["writeServer"]));
-	
+	if( lock($systemid) ) {
+		$resultat = mysql_query( $requeteSQL, $_SESSION["writeServer"] );
+		unlock($systemid);
+	}
+	else
+		errlock();
+		
 	return;
 }
 

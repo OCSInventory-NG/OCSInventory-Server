@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 11/25/2005
+//Modified on 12/13/2005
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -28,6 +28,11 @@ if(isset($_GET["logout"])) {
 	foreach( $_SESSION as $key=>$val) {		
 		unset($_SESSION[$key]);
 	}
+}
+
+if( isset($_GET["first"] )) {
+	unset( $_SESSION["lareq"] );
+	unset( $_SESSION["lareqpages"] );
 }
 
 ?>
@@ -68,8 +73,8 @@ if( !isset($_GET["popup"] )) {
 ?>
 <table class='headfoot' border='0'>
 <tr height=25px>
-	<td><img src='image/logo OCS-ng-48.png'></td>
-	<td align='center' width='33%'><img src=image/banner-ocs.png></td><td width='33%' align='right'>
+	<td><a href='index.php?first'><img src='image/logo OCS-ng-48.png'></a></td>
+	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
 	<b>Ver. <?=GUI_VER?>&nbsp&nbsp&nbsp;</b>	
 <?
 	}

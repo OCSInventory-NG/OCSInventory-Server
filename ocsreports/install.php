@@ -47,18 +47,16 @@ if(!function_exists('session_start')) {
 }
 
 if(!function_exists('xml_parser_create')) {	
-	echo "<br><center><font color=red><b>ERROR: XML for PHP is not properly installed.</b></font></center>";
-	die();
+	echo "<br><center><font color=orange><b>WARNING: XML for PHP is not properly installed, you will not be able to use ipdiscover-util.</b></font></center>";
 }
 
 if(!function_exists('mysql_connect')) {	
-	echo "<br><center><font color=red><b>ERROR: MySql for PHP is not properly installed.<br>If you already installed MySql, try uncommenting \";extension=php_zip.so\" (linux) or \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini.</b></font></center>";
+	echo "<br><center><font color=red><b>ERROR: MySql for PHP is not properly installed.<br>Try installing mysql for php package (Debian: php4-mysql)</b></font></center>";
 	die();
 }
 
 if(!function_exists('zip_read')) {	
-	echo "<br><center><font color=red><b>ERROR: Zip for PHP is not properly installed.<br>Try uncommenting \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-zip package (Linux).</b></font></center>";
-	die();
+	echo "<br><center><font color=orange><b>WARNING: Zip for PHP is not properly installed.<br>You will not be able to upload windows agents<br>Try uncommenting \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-zip package (Debian).</b></font></center>";
 }
 
 include ('fichierConf.class.php');

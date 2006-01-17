@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/02/2005
+//Modified on 12/07/2005
 include("preferences.php");
 
 if($_GET["o"]&&$_GET["v"]&&$_GET["n"]&&$_GET["dl"])
