@@ -54,7 +54,7 @@ AND n1.macaddr <> '44:45:53:54:00:00'
 AND n1.macaddr <> '44:45:53:54:00:01'
 AND n1.macaddr <> '00:00:00:00:00:00'";
 
-$from="FROM accountinfo a,hardware h, bios b1 LEFT OUTTER JOIN networks n1 on b1.deviceid=n1.deviceid,";
+$from="FROM accountinfo a,hardware h, bios b1 LEFT OUTER JOIN networks n1 on b1.deviceid=n1.deviceid,";
 
 $where="WHERE a.deviceid = h.deviceid
 AND b1.deviceid = h.deviceid
