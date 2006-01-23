@@ -580,9 +580,6 @@ else  if( $_GET["mode"] == 8 ) { // insertion network device
 			VALUES ('NETWORK_DEVICE-".addslashes($_POST["macaddr"])."','".addslashes($_POST["description"])."','".addslashes($_POST["type"])."','".addslashes($_POST["macaddr"])."'
 			,'".addslashes($valIp["ip"])."','".addslashes($valIp["netid"])."','$user');";
 			mysql_query($reqNet, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
-			//GEND
-			AddLog("IPD_ADDDEVICE",$_POST["macaddr"]);	
-			//FGEND
 		}
 		else
 			echo "<br><center><font color=red><b>".$_POST["macaddr"]." ".$l->g(363)."</b></font></center><br>";
