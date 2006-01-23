@@ -143,7 +143,7 @@ if( isset($_GET["cat"]) ) {
 	
 	$printNbr = $valCount["nb"] == 0 ? "<font color='red'>VIDE</font>" : $valCount["nb"];
 	printEnTete("Catégorie $laCat ( $printNbr )");
-	echo "<br><center>$pcParPageHtml&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='index.php?multi=14&oldv=1'><= Liste catégories</a></center><br>";	
+	echo "<br><center>$pcParPageHtml&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='index.php?multi=14&oldv=1'><= ".$l->g(398)."</a></center><br>";	
 	
 	if( $valCount["nb"] > 0 ) {
 		$resLog = mysql_query($reqLog, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
@@ -151,9 +151,9 @@ if( isset($_GET["cat"]) ) {
 		echo "<table width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 		echo "<tr height='20px'>";
 		
-		if( $laCat == "NEW" ) echo "<td align='center' width='10%'><b><a href='?$link&order=1'>Nombre</a></b></font></td>";
-		echo "<td align='center' width='70%'><b>".( $laCat=="NEW" ? "<a href='?$link&order=2'>" : "" )."Nom du logiciel".( $laCat=="NEW" ? "</a>" : "")."</b></font></td><td align='center' width='10%'>
-		<b><a href=# OnClick='actForm(\"checked\",\"true\")'>La page</a>/<a href=# OnClick='actForm(\"checked\",\"false\")'>Rien</a></b></font></td></tr>";
+		if( $laCat == "NEW" ) echo "<td align='center' width='10%'><b><a href='?$link&order=1'>".$l->g(381)."</a></b></font></td>";
+		echo "<td align='center' width='70%'><b>".( $laCat=="NEW" ? "<a href='?$link&order=2'>" : "" ).$l->g(382).( $laCat=="NEW" ? "</a>" : "")."</b></font></td><td align='center' width='10%'>
+		<b><a href=# OnClick='actForm(\"checked\",\"true\")'>".$l->g(383)."</a>/<a href=# OnClick='actForm(\"checked\",\"false\")'>".$l->g(389)."</a></b></font></td></tr>";
 
 		$ligne = 0;
 		$optList = comboCat($laCat, $lastCat);				
@@ -170,8 +170,8 @@ if( isset($_GET["cat"]) ) {
 		//if( $laCat == "NEW" ) echo "<td>&nbsp;</td>";		
 		echo "<td align='right' colspan='4'>
 		<input name='all' id='all' type='checkbox' OnClick='actForm(\"disabled\",document.getElementById(\"all\").checked)'>
-		TOUT déplacer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vers nouvelle catégorie:</font>&nbsp;
-		<input name='inputcat'>&nbsp;<b>OU</b> vers une catégorie existante:</font>&nbsp;$optList
+		".$l->g(384)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$l->g(385).":</font>&nbsp;
+		<input name='inputcat'>&nbsp;<b>".$l->g(386)."</b> ".$l->g(387).":</font>&nbsp;$optList
 		<input type='Submit'></td></tr></table></form>";
 	}
 	
@@ -182,11 +182,12 @@ if( isset($_GET["cat"]) ) {
 	<input type='hidden' name='order' value='".$_GET["order"]."'>
 	<input type='hidden' name='multi' value='14'>
 	<input name='search' id='search' value='".$_GET["search"]."'>
-	<input type='Submit' value='Rechercher'><input type='Submit' OnClick='document.getElementById(\"search\").value=\"\"' value='Reset'></form></td>";
+	<input type='Submit' value='".$l->g(393)."'><input type='Submit' OnClick='document.getElementById(\"search\").value=\"\"' value='".$l->g(396)."'></form></td>";
 		
 	$maxPgeNumber = ceil($valCount["nb"]/$pgSize);	
 	if( $maxPgeNumber > 1 ){
-		echo "<td align='center'>".allerA()."</td>";
+		echo "<td align='center'>"."<form name='allera' method='post' action='index.php?multi=14'>".$l->g(397).":</font>"
+		        .comboCat( isset($_GET["cat"])?$_GET["cat"]:"","","alleracat")."<input type='submit'></form></td>";
 		$link = "<a href=\"?$link&rg=";
 		$min = 0;
 		$prev = $rg - $pgSize < 0 ? 0 : $rg - $pgSize ;
@@ -204,7 +205,8 @@ if( isset($_GET["cat"]) ) {
 		echo "<td align='left'>{$linkLast}</td><td align='left'>{$linkNext}</td>";
 	}
 	else
-		echo "<td align='right'>".allerA()."</td>";
+		echo "<td align='right'>"."<form name='allera' method='post' action='index.php?multi=14'>".$l->g(397).":</font>"
+		        .comboCat( isset($_GET["cat"])?$_GET["cat"]:"","","alleracat")."<input type='submit'></form></td>";
 	echo "</tr></table>";
 }
 else {
@@ -224,13 +226,13 @@ else {
 	// multi category search
 	if( isset($_GET["all"]) && $_GET["search"]!="" ) {
 		$link .= "&all=1";
-		echo "<br><form name='reass' method='POST' action='?$link'><br><center><a href='index.php?multi=14'><= Liste catégories</a></center><br><table width='90%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
+		echo "<br><form name='reass' method='POST' action='?$link'><br><center><a href='index.php?multi=14'><= ".$l->g(398)."</a></center><br><table width='90%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 		$li = 0;
 		$resLog = mysql_query($reqLog, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));		
 		$resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		$valCount = mysql_fetch_array($resCount);
 		
-		printLigne(array("<b>Nom du logiciel</b>","<b>Categorie</b>","<b><a href=# OnClick='actForm(\"checked\",\"true\")'>La page</a>/<a href=# OnClick='actForm(\"checked\",\"false\")'>Rien</a></b>"));
+		printLigne(array("<b>".$l->g(382)."</b>","<b>".$l->g(388)."</b>","<b><a href=# OnClick='actForm(\"checked\",\"true\")'>".$l->g(383)."</a>/<a href=# OnClick='actForm(\"checked\",\"false\")'>".$l->g(389)."</a></b>"));
 		$nb = 0;
 		while( $leLog = mysql_fetch_array($resLog) ) {
 			$extracted = $leLog["extracted"];
@@ -263,13 +265,13 @@ else {
 			$optList = comboCat($laCat, $lastCat);
 			echo "<tr height='30px' bgcolor='#FFFFFF'><td align='right' colspan='4'>
 			<input name='all' id='all' type='checkbox' OnClick='actForm(\"disabled\",document.getElementById(\"all\").checked)'>
-			TOUT déplacer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vers nouvelle catégorie:</font>&nbsp;
-			<input name='inputcat'>&nbsp;<b>OU</b> vers une catégorie existante:</font>&nbsp;$optList
+			".$l->g(384)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$l->g(385).":</font>&nbsp;
+			<input name='inputcat'>&nbsp;<b>".$l->g(386)."</b> ".$l->g(387).":</font>&nbsp;$optList
 			<input type='Submit'></td></tr></table></form>";
 		}
 	}
 	else {		
-		printEnTete("Catégories du dictionnaire");
+		printEnTete($l->g(390));
 		
 		if( isset($_GET["search"]) && $_GET["search"] != "" ) {
 			$cond = "AND formatted LIKE '%".$_GET["search"]."%'";
@@ -282,7 +284,7 @@ else {
 		$resCat = mysql_query($reqCat, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		echo "<table width='60%' border='0' align='center'><td align='center' width='33%'><a href='?multi=14&cat=NEW'><b><u>NEW</u></b></a></td><td align='center' width='33%'><a href='?multi=14&cat=IGNORED'><b><u>IGNORED</u></b></a></td><td align='center' width='33%'><a href='?multi=14&cat=UNCHANGED'><b><u>UNCHANGED</u></b></a></td></table>";
 		echo "<br><table width='60%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
-		echo "<tr height='20px'><td align='center' width='70%'><b>Nom de la catégorie</b></font></td><td align='center' width='15%'><b>Nombre</b></font></td><td align='center' width='15%'><b>Supprimer</b></font></td></tr>";
+		echo "<tr height='20px'><td align='center' width='70%'><b>".$l->g(391)."</b></font></td><td align='center' width='15%'><b>".$l->g(381)."</b></font></td><td align='center' width='15%'><b>".$l->g(392)."</b></font></td></tr>";
 		$ligne = 0;
 		$reqNew = "SELECT COUNT(DISTINCT(name)) as nbNew FROM softwares WHERE name NOT IN (SELECT DISTINCT(extracted) FROM dico_soft) LIMIT 0,1";
 		
@@ -302,7 +304,7 @@ else {
 	<form action='' method='get' name='formrech'>
 	<input type='hidden' name='multi' value='14'>
 	<input name='search' id='search' value='".$_GET["search"]."'>
-	<input type='Submit' value='Rechercher catégorie'><input type='Submit' name='all' value='Rechercher logiciel partout'><input type='Submit' OnClick='document.getElementById(\"search\").value=\"\"' value='Reset'></form></td>";
+	<input type='Submit' value='".$l->g(394)."'><input type='Submit' name='all' value='".$l->g(395)."'><input type='Submit' OnClick='document.getElementById(\"search\").value=\"\"' value='".$l->g(396)."'></form></td>";
 	
 	$maxPgeNumber = ceil($valCount["nb"]/$pgSize);	
 	if( $maxPgeNumber > 1 ){
@@ -325,10 +327,10 @@ else {
 	echo "</tr></table>";
 }
 
-function allerA() {
-	return "<form name='allera' method='post' action='index.php?multi=14'>Aller a la catégorie:</font>"
+/*function allerA() {
+	return "<form name='allera' method='post' action='index.php?multi=14'>".$l->g(397).":</font>"
 	.comboCat( isset($_GET["cat"])?$_GET["cat"]:"","","alleracat")."<input type='submit'></form>";
-}
+}*/
 
 function comboCat( $saufCat="", $lastCat="",$name='combocat' ) {
 	

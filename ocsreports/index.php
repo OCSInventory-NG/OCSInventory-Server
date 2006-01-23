@@ -108,7 +108,7 @@ if(!$_SESSION["first"]||!$_POST["lareq"]) {
 				tab($l->g(174), 3);
  
 			if( @stat("dico.php"))
-				tab("Dictionnaire",14);
+				tab($l->g(380),14);
 			
 			tab($l->g(17) , 8);
 			tab($l->g(107), 4);

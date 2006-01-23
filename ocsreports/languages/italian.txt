@@ -1,0 +1,298 @@
+2 Tutti i computers
+3 Computers con software...
+5 Apparati di cui sono responsabile
+9 Ricerca varia
+12 Valore etichetta
+13 Invia
+17 Agente
+19 Versione software
+20 Software
+23 Computer
+24 Utente
+25 Sistema Operativo
+26 Memoria
+27 Velocita CPU (MHz)
+28 Numero di macchine
+30 Ricerca
+31 Scegli un parametro
+32 Scelta
+33 Dominio
+34 Indirizzo IP
+35 Nome Computer
+36 Numero di Serie
+41 Reset
+42 Non ci sono risultati
+43 Menù principale
+46 Ultimo inventario
+48 Dettagli Computer
+49 Nome
+50 Scambio
+51 Commenti
+53 Descrizione 
+54 Processori
+55 Numero
+56 Dati Informativi
+61 Scheda Video
+62 Risoluzione
+63 Unità di memorizzazione
+64 Fabbricante
+65 Modello
+66 Tipo
+67 Capacità disco
+69 Editor
+70 Utilizzo
+79 Stampanti
+80 Didascalia
+81 Stato
+82 Reti
+83 Capacità
+84 Interfaccia
+85 Lettera
+86 File system
+87 Totale
+88 Libero
+90 Risultato
+91 Dispositivi di input
+92 Dischi
+93 Controllore
+94 Slot number
+95 MAC address
+96 Suono
+97 Monitor(s)
+98 Attenzione, si possono selezionare solo 8 opzioni !
+99 Dettagli del Computer
+103 Aggiorna
+107 Configurazione
+108 Richiesta registro
+111 Licenza Windows
+113 Cancella
+114 Registra
+115 Aggiorna
+116 Aggiungi
+117 Registro
+119 Vuoi veramente cancellare l'ID n° 
+122 Cancella
+129 UGUALE
+130 DIFFERENTE
+134 Aggiungi un nuovo file nel database
+135 Attenzione, si sta per effettuare una cancellazione DEFINITIVA !
+136 Scarica
+137 File
+168 Il formato del file non è valido (deve essere zip, pl o unix binario)
+170 Il file è già esistente !
+171 File cancellato
+172 Errore, il file
+173 non è stato aggiunto al database
+174 Sicurezza
+175 Duplicati
+176 Ips
+177 Unisci i computers duplicati
+178 Etichetta / Numero di ripartizione PC
+180 Utente non registrato
+182 I Computers hanno un'etichetta assegnata
+183 Scarica
+184 Questo file non contiene \"use constant version\"
+185 La versione deve essre maggiore della 1
+186 Il file non contiene la versione
+187 Questo non è un file zip valido
+188 Indietro
+189 Bisogna selezionare almeno 2 computers 
+190 Resoconto:
+191 cancellato
+192 Sommario duplicazioni
+193 Nome computer + Numero di serie
+194 Nome computer + Mac address
+195 Mac address + Numero di serie
+196 Solo nome computer
+197 Solo numero di serie
+198 Solo Mac address
+199 Duplicazione
+200 Corresponding relay decremented
+201 MINORE DI
+202 MAGGIORE DI
+203 TRA
+204 AL DI FUORI
+205 Abilitato
+206 Salvato da
+207 Gateway
+208 mask
+209 Versione BIOS
+210 Data BIOS
+211 Registro
+212 Nome chiave
+213 Valore chiave
+214 Stampa la pagina corrente
+215 Mostra tutto
+216 Password ERRATA
+217 Password
+218 Versione Agente
+219 Interfacce di rete non inventariate
+220 cancellato
+221 Acquisizione indirizzi IP dei computers
+222 ATTENZIONE ! Tutti i computers selezionati saranno unificati in un singolo computer ! SEI SICURO ?
+223 Informazioni
+224 Valore
+225 Informazioni amministrative
+226 è stato cancellato dalla tabella delle informazioni amministrative
+227 Sei sicuro di voler cancellare la colonna
+228 Insirisci la nuova informazione
+229 Testo (255)
+230 Numero
+231 Reale
+232 Data
+233 Tipo attuale
+234 è stato inserito con successo
+235 Utenti
+236 Cambio password
+237 Nuova password
+238 Conferma
+239 Bisogna riempire ogni campo
+240 Le password sono differenti
+241 La password è stata modificata con successo
+242 Amministratore
+243 Utente
+244 Aggiungi un nuovo utente
+245 è stato cancellato con successo
+246 Sei sicuro di voler cancellare l'utente
+247 MySql Utente
+248 MySql password
+249 Impossibile connettersi a MySql. Inserire un utente e una password validi.
+250 MySql NomeServer
+251 Uscita
+252 Nome (scelto)        	
+253 Contenitore registro	
+254 Percorso della chiave (Es: SOFTWARE\Mozilla)  	
+255 Nome della chiave che si vuole leggere (* per tutte)
+256 Scelta
+257 Chiave registro
+258 Valore chiave registro
+259 Errore, il dato non può essere inserito (i caratteri speciali non sono ammessi)
+260 La descrizione del file è stata modificata con successo
+261 La descizione del file è stata cancellata con successo
+262 Tipo nell'etichetta
+263 Configurazione del file delle etichette
+264 Non esiste nessun file delle etichette
+265 Qualsiasi
+266 Data non valida
+267 gg/mm/aaaa
+268 Velocità
+269 %m/%d/%Y
+270 Modem(s)
+271 Slot(s)
+272 Porte
+273 BIOS
+274 Name Sistema Operativo
+275 Versione Sistema Operativo
+276 Chipset
+277 Versione
+278 Driver
+279 Porta
+280 Tipo MIB 
+281 Indirizzo DHCP IP
+282 Gateways
+283 Scopo
+284 Costruttore BIOS
+285 Selezionare un parametro da modificare
+286 Service pack
+287 Local import
+288 Local Importation
+289 Informazione di rete
+290 Ricerca indirizzi Ip
+291 Modalità esportazione
+292 Aggiungi / Cancella un'unità di rete
+293 Tipi di unità di rete
+294 Nomi subnets di rete
+295 Localizzazione
+296 Uid
+297 Non è possibile scrivere nella cartella
+298 Tutti i campi devono essere riempiti
+299 Indirizzo IP errato (deve essere: x.x.x.x)
+300 Maschera errata (deve essere: x.x.x.x or xx)
+301 La nuova rete è stata inserita
+302 La rete è stata cancellata
+303 Aggiungi una subnet
+304 Nome rete
+305 Uid
+306 Elenco Subnet
+307 Aggiungi un tipo
+308 Nome tipo
+309 Tipi apparati di rete
+310 IpDiscover minore di
+311 Apparati
+312 IpDiscover
+313 Gateway computers
+314 IpDiscover gateway computers
+315 Computers non inventariati
+316 Subnet
+317 ANALIZZA
+318 Nome DNS
+319 Risultati dell'analisi di rete
+320 Questa analisi è già stata eseguita
+321 vuoi vedere le informazioni memorizzate ?
+322 Informazioni memorizzate
+323 generate da
+324 APPARATI ANALIZZATI COME
+325 vuoto
+326 non è stata inserita la maschera
+327 Dettagli Computer
+328 Ricercati
+329 Inventariati
+330 Nome NetBIOS
+331 Numero di Rete
+332 Attendere prego...
+333 Aggiungi un nuovo apparato
+334 Elenco apparati
+335 Tipo apparato
+336 Descrizione apparato
+337 IL PROGRAMMA NON HA INVIATO NULLA
+338 Modalità limitata
+339 Serve ipdiscover-util.pl (solo Linux ) in modalità esperta
+340 Visualizza
+340 Righe
+341 Non è possibile eseguire, bisogna inserire i diritti di esecuzione
+342 Bisogna avere i diritti di scrittura sulla cartella root per usarlo
+344 Errore
+345 L'ANALISI E' ANCORA IN ESECUZIONE, RIPROVARE TRA QUALCHE MINUTO
+346 PRIMA
+347 DOPO
+348 Utente Windows
+349 Aggiungi Colonna
+350 Tipo processore
+351 Numero processori
+352 Ultimo inserito
+353 Qualità
+354 Fedeltà
+355 Società
+356 Proprietario
+357 Utente agente
+358 Jolli: ? (un carattere), * (diversi caratteri)
+359 Numero di serie del Monitor
+360 Costruite nel (settimana/anno)
+362 La rete
+363 esiste già
+364 Inventariato
+365 Non- inventariato
+366 Identificato
+367 Apparati di rete
+368 di rete
+369 Eseguito da
+370 Distibuito
+380 Dictionnary
+381 Number
+382 Software name
+383 The page
+384 Move ALL
+385 to a new category
+386 OR
+387 to an existing category
+388 Category
+389 Nothing
+390 Dictionnary categories
+391 Category name
+392 Delete
+393 Search
+394 Search Category
+395 Search software EVERYWHERE
+396 Reset
+397 Go to the category
+398 Categories list

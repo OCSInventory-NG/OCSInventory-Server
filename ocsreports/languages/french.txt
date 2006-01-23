@@ -279,3 +279,25 @@
 373 Utilisateur enregistré
 374 Société enregistrée
 375 Version Agent OCS NG
+
+380 Dictionnaire
+381 Nombre
+382 Nom du logiciel
+383 La page 
+384 TOUT deplacer
+385 Vers une nouvelle categorie
+386 OU
+387 Vers une categorie existante
+388 Categorie
+389 Rien
+390 Categories du dictionnaire
+391 Nom categorie
+392 Supprimer
+393 Chercher
+394 Chercher categorie
+395 Chercher logiciel PARTOUT
+396 Reset
+397 Aller a la categorie
+398 Liste des categories
+
+

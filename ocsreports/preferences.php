@@ -26,7 +26,7 @@ if(isset($_GET["lang"])) {
 	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"]);
 }
 
-define("GUI_VER", "4011");
+define("GUI_VER", "4012");
 define("SADMIN", 1);
 define("LADMIN", 2);   
 define("ADMIN", 3);
