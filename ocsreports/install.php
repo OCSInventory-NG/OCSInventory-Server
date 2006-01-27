@@ -56,7 +56,7 @@ if(!function_exists('mysql_connect')) {
 }
 
 if(!function_exists('zip_read')) {	
-	echo "<br><center><font color=orange><b>WARNING: Zip for PHP is not properly installed.<br>You will not be able to upload windows agents<br>Try uncommenting \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-zip package (Debian).</b></font></center>";
+	echo "<br><center><font color=orange><b>WARNING: Zip for PHP is not properly installed.<br>You will not be able to upload windows agents<br>Try uncommenting \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-zip package (Linux).</b></font></center>";
 }
 
 include ('fichierConf.class.php');
