@@ -349,25 +349,31 @@ CREATE TABLE locks(
   SINCE TIMESTAMP,
   PRIMARY KEY(DEVICEID),
   INDEX SINCE (SINCE)
-);
+) ENGINE=MyISAM ;
 
 CREATE TABLE dico_cat(
   NAME VARCHAR(255) NOT NULL,
   PERMANENT TINYINT DEFAULT 0,
   PRIMARY KEY(NAME)
-);
+) ENGINE=MyISAM ;
 
 CREATE TABLE dico_ignored(
   EXTRACTED VARCHAR(255) NOT NULL,
   PRIMARY KEY(EXTRACTED)
-);
+) ENGINE=MyISAM ;
 
 CREATE TABLE dico_soft( 
   EXTRACTED VARCHAR(255) NOT NULL,
   FORMATTED VARCHAR(255) NOT NULL,
   PRIMARY KEY(EXTRACTED)
-);
+) ENGINE=MyISAM ;
 
+CREATE TABLE deleted_equiv(
+  DATE TIMESTAMP, 
+  DELETED VARCHAR(255) NOT NULL,
+  EQUIVALENT VARCHAR(255) default NULL,
+  PRIMARY KEY(DELETED)
+) ENGINE=MyISAM ;
 
 ALTER TABLE monitors ADD COLUMN SERIAL VARCHAR(255);
 ALTER TABLE netmap ADD COLUMN MASK VARCHAR(15);
@@ -390,6 +396,7 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4012', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activate by GLPI)');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
