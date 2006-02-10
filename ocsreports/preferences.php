@@ -41,9 +41,9 @@ define("DB_NAME", "ocsweb");
 //////////
 
 define("TAG_LBL", "Tag");
-define("DEFAULT_LANGUAGE", "english" );
+define("DEFAULT_LANGUAGE", "" );
 
-$l = new FichierConf(getBrowserLang());
+$l = new FichierConf(DEFAULT_LANGUAGE?DEFAULT_LANGUAGE:getBrowserLang());
 dbconnect();
 
 // choix des colonnes
