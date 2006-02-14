@@ -242,6 +242,9 @@ function fusionne($afus) {
 				}
 			}
 			
+			//KEEP OLD QUALITY,FIDELITY AND CHECKSUM
+			$persistent_req = mysql_query("SELECT CHECKSUM,QUALITY,FIDELITY FROM hardware WHERE DEVICEID='".$afus[$minInd]["deviceid"]."'");
+					
 			$reqDelAccount = "DELETE FROM accountinfo WHERE deviceid='".$afus[$maxInd]["deviceid"]."'";
 			mysql_query($reqDelAccount, $_SESSION["writeServer"]);
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
@@ -257,6 +260,10 @@ function fusionne($afus) {
 				}			
 				$i++;
 			}
+			
+			//RESTORE PERSISTENT VALUES
+			$persistent_values = mysql_fetch_row($persistent_req);
+			mysql_query("UPDATE hardware SET QUALITY=".$persistent_values[1].",FIDELITY=".$persistent_values[2].",CHECKSUM=CHECKSUM|".$persistent_values[0]." WHERE DEVICEID='".$afus[$maxInd]["deviceid"]."'");
 		}
 		else
 			errlock();
