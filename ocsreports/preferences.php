@@ -534,6 +534,7 @@ function deleteDid($did, $checkLock = true) {
 	global $l;
 	
 	if( ! $checkLock || lock($did) ) {
+	
 		if( strpos ( $did, "NETWORK_DEVICE-" ) === false ) {
 			$resNetm = @mysql_query("SELECT macaddr FROM networks WHERE deviceid='$did'", $_SESSION["writeServer"]);
 			while( $valNetm = mysql_fetch_array($resNetm)) {
@@ -550,6 +551,12 @@ function deleteDid($did, $checkLock = true) {
 		foreach ($tables as $table) {
 			mysql_query("DELETE FROM $table WHERE deviceid='$did';", $_SESSION["writeServer"]);		
 		}
+		
+		//TRACE_DELETED
+		if(mysql_num_rows(mysql_query("SELECT IVALUE FROM config WHERE IVALUE>0 AND NAME='TRACE_DELETED'", $_SESSION["writeServer"]))){
+			mysql_query("insert into deleted_equiv(DELETED,EQUIVALENT) values('$did',NULL)", $_SESSION["writeServer"]);
+		}
+		
 		if( $checkLock ) 
 			unlock($did);
 	}
@@ -576,6 +583,7 @@ function unlock($did) {
 }
 
 function errlock() {
-	echo "<br><center><font color=red><b>".$l->g(371)."</b></font></center><br>";
+	global $l;
+	echo "<br><center><font color=red><b>".$l->g(376)."</b></font></center><br>";
 }
 ?>

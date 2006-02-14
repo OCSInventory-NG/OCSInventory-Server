@@ -277,6 +277,12 @@
 368 di rete
 369 Eseguito da
 370 Distibuito
+371 All components
+372 Choose the components
+373 Registered user
+374 Registered society
+375 OCS NG Agent Vesion
+376 Computer locked. Please retry in a few minutes
 380 Dictionnary
 381 Number
 382 Software name

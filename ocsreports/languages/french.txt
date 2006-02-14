@@ -279,7 +279,7 @@
 373 Utilisateur enregistré
 374 Société enregistrée
 375 Version Agent OCS NG
-
+376 Ordinateur verrouillé. Réessayer dans quelques instants...
 380 Dictionnaire
 381 Nombre
 382 Nom du logiciel

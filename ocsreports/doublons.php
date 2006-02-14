@@ -234,10 +234,19 @@ function fusionne($afus) {
 		}
 		
 		if( $okLock ) {
+			//TRACE_DELETED
+			if(mysql_num_rows(mysql_query("SELECT * FROM config WHERE IVALUE>0 AND NAME='TRACE_DELETED'", $_SESSION["writeServer"]))){
+				foreach($afus as $a) {	
+					if($afus[$minInd]["deviceid"]==$a["deviceid"]){continue;}
+					mysql_query("insert into deleted_equiv(DELETED,EQUIVALENT) values('".$a["deviceid"]."','".$afus[$minInd]["deviceid"]."')", $_SESSION["writeServer"]);
+				}
+			}
+			
 			$reqDelAccount = "DELETE FROM accountinfo WHERE deviceid='".$afus[$maxInd]["deviceid"]."'";
 			mysql_query($reqDelAccount, $_SESSION["writeServer"]);
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
 			$reqRecupAccount = "UPDATE accountinfo SET deviceid='".$afus[$maxInd]["deviceid"]."' WHERE deviceid='".$afus[$minInd]["deviceid"]."'";
+			
 			mysql_query($reqRecupAccount, $_SESSION["writeServer"]);
 			//echo $reqRecupAccount;
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$minInd]["deviceid"]." ".$l->g(206)." ".$afus[$maxInd]["deviceid"]."</font></center><br>";
