@@ -24,7 +24,7 @@
 24 Utilizador
 25 Sistema Operativo
 26 Memória
-27 Velocidade de CPU (MHz)
+27 Velocidade de memory (MHz)
 28 Número de Máquina
 29 O servidor LDAP não responde
 30 Procura

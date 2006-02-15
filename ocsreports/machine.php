@@ -194,7 +194,7 @@ function print_proc($systemid)
 	$item = mysql_fetch_object($resultDetails);
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr>";
-	echo "$td1 ".$l->g(66)." </td> $td1 ".$l->g(27)." </td> $td1 ".$l->g(55)."</td></tr>";
+	echo "$td1 ".$l->g(66)." </td> $td1 ".$l->g(377)." </td> $td1 ".$l->g(55)."</td></tr>";
 	echo "<tr>";
 	echo "$td3".utf8_decode($item->PROCESSORT)."</td>
 	      $td3".utf8_decode($item->PROCESSORS)."</td>

@@ -11,7 +11,7 @@
 24 Utilisateur
 25 Système
 26 Mémoire
-27 Vitesse CPU (MHz)
+27 Vitesse mémoire (MHz)
 28 Nombre de machines
 30 Recherche
 31 Choisissez un paramètre
@@ -280,6 +280,7 @@
 374 Société enregistrée
 375 Version Agent OCS NG
 376 Ordinateur verrouillé. Réessayer dans quelques instants...
+377 Vitesse CPU (Mhz)
 380 Dictionnaire
 381 Nombre
 382 Nom du logiciel

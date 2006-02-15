@@ -24,7 +24,7 @@
 24 Usuario
 25 Sistema Operativo
 26 Memoria
-27 Velocidad CPU (MHz)
+27 Velocidad memory (MHz)
 28 Número de máquinas
 29 El servidor LDAP no responde
 30 Buscar
@@ -372,6 +372,7 @@
 374 Registered society
 375 OCS NG Agent Vesion
 376 Computer locked. Please retry in a few minutes
+377 Processor Speed (Mhz)
 380 Dictionnary
 381 Number
 382 Software name

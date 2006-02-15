@@ -11,7 +11,7 @@
 24 User
 25 Operating system
 26 Memory
-27 CPU Speed (MHz)
+27 Memory Speed (MHz)
 28 Numbers of machines
 30 Search
 31 Choose a parameter
@@ -282,7 +282,7 @@
 374 Registered society
 375 OCS NG Agent Vesion
 376 Computer locked. Please retry in a few minutes
-
+377 Processor Speed (Mhz)
 380 Dictionnary
 381 Number
 382 Software name
