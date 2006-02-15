@@ -248,7 +248,6 @@
 338 Limited mode
 339 You need ipdiscover-util.pl (Linux only) for expert mode
 340 Show
-340 Afficher
 341 can't be launched, you must set execution rights
 342 You need to set writing rights on the root directory in order to use
 344 Error
