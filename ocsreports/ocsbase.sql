@@ -394,7 +394,7 @@ INSERT INTO `config` VALUES ('IPDISCOVER', 2, '', 'Max number of computers per g
 INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry query function');
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4012', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4013', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
