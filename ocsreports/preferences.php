@@ -489,18 +489,48 @@ function getBrowser() {
 }
 
 function getBrowserLang() {
-	$bro = $_SERVER['HTTP_USER_AGENT'];
-	if( strpos ( $bro, "; fr-") > 0 ) {
-		return "french";
-	}
-	else if( strpos ( $bro, "; es-") > 0 ) {
-		return "spanish";
-	}
-	else if( strpos ( $bro, "; pt-") > 0 ) {
-		return "brazilian_portuguese";
-	}
-	return "english";
+	$bro = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+	if (strpos( $bro,"de") === false) {
+           // Not german
+           if (strpos( $bro,"es") === false) {
+               // Not spanish
+               if (strpos( $bro,"fr") === false) {
+                   // Not french
+                   if (strpos( $bro,"it") === false) {
+                       // Not italian
+                       if (strpos( $bro,"pt-br") === false) {
+                           // Not brazilian portugueuse
+                           if (strpos( $bro,"pt") === false) {
+                               // Not portugueuse
+                               // Use english default language
+	                        return "english";
+                           }
+                           else
+                               // Portugueuse
+		                 return "portugueuse";
+                       }
+                       else
+                           // Brazilian portugueuse
+		             return "brazilian_portugueuse";
+                   }
+                   else
+                       // Italian
+		         return "italian";
+               }
+               else
+                   // French
+		     return "french";
+           }
+           else
+               // Spanish
+               return "spanish";
+       }
+       else
+           // German
+	    return "german";
 }
+
+
 
 function printNavigation( $lesGets, $numPages) {
 				
