@@ -25,7 +25,7 @@ if($_POST["nom"])
 		case $l->g(243): $suff = "2"; break;
 	}
 	
-	$query = "INSERT INTO operators(id,passwd,accesslvl) VALUES('".$_POST["nom"]."','".$_POST["pass"]."', '$suff')";
+	$query = "INSERT INTO operators(id,passwd,accesslvl) VALUES('".$_POST["nom"]."','".md5( $_POST["pass"])."', '$suff')";
 	@mysql_query($query);
 	echo "<br><br><center><font face='Verdana' size=-1 color='red'><b>". $_POST["nom"] ."</b> ".$l->g(234)." </font></center><br>";
 }//fin if	
