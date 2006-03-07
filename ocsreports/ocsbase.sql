@@ -55,7 +55,7 @@ CREATE TABLE deploy (
   NAME VARCHAR(255) NOT NULL,
   CONTENT LONGBLOB NOT NULL,
   PRIMARY KEY  (NAME)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE netmap (
   IP VARCHAR(15) NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE tag (
   PRIMARY KEY  (TAG_NAME, LOGIN),
   FOREIGN KEY (TAG_NAME) REFERENCES accountinfo(TAG),
   FOREIGN KEY (LOGIN) REFERENCES operators(ID)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE config (
   NAME VARCHAR(50) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE config (
   TVALUE VARCHAR(255) default NULL,
   COMMENTS TEXT,
   PRIMARY KEY (NAME)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE controllers (
   ID INTEGER NOT NULL auto_increment,
@@ -120,7 +120,7 @@ CREATE TABLE devices (
   PRIMARY KEY  (DEVICEID, NAME),
   INDEX TVALUE (TVALUE),
   FOREIGN KEY (DEVICEID) REFERENCES hardware(DEVICEID)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE drives (
   ID INTEGER NOT NULL auto_increment,
@@ -142,7 +142,7 @@ CREATE TABLE files (
   OS VARCHAR(255) NOT NULL,
   CONTENT LONGBLOB NOT NULL,
   PRIMARY KEY  (NAME, OS, VERSION)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE inputs (
   ID INTEGER NOT NULL auto_increment,
@@ -223,7 +223,7 @@ CREATE TABLE operators (
   ACCESSLVL INTEGER default NULL,
   COMMENTS text,
   PRIMARY KEY  (ID)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE ports (
   ID INTEGER NOT NULL auto_increment,
@@ -254,7 +254,7 @@ CREATE TABLE regconfig (
   REGVALUE VARCHAR(255) default NULL,
   PRIMARY KEY  (ID),
   KEY NAME (NAME)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE registry (
   ID INTEGER NOT NULL auto_increment,
@@ -333,7 +333,7 @@ CREATE TABLE devicetype (
   ID INTEGER NOT NULL auto_increment,
   NAME VARCHAR(255) default NULL,
   PRIMARY KEY  (ID)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE subnet (
   NETID VARCHAR(15) NOT NULL,
@@ -341,7 +341,7 @@ CREATE TABLE subnet (
   ID INTEGER,
   MASK VARCHAR(255),
   PRIMARY KEY (NETID)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE locks(
   DEVICEID VARCHAR(255) NOT NULL,
@@ -349,30 +349,30 @@ CREATE TABLE locks(
   SINCE TIMESTAMP,
   PRIMARY KEY(DEVICEID),
   INDEX SINCE (SINCE)
-) ENGINE=INNODB ;
+) ENGINE=HEAP ;
 
 CREATE TABLE dico_cat(
   NAME VARCHAR(255) NOT NULL,
   PERMANENT TINYINT DEFAULT 0,
   PRIMARY KEY(NAME)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE dico_ignored(
   EXTRACTED VARCHAR(255) NOT NULL,
   PRIMARY KEY(EXTRACTED)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE dico_soft( 
   EXTRACTED VARCHAR(255) NOT NULL,
   FORMATTED VARCHAR(255) NOT NULL,
   PRIMARY KEY(EXTRACTED)
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 CREATE TABLE deleted_equiv(
   DATE TIMESTAMP, 
   DELETED VARCHAR(255) NOT NULL,
   EQUIVALENT VARCHAR(255) default NULL
-) ENGINE=INNODB ;
+) ENGINE=MYISAM ;
 
 ALTER TABLE monitors ADD COLUMN SERIAL VARCHAR(255);
 ALTER TABLE netmap ADD COLUMN MASK VARCHAR(15);
@@ -383,7 +383,29 @@ ALTER TABLE networks ADD COLUMN IPSUBNET VARCHAR(15);
 ALTER TABLE networks ADD INDEX IPSUBNET (IPSUBNET);
 ALTER TABLE networks ADD INDEX MACADDR (MACADDR);
 ALTER TABLE hardware ADD COLUMN CHECKSUM INTEGER default NULL;
-ALTER TABLE hardware CHANGE COLUMN CHECKSUM CHECKSUM INTEGER default NULL;
+ALTER TABLE hardware CHANGE COLUMN CHECKSUM CHECKSUM INTEGER default 0;
+
+alter table hardware engine="INNODB";
+alter table accesslog engine="INNODB";
+alter table bios engine="INNODB";
+alter table memories engine="INNODB";
+alter table slots engine="INNODB";
+alter table registry engine="INNODB";
+alter table controllers engine="INNODB";
+alter table monitors engine="INNODB";
+alter table ports engine="INNODB";
+alter table storages engine="INNODB";
+alter table drives engine="INNODB";
+alter table inputs engine="INNODB";
+alter table modems engine="INNODB";
+alter table networks engine="INNODB";
+alter table printers engine="INNODB";
+alter table sounds engine="INNODB";
+alter table videos engine="INNODB";
+alter table softwares engine="INNODB";
+alter table accountinfo engine="INNODB";
+alter table netmap engine="INNODB";
+alter table locks engine="HEAP";
 
 
 DELETE FROM `config` WHERE name='GUI_VERSION';
