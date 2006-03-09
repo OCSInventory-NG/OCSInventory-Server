@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/13/2005
+//Modified on 09/03/2006
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -502,8 +502,14 @@ function getBrowserLang() {
                            // Not brazilian portugueuse
                            if (strpos( $bro,"pt") === false) {
                                // Not portugueuse
-                               // Use english default language
-	                        return "english";
+                               if (strpos( $bro,"pl") === false) {
+                                  // Not polish
+                                  // Use english default language
+	                           return "english";
+                               }
+                               else
+                                  // Polish
+                                  return "polish";
                            }
                            else
                                // Portugueuse
