@@ -421,6 +421,7 @@ INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4014', 'Version of the installed
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
+INSERT INTO `config` VALUES ('DOWNLOAD', 0, '', 'Activate softwares auto deployment feature (not yet implemented');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
