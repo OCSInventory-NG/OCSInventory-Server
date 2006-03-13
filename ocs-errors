@@ -1,0 +1,47 @@
+Ocsinventory-NG logs format
+
+--> GDH;Event code;IP address;User agent;Phase;(comment)
+
+Codes événements :
+
+ERRORS
+------
+500--Query forbidden
+502--Invalid device ID or hostname 
+503--Impossible to get a key from the config table
+504--Impossible to get the last date inventory
+505--Impossible to connect to database
+506--Inflation problem
+507--XML Parsing error
+508--Update message unreadeable
+509--Impossible to get the account infos
+510--Bad content-type
+511--File does not exist
+512--Malformed request
+513--Bad old deviceid
+514--synchronisation problem
+515--Script error, rollback transaction.
+516--Deviceid locked, inventory refused
+517--Cannot handle normal duplicate
+INVENTORY
+---------
+100--Inventory accepted
+101--Inventory succeed
+102--Inventory refused
+103--New machine(deviceid)
+104--Inventory incoming
+105--Inventory refused but other task required
+
+UPDATE
+------
+200--Files transmitted
+
+MANAGEMENT
+----------
+300--Device replaced
+301--Device can be duplicated
+302--File transmitted (deploy)
+303--ipdiscover enabled
+304--ipdiscover disabled
+305--ipdiscover report error
+304--deploy off
