@@ -23,8 +23,8 @@ sub _prolog{
 	my $quality;
 	my $now;
 	my $lastdate;
-	my $DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 
 
 	&_prolog_read();
@@ -34,12 +34,12 @@ sub _prolog{
 	# If we do not have the default frequency
 	unless(defined($frequency)){
 		&_prolog_resp(PROLOG_RESP_STOP);
-		&_log(503,"prolog") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(503,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_OK;
 	}
 
-	$request = $dbh->prepare('SELECT DEVICEID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY FROM hardware WHERE DEVICEID='.$dbh->quote($DeviceID));
-	$request->execute;
+	$request = $dbh->prepare('SELECT DEVICEID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY FROM hardware WHERE DEVICEID=?');
+	$request->execute($DeviceID);
 	
 	# We have this computer in the database
 	if($request->rows){
@@ -57,7 +57,7 @@ sub _prolog{
 		}
 		
 		# We update device data
-		if(!$dbh->do('UPDATE hardware SET FIDELITY=FIDELITY+1,QUALITY='.$quality.',LASTCOME=NOW() WHERE DEVICEID='.$dbh->quote($DeviceID))){
+		if(!$dbh->do('UPDATE hardware SET FIDELITY=FIDELITY+1,QUALITY=?,LASTCOME=NOW() WHERE DEVICEID=?', {}, $quality, $DeviceID)){
 			return APACHE_SERVER_ERROR;
 		}
 
@@ -78,8 +78,8 @@ sub _prolog{
 		$request->finish;
 
 		# Maybe there are computer's special frequency
-		$request=$dbh->prepare("SELECT IVALUE FROM devices WHERE DEVICEID=".$dbh->quote($DeviceID)."AND NAME='FREQUENCY'");
-		$request->execute;
+		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE DEVICEID=? AND NAME="FREQUENCY"');
+		$request->execute($DeviceID);
 		if($row=$request->fetchrow_hashref()){
 			$frequency=$row->{'IVALUE'};
 		}
@@ -113,7 +113,7 @@ sub _prolog{
 			&_prolog_resp(PROLOG_RESP_BREAK);
 			return APACHE_OK;
 		}else{
-			&_log(103,"prolog") if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(103,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
 			&_prolog_resp(PROLOG_RESP_SEND);
 			return APACHE_OK;
 		}	
@@ -124,15 +124,15 @@ sub _prolog{
 sub _send_response{
 
 	my( $xml, $message, $d, $status );
-	my $r = $CURRENT_CONTEXT{"APACHE_OBJECT"};
+	my $r = $CURRENT_CONTEXT{'APACHE_OBJECT'};
 
 	# Generate the response
 	# Generation of xml message
-	$message = XML::Simple::XMLout( $_[0], RootName => 'REPLY', XMLDecl => '<?xml version="1.0" encoding="ISO-8859-1"?>',
+	$message = XML::Simple::XMLout( $_[0], RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='ISO-8859-1'?>",
 	                 NoSort => 1, SuppressEmpty => undef);
 	# send
 	unless($message = Compress::Zlib::compress( $message )){
-		&_log(506,"send_response") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(506,'send_response') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_BAD_REQUEST;
 	}
 	
@@ -152,12 +152,12 @@ sub _prolog_resp{
 	my %resp;
 	&_prolog_build_resp($decision, \%resp);
 
-	if($resp{"RESPONSE"}[0] eq "STOP"){
-		&_log(102,"prolog") if $ENV{'OCS_OPT_LOGLEVEL'};
-	}elsif($resp{"RESPONSE"}[0] eq "SEND"){
-		&_log(100,"prolog") if $ENV{'OCS_OPT_LOGLEVEL'};
-	}elsif($resp{"RESPONSE"}[0] eq "OTHER"){
-		&_log(105,"prolog") if $ENV{'OCS_OPT_LOGLEVEL'};
+	if($resp{'RESPONSE'}[0] eq 'STOP'){
+		&_log(102,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+	}elsif($resp{'RESPONSE'}[0] eq 'SEND'){
+		&_log(100,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+	}elsif($resp{'RESPONSE'}[0] eq 'OTHER'){
+		&_log(105,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	&_send_response(\%resp);
 	return(0);
@@ -170,12 +170,12 @@ sub _prolog_build_resp{
 	my $state;
 
 	if($decision == PROLOG_RESP_BREAK){
-		$resp->{'RESPONSE'} = [ "STOP" ];
+		$resp->{'RESPONSE'} = [ 'STOP' ];
 		return(0);
 	}elsif($decision == PROLOG_RESP_STOP){
-		$resp->{"RESPONSE"} = [ "STOP" ];
+		$resp->{'RESPONSE'} = [ 'STOP' ];
 	}elsif($decision == PROLOG_RESP_SEND){
-		$resp->{"RESPONSE"} = [ "SEND" ];
+		$resp->{'RESPONSE'} = [ 'SEND' ];
 	}
 
 	for(&_modules_get_prolog_writers()){

@@ -39,20 +39,20 @@ our %CURRENT_CONTEXT;
 sub _set_http_header{
 	my $header = shift;
 	my $value = shift;
-	$CURRENT_CONTEXT{"APACHE_OBJECT"}->header_out($header => $value);
+	$CURRENT_CONTEXT{'APACHE_OBJECT'}->header_out($header => $value);
 	return(0);
 }
 
 sub _set_http_content_type{
 	my $type = shift;
-	$CURRENT_CONTEXT{"APACHE_OBJECT"}->content_type($type);
+	$CURRENT_CONTEXT{'APACHE_OBJECT'}->content_type($type);
 }
 
 sub _get_http_header{
 	my $header = shift;
-	return $CURRENT_CONTEXT{"APACHE_OBJECT"}->headers_in->{$header};
+	return $CURRENT_CONTEXT{'APACHE_OBJECT'}->headers_in->{$header};
 }
 sub _send_http_headers{
-	$CURRENT_CONTEXT{"APACHE_OBJECT"}->send_http_header;
+	$CURRENT_CONTEXT{'APACHE_OBJECT'}->send_http_header;
 }
 1;

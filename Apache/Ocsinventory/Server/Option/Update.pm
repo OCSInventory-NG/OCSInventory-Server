@@ -16,24 +16,24 @@ our %CURRENT_CONTEXT;
 BEGIN{
 	# Initialize option
 	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-		"HANDLER_PROLOG_READ" => undef,
-		"HANDLER_PROLOG_RESP" => undef,
-		"HANDLER_INVENTORY" => undef,
-		"REQUEST_NAME" => "UPDATE",
-		"HANDLER_REQUEST" => \&_update_handler,
-		"HANDLER_DUPLICATE" => undef,
-		"TYPE" =>undef
+		'HANDLER_PROLOG_READ' => undef,
+		'HANDLER_PROLOG_RESP' => undef,
+		'HANDLER_INVENTORY' => undef,
+		'REQUEST_NAME' => 'UPDATE',
+		'HANDLER_REQUEST' => \&_update_handler,
+		'HANDLER_DUPLICATE' => undef,
+		'TYPE' =>undef
 	};
 }
 
 # Default
-$Apache::Ocsinventory::{OPTIONS}{"OCS_OPT_UPDATE"} = 0;
+$Apache::Ocsinventory::{OPTIONS}{'OCS_OPT_UPDATE'} = 0;
 
 # To manage the update request
 sub _update_handler{
 
-	my $data = $CURRENT_CONTEXT{"DATA"};
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
+	my $data = $CURRENT_CONTEXT{'DATA'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 
 	my %resp;
 	my @agent;
@@ -63,7 +63,7 @@ sub _update_handler{
 	##########################
 	# Parse the XML request
 	unless($query = XML::Simple::XMLin( $$data, SuppressEmpty => 1 )){
-		&_log(507,"update");
+		&_log(507,'update');
 		return APACHE_SERVER_ERROR;
 	}
 
@@ -76,13 +76,13 @@ sub _update_handler{
 	if(defined($query->{DMI})){$Dversion = $query->{DMI}};
 	if(defined($query->{IPDISCOVER})){$Iversion = $query->{IPDISCOVER}};
 	if(!defined($Aversion) || !($platform=~/^WINDOWS$|^MAC$|^LINUX$/)){
-			&_log(508,"update") if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(508,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 	}
 	
 	# What are the available versions in the database
-	$request = $dbh->prepare("SELECT * FROM files WHERE OS=".$dbh->quote($platform));
-	$request->execute;
+	$request = $dbh->prepare('SELECT * FROM files WHERE OS=?');
+	$request->execute($platform);
 	
 	# If no file available, tell to the client not to update
 	unless($request->rows){

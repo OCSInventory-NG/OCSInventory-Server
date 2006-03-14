@@ -23,14 +23,14 @@ sub _duplicate_main{
 	my $red;
 
 	$result = shift;
-	$dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	$DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
+	$dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	$DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 
 	# If the duplicate is specified
 	if($result->{CONTENT}->{OLD_DEVICEID} and $result->{CONTENT}->{OLD_DEVICEID} ne $DeviceID){
 		if(&_duplicate_replace($result->{CONTENT}->{OLD_DEVICEID})){
 			# If there is an invalid old deviceid
-			&_log(513,"duplicate") if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(513,'duplicate') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$dbh->rollback;
 		}else{
 			$dbh->commit;
@@ -46,7 +46,7 @@ sub _duplicate_main{
 		for(keys(%exist)){
 			if(&_duplicate_evaluate(\%exist, $_)){
 				if(&_duplicate_replace($_)){
-					&_log(517,"duplicate") if $ENV{'OCS_OPT_LOGLEVEL'};
+					&_log(517,'duplicate') if $ENV{'OCS_OPT_LOGLEVEL'};
 					$dbh->rollback;
 				}else{
 					$dbh->commit;
@@ -90,13 +90,13 @@ sub _duplicate_detect{
 	my $request;
 	my $row;
 
-	my @bad_serial = ( "N/A","(null string)","INVALID","SYS-1234567890","SYS-9876543210","SN-12345","SN-1234567890","1111111111","1111111","1","0123456789","12345","123456","1234567","12345678","123456789","1234567890","123456789000","12345678901234567","0000000000","000000000","00000000","0000000","000000","NNNNNNN","xxxxxxxxxxx","EVAL","IATPASS","none","To Be Filled By O.E.M.","Tulip Computers","Serial Number xxxxxx","SN-123456fvgv3i0b8o5n6n7k","");
+	my @bad_serial = ( 'N/A','(null string)','INVALID','SYS-1234567890','SYS-9876543210','SN-12345','SN-1234567890','1111111111','1111111','1','0123456789','12345','123456','1234567','12345678','123456789','1234567890','123456789000','12345678901234567','0000000000','000000000','00000000','0000000','000000','NNNNNNN','xxxxxxxxxxx','EVAL','IATPASS','none','To Be Filled By O.E.M.','Tulip Computers','Serial Number xxxxxx','SN-123456fvgv3i0b8o5n6n7k','');
 
-	my @bad_mac = ("00:00:00:00:00:00","FF:FF:FF:FF:FF:FF","44:45:53:54:00:00","44:45:53:54:00:01","");
+	my @bad_mac = ('00:00:00:00:00:00','FF:FF:FF:FF:FF:FF','44:45:53:54:00:00','44:45:53:54:00:01','');
 	
 	# Have we already got the hostname
-	$request = $dbh->prepare("SELECT DEVICEID, NAME FROM hardware WHERE NAME=".$dbh->quote($result->{CONTENT}->{HARDWARE}->{NAME})." AND DEVICEID<>".$dbh->quote($DeviceID));
-	$request->execute();
+	$request = $dbh->prepare('SELECT DEVICEID, NAME FROM hardware WHERE NAME=? AND DEVICEID<>?');
+	$request->execute($result->{CONTENT}->{HARDWARE}->{NAME}, $DeviceID);
 	while($row = $request->fetchrow_hashref()){
 		if(!($row->{'NAME'} eq '')){
 			$exist->{$row->{'DEVICEID'}}->{'HOSTNAME'}=1;
@@ -105,8 +105,8 @@ sub _duplicate_detect{
 	
 	# ...and one MAC of this machine
 	for(@{$result->{CONTENT}->{NETWORKS}}){
-		$request = $dbh->prepare("SELECT DEVICEID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=".$dbh->quote($_->{MACADDR})." AND DEVICEID<>".$dbh->quote($DeviceID));
-		$request->execute();
+		$request = $dbh->prepare('SELECT DEVICEID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=? AND DEVICEID<>?');
+		$request->execute($_->{MACADDR}, $DeviceID);
 		while($row = $request->fetchrow_hashref()){
 			if(!&_already_in_array($row->{'MACADDR'}, \@bad_mac)){
 				$exist->{$row->{'DEVICEID'}}->{'MACADDRESS'}++;
@@ -114,8 +114,8 @@ sub _duplicate_detect{
 		}
 	}
 	# ...or its serial
-	$request = $dbh->prepare("SELECT DEVICEID, SSN FROM bios WHERE SSN=".$dbh->quote($result->{CONTENT}->{BIOS}->{SSN})." AND DEVICEID<>".$dbh->quote($DeviceID));
-	$request->execute();
+	$request = $dbh->prepare('SELECT DEVICEID, SSN FROM bios WHERE SSN=? AND DEVICEID<>?');
+	$request->execute($result->{CONTENT}->{BIOS}->{SSN}, $DeviceID);
 	while($row = $request->fetchrow_hashref()){
 		if(!&_already_in_array($row->{'SSN'}, \@bad_serial)){
 			$exist->{$row->{'DEVICEID'}}->{'SSN'}=1;
@@ -137,8 +137,8 @@ sub _duplicate_replace{
 	return 1 if(&_lock($device));
 				
 	# We keep the old quality and fidelity
-	my $request=$dbh->prepare("SELECT QUALITY,FIDELITY,CHECKSUM FROM hardware WHERE DEVICEID=".$dbh->quote($device));
-	$request->execute;
+	my $request=$dbh->prepare('SELECT QUALITY,FIDELITY,CHECKSUM FROM hardware WHERE DEVICEID=?');
+	$request->execute($device);
 	
 	# If it does not exist
 	unless($request->rows){
@@ -157,11 +157,11 @@ sub _duplicate_replace{
 				CHECKSUM=(".(defined($checksum)?$checksum:CHECKSUM_MAX_VALUE)."|".(defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM})?$result->{CONTENT}->{HARDWARE}->{CHECKSUM}:CHECKSUM_MAX_VALUE).") 
 				WHERE DEVICEID=".$dbh->quote($DeviceID))
 		and
-		$dbh->do("DELETE FROM accountinfo WHERE DEVICEID=".$dbh->quote($DeviceID))
+		$dbh->do('DELETE FROM accountinfo WHERE DEVICEID=?', {}, $DeviceID)
 		and
-		$dbh->do("UPDATE accountinfo SET DEVICEID=".$dbh->quote($DeviceID)." WHERE DEVICEID=".$dbh->quote($device))
+		$dbh->do('UPDATE accountinfo SET DEVICEID=? WHERE DEVICEID=?', {}, $DeviceID, $device)
 		and
-		$dbh->do("UPDATE devices SET DEVICEID=".$dbh->quote($DeviceID)." WHERE DEVICEID=".$dbh->quote($device))
+		$dbh->do('UPDATE devices SET DEVICEID=? WHERE DEVICEID=?', {}, $DeviceID, $device)
 	){
 		&_unlock($device);
 		return(1);
@@ -169,7 +169,7 @@ sub _duplicate_replace{
 	
 	# Drop old computer
 	for (@tables){
-		unless($dbh->do("DELETE FROM $_ WHERE DEVICEID=".$dbh->quote($device))){
+		unless($dbh->do("DELETE FROM $_ WHERE DEVICEID=?", {}, $device)){
 			&_unlock($device);
 			return(1);
 		}
@@ -177,7 +177,7 @@ sub _duplicate_replace{
 	
 	#Trace duplicate
 	if($ENV{'OCS_OPT_TRACE_DELETED'}){
-		unless(	$dbh->do("INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NULL,?,?)", {} , $device,$DeviceID)){
+		unless(	$dbh->do('INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NULL,?,?)', {} , $device,$DeviceID)){
 			&_unlock($device);
 			return(1);
 		}
@@ -193,7 +193,7 @@ sub _duplicate_replace{
 		}
 	}
 
-	&_log(300,"duplicate") if $ENV{'OCS_OPT_LOGLEVEL'};
+	&_log(300,'duplicate') if $ENV{'OCS_OPT_LOGLEVEL'};
 
 	#Remove lock
 	&_unlock($device);

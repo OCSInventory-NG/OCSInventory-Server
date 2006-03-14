@@ -16,37 +16,37 @@ our %CURRENT_CONTEXT;
 BEGIN{
 	# Initialize option
 	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-		"HANDLER_PROLOG_READ" => undef,
-		"HANDLER_PROLOG_RESP" => \&_registry_prolog_resp,
-		"HANDLER_INVENTORY" => \&_registry_main,
-		"REQUEST_NAME" => undef,
-		"HANDLER_REQUEST" => undef,
-		"HANDLER_DUPLICATE" => \&_registry_duplicate,
-		"TYPE" => OPTION_TYPE_SYNC
+		'HANDLER_PROLOG_READ' => undef,
+		'HANDLER_PROLOG_RESP' => \&_registry_prolog_resp,
+		'HANDLER_INVENTORY' => \&_registry_main,
+		'REQUEST_NAME' => undef,
+		'HANDLER_REQUEST' => undef,
+		'HANDLER_DUPLICATE' => \&_registry_duplicate,
+		'TYPE' => OPTION_TYPE_SYNC
 	};
 }
 
 # Default
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_REGISTRY"} = 1;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
 
 sub _registry_main{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
 
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	my $DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
-	my $update = $CURRENT_CONTEXT{"EXIST_FL"};
-	my $data = $CURRENT_CONTEXT{"DATA"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
+	my $update = $CURRENT_CONTEXT{'EXIST_FL'};
+	my $data = $CURRENT_CONTEXT{'DATA'};
 
 	my $result;
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
 		return(1);
 	}
 
-	my $sth = $dbh->prepare("INSERT INTO registry(DEVICEID, NAME, REGVALUE) VALUES(?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO registry(DEVICEID, NAME, REGVALUE) VALUES(?, ?, ?)');
 
 	if($update){
-		if(!$dbh->do("DELETE FROM registry WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM registry WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -67,10 +67,10 @@ sub _registry_prolog_resp{
 	return unless $ENV{'OCS_OPT_REGISTRY'};
 
 	my $resp = shift;
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 
 	# Sync option
-	return if $resp->{"RESPONSE"} eq "STOP";
+	return if $resp->{'RESPONSE'} eq 'STOP';
 
 	my $request;
 	my $row;
@@ -93,8 +93,8 @@ sub _registry_prolog_resp{
 
 	if(@registry){
 		push @{$$resp{'OPTION'}}, {
-					"NAME"  => [ 'REGISTRY' ],
-					"PARAM"	=> \@registry
+					'NAME'  => [ 'REGISTRY' ],
+					'PARAM'	=> \@registry
 				};
 		return(1);
 	}else{
@@ -104,10 +104,10 @@ sub _registry_prolog_resp{
 
 sub _registry_duplicate{
 	my $device = shift;
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	my $DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 
 	# If we encounter problems, it aborts whole replacement
-	return $dbh->do("UPDATE registry SET DEVICEID=? WHERE DEVICEID=?",{},$DeviceID, $device);
+	return $dbh->do('UPDATE registry SET DEVICEID=? WHERE DEVICEID=?',{}, $DeviceID, $device);
 }
 1;

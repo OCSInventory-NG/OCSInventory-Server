@@ -22,13 +22,13 @@ BEGIN{
 $Apache::Ocsinventory::VERSION = '0.80';
 
 # Defaults
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_FREQUENCY"} = 3;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_DEPLOY"} = 1;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_TRACE_DELETED"} = 0;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_AUTO_DUPLICATE_LVL"} = 7;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_LOGLEVEL"} = 0;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_PROXY_REVALIDATE_DELAY"} = 3600;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_UPDATE"} = 1;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_FREQUENCY'} = 3;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DEPLOY'} = 1;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_TRACE_DELETED'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_AUTO_DUPLICATE_LVL'} = 7;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOGLEVEL'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROXY_REVALIDATE_DELAY'} = 3600;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
@@ -43,6 +43,7 @@ use Apache::Ocsinventory::Server::Option::Update;
 # To compress the tx and read the rx
 use Compress::Zlib;
 
+# Globale structure
 our %CURRENT_CONTEXT;
 
 sub handler{
@@ -56,19 +57,19 @@ sub handler{
 	# current context
 	# Will be used to handle all globales
 	%CURRENT_CONTEXT = (
-		"APACHE_OBJECT" => undef,
-		"DBI_HANDLE" => undef,
-		"DEVICEID" => undef,
-		"DATA" => undef,
-		"LOCK_FL" => 0,
-		"EXIST_FL" => 0
+		'APACHE_OBJECT' => undef,
+		'DBI_HANDLE' => undef,
+		'DEVICEID' => undef,
+		'DATA' => undef,
+		'LOCK_FL' => 0,
+		'EXIST_FL' => 0
 	);
 
 	#LOG FILE
 	##########
 	#
 	# All events will be stored in this file in the csv format(See the errors code in the documentation)
-	open LOG, ">>".LOGPATH."/ocsinventory-NG.log" or die "Failed to open log file : $!\n";
+	open LOG, '>>'.LOGPATH.'/ocsinventory-NG.log' or die 'Failed to open log file : $!\n';
 	# We don't want buffer, so we allways flush the handles
 	select(LOG);
 	$|=1;
@@ -77,17 +78,17 @@ sub handler{
 
 	# Get the data and the apache object
 	$r=shift;
-	$CURRENT_CONTEXT{"APACHE_OBJECT"} = $r;
+	$CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
 
 	#Connect to database
-	if(!($CURRENT_CONTEXT{"DBI_HANDLE"} = &_database_connect())){
-		&_log(505,"handler");
+	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect())){
+		&_log(505,'handler');
 		return APACHE_SERVER_ERROR;
 	}
 
 	#Retrieve server options
 	if(&_get_sys_options()){
-		&_log(503,"handler");
+		&_log(503,'handler');
 		return APACHE_SERVER_ERROR;
 	}
 
@@ -96,10 +97,10 @@ sub handler{
 	if($r->method() eq 'GET'){
 
 		# To manage the first contact with the bootstrap
-		# The uri must be "/ocsinventory/deploy/[filename]"
+		# The uri must be '/ocsinventory/deploy/[filename]'
 		if($r->uri()=~/deploy\/(.+)\/?$/){
 			if($ENV{'OCS_OPT_DEPLOY'}){
-				return(&_send_file("deploy",$1));
+				return(&_send_file('deploy',$1));
 			}else{
 				return APACHE_FORBIDDEN;
 			}
@@ -107,7 +108,7 @@ sub handler{
 		# We use the GET method for the update to use the proxies
 		# The URL is built like that : [OCSFSERVER]/ocsinventory/[os]/[name]/[version]
 			if($ENV{'OCS_OPT_UPDATE'}){
-				return(&_send_file("update",$1,$2,$3));
+				return(&_send_file('update',$1,$2,$3));
 			}else{
 				return APACHE_FORBIDDEN;
 			}
@@ -121,14 +122,14 @@ sub handler{
 	
 		unless(&_get_http_header('Content-type') =~ /Application\/x-compress/i){
 		# Our discussion is compressed stream, nothing else
-			&_log(510,"handler") if ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(510,'handler') if ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_FORBIDDEN;
 
 		}
 		
 		# Get the data
 		read(STDIN, $data, $ENV{'CONTENT_LENGTH'});
-		$CURRENT_CONTEXT{"DATA"} = \$data;
+		$CURRENT_CONTEXT{'DATA'} = \$data;
 
 		# Debug level for Apache::DBI (apache/error.log)
 		# $Apache::DBI::DEBUG=2;
@@ -144,29 +145,29 @@ sub handler{
 		#
 		# Inflate the data
 		unless($d = Compress::Zlib::inflateInit()){
-			&_log(506,"handler") if sys_opt{'LOGLEVEL'};
+			&_log(506,'handler') if sys_opt{'LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}
 
 		($data, $status) = $d->inflate($data);
 		unless( $status == Z_OK or $status == Z_STREAM_END){
-			&_log(506,"handler");
+			&_log(506,'handler');
 		}
 		##########################
 		# Parse the XML request
 		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1 )){
-			&_log(507,"handler");
+			&_log(507,'handler');
 			return APACHE_BAD_REQUEST;
 		}
-		$CURRENT_CONTEXT{"XML_ENTRY"} = $query;
+		$CURRENT_CONTEXT{'XML_ENTRY'} = $query;
 
 		# Get the request type
 		my $request=$query->{QUERY};
-		$CURRENT_CONTEXT{"DEVICEID"} = $query->{DEVICEID};
+		$CURRENT_CONTEXT{'DEVICEID'} = $query->{DEVICEID};
 
 		 # Must be filled
 		unless($request){
-			&_log(500,"handler");
+			&_log(500,'handler');
 			return APACHE_BAD_REQUEST;
 		}
 
@@ -184,7 +185,7 @@ sub handler{
 			# Other request are handled by options
 			my $handler = &_modules_get_request_handler($request);
 			if($handler == 0){
-				&_log(500,"handler");
+				&_log(500,'handler');
 				return APACHE_BAD_REQUEST;
 			}else{
 				my $ret = &{$handler}();

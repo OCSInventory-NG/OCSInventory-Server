@@ -26,30 +26,30 @@ my $dbh;
 # Subroutine called for an incoming inventory
 sub _inventory_handler{
 
-	$dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	$data = $CURRENT_CONTEXT{"DATA"};
-	$DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
+	$dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	$data = $CURRENT_CONTEXT{'DATA'};
+	$DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 	undef @accountkeys;
 	
 	# XML to Perl
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
-		&_log(507,"inventory") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(507,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_BAD_REQUEST;
 	}
 
 	# writing deviceid in the mutex table
 	if(&_lock($DeviceID)){
-		&_log(516,"inventory") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(516,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_FORBIDDEN;
 	}else{
-		$CURRENT_CONTEXT{"LOCK_FL"} = 1;
+		$CURRENT_CONTEXT{'LOCK_FL'} = 1;
 	}
 	
 	#Inventory incoming
-	&_log(104,"inventory") if $ENV{'OCS_OPT_LOGLEVEL'};
+	&_log(104,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
 
 	if(&_check_deviceid($DeviceID)){
-		&_log(502,"inventory") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(502,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return(APACHE_BAD_REQUEST);
 	}
 
@@ -86,7 +86,7 @@ sub _inventory_handler{
 	&_post_inventory();
 	
 	# That's all
-	&_log(101,"inventory") if $ENV{'OCS_OPT_LOGLEVEL'};
+	&_log(101,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
 	return APACHE_OK;
 }
 
@@ -97,14 +97,14 @@ sub _context{
 	
 	#####
 	# Is DeviceID existing in the database ?
-	$request = $dbh->prepare("SELECT DEVICEID FROM hardware WHERE DEVICEID=".$dbh->quote($DeviceID));
-	$request->execute();
+	$request = $dbh->prepare('SELECT DEVICEID FROM hardware WHERE DEVICEID=?');
+	$request->execute($DeviceID);
 	if($request->rows){
 		#It exists, so we activate the update flag
-		$CURRENT_CONTEXT{"EXIST_FL"} = 1;
+		$CURRENT_CONTEXT{'EXIST_FL'} = 1;
 		$update = 1;
 	}else{
-		$CURRENT_CONTEXT{"EXIST_FL"} = 0;
+		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
 		$update = 0;
 	}
 	$request->finish;
@@ -144,7 +144,7 @@ sub _hardware{
 			return(1);
 		}
 	}else{
-	  	if(!$dbh->do("INSERT INTO hardware( DEVICEID, NAME, WORKGROUP, OSNAME, OSVERSION, OSCOMMENTS, PROCESSORT, PROCESSORS, PROCESSORN, MEMORY, SWAP, IPADDR, ETIME, LASTDATE, LASTCOME, QUALITY, FIDELITY, USERID, TYPE, DESCRIPTION, WINCOMPANY, WINOWNER, WINPRODID, USERAGENT, CHECKSUM ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", {}, $DeviceID, $base->{NAME}, $base->{WORKGROUP}, $base->{OSNAME}, $base->{OSVERSION}, $base->{OSCOMMENTS}, $base->{PROCESSORT}, $base->{PROCESSORS}, $base->{PROCESSORN}, $base->{MEMORY}, $base->{SWAP}, $base->{IPADDR}, $base->{ETIME}, 0, 1, $base->{USERID}, $base->{TYPE}, $base->{DESCRIPTION}, $base->{WINCOMPANY}, $base->{WINOWNER}, $base->{WINPRODID}, $ua, CHECKSUM_MAX_VALUE))
+	  	if(!$dbh->do('INSERT INTO hardware( DEVICEID, NAME, WORKGROUP, OSNAME, OSVERSION, OSCOMMENTS, PROCESSORT, PROCESSORS, PROCESSORN, MEMORY, SWAP, IPADDR, ETIME, LASTDATE, LASTCOME, QUALITY, FIDELITY, USERID, TYPE, DESCRIPTION, WINCOMPANY, WINOWNER, WINPRODID, USERAGENT, CHECKSUM ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {}, $DeviceID, $base->{NAME}, $base->{WORKGROUP}, $base->{OSNAME}, $base->{OSVERSION}, $base->{OSCOMMENTS}, $base->{PROCESSORT}, $base->{PROCESSORS}, $base->{PROCESSORN}, $base->{MEMORY}, $base->{SWAP}, $base->{IPADDR}, $base->{ETIME}, 0, 1, $base->{USERID}, $base->{TYPE}, $base->{DESCRIPTION}, $base->{WINCOMPANY}, $base->{WINOWNER}, $base->{WINPRODID}, $ua, CHECKSUM_MAX_VALUE))
 		{
 			return(1);
 		}
@@ -156,11 +156,11 @@ sub _hardware{
 # Inserting values of <ACCESSLOG> in accesslog table
 sub _accesslog{
 	if($update){
-		if(!$dbh->do("DELETE FROM accesslog WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM accesslog WHERE DEVICEID=?', {},$DeviceID)){
 			return(1);
 		}
 	}
-	if(!$dbh->do("INSERT INTO accesslog(DEVICEID, USERID, LOGDATE, PROCESSES) VALUES (?, ?, ?, ?)", {}, $DeviceID, $result->{CONTENT}->{ACCESSLOG}->{USERID}, $result->{CONTENT}->{ACCESSLOG}->{LOGDATE}, $result->{CONTENT}->{ACCESSLOG}->{PROCESSES})){
+	if(!$dbh->do('INSERT INTO accesslog(DEVICEID, USERID, LOGDATE, PROCESSES) VALUES (?, ?, ?, ?)', {}, $DeviceID, $result->{CONTENT}->{ACCESSLOG}->{USERID}, $result->{CONTENT}->{ACCESSLOG}->{LOGDATE}, $result->{CONTENT}->{ACCESSLOG}->{PROCESSES})){
 		return(1);
 	}
 
@@ -168,12 +168,12 @@ sub _accesslog{
 # Inserting values of <BIOS> in bios table
 sub _bios{
 	if($update){
-		if(!$dbh->do("DELETE FROM bios WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM bios WHERE DEVICEID=?', {},$DeviceID)){
 			return(1);
 		}
 	}
 	
-	if(!$dbh->do("INSERT INTO bios(DEVICEID, SMANUFACTURER, SMODEL, SSN, TYPE, BMANUFACTURER, BVERSION, BDATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", {}, $DeviceID, $result->{CONTENT}->{BIOS}->{SMANUFACTURER}, $result->{CONTENT}->{BIOS}->{SMODEL}, $result->{CONTENT}->{BIOS}->{SSN}, $result->{CONTENT}->{BIOS}->{TYPE}, $result->{CONTENT}->{BIOS}->{BMANUFACTURER}, $result->{CONTENT}->{BIOS}->{BVERSION}, $result->{CONTENT}->{BIOS}->{BDATE})){
+	if(!$dbh->do('INSERT INTO bios(DEVICEID, SMANUFACTURER, SMODEL, SSN, TYPE, BMANUFACTURER, BVERSION, BDATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {}, $DeviceID, $result->{CONTENT}->{BIOS}->{SMANUFACTURER}, $result->{CONTENT}->{BIOS}->{SMODEL}, $result->{CONTENT}->{BIOS}->{SSN}, $result->{CONTENT}->{BIOS}->{TYPE}, $result->{CONTENT}->{BIOS}->{BMANUFACTURER}, $result->{CONTENT}->{BIOS}->{BVERSION}, $result->{CONTENT}->{BIOS}->{BDATE})){
 		return(1);
 	}
 
@@ -185,21 +185,21 @@ sub _accountinfo{
 	# We have to look for the field's names because this table has a dynamic structure
 	my ($row, $request, $accountkey);
 	# Fields names
-        $request=$dbh->prepare("SHOW COLUMNS FROM accountinfo");
+        $request=$dbh->prepare('SHOW COLUMNS FROM accountinfo');
         $request->execute;
         while($row=$request->fetchrow_hashref){
                 push @accountkeys, $row->{'Field'} if($row->{'Field'} ne 'DEVICEID');
         }
 	if(!$update or $lost){
 		# writing (if new id, but duplicate, it will be erased at the end of the execution)
-		$dbh->do("INSERT INTO accountinfo(DEVICEID) VALUES(".$dbh->quote($DeviceID).")");
+		$dbh->do('INSERT INTO accountinfo(DEVICEID) VALUES(?)', {}, $DeviceID);
 		# Now, we know what are the account info name fields
 		# We can insert the client's data. This data will be kept only one time, in the first inventory
 		for $accountkey (@accountkeys){
 			my $array = $result->{CONTENT}->{ACCOUNTINFO};
 			for(@$array){
 				if($_->{KEYNAME} eq $accountkey){
-					if(!$dbh->do("UPDATE accountinfo SET ".$accountkey."=".$dbh->quote($_->{KEYVALUE})." WHERE DEVICEID=".$dbh->quote($DeviceID))){
+					if(!$dbh->do('UPDATE accountinfo SET '.$accountkey."=".$dbh->quote($_->{KEYVALUE}).' WHERE DEVICEID='.$dbh->quote($DeviceID))){
 						return(1);
 					}
 				}
@@ -207,7 +207,7 @@ sub _accountinfo{
 		}
 	}
 	if($lost){
-		if(!$dbh->do("UPDATE accountinfo SET TAG = 'LOST' WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('UPDATE accountinfo SET TAG = "LOST" WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -216,10 +216,10 @@ sub _accountinfo{
 
 # Inserting values of <MEMORIES> in memories table
 sub _memories{
-	my $sth = $dbh->prepare("INSERT INTO memories(DEVICEID, CAPTION, DESCRIPTION, CAPACITY, PURPOSE, TYPE, SPEED, NUMSLOTS) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO memories(DEVICEID, CAPTION, DESCRIPTION, CAPACITY, PURPOSE, TYPE, SPEED, NUMSLOTS) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM memories WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM memories WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -236,10 +236,10 @@ sub _memories{
 
 # Inserting values of <SLOTS> in slots table
 sub _slots{
-	my $sth = $dbh->prepare("INSERT INTO slots(DEVICEID, NAME, DESCRIPTION, DESIGNATION, PURPOSE, STATUS, PSHARE) VALUES(?, ?, ?, ?, ?, ?, ?)");	
+	my $sth = $dbh->prepare('INSERT INTO slots(DEVICEID, NAME, DESCRIPTION, DESIGNATION, PURPOSE, STATUS, PSHARE) VALUES(?, ?, ?, ?, ?, ?, ?)');	
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM slots WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM slots WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -256,10 +256,10 @@ sub _slots{
 
 # Inserting values of <CONTROLLERS> in controllers table
 sub _controllers{
-	my $sth = $dbh->prepare("INSERT INTO controllers(DEVICEID, MANUFACTURER, NAME, CAPTION, DESCRIPTION, VERSION, TYPE) VALUES(?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO controllers(DEVICEID, MANUFACTURER, NAME, CAPTION, DESCRIPTION, VERSION, TYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM controllers WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM controllers WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -276,10 +276,10 @@ sub _controllers{
 
 # Inserting values of <MONITORS> in monitors table
 sub _monitors{
-	my $sth = $dbh->prepare("INSERT INTO monitors(DEVICEID, MANUFACTURER, CAPTION, DESCRIPTION, TYPE, SERIAL) VALUES(?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO monitors(DEVICEID, MANUFACTURER, CAPTION, DESCRIPTION, TYPE, SERIAL) VALUES(?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM monitors WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM monitors WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -295,10 +295,10 @@ sub _monitors{
 
 # Inserting values of <PORTS> in ports table
 sub _ports{
-	my $sth = $dbh->prepare("INSERT INTO ports(DEVICEID, TYPE, NAME, CAPTION, DESCRIPTION) VALUES(?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO ports(DEVICEID, TYPE, NAME, CAPTION, DESCRIPTION) VALUES(?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM ports WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM ports WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -315,10 +315,10 @@ sub _ports{
 
 # Inserting values of <STORAGES> in storages table
 sub _storages{
-	my $sth = $dbh->prepare("INSERT INTO storages(DEVICEID, MANUFACTURER, NAME, MODEL, DESCRIPTION, TYPE, DISKSIZE) VALUES(?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO storages(DEVICEID, MANUFACTURER, NAME, MODEL, DESCRIPTION, TYPE, DISKSIZE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM storages WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM storages WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -335,10 +335,10 @@ sub _storages{
 
 # Inserting values of <DRIVES> in drives table
 sub _drives{
-	my $sth = $dbh->prepare("INSERT INTO drives(DEVICEID, LETTER, TYPE, FILESYSTEM, TOTAL, FREE, NUMFILES, VOLUMN) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO drives(DEVICEID, LETTER, TYPE, FILESYSTEM, TOTAL, FREE, NUMFILES, VOLUMN) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM drives WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM drives WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -355,10 +355,10 @@ sub _drives{
 
 # Inserting values of <INPUTS> in inputs table
 sub _inputs{
-	my $sth = $dbh->prepare("INSERT INTO inputs(DEVICEID, TYPE, MANUFACTURER, CAPTION, DESCRIPTION, INTERFACE, POINTTYPE) VALUES(?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO inputs(DEVICEID, TYPE, MANUFACTURER, CAPTION, DESCRIPTION, INTERFACE, POINTTYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM inputs WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM inputs WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -375,10 +375,10 @@ sub _inputs{
 
 # Inserting values of <MODEMS> in modems table
 sub _modems{
-	my $sth = $dbh->prepare("INSERT INTO modems(DEVICEID, NAME, MODEL, DESCRIPTION, TYPE) VALUES(?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO modems(DEVICEID, NAME, MODEL, DESCRIPTION, TYPE) VALUES(?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM modems WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM modems WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -395,10 +395,10 @@ sub _modems{
 
 # Inserting values of <NETWORKS> in networks table
 sub _networks{
-	my $sth = $dbh->prepare("INSERT INTO networks(DEVICEID, DESCRIPTION, TYPE, TYPEMIB, SPEED, MACADDR, STATUS, IPADDRESS, IPMASK, IPGATEWAY, IPSUBNET, IPDHCP) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO networks(DEVICEID, DESCRIPTION, TYPE, TYPEMIB, SPEED, MACADDR, STATUS, IPADDRESS, IPMASK, IPGATEWAY, IPSUBNET, IPDHCP) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM networks WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM networks WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -415,10 +415,10 @@ sub _networks{
 
 # Inserting values of <PRINTERS> in printers table
 sub _printers{
-	my $sth = $dbh->prepare("INSERT INTO printers(DEVICEID, NAME, DRIVER, PORT) VALUES(?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO printers(DEVICEID, NAME, DRIVER, PORT) VALUES(?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM printers WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM printers WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -435,10 +435,10 @@ sub _printers{
 
 # Inserting values of <SOUNDS> in sounds table
 sub _sounds{
-	my $sth = $dbh->prepare("INSERT INTO sounds(DEVICEID, MANUFACTURER, NAME, DESCRIPTION) VALUES(?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO sounds(DEVICEID, MANUFACTURER, NAME, DESCRIPTION) VALUES(?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM sounds WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM sounds WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -455,10 +455,10 @@ sub _sounds{
 
 # Inserting values of <VIDEOS> in videos table
 sub _videos{
-	my $sth = $dbh->prepare("INSERT INTO videos(DEVICEID, NAME, CHIPSET, MEMORY, RESOLUTION) VALUES(?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO videos(DEVICEID, NAME, CHIPSET, MEMORY, RESOLUTION) VALUES(?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM videos WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM videos WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -474,10 +474,10 @@ sub _videos{
 }
 # Inserting values of <SOFTWARES> in softwares table
 sub _softwares{
-	my $sth = $dbh->prepare("INSERT INTO softwares(DEVICEID, PUBLISHER, NAME, VERSION, FOLDER, COMMENTS, FILENAME, FILESIZE, SOURCE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	my $sth = $dbh->prepare('INSERT INTO softwares(DEVICEID, PUBLISHER, NAME, VERSION, FOLDER, COMMENTS, FILENAME, FILESIZE, SOURCE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)');
 	
 	if($update){
-		if(!$dbh->do("DELETE FROM softwares WHERE DEVICEID=".$dbh->quote($DeviceID))){
+		if(!$dbh->do('DELETE FROM softwares WHERE DEVICEID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -503,8 +503,8 @@ sub _post_inventory{
 	# We verify accountinfo diff if the machine was already in the database
 	if($update or $red){
 		# We put back the account infos to the agent if necessary
-		$request = $dbh->prepare("SELECT * FROM accountinfo WHERE DEVICEID=".$dbh->quote($DeviceID));
-		$request->execute;
+		$request = $dbh->prepare('SELECT * FROM accountinfo WHERE DEVICEID=?');
+		$request->execute($DeviceID);
 		if($row = $request->fetchrow_hashref()){
 			my $up = 0;
 			# Compare the account infos with the user's ones
@@ -538,7 +538,7 @@ sub _post_inventory{
 		
 		}else{
 			# There is a problem. The device MUST be present in the table
-			&_log(509,"postinventory") if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(509,'postinventory') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$request->finish;
 			$elements{'RESPONSE'} = [ 'ACCOUNT_UPDATE' ];
                         for(@{$result->{CONTENT}->{ACCOUNTINFO}}){

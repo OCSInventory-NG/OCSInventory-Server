@@ -16,19 +16,19 @@ our %CURRENT_CONTEXT;
 BEGIN{
 	# Initialize option
 	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-		"HANDLER_PROLOG_READ" => undef,
-		"HANDLER_PROLOG_RESP" => \&_ipdiscover_prolog_resp,
-		"HANDLER_INVENTORY" => \&_ipdiscover_main,
-		"REQUEST_NAME" => undef,
-		"HANDLER_REQUEST" => undef,
-		"HANDLER_DUPLICATE" => undef,
-		"TYPE" => OPTION_TYPE_SYNC
+		'HANDLER_PROLOG_READ' => undef,
+		'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
+		'HANDLER_INVENTORY' => \&_ipdiscover_main,
+		'REQUEST_NAME' => undef,
+		'HANDLER_REQUEST' => undef,
+		'HANDLER_DUPLICATE' => undef,
+		'TYPE' => OPTION_TYPE_SYNC
 	};
 }
 
 # Default
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_IPDISCOVER"} = 1;
-$Apache::Ocsinventory::OPTIONS{"OCS_OPT_IPDISCOVER_MAX_ALIVE"} = 14;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
 
 sub _ipdiscover_prolog_resp{
 
@@ -37,8 +37,8 @@ sub _ipdiscover_prolog_resp{
 	my $resp = shift;
 	my $request;
 	my $row;
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	my $DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 
 	################################
 	#IPDISCOVER
@@ -46,10 +46,10 @@ sub _ipdiscover_prolog_resp{
 	# What is the current state of this option ?
 
 	#ipdiscover for this device ?
-	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE DEVICEID='.$dbh->quote($DeviceID).' AND NAME="IPDISCOVER"');
-	$request->execute();
+	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE DEVICEID=? AND NAME="IPDISCOVER"');
+	$request->execute($DeviceID);
 	if($request->rows){
-		$resp->{'RESPONSE'} = [ "SEND" ];
+		$resp->{'RESPONSE'} = [ 'SEND' ];
 		$row = $request->fetchrow_hashref();
 		push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ]};
 		&_set_http_header('Connection', 'close');
@@ -69,17 +69,17 @@ sub _ipdiscover_main{
 
 	return unless $ENV{OCS_OPT_IPDISCOVER};
 	
-	my $DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	my $data = $CURRENT_CONTEXT{"DATA"};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $data = $CURRENT_CONTEXT{'DATA'};
 
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
 		return(1);
 	}
 
 	# Is the device already have the ipdiscover function ?
-	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE DEVICEID='.$dbh->quote($DeviceID).' AND NAME="IPDISCOVER"');
-	$request->execute();
+	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE DEVICEID=? AND NAME="IPDISCOVER"');
+	$request->execute($DeviceID);
 	if($request->rows){
 		$row = $request->fetchrow_hashref;
 		# get 1 on removing and 0 if ok
@@ -94,8 +94,8 @@ sub _ipdiscover_main{
 		}
 		
 		# Get quality and fidelity
-		$request = $dbh->prepare('SELECT QUALITY,FIDELITY FROM hardware WHERE DEVICEID='.$dbh->quote($DeviceID));
-		$request->execute();
+		$request = $dbh->prepare('SELECT QUALITY,FIDELITY FROM hardware WHERE DEVICEID=?');
+		$request->execute($DeviceID);
 
 		if($row = $request->fetchrow_hashref){
 	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} =! 0){
@@ -105,7 +105,7 @@ sub _ipdiscover_main{
 				}elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
 					# The computer is elected, we have to write it in devices
 					$dbh->do('INSERT INTO devices(DEVICEID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return(1);
-					&_log(303,"ipdiscover") if $ENV{'OCS_OPT_LOGLEVEL'};
+					&_log(303,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 					return(0);
 				}else{
 					return(0);
@@ -120,10 +120,10 @@ sub _ipdiscover_main{
 
 	# If needed, we remove
 	if($remove){
-		if(!$dbh->do('DELETE FROM devices WHERE DEVICEID='.$dbh->quote($DeviceID).' AND NAME="IPDISCOVER"')){
+		if(!$dbh->do('DELETE FROM devices WHERE DEVICEID=? AND NAME="IPDISCOVER"', {}, $DeviceID)){
 			return(1);
 		}
-		&_log(304,"ipdiscover") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(304,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	0;
 }
@@ -136,7 +136,7 @@ sub _ipdiscover_read_result{
 	my $insert_req;
 	my $request;
 
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 	
 	if(exists($result->{CONTENT}->{IPDISCOVER})){
 		my $base = $result->{CONTENT}->{NETWORKS};
@@ -150,13 +150,13 @@ sub _ipdiscover_read_result{
 		}
 		
 		# We insert the results (MAC/IP)
-		$update_req = $dbh->prepare("UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL WHERE MAC=?");
-		$insert_req = $dbh->prepare("INSERT INTO netmap(IP, MAC, MASK, NETID) VALUES(?,?,?,?)");
+		$update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL WHERE MAC=?');
+		$insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID) VALUES(?,?,?,?)');
 		
 		$base = $result->{CONTENT}->{IPDISCOVER}->{H};
 		for(@$base){
 			unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
-				&_log(305,"ipdiscover") if $ENV{'OCS_OPT_LOGLEVEL'};
+				&_log(305,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 				next;
 			}
 			$update_req->execute($_->{I}, $mask, $subnet, $_->{M});
@@ -169,8 +169,8 @@ sub _ipdiscover_read_result{
 	}
 
 	# Maybe There are too much ipdiscover per subnet ?
-	$request=$dbh->prepare('SELECT deviceid FROM devices WHERE TVALUE='.$dbh->quote($subnet).' AND NAME="IPDISCOVER"' );
-	$request->execute();
+	$request=$dbh->prepare('SELECT deviceid FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
+	$request->execute($subnet);
 	if($request->rows > $ENV{'OCS_OPT_IPDISCOVER'}){
 		$request->finish;
 		return(1);
@@ -183,7 +183,7 @@ sub _ipdiscover_find_iface{
 
 	my $result = shift;
 	my $base = $result->{CONTENT}->{NETWORKS};
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 	
 	my $request;
 	my @worth;
@@ -196,8 +196,8 @@ sub _ipdiscover_find_iface{
 						next;
 		}}}}
 		# Looking for a need of ipdiscover
-		$request = $dbh->prepare('SELECT deviceid FROM devices WHERE TVALUE='.$dbh->quote($_->{IPSUBNET}).' AND NAME="IPDISCOVER"' );
-		$request->execute();
+		$request = $dbh->prepare('SELECT deviceid FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
+		$request->execute($_->{IPSUBNET});
 		if($request->rows < $ENV{'OCS_OPT_IPDISCOVER'}){
 			$request->finish;
 			return $_->{IPSUBNET};
@@ -215,8 +215,8 @@ sub _ipdiscover_evaluate{
 
 	my ($result, $fidelity, $quality) = @_;
 
-	my $dbh = $CURRENT_CONTEXT{"DBI_HANDLE"};
-	my $DeviceID = $CURRENT_CONTEXT{"DEVICEID"};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 
 	my $request;
 	my $row;
@@ -230,8 +230,8 @@ sub _ipdiscover_evaluate{
 	for(@$base){
 		if(defined($_->{SUBNET}) and $_->{SUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/){
 
-			$request = $dbh->prepare('select h.DEVICEID AS DEVICEID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST from hardware h,devices d where d.DEVICEID=h.DEVICEID and d.TVALUE='.$dbh->quote($_->{SUBNET}).' AND h.DEVICEID<>'.($dbh->quote($DeviceID)));
-			$request->execute;
+			$request = $dbh->prepare('select h.DEVICEID AS DEVICEID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST from hardware h,devices d where d.DEVICEID=h.DEVICEID and d.TVALUE=? AND h.DEVICEID<>?');
+			$request->execute($_->{SUBNET}, $DeviceID);
 
 			while($row = $request->fetchrow_hashref){
 				# If we find an ipdiscover that is older than IP_MAX_ALIVE, we replace it with the current
@@ -253,10 +253,10 @@ sub _ipdiscover_evaluate{
 			# If it is better more than one, we replace it
 			if(($quality < $worth[1] and ($worth[1]-$quality>1)) or $over){
 				# Compare to the current and replace it if needed
-				if(!$dbh->do('UPDATE devices SET DEVICEID='.($dbh->quote($DeviceID)).' where DEVICEID='.($dbh->quote($worth[0])).' AND (NAME="IPDISCOVER")')){
+				if(!$dbh->do('UPDATE devices SET DEVICEID=? WHERE DEVICEID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
 					return(1);
 				}
-				&_log(303,"ipdiscover",$over?"over":"better") if $ENV{'OCS_OPT_LOGLEVEL'};
+				&_log(303,'ipdiscover',$over?'over':'better') if $ENV{'OCS_OPT_LOGLEVEL'};
 			}
 		}else{
 				next;
