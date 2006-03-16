@@ -16,17 +16,18 @@ our %CURRENT_CONTEXT;
 # Subroutine wich answer to client prolog
 sub _prolog{
 
-	my $OS;
-	my $row;
-	my $request;
 	my $frequency;
 	my $quality;
 	my $now;
 	my $lastdate;
+	my $request;
+	my $row;
+	
 	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-
-
+	my $info = $CURRENT_CONTEXT{'DETAILS'};
+	
+	
 	&_prolog_read();
 
 	$frequency = $ENV{'OCS_OPT_FREQUENCY'};
@@ -38,22 +39,17 @@ sub _prolog{
 		return APACHE_OK;
 	}
 
-	$request = $dbh->prepare('SELECT DEVICEID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY FROM hardware WHERE DEVICEID=?');
-	$request->execute($DeviceID);
-	
 	# We have this computer in the database
-	if($request->rows){
+	if($CURRENT_CONTEXT{'EXIST_FL'}){
 		# Get the current timestamp
 		$now = time();
 		
-		$row = $request->fetchrow_hashref;
-		
 		# Compute quality 
-		if($row->{'FIDELITY'} > 1){
-			$quality = ((($now-$row->{'LCOME'})/86400) + ($row->{'QUALITY'}*$row->{'FIDELITY'}))/(($row->{'FIDELITY'})+1);
+		if($info->{'FIDELITY'} > 1){
+			$quality = ((($now-$info->{'LCOME'})/86400) + ($info->{'QUALITY'}*$info->{'FIDELITY'}))/(($info->{'FIDELITY'})+1);
 		}else{
 			# We increment the number of visits
-			$quality = (($now-$row->{'LCOME'})/86400);
+			$quality = (($now-$info->{'LCOME'})/86400);
 		}
 		
 		# We update device data
@@ -74,7 +70,7 @@ sub _prolog{
 		}
 		
 		# Saving lastdate
-		$lastdate = $row->{'LCOME'};
+		$lastdate = $info->{'LCOME'};
 		$request->finish;
 
 		# Maybe there are computer's special frequency
@@ -108,7 +104,6 @@ sub _prolog{
 			return APACHE_OK;
 		}
 	}else{#This is a new Device ID
-		$request->finish;
 		if($frequency==(-1)){
 			&_prolog_resp(PROLOG_RESP_BREAK);
 			return APACHE_OK;
@@ -180,14 +175,14 @@ sub _prolog_build_resp{
 
 	for(&_modules_get_prolog_writers()){
 		last if $_ == 0;
-		&$_($resp);
+		&$_(\%CURRENT_CONTEXT,$resp);
 	}
 }
 
 sub _prolog_read{
 	for(&_modules_get_prolog_readers()){
 		last if $_==0;
-		&$_();
+		&$_(\%CURRENT_CONTEXT);
 	}
 }
 1;

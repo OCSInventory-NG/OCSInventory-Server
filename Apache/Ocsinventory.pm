@@ -36,9 +36,9 @@ use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Duplicate;
 use Apache::Ocsinventory::Server::Inventory;
-use Apache::Ocsinventory::Server::Option::Ipdiscover;
 use Apache::Ocsinventory::Server::Option::Registry;
 use Apache::Ocsinventory::Server::Option::Update;
+use Apache::Ocsinventory::Server::Option::Ipdiscover;
 
 # To compress the tx and read the rx
 use Compress::Zlib;
@@ -59,8 +59,12 @@ sub handler{
 	%CURRENT_CONTEXT = (
 		'APACHE_OBJECT' => undef,
 		'DBI_HANDLE' => undef,
+		'LOG_HANDLE' => undef,
 		'DEVICEID' => undef,
+		'DATABASE_ID' => undef,
 		'DATA' => undef,
+		'XML_ENTRY' => undef,
+		'XML_INVENTORY' => undef,
 		'LOCK_FL' => 0,
 		'EXIST_FL' => 0
 	);
@@ -75,7 +79,8 @@ sub handler{
 	$|=1;
 	select(STDOUT);
 	$|=1;
-
+	$CURRENT_CONTEXT{'LOG_HANDLE'} = *LOG;
+	
 	# Get the data and the apache object
 	$r=shift;
 	$CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
@@ -91,7 +96,7 @@ sub handler{
 		&_log(503,'handler');
 		return APACHE_SERVER_ERROR;
 	}
-
+	
 	# First, we determine the http method
 	# The get method will be only available for the bootstrap to manage the deploy, and maybe, sometime to give files wich will be stored in the database
 	if($r->method() eq 'GET'){
@@ -171,6 +176,10 @@ sub handler{
 			return APACHE_BAD_REQUEST;
 		}
 
+		# Init global structure
+		my $err = &_init();
+		return($err) if $err;
+		
 		# The three above are hardcoded
 		if($request eq 'PROLOG'){
 			my $ret = &_prolog();
@@ -188,7 +197,7 @@ sub handler{
 				&_log(500,'handler');
 				return APACHE_BAD_REQUEST;
 			}else{
-				my $ret = &{$handler}();
+				my $ret = &{$handler}(\%CURRENT_CONTEXT);
 				return(&_end($ret));
 			}
 
@@ -196,6 +205,42 @@ sub handler{
 
 	}else{ return APACHE_FORBIDDEN }
 
+}
+
+sub _init{
+	my $request;
+	
+	# Retrieve Device if exists
+	$request = $CURRENT_CONTEXT{'DBI_HANDLE'}->prepare('SELECT DEVICEID,ID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY FROM hardware WHERE DEVICEID=?');
+	unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
+		return(APACHE_SERVER_ERROR);
+	}
+	
+	if($request->rows){
+		my $row = $request->fetchrow_hashref;
+		
+		# Lock device
+		if(&_lock($row->{'ID'})){
+			return(APACHE_FORBIDDEN);
+			return(1);
+		}else{
+			$CURRENT_CONTEXT{'LOCK_FL'} = 1;
+		}
+		
+		$CURRENT_CONTEXT{'EXIST_FL'} = 1;
+		$CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
+		$CURRENT_CONTEXT{'DETAILS'} = {
+			'LCOME' => $row->{'LCOME'},
+			'LDATE' => $row->{'LDATE'},
+			'QUALITY' => $row->{'QUALITY'},
+			'FIDELITY' => $row->{'FIDELITY'},
+		}
+	}else{
+		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
+	}
+	
+	$request->finish;
+	return(undef);
 }
 1;
 

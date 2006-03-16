@@ -11,8 +11,6 @@ package Apache::Ocsinventory;
 
 use strict;
 
-our %CURRENT_CONTEXT;
-
 BEGIN{
 	# Initialize option
 	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -32,8 +30,9 @@ $Apache::Ocsinventory::{OPTIONS}{'OCS_OPT_UPDATE'} = 0;
 # To manage the update request
 sub _update_handler{
 
-	my $data = $CURRENT_CONTEXT{'DATA'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $current_context = shift;
+	my $data = $current_context->{'DATA'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
 
 	my %resp;
 	my @agent;

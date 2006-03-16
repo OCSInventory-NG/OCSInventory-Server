@@ -11,8 +11,6 @@ package Apache::Ocsinventory;
 
 use strict;
 
-our %CURRENT_CONTEXT;
-
 BEGIN{
 	# Initialize option
 	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -32,11 +30,13 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
 sub _registry_main{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
-
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
-	my $update = $CURRENT_CONTEXT{'EXIST_FL'};
-	my $data = $CURRENT_CONTEXT{'DATA'};
+	
+	my $current_context = shift;
+	
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $DeviceID = $current_context->{'DEVICEID'};
+	my $update = $current_context->{'EXIST_FL'};
+	my $data = $current_context->{'DATA'};
 
 	my $result;
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
@@ -65,9 +65,11 @@ sub _registry_main{
 sub _registry_prolog_resp{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
-
+	
+	my $current_context = shift;
 	my $resp = shift;
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	
+	my $dbh = $current_context->{'DBI_HANDLE'};
 
 	# Sync option
 	return if $resp->{'RESPONSE'} eq 'STOP';
@@ -102,12 +104,14 @@ sub _registry_prolog_resp{
 	}
 }
 
-sub _registry_duplicate{
+sub _registry_duplicate{	
+	my $current_context = shift;
 	my $device = shift;
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
+	
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $DeviceID = $current_context->{'DATABASE_ID'};
 
 	# If we encounter problems, it aborts whole replacement
-	return $dbh->do('UPDATE registry SET DEVICEID=? WHERE DEVICEID=?',{}, $DeviceID, $device);
+	return $dbh->do('UPDATE registry SET HARDWARE_ID=? WHERE HARDWARE_ID=?',{}, $DeviceID, $device);
 }
 1;

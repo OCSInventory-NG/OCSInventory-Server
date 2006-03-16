@@ -92,7 +92,7 @@ sub _check_deviceid{
 	}
 
 	# If it is not conform
-	unless($DeviceID=~/.+-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}/){
+	unless($DeviceID=~/.+-\d{4}(?:-\d{2}){5}/){
 		return(1);
 	}
 	0;
@@ -100,7 +100,7 @@ sub _check_deviceid{
 
 sub _lock{
  	my $device = shift;
-	if(${CURRENT_CONTEXT{'DBI_HANDLE'}}->do('INSERT INTO locks(DEVICEID, SINCE) VALUES(?,NULL)', {} , $device )){
+	if(${CURRENT_CONTEXT{'DBI_HANDLE'}}->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
 		return(0);
 	}else{
 		return(1);
@@ -110,7 +110,7 @@ sub _lock{
 
 sub _unlock{
 	my $device = shift;
-	if(${CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE DEVICEID=?', {}, $device)){
+	if(${CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=?', {}, $device)){
 		return(0);
 	}else{
 		return(1);
@@ -131,7 +131,7 @@ sub _end{
 	
 	my $ret = shift;
  	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
+	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
 
 	if($ret == APACHE_SERVER_ERROR){
 		&_log(515,"end") if $ENV{'OCS_OPT_LOGLEVEL'};
