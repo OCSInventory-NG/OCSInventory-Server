@@ -39,7 +39,7 @@ use Apache::Ocsinventory::Server::Inventory;
 use Apache::Ocsinventory::Server::Option::Registry;
 use Apache::Ocsinventory::Server::Option::Update;
 use Apache::Ocsinventory::Server::Option::Ipdiscover;
-
+use Apache::Ocsinventory::Server::Option::Ipdiscover;
 # To compress the tx and read the rx
 use Compress::Zlib;
 
@@ -59,7 +59,6 @@ sub handler{
 	%CURRENT_CONTEXT = (
 		'APACHE_OBJECT' => undef,
 		'DBI_HANDLE' => undef,
-		'LOG_HANDLE' => undef,
 		'DEVICEID' => undef,
 		'DATABASE_ID' => undef,
 		'DATA' => undef,
@@ -79,7 +78,6 @@ sub handler{
 	$|=1;
 	select(STDOUT);
 	$|=1;
-	$CURRENT_CONTEXT{'LOG_HANDLE'} = *LOG;
 	
 	# Get the data and the apache object
 	$r=shift;

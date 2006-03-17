@@ -172,7 +172,7 @@ sub _duplicate_replace{
 		and
 		$dbh->do('UPDATE accountinfo SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
 		and
-		$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $device)
+		$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $DeviceID)
 		and
 		$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
 	){

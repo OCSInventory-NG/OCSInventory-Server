@@ -39,7 +39,7 @@ sub _ipdiscover_prolog_resp{
 	my $row;
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $DeviceID = $current_context->{'DATABASE_ID'};
-
+		
 	################################
 	#IPDISCOVER
 	###########
@@ -74,7 +74,7 @@ sub _ipdiscover_main{
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $data = $current_context->{'DATA'};
-
+	
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
 		return(1);
 	}
@@ -137,9 +137,7 @@ sub _ipdiscover_read_result{
 	my $update_req;
 	my $insert_req;
 	my $request;
-	
-	print LOG "passage!!\n";
-	
+
 	if(exists($result->{CONTENT}->{IPDISCOVER})){
 		my $base = $result->{CONTENT}->{NETWORKS};
 		
@@ -152,8 +150,8 @@ sub _ipdiscover_read_result{
 		}
 		
 		# We insert the results (MAC/IP)
-		$update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL WHERE MAC=?');
-		$insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID) VALUES(?,?,?,?)');
+		$update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL, NAME=? WHERE MAC=?');
+		$insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME) VALUES(?,?,?,?)');
 		
 		$base = $result->{CONTENT}->{IPDISCOVER}->{H};
 		for(@$base){
@@ -161,9 +159,9 @@ sub _ipdiscover_read_result{
 				&_log(305,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 				next;
 			}
-			$update_req->execute($_->{I}, $mask, $subnet, $_->{M});
+			$update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});
 			unless($update_req->rows){
-				$insert_req->execute($_->{I}, $_->{M}, $mask, $subnet);
+				$insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N});
 			}
 		}
 	}else{
