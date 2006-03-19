@@ -1,0 +1,16 @@
+binutils/Ocsinventory_local.pl
+Ocsinventory/Server/Communication.pm
+Ocsinventory/Server/Constants.pm
+Ocsinventory/Server/Duplicate.pm
+Ocsinventory/Server/Inventory.pm
+Ocsinventory/Server/Modperl1.pm
+Ocsinventory/Server/Modperl2.pm
+Ocsinventory/Server/System.pm
+Ocsinventory/Server/Option/Ipdiscover.pm
+Ocsinventory/Server/Option/Registry.pm
+Ocsinventory/Server/Option/Update.pm
+INSTALL
+Makefile.PL
+MANIFEST
+ocsinventory.conf
+Ocsinventory.pm

@@ -1,0 +1,41 @@
+Ocs inventory next-gen
+Changelogs :
+
+Beta:
+Compatibility with Apache2
+Bug with mysql on insert into gateways fixed
+Bug with registry keys fixed
+Return value when connection with the database fails
+Few translations
+Subnetmask added in netmap table.
+Ipdiscover function dissociated from frequency in devices table
+Ipdiscover function dissociated from gateways. Directly manage the subnet.
+Deviceid change protocole implemented
+Subnet.csv -> database
+Added ipdiscover binary update
+bug with registry on duplicate management fixed
+
+RC3
+PROLOG changed for WIN agent compliance with REGISTRY queries
+Improve ipdiscover election
+Bug with multiple registry queries fixed
+_hardware optimization
+Trace of inventory changes (bitmat, 17 sections)
+Added old_deviceid feature
+Added locking mechanism
+Implement the trace_deleted feature (keep trace of deleted and equivalent on
+duplicates);Essentially for GLPI purpose
+Prolog response optimization
+Migration from MyISAM to INNODB. Concurrence optimized
+Many sql optimizations
+Added inventory and duplicates transaction support
+New code architecture
+Added AUTO_DUPLICATE_LVL option in config
+Added LOGLEVEL in config
+Changed log format to be compliant with ocs-errors
+
+
+
+
+
+
