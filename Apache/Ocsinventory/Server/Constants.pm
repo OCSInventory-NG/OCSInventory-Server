@@ -7,9 +7,26 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Constants;
 
 use strict;
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw/
+	PROLOG_RESP_BREAK
+	PROLOG_RESP_STOP
+	PROLOG_RESP_SEND
+	OPTION_TYPE_SYNC
+	OPTION_TYPE_ASYNC
+	LOGPATH
+	CHECKSUM_MAX_VALUE
+	DUP_HOSTNAME_FL
+	DUP_SERIAL_FL
+	DUP_MACADDR_FL
+/;
 
 use constant PROLOG_RESP_BREAK => 0;
 use constant PROLOG_RESP_STOP => 1;

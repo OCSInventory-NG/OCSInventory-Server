@@ -11,34 +11,35 @@ package Apache::Ocsinventory;
 
 use strict;
 
-BEGIN{
-	# Initialize option
-	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-		'HANDLER_PROLOG_READ' => undef,
-		'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
-		'HANDLER_INVENTORY' => \&_ipdiscover_main,
-		'REQUEST_NAME' => undef,
-		'HANDLER_REQUEST' => undef,
-		'HANDLER_DUPLICATE' => undef,
-		'TYPE' => OPTION_TYPE_SYNC
-	};
-}
+# Initialize option
+push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'HANDLER_PROLOG_READ' => undef,
+	'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
+	'HANDLER_INVENTORY' => \&_ipdiscover_main,
+	'REQUEST_NAME' => undef,
+	'HANDLER_REQUEST' => undef,
+	'HANDLER_DUPLICATE' => undef,
+	'TYPE' => OPTION_TYPE_SYNC
+};
 
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
 
+our %CURRENT_CONTEXT;
+
 sub _ipdiscover_prolog_resp{
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
 	
-	my $current_context = shift;
+	return unless $CURRENT_CONTEXT{'EXIST_FL'};
+	
 	my $resp = shift;
 	
 	my $request;
 	my $row;
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DATABASE_ID'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
 		
 	################################
 	#IPDISCOVER
@@ -52,7 +53,7 @@ sub _ipdiscover_prolog_resp{
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 		$row = $request->fetchrow_hashref();
 		push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ]};
-		&_set_http_header('Connection', 'close');
+		&_set_http_header('Connection', 'close', $CURRENT_CONTEXT{'APACHE_OBJECT'});
 		return(1);
 	}else{
 		return(0);
@@ -69,11 +70,9 @@ sub _ipdiscover_main{
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
 	
-	my $current_context = shift;
-	
-	my $DeviceID = $current_context->{'DATABASE_ID'};
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $data = $current_context->{'DATA'};
+	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $data = $CURRENT_CONTEXT{'DATA'};
 	
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
 		return(1);
@@ -101,7 +100,7 @@ sub _ipdiscover_main{
 
 		if($row = $request->fetchrow_hashref){
 	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} =! 0){
-				$subnet = &_ipdiscover_find_iface($result, $current_context);
+				$subnet = &_ipdiscover_find_iface($result);
 				if(!$subnet){
 					return(&_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID));
 				}elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
@@ -151,7 +150,7 @@ sub _ipdiscover_read_result{
 		
 		# We insert the results (MAC/IP)
 		$update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL, NAME=? WHERE MAC=?');
-		$insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME) VALUES(?,?,?,?)');
+		$insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME) VALUES(?,?,?,?,?)');
 		
 		$base = $result->{CONTENT}->{IPDISCOVER}->{H};
 		for(@$base){
@@ -184,19 +183,17 @@ sub _ipdiscover_find_iface{
 	my $result = shift;
 	my $base = $result->{CONTENT}->{NETWORKS};
 	
-	my $current_context = shift;
-	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 	
 	my $request;
 	my @worth;
 	
 	for(@$base){
-		if($_->{DESCRIPTION}=~/ppp/i){
-			if($_->{STATUS}!~/up/i){
-				if($_->{IPMASK}!~/^(?:255\.){2}/){
-					if($_->{IPSUBNET}!~/^(\d{1,3}(?:\.\d{1,3}){3})$/){
-						next;
-		}}}}
+		if($_->{DESCRIPTION}!~/ppp/i){
+			if($_->{STATUS}=~/up/i){
+				if($_->{IPMASK}=~/^(?:255\.){2}/){
+					if($_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/){
+	
 		# Looking for a need of ipdiscover
 		$request = $dbh->prepare('SELECT HARDWARE_ID FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
 		$request->execute($_->{IPSUBNET});
@@ -205,7 +202,8 @@ sub _ipdiscover_find_iface{
 			return $_->{IPSUBNET};
 		}
 		$request->finish;
-			
+		
+		}}}}	
 		# Looking for ipdiscover older than ipdiscover_max_value
 		# and compare current computer with actual ipdiscover
 	}

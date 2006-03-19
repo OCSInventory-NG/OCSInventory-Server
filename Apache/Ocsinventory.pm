@@ -14,8 +14,10 @@ use strict;
 BEGIN{
 	if($ENV{'OCS_MODPERL_VERSION'} == 1){
 		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
 	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
 		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
 	}
 }
 
@@ -36,9 +38,9 @@ use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Duplicate;
 use Apache::Ocsinventory::Server::Inventory;
+# Options
 use Apache::Ocsinventory::Server::Option::Registry;
 use Apache::Ocsinventory::Server::Option::Update;
-use Apache::Ocsinventory::Server::Option::Ipdiscover;
 use Apache::Ocsinventory::Server::Option::Ipdiscover;
 # To compress the tx and read the rx
 use Compress::Zlib;
@@ -123,7 +125,7 @@ sub handler{
 	# Here is the post method management
 	}elsif($r->method eq 'POST'){
 	
-		unless(&_get_http_header('Content-type') =~ /Application\/x-compress/i){
+		unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
 		# Our discussion is compressed stream, nothing else
 			&_log(510,'handler') if ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_FORBIDDEN;
@@ -195,7 +197,7 @@ sub handler{
 				&_log(500,'handler');
 				return APACHE_BAD_REQUEST;
 			}else{
-				my $ret = &{$handler}(\%CURRENT_CONTEXT);
+				my $ret = &{$handler}();
 				return(&_end($ret));
 			}
 

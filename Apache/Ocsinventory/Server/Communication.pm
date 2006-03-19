@@ -131,10 +131,10 @@ sub _send_response{
 		return APACHE_BAD_REQUEST;
 	}
 	
-	&_set_http_header('content-length', length($message));
-	&_set_http_header('Cache-control', 'no-cache');
-	&_set_http_content_type('application/x-compressed');
-	&_send_http_headers();
+	&_set_http_header('content-length', length($message),$r);
+	&_set_http_header('Cache-control', 'no-cache',$r);
+	&_set_http_content_type('application/x-compressed',$r);
+	&_send_http_headers($r);
 	$r->print($message);
 
 	return APACHE_OK;
@@ -175,14 +175,14 @@ sub _prolog_build_resp{
 
 	for(&_modules_get_prolog_writers()){
 		last if $_ == 0;
-		&$_(\%CURRENT_CONTEXT,$resp);
+		&$_($resp);
 	}
 }
 
 sub _prolog_read{
 	for(&_modules_get_prolog_readers()){
 		last if $_==0;
-		&$_(\%CURRENT_CONTEXT);
+		&$_();
 	}
 }
 1;

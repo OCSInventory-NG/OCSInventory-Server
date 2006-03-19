@@ -7,13 +7,27 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
-
+package Apache::Ocsinventory::Server::Modperl1;
 
 # For compatibilities with apache 1,5
 #####################################
 use mod_perl;
 use constant MP2 => $mod_perl::VERSION >= 1.99;
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw/
+	APACHE_SERVER_ERROR
+	APACHE_FORBIDDEN
+	APACHE_OK
+	APACHE_BAD_REQUEST
+	_set_http_header
+	_set_http_content_type
+	_get_http_header
+	_send_http_headers
+/;
 
 BEGIN{
 	if(MP2){
@@ -33,26 +47,24 @@ use constant APACHE_FORBIDDEN => MP2?Apache::FORBIDDEN:Apache::Constants::FORBID
 use constant APACHE_OK => MP2?Apache::OK:Apache::Constants::OK;
 use constant APACHE_BAD_REQUEST => MP2?Apache::BAD_REQUEST:Apache::Constants::BAD_REQUEST;
 
-our %CURRENT_CONTEXT;
-
 # Wrappers
 sub _set_http_header{
-	my $header = shift;
-	my $value = shift;
-	$CURRENT_CONTEXT{'APACHE_OBJECT'}->header_out($header => $value);
+	my ($header, $value, $r) = @_;
+	$r->header_out($header => $value);
 	return(0);
 }
 
 sub _set_http_content_type{
-	my $type = shift;
-	$CURRENT_CONTEXT{'APACHE_OBJECT'}->content_type($type);
+	my ($type, $r) = @_;
+	$r->content_type($type);
 }
 
 sub _get_http_header{
-	my $header = shift;
-	return $CURRENT_CONTEXT{'APACHE_OBJECT'}->headers_in->{$header};
+	my ($header, $r) = @_;
+	return $r->headers_in->{$header};
 }
 sub _send_http_headers{
-	$CURRENT_CONTEXT{'APACHE_OBJECT'}->send_http_header;
+	my $r = shift;
+	$r->send_http_header;
 }
 1;

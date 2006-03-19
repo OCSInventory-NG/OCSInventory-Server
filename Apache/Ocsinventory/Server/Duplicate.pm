@@ -121,11 +121,13 @@ sub _duplicate_detect{
 		}
 	}
 	# ...or its serial
-	$request = $dbh->prepare('SELECT HARDWARE_ID, SSN FROM bios WHERE SSN=? AND HARDWARE_ID<>?');
-	$request->execute($result->{CONTENT}->{BIOS}->{SSN}, $DeviceID);
-	while($row = $request->fetchrow_hashref()){
-		if(!&_already_in_array($row->{'SSN'}, \@bad_serial)){
-			$exist->{$row->{'HARDWARE_ID'}}->{'SSN'}=1;
+	if($result->{CONTENT}->{BIOS}->{SSN}){
+		$request = $dbh->prepare('SELECT HARDWARE_ID, SSN FROM bios WHERE SSN=? AND HARDWARE_ID<>?');
+		$request->execute($result->{CONTENT}->{BIOS}->{SSN}, $DeviceID);
+		while($row = $request->fetchrow_hashref()){
+			if(!&_already_in_array($row->{'SSN'}, \@bad_serial)){
+				$exist->{$row->{'HARDWARE_ID'}}->{'SSN'}=1;
+			}
 		}
 	}
 	$request->finish;
@@ -201,7 +203,7 @@ sub _duplicate_replace{
 	for(&_modules_get_duplicate_handlers()){
 		last if $_==0;
 		# Returning 1 will abort replacement
-		unless(&$_(\%CURRENT_CONTEXT,$device)){
+		unless(&$_($device)){
 			&_unlock($device);
 			return(1);
 		}

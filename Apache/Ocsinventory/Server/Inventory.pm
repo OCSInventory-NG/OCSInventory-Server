@@ -92,13 +92,13 @@ sub _context{
 		$update = 1;
 	}else{
 		$dbh->do('INSERT INTO hardware(DEVICEID) VALUES(?)', {}, $CURRENT_CONTEXT{'DEVICEID'}) or return(1);
-		unless($CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
+		#unless($CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
 			my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
 			$request->execute($CURRENT_CONTEXT{'DEVICEID'}) or return(1);
 			my $row = $request->fetchrow_hashref;
 			$CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
 			$DeviceID = $row->{'ID'};
-		}
+		#}
 		$update=0;
 	}
 	return(0);
@@ -107,7 +107,7 @@ sub _context{
 # Inserting values of <HARDWARE> in hardware table
 sub _hardware{
 	my $base = $result->{CONTENT}->{HARDWARE};
-	my $ua = _get_http_header('User-agent');
+	my $ua = _get_http_header('User-agent', $CURRENT_CONTEXT{'APACHE_OBJECT'});
 	# We replace all data but quality and fidelity. The last come becomes the last date.
 
 $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
@@ -551,7 +551,7 @@ sub _post_inventory{
 sub _options{
 	for(&_modules_get_inventory_options()){
 		last if $_== 0;
-		&$_(\%CURRENT_CONTEXT);
+		&$_();
 	}
 }
 1;

@@ -11,28 +11,27 @@ package Apache::Ocsinventory;
 
 use strict;
 
-BEGIN{
-	# Initialize option
-	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-		'HANDLER_PROLOG_READ' => undef,
-		'HANDLER_PROLOG_RESP' => undef,
-		'HANDLER_INVENTORY' => undef,
-		'REQUEST_NAME' => 'UPDATE',
-		'HANDLER_REQUEST' => \&_update_handler,
-		'HANDLER_DUPLICATE' => undef,
-		'TYPE' =>undef
-	};
-}
+# Initialize option
+push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'HANDLER_PROLOG_READ' => undef,
+	'HANDLER_PROLOG_RESP' => undef,
+	'HANDLER_INVENTORY' => undef,
+	'REQUEST_NAME' => 'UPDATE',
+	'HANDLER_REQUEST' => \&_update_handler,
+	'HANDLER_DUPLICATE' => undef,
+	'TYPE' =>undef
+};
 
 # Default
 $Apache::Ocsinventory::{OPTIONS}{'OCS_OPT_UPDATE'} = 0;
 
+our %CURRENT_CONTEXT;
+
 # To manage the update request
 sub _update_handler{
 
-	my $current_context = shift;
-	my $data = $current_context->{'DATA'};
-	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $data = $CURRENT_CONTEXT{'DATA'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 
 	my %resp;
 	my @agent;

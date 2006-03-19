@@ -11,32 +11,30 @@ package Apache::Ocsinventory;
 
 use strict;
 
-BEGIN{
-	# Initialize option
-	push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-		'HANDLER_PROLOG_READ' => undef,
-		'HANDLER_PROLOG_RESP' => \&_registry_prolog_resp,
-		'HANDLER_INVENTORY' => \&_registry_main,
-		'REQUEST_NAME' => undef,
-		'HANDLER_REQUEST' => undef,
-		'HANDLER_DUPLICATE' => \&_registry_duplicate,
-		'TYPE' => OPTION_TYPE_SYNC
-	};
-}
+# Initialize option
+push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'HANDLER_PROLOG_READ' => undef,
+	'HANDLER_PROLOG_RESP' => \&_registry_prolog_resp,
+	'HANDLER_INVENTORY' => \&_registry_main,
+	'REQUEST_NAME' => undef,
+	'HANDLER_REQUEST' => undef,
+	'HANDLER_DUPLICATE' => \&_registry_duplicate,
+	'TYPE' => OPTION_TYPE_SYNC
+};
 
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
+
+our %CURRENT_CONTEXT;
 
 sub _registry_main{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
 	
-	my $current_context = shift;
-	
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DEVICEID'};
-	my $update = $current_context->{'EXIST_FL'};
-	my $data = $current_context->{'DATA'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
+	my $update = $CURRENT_CONTEXT{'EXIST_FL'};
+	my $data = $CURRENT_CONTEXT{'DATA'};
 
 	my $result;
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
@@ -66,10 +64,9 @@ sub _registry_prolog_resp{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
 	
-	my $current_context = shift;
 	my $resp = shift;
 	
-	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
 
 	# Sync option
 	return if $resp->{'RESPONSE'} eq 'STOP';
@@ -105,11 +102,11 @@ sub _registry_prolog_resp{
 }
 
 sub _registry_duplicate{	
-	my $current_context = shift;
+	
 	my $device = shift;
 	
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DATABASE_ID'};
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
 
 	# If we encounter problems, it aborts whole replacement
 	return $dbh->do('UPDATE registry SET HARDWARE_ID=? WHERE HARDWARE_ID=?',{}, $DeviceID, $device);

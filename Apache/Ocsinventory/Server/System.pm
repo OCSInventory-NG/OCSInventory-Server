@@ -61,7 +61,7 @@ sub _database_connect{
 	# Login
 	$DBuser = $ENV{'OCS_DB_USER'};
 	# Password
-	$DBpassword = $ENV{'OCS_DB_PWD'};
+	$DBpassword = $CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
 	# Port
 	$Port = $ENV{'OCS_DB_PORT'};
 	# Host
@@ -69,7 +69,7 @@ sub _database_connect{
 	#
 	# To manage A specific database for the non connected computers
 	# If no database specified, we take the httpd DBNAME one
-	if(&_get_http_header('User-agent') =~ /local/i){
+	if(&_get_http_header('User-agent',$CURRENT_CONTEXT{'APACHE_OBJECT'}) =~ /local/i){
 	    if($ENV{'OCS_DB_LOCAL'}){
 	      $Database = $ENV{'OCS_DB_LOCAL'};
 	    }else{
@@ -123,7 +123,7 @@ sub _log{
 	my $comment = shift;
 	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
 
-	print LOG localtime().";$code;$DeviceID;".$ENV{'REMOTE_ADDR'}.";".&_get_http_header('User-agent').";$phase;".($comment?$comment:"")."\n";
+	print LOG localtime().";$code;$DeviceID;".$ENV{'REMOTE_ADDR'}.";".&_get_http_header('User-agent',$CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
 }
 
 # Subroutine called at the end of execution
@@ -142,7 +142,7 @@ sub _end{
 	#Non-transactionnal table
 	&_unlock($DeviceID) if $CURRENT_CONTEXT{'LOCK_FL'};
 	close(LOG);
-	$dbh->disconnect;
+	#$dbh->disconnect;
 	return $ret;
 
 }
@@ -246,10 +246,10 @@ sub _send_file{
 			# We extract the file and send it
 			$row = $request->fetchrow_hashref();
 			# We force this content type to avoid the direct interpretation of, for example, a plain text file
-			&_set_http_header('Cache-control' => $ENV{'OCS_OPT_PROXY_REVALIDATE_DELAY'});
-			&_set_http_header('Content-length' => length($row->{'CONTENT'}));
-			&_set_http_content_type('Application/octet-stream');
-			&_send_http_headers();
+			&_set_http_header('Cache-control' => $ENV{'OCS_OPT_PROXY_REVALIDATE_DELAY'},$r);
+			&_set_http_header('Content-length' => length($row->{'CONTENT'}),$r);
+			&_set_http_content_type('Application/octet-stream',$r);
+			&_send_http_headers($r);
 			$r->print($row->{'CONTENT'});
 
 			# We log it
@@ -280,10 +280,10 @@ sub _send_file{
 			$row=$request->fetchrow_hashref();
 			# Sending
 			$row->{'CONTENT'}=Compress::Zlib::compress($row->{'CONTENT'}) or &_log(506,'update'),return APACHE_BAD_REQUEST;
-			&_set_http_content_type('Application/octet-stream');
-			&_set_http_header('Cache-control', $ENV{'OCS_OPT_PROXY_REVALIDATE_DELAY'});
-			&_set_http_header('Content-length', length($row->{'CONTENT'}));
-			&_send_http_headers();
+			&_set_http_content_type('Application/octet-stream',$r);
+			&_set_http_header('Cache-control', $ENV{'OCS_OPT_PROXY_REVALIDATE_DELAY'},$r);
+			&_set_http_header('Content-length', length($row->{'CONTENT'}),$r);
+			&_send_http_headers($r);
 			$r->print($row->{'CONTENT'});
 			&_log(200,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$request->finish;
