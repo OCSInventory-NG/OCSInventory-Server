@@ -1,7 +1,7 @@
 #!/bin/sh
 ################################################################################
 #
-# OCS Inventory NG Management Server PSetup
+# OCS Inventory NG Management Server Setup
 #
 # Copyleft 2006 Didier LIROULET
 # Web: http://ocsinventory.sourceforge.net
@@ -514,18 +514,19 @@ then
             echo "Installation aborted !"
             exit 1
         fi
-    fi
-    echo
-    echo "Ensure prerequisites are OK, otherwise Communication server may encounter problems."
-    echo "If you were not prompted for warnings, all seems good ;-)"
-    echo -n "Do you wish to continue ([y]/n) ?"
-    read ligne
-    if (test -z $ligne) || (test $ligne = "y")
-    then
-        echo "Assuming prerequisites are OK."
     else
-        echo "Installation aborted !"
-        exit 1
+        echo
+        echo "Ensure prerequisites are OK, otherwise Communication server may encounter"
+        echo "problems. If you were not prompted for warnings, all seems good ;-)"
+        echo -n "Do you wish to continue ([y]/n) ?"
+        read ligne
+        if (test -z $ligne) || (test $ligne = "y")
+        then
+            echo "Assuming prerequisites are OK."
+        else
+            echo "Installation aborted !"
+            exit 1
+        fi
     fi
     echo
     echo "+----------------------------------------------------------+"
@@ -538,8 +539,8 @@ then
     make >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Prepare failed, please log at previous error and fix (see setup.log) !"
-    echo
+        echo "ERROR: Prepare failed, please look at error in setup.log and fix !"
+        echo
         echo "Installation aborted !"
         exit 1
     fi
@@ -555,8 +556,8 @@ then
     make install >> ../setup.log 2>&1
     if [ $? != 0 ]
     then 
-        echo "ERROR: Install of Perl modules failed, please log at previous error and fix (see setup.log) !"
-    echo
+        echo "ERROR: Install of Perl modules failed, please look at error in setup.log and fix !"
+        echo
         echo "Installation aborted !"
         exit 1
     fi
@@ -571,16 +572,66 @@ then
     echo "Creating Communication server log directory $OCS_COM_SRV_LOG."
     echo "Creating Communication server log directory $OCS_COM_SRV_LOG" >> ../setup.log
     mkdir -p $OCS_COM_SRV_LOG >> ../setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to create log directory, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     echo
     echo "Fixing Communication server log directory files permissions."
     echo "Fixing Communication server log directory permissions" >> ../setup.log
     chown -R root:$APACHE_GROUP $OCS_COM_SRV_LOG >> ../setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod -R gu+rwx $OCS_COM_SRV_LOG >> ../setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod -R o-rwx $OCS_COM_SRV_LOG >> ../setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Configuring logrotate for Communication server."
+    echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> ../setup.log
+    cp logrotate.ocsinventory-NG logrotate.ocsinventory-NG.local
+    ed logrotate.ocsinventory-NG.local << EOF >> ../setup.log 2>&1
+        1,$ g/^ *PATH_TO_LOG_DIRECTORY*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
+        w
+        q
+EOF
+    echo "******** Begin updated logrotate.ocsinventory-NG ***********" >> ../setup.log
+    cat logrotate.ocsinventory-NG.local >> ../setup.log
+    echo "******** End updated logrotate.ocsinventory-NG ***********" >> ../setup.log
+    echo "Writing communication server logrotate to file /etc/logrotate.d/ocsinventory-NG"
+    echo "Writing communication server logrotate to file /etc/logrotate.d/ocsinventory-NG" >> ../setup.log
+    cp -f logrotate.ocsinventory-NG.local /etc/logrotate.d/ocsinventory-NG >> ../setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to configure log rotation, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo
     
     echo
     echo "+----------------------------------------------------------+"
-    echo "| OK, Communication server install finished ;-)            |"
+    echo "| OK, Communication server log directory created ;-)       |"
     echo "|                                                          |"
     echo "| Now configuring Apache web server...                     |"
     echo "+----------------------------------------------------------+"
@@ -588,10 +639,10 @@ then
     echo "Configuring Apache web server (ed ocsinventory.conf)" >> ../setup.log
     cp ocsinventory.conf ocsinventory.conf.local
     ed ocsinventory.conf.local << EOF >> ../setup.log 2>&1
-        1,$ g/^ *PerlSetEnv OCS_DB_HOST*/s#localhost#$DB_SERVER_HOST#
-        1,$ g/^ *PerlSetEnv OCS_DB_PORT*/s#3306#$DB_SERVER_PORT#
-        1,$ g/^ *PerlSetEnv OCS_MODPERL_VERSION*/s#1#$APACHE_MOD_PERL_VERSION#
-        1,$ g/^ *PerlSetEnv OCS_LOGPATH*/s#/var/log/ocsinventory-NG#$OCS_COM_SRV_LOG#
+        1,$ g/^ *PerlSetEnv OCS_DB_HOST*/s#DATABASE_SERVER#$DB_SERVER_HOST#
+        1,$ g/^ *PerlSetEnv OCS_DB_PORT*/s#DATABASE_PORT#$DB_SERVER_PORT#
+        1,$ g/^ *PerlSetEnv OCS_MODPERL_VERSION*/s#VERSION_MP#$APACHE_MOD_PERL_VERSION#
+        1,$ g/^ *PerlSetEnv OCS_LOGPATH*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
         w
         q
 EOF
@@ -620,16 +671,31 @@ EOF
             echo >> $APACHE_CONFIG_FILE
             cat ocsinventory.conf.local >> $APACHE_CONFIG_FILE
             echo
-            echo "Please, review $APACHE_CONFIG_FILE to ensure all is good."
-            echo "Then restart Apache daemon."
+            echo "+----------------------------------------------------------+"
+            echo "| OK, Communication server setup sucessfully finished ;-)  |"
+            echo "|                                                          |"
+            echo "| Please, review $APACHE_CONFIG_FILE"
+            echo "| to ensure all is good. Then restart Apache daemon.       |"
+            echo "+----------------------------------------------------------+"
         fi
     else
         echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
         echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf" >> ../setup.log
         cp -f ocsinventory.conf.local $APACHE_CONFIG_DIRECTORY/ocsinventory.conf >> ../setup.log 2>&1
+        if [ $? != 0 ]
+        then
+            echo "ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/ocsinventory.conf, please look at error in setup.log and fix !"
+            echo
+            echo "Installation aborted !"
+            exit 1
+        fi
         echo
-        echo "Please, review $APACHE_CONFIG_DIRECTORY/ocsinventory.conf to ensure all is good."
-        echo "Then restart Apache daemon."
+        echo "+----------------------------------------------------------+"
+        echo "| OK, Communication server setup sucessfully finished ;-)  |"
+        echo "|                                                          |"
+        echo "| Please, review $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
+        echo "| to ensure all is good. Then restart Apache daemon.       |"
+        echo "+----------------------------------------------------------+"
     fi
     echo
     echo "Leaving ocsinventory-NG directory" >> ../setup.log
@@ -691,20 +757,69 @@ then
     echo "Creating directory $APACHE_ROOT_DOCUMENT/ocsreports."
     echo "Creating directory $APACHE_ROOT_DOCUMENT/ocsreports" >> setup.log
     mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports/ipd >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports/ipd, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     
     echo
     echo "Copying files to $APACHE_ROOT_DOCUMENT/ocsreports."
     echo "Copying files to $APACHE_ROOT_DOCUMENT/ocsreports" >> setup.log
     cp -Rf ocsreports/* $APACHE_ROOT_DOCUMENT/ocsreports/ >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     
     echo
     echo "Fixing directories and files permissions."
     echo "Fixing directories and files permissions" >> setup.log
     chown -R root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod -R go-w $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod g+w $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod -R g+w $APACHE_ROOT_DOCUMENT/ocsreports/ipd >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     
     echo
     echo "Configuring IPDISCOVER-UTIL Perl script."
@@ -723,11 +838,32 @@ EOF
     echo "Installing IPDISCOVER-UTIL Perl script."
     echo "Installing IPDISCOVER-UTIL Perl script" >> setup.log
     cp ipdiscover-util/ipdiscover-util.pl.local $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     echo
     echo "Fixing permissions on IPDISCOVER-UTIL Perl script."
     echo "Fixing permissions on IPDISCOVER-UTIL Perl script" >> setup.log
     chown root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod gou+x $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     
     echo
     echo "+----------------------------------------------------------+"

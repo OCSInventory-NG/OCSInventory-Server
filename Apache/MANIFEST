@@ -1,4 +1,8 @@
 binutils/Ocsinventory_local.pl
+INSTALL
+logrotate.ocsinventory-NG
+Makefile.PL
+MANIFEST
 Ocsinventory/Server/Communication.pm
 Ocsinventory/Server/Constants.pm
 Ocsinventory/Server/Duplicate.pm
@@ -9,8 +13,5 @@ Ocsinventory/Server/System.pm
 Ocsinventory/Server/Option/Ipdiscover.pm
 Ocsinventory/Server/Option/Registry.pm
 Ocsinventory/Server/Option/Update.pm
-INSTALL
-Makefile.PL
-MANIFEST
-ocsinventory.conf
 Ocsinventory.pm
+ocsinventory.conf

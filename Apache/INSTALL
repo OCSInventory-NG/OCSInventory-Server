@@ -26,7 +26,8 @@ To setup it, just follow traditional PERL Module installation procedure.
 - make install
 
 This will install OCS Inventory NG Communication Server PERL Module into
-standard PERL includes directory.
+standard PERL includes directory, and batch import utility into file
+/usr/bin/Ocsinventory_local.pl.
 
 Next, you have to to configure Apache web server to load Communication Server
 at startup. You can use provided ocsinventory.conf file as sample.
@@ -37,8 +38,17 @@ release of mod_perl your Apache is using. On Linux computers, you can find which
 release of mod_perl is installed by running the following command:
 - On RPM enabled OS, rpm -q mod_perl
 - On DPKG enabled OS, dpkg -l libapache*-mod-perl*
-You must set the value of PERL constant OCS_MODPERL_VERSION to 1 if mod_perl 1.999_21 or previous is used by Apache, or to 2 if mod_perl 1.999_22 and higher is used by Apache.
+You must set the value of PERL constant OCS_MODPERL_VERSION to 1 if mod_perl
+1.999_21 or previous is used by Apache, or to 2 if mod_perl 1.999_22 and higher
+is used by Apache.
 
-Also, update constants OCS_DB_HOST and OCS_DB_PORT if database server is not on the same computer as Communication Server.
+Update constants OCS_DB_HOST and OCS_DB_PORT to specify where is MySQL database
+server. Generally, set localhost and 3306 if MySQL is on the same computer.
+
+Update constant OCS_LOGPATH to specify where Communication must write logs, if
+they are enabled. Remember to allow web server to write in this directory !
+
+File logrotate.ocsinventory-NG is a sample to enable rotation of Communication
+Server logs.
 
 Enjoy ;-)
