@@ -285,7 +285,7 @@ sub _send_file{
 			&_set_http_header('Content-length', length($row->{'CONTENT'}),$r);
 			&_send_http_headers($r);
 			$r->print($row->{'CONTENT'});
-			&_log(200,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(305,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$request->finish;
 			return APACHE_OK;
 		}

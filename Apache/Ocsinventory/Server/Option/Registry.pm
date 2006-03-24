@@ -41,10 +41,10 @@ sub _registry_main{
 		return(1);
 	}
 
-	my $sth = $dbh->prepare('INSERT INTO registry(DEVICEID, NAME, REGVALUE) VALUES(?, ?, ?)');
+	my $sth = $dbh->prepare('INSERT INTO registry(HARDWARE_ID, NAME, REGVALUE) VALUES(?, ?, ?)');
 
 	if($update){
-		if(!$dbh->do('DELETE FROM registry WHERE DEVICEID=?', {}, $DeviceID)){
+		if(!$dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
@@ -78,7 +78,7 @@ sub _registry_prolog_resp{
 	#########
 	# Ask computer to retrieve the requested registry keys
 	my @registry;
-	$request=$dbh->prepare("SELECT * FROM regconfig");
+	$request=$dbh->prepare('SELECT * FROM regconfig');
 	$request->execute;
 	while($row = $request->fetchrow_hashref){
 		push @registry,
@@ -91,7 +91,7 @@ sub _registry_prolog_resp{
 	}
 
 	if(@registry){
-		push @{$$resp{'OPTION'}}, {
+		push @{ $resp->{'OPTION'} }, {
 					'NAME'  => [ 'REGISTRY' ],
 					'PARAM'	=> \@registry
 				};

@@ -106,7 +106,7 @@ sub _ipdiscover_main{
 				}elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
 					# The computer is elected, we have to write it in devices
 					$dbh->do('INSERT INTO devices(HARDWARE_ID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return(1);
-					&_log(303,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
+					&_log(1001,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 					return(0);
 				}else{
 					return(0);
@@ -124,7 +124,7 @@ sub _ipdiscover_main{
 		if(!$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID)){
 			return(1);
 		}
-		&_log(304,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(1002,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	0;
 }
@@ -155,7 +155,7 @@ sub _ipdiscover_read_result{
 		$base = $result->{CONTENT}->{IPDISCOVER}->{H};
 		for(@$base){
 			unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
-				&_log(305,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
+				&_log(1003,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
 				next;
 			}
 			$update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});
@@ -253,7 +253,7 @@ sub _ipdiscover_evaluate{
 				if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE SET HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
 					return(1);
 				}
-				&_log(303,'ipdiscover',$over?'over':'better') if $ENV{'OCS_OPT_LOGLEVEL'};
+				&_log(1001,'ipdiscover',$over?'over':'better') if $ENV{'OCS_OPT_LOGLEVEL'};
 			}
 		}else{
 				next;

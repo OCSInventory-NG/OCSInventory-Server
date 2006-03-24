@@ -42,6 +42,7 @@ use Apache::Ocsinventory::Server::Inventory;
 use Apache::Ocsinventory::Server::Option::Registry;
 use Apache::Ocsinventory::Server::Option::Update;
 use Apache::Ocsinventory::Server::Option::Ipdiscover;
+use Apache::Ocsinventory::Server::Option::Download;
 # To compress the tx and read the rx
 use Compress::Zlib;
 
@@ -127,7 +128,7 @@ sub handler{
 	
 		unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
 		# Our discussion is compressed stream, nothing else
-			&_log(510,'handler') if ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(510,'handler') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_FORBIDDEN;
 
 		}

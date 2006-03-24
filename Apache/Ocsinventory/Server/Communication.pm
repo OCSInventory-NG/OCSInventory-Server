@@ -71,10 +71,9 @@ sub _prolog{
 		
 		# Saving lastdate
 		$lastdate = $info->{'LCOME'};
-		$request->finish;
 
 		# Maybe there are computer's special frequency
-		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE DEVICEID=? AND NAME="FREQUENCY"');
+		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="FREQUENCY"');
 		$request->execute($DeviceID);
 		if($row=$request->fetchrow_hashref()){
 			$frequency=$row->{'IVALUE'};
@@ -136,15 +135,13 @@ sub _send_response{
 	&_set_http_content_type('application/x-compressed',$r);
 	&_send_http_headers($r);
 	$r->print($message);
-
-	return APACHE_OK;
-
+	return(0);
 }
 
 sub _prolog_resp{
 	my $decision = shift;
-
 	my %resp;
+	
 	&_prolog_build_resp($decision, \%resp);
 
 	if($resp{'RESPONSE'}[0] eq 'STOP'){
@@ -177,6 +174,7 @@ sub _prolog_build_resp{
 		last if $_ == 0;
 		&$_($resp);
 	}
+	return(0);
 }
 
 sub _prolog_read{
@@ -184,5 +182,6 @@ sub _prolog_read{
 		last if $_==0;
 		&$_();
 	}
+	return(0);
 }
 1;

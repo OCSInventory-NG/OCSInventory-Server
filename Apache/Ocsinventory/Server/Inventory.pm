@@ -132,7 +132,7 @@ $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).",
 		WINCOMPANY=".$dbh->quote($base->{WINCOMPANY}).",
 		WINOWNER=".$dbh->quote($base->{WINOWNER}).",
 		WINPRODID=".$dbh->quote($base->{WINPRODID})."
-			WHERE ID=".$DeviceID)
+		WHERE ID=".$DeviceID)
 or return(1);
 
 0;

@@ -1,0 +1,108 @@
+################################################################################
+## OCSINVENTORY-NG 
+## Copyleft Pascal DANEK 2005
+## Web : http://ocsinventory.sourceforge.net
+##
+## This code is open source and may be copied and modified as long as the source
+## code is always made freely available.
+## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
+################################################################################
+package Apache::Ocsinventory;
+
+use strict;
+
+use constant CODE_SUCCESS => 0;
+
+# Initialize option
+push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'HANDLER_PROLOG_READ' => undef,
+	'HANDLER_PROLOG_RESP' => \&download_prolog_resp,
+	'HANDLER_INVENTORY' => undef,
+	'REQUEST_NAME' => 'DOWNLOAD',
+	'HANDLER_REQUEST' => \&download_handler,
+	'HANDLER_DUPLICATE' => undef,
+	'TYPE' => OPTION_TYPE_ASYNC
+};
+
+# Default
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'} = 60;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} = 10;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_TIMEOUT'} = 30;
+
+our %CURRENT_CONTEXT;
+
+sub download_prolog_resp{
+	
+	my $resp = shift;
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $request;
+	my $row;
+	my @packages;
+	
+	push @packages,{
+		'TYPE' 			=> 'CONF',
+		'ON' 			=> $ENV{'OCS_OPT_DOWNLOAD'},
+		'TIMEOUT' 		=> $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'},
+		'PERIOD_LENGTH' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'},
+		'PERIOD_LATENCY' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'},
+		'FRAG_LATENCY' 		=> $ENV{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'}
+	};
+	
+	if($ENV{'OCS_OPT_DOWNLOAD'}){
+		$request = $dbh->prepare( q {SELECT FILEID,LOCATION,CERT 
+		FROM devices,download_enable 
+		WHERE HARDWARE_ID=? 
+		AND devices.IVALUE=download_enable.ID 
+		AND devices.NAME='DOWNLOAD'
+		AND TVALUE IS NULL} );
+		
+		# Retrieving packages associated to the current device
+		$request->execute( $CURRENT_CONTEXT{'DATABASE_ID'});
+		
+		
+		while($row = $request->fetchrow_hashref){
+			push @packages,{
+				'TYPE' 	=> 'PACK',
+				'ID' 	=> $row->{'FILEID'},
+				'LOC' 	=> $row->{'LOCATION'},
+				'CERT' 	=> $row->{'CERT'}
+			};
+		}
+		push @{ $resp->{'OPTION'} },{
+			'NAME' 	=> ['DOWNLOAD'],
+			'PARAM' => \@packages
+		};
+	}
+	
+	if($resp->{'RESPONSE'}[0] eq 'STOP'){
+		$resp->{'RESPONSE'} = ['OTHER'];
+	}
+	
+	return(0);
+}
+
+sub download_handler{
+	# Initialize data
+	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $result = $CURRENT_CONTEXT{'XML_ENTRY'};
+	my $request;
+	
+	$request = $dbh->prepare('SELECT ID FROM download_enable WHERE FILEID=?');
+	$request->execute( $result->{'ID'} );
+	
+	if(my $row = $request->fetchrow_hashref()){
+		$dbh->do('UPDATE devices SET TVALUE=? 
+		WHERE NAME="DOWNLOAD" 
+		AND HARDWARE_ID=? 
+		AND IVALUE=?',
+		{}, $result->{'ERR'}, $CURRENT_CONTEXT{'DATABASE_ID'}, $row->{'ID'} ) 
+			or return(APACHE_SERVER_ERROR);
+	}else{
+		&_log(2501, 'download');
+		return(APACHE_OK);
+	}
+}
+1;
+

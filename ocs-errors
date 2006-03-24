@@ -23,6 +23,7 @@ ERRORS
 515--Script error, rollback transaction.
 516--Deviceid locked, inventory refused
 517--Cannot handle normal duplicate
+
 INVENTORY
 ---------
 100--Inventory accepted
@@ -32,16 +33,21 @@ INVENTORY
 104--Inventory incoming
 105--Inventory refused but other task required
 
-UPDATE
-------
-200--Files transmitted
-
 MANAGEMENT
 ----------
 300--Device replaced
 301--Device can be duplicated
 302--File transmitted (deploy)
-303--ipdiscover enabled
-304--ipdiscover disabled
-305--ipdiscover report error
 304--deploy off
+305--Files transmitted
+
+IPDISCOVER
+----------
+1001--ipdiscover enabled
+1002--ipdiscover disabled
+1003--ipdiscover report error
+
+DOWNLOAD
+--------
+2500--impossible to get config
+2501--message refers to an unexisting package
