@@ -26,7 +26,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'} = 60;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_CYCLE_LATENCY'} = 60;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'} = 10;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} = 10;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_TIMEOUT'} = 30;
@@ -42,12 +43,13 @@ sub download_prolog_resp{
 	my @packages;
 	
 	push @packages,{
-		'TYPE' 			=> 'CONF',
-		'ON' 			=> $ENV{'OCS_OPT_DOWNLOAD'},
-		'TIMEOUT' 		=> $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'},
+		'TYPE' 				=> 'CONF',
+		'ON' 				=> $ENV{'OCS_OPT_DOWNLOAD'},
+		'TIMEOUT' 			=> $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'},
 		'PERIOD_LENGTH' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'},
 		'PERIOD_LATENCY' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'},
-		'FRAG_LATENCY' 		=> $ENV{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'}
+		'FRAG_LATENCY' 		=> $ENV{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'},
+		'CYCLE_LATENCY' 	=> $ENV{'OCS_OPT_DOWNLOAD_CYCLE_LATENCY'}
 	};
 	
 	if($ENV{'OCS_OPT_DOWNLOAD'}){
