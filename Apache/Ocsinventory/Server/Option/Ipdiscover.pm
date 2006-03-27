@@ -7,9 +7,23 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Option::Ipdiscover;
 
 use strict;
+
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::System;
+use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -26,20 +40,20 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
 
-our %CURRENT_CONTEXT;
-
 sub _ipdiscover_prolog_resp{
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
 	
-	return unless $CURRENT_CONTEXT{'EXIST_FL'};
+	my $current_context = shift;
+	
+	return unless $current_context->{'EXIST_FL'};
 	
 	my $resp = shift;
 	
 	my $request;
 	my $row;
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $DeviceID = $current_context->{'DATABASE_ID'};
 		
 	################################
 	#IPDISCOVER
@@ -53,7 +67,7 @@ sub _ipdiscover_prolog_resp{
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 		$row = $request->fetchrow_hashref();
 		push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ]};
-		&_set_http_header('Connection', 'close', $CURRENT_CONTEXT{'APACHE_OBJECT'});
+		&_set_http_header('Connection', 'close', $current_context->{'APACHE_OBJECT'});
 		return(1);
 	}else{
 		return(0);
@@ -70,9 +84,10 @@ sub _ipdiscover_main{
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
 	
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $data = $CURRENT_CONTEXT{'DATA'};
+	my $current_context = shift;
+	my $DeviceID = $current_context->{'DATABASE_ID'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $data = $current_context->{'DATA'};
 	
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
 		return(1);
@@ -100,13 +115,13 @@ sub _ipdiscover_main{
 
 		if($row = $request->fetchrow_hashref){
 	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} =! 0){
-				$subnet = &_ipdiscover_find_iface($result);
+				$subnet = &_ipdiscover_find_iface($result, $current_context->{'DBI_HANDLE'});
 				if(!$subnet){
 					return(&_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID));
 				}elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
 					# The computer is elected, we have to write it in devices
 					$dbh->do('INSERT INTO devices(HARDWARE_ID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return(1);
-					&_log(1001,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
+					&_log(1001,'ipdiscover','Elected') if $ENV{'OCS_OPT_LOGLEVEL'};
 					return(0);
 				}else{
 					return(0);
@@ -124,7 +139,7 @@ sub _ipdiscover_main{
 		if(!$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID)){
 			return(1);
 		}
-		&_log(1002,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(1002,'ipdiscover','Removed') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	0;
 }
@@ -155,7 +170,7 @@ sub _ipdiscover_read_result{
 		$base = $result->{CONTENT}->{IPDISCOVER}->{H};
 		for(@$base){
 			unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
-				&_log(1003,'ipdiscover') if $ENV{'OCS_OPT_LOGLEVEL'};
+				&_log(1003,'ipdiscover','Bad result') if $ENV{'OCS_OPT_LOGLEVEL'};
 				next;
 			}
 			$update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});
@@ -183,7 +198,7 @@ sub _ipdiscover_find_iface{
 	my $result = shift;
 	my $base = $result->{CONTENT}->{NETWORKS};
 	
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $dbh = shift;
 	
 	my $request;
 	my @worth;

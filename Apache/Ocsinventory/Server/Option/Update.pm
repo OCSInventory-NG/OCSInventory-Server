@@ -7,9 +7,39 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Option::Update;
 
 use strict;
+
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw //;
+
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+use Apache::Ocsinventory::Server::System;
+use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -25,13 +55,11 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 # Default
 $Apache::Ocsinventory::{OPTIONS}{'OCS_OPT_UPDATE'} = 0;
 
-our %CURRENT_CONTEXT;
-
 # To manage the update request
 sub _update_handler{
-
-	my $data = $CURRENT_CONTEXT{'DATA'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $current_context = shift;
+	my $data = $current_context->{'DATA'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
 
 	my %resp;
 	my @agent;
@@ -61,7 +89,7 @@ sub _update_handler{
 	##########################
 	# Parse the XML request
 	unless($query = XML::Simple::XMLin( $$data, SuppressEmpty => 1 )){
-		&_log(507,'update');
+		&_log(507,'update','Xml stage');
 		return APACHE_SERVER_ERROR;
 	}
 
@@ -74,7 +102,7 @@ sub _update_handler{
 	if(defined($query->{DMI})){$Dversion = $query->{DMI}};
 	if(defined($query->{IPDISCOVER})){$Iversion = $query->{IPDISCOVER}};
 	if(!defined($Aversion) || !($platform=~/^WINDOWS$|^MAC$|^LINUX$/)){
-			&_log(508,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(508,'update','') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 	}
 	

@@ -7,9 +7,23 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Option::Registry;
 
 use strict;
+
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+use Apache::Ocsinventory::Server::System;
+use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -25,16 +39,15 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
 
-our %CURRENT_CONTEXT;
-
 sub _registry_main{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
 	
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
-	my $update = $CURRENT_CONTEXT{'EXIST_FL'};
-	my $data = $CURRENT_CONTEXT{'DATA'};
+	my $current_context = shift;
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $DeviceID = $current_context->{'DEVICEID'};
+	my $update = $current_context->{'EXIST_FL'};
+	my $data = $current_context->{'DATA'};
 
 	my $result;
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
@@ -64,9 +77,10 @@ sub _registry_prolog_resp{
 
 	return unless $ENV{'OCS_OPT_REGISTRY'};
 	
+	my $current_context = shift;
 	my $resp = shift;
 	
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
 
 	# Sync option
 	return if $resp->{'RESPONSE'} eq 'STOP';
@@ -103,10 +117,11 @@ sub _registry_prolog_resp{
 
 sub _registry_duplicate{	
 	
+	my $current_context = shift;
 	my $device = shift;
 	
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $DeviceID = $current_context->{'DATABASE_ID'};
 
 	# If we encounter problems, it aborts whole replacement
 	return $dbh->do('UPDATE registry SET HARDWARE_ID=? WHERE HARDWARE_ID=?',{}, $DeviceID, $device);

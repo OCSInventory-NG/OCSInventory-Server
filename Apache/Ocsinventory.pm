@@ -18,6 +18,12 @@ BEGIN{
 	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
 		require Apache::Ocsinventory::Server::Modperl2;
 		Apache::Ocsinventory::Server::Modperl2->import();
+	}else{
+		if(defined($ENV{'OCS_MODPERL_VERSION'})){
+			die("OCS_MODPERL_VERSION not defined. Abort\n");
+		}else{
+			die("OCS_MODPERL_VERSION set to, a bad parameter. Must be '1' or '2'. Abort\n");
+		}
 	}
 }
 
@@ -34,15 +40,10 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
-use Apache::Ocsinventory::Server::System;
+use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler/;
 use Apache::Ocsinventory::Server::Communication;
-use Apache::Ocsinventory::Server::Duplicate;
 use Apache::Ocsinventory::Server::Inventory;
-# Options
-use Apache::Ocsinventory::Server::Option::Registry;
-use Apache::Ocsinventory::Server::Option::Update;
-use Apache::Ocsinventory::Server::Option::Ipdiscover;
-use Apache::Ocsinventory::Server::Option::Download;
+
 # To compress the tx and read the rx
 use Compress::Zlib;
 
@@ -75,7 +76,7 @@ sub handler{
 	##########
 	#
 	# All events will be stored in this file in the csv format(See the errors code in the documentation)
-	open LOG, '>>'.LOGPATH.'/ocsinventory-NG.log' or die 'Failed to open log file : $!\n';
+	open LOG, '>>'.LOGPATH.'/ocsinventory-NG.log' or die "Failed to open log file : $!\n";
 	# We don't want buffer, so we allways flush the handles
 	select(LOG);
 	$|=1;
@@ -88,13 +89,13 @@ sub handler{
 
 	#Connect to database
 	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect())){
-		&_log(505,'handler');
+		&_log(505,'handler','Database connection');
 		return APACHE_SERVER_ERROR;
 	}
 
 	#Retrieve server options
 	if(&_get_sys_options()){
-		&_log(503,'handler');
+		&_log(503,'handler', 'System options');
 		return APACHE_SERVER_ERROR;
 	}
 	
@@ -128,7 +129,7 @@ sub handler{
 	
 		unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
 		# Our discussion is compressed stream, nothing else
-			&_log(510,'handler') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(510,'handler', 'Bad content type') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_FORBIDDEN;
 
 		}
@@ -151,18 +152,18 @@ sub handler{
 		#
 		# Inflate the data
 		unless($d = Compress::Zlib::inflateInit()){
-			&_log(506,'handler') if sys_opt{'LOGLEVEL'};
+			&_log(506,'handler','Compress stage') if sys_opt{'LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}
 
 		($data, $status) = $d->inflate($data);
 		unless( $status == Z_OK or $status == Z_STREAM_END){
-			&_log(506,'handler');
+			&_log(506,'handler','Compress stage');
 		}
 		##########################
 		# Parse the XML request
 		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1 )){
-			&_log(507,'handler');
+			&_log(507,'handler','Xml stage');
 			return APACHE_BAD_REQUEST;
 		}
 		$CURRENT_CONTEXT{'XML_ENTRY'} = $query;
@@ -173,7 +174,7 @@ sub handler{
 
 		 # Must be filled
 		unless($request){
-			&_log(500,'handler');
+			&_log(500,'handler','Request not defined');
 			return APACHE_BAD_REQUEST;
 		}
 
@@ -195,10 +196,10 @@ sub handler{
 			# Other request are handled by options
 			my $handler = &_modules_get_request_handler($request);
 			if($handler == 0){
-				&_log(500,'handler');
+				&_log(500,'handler', 'No handler');
 				return APACHE_BAD_REQUEST;
 			}else{
-				my $ret = &{$handler}();
+				my $ret = &{$handler}(\%CURRENT_CONTEXT);
 				return(&_end($ret));
 			}
 

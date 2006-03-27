@@ -7,11 +7,25 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Option::Download;
 
 use strict;
 
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
 use constant CODE_SUCCESS => 0;
+
+use Apache::Ocsinventory::Server::System;
+use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -32,12 +46,11 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} = 10;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_TIMEOUT'} = 30;
 
-our %CURRENT_CONTEXT;
-
 sub download_prolog_resp{
 	
+	my $current_context = shift;
 	my $resp = shift;
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $request;
 	my $row;
 	my @packages;
@@ -61,7 +74,7 @@ sub download_prolog_resp{
 		AND TVALUE IS NULL} );
 		
 		# Retrieving packages associated to the current device
-		$request->execute( $CURRENT_CONTEXT{'DATABASE_ID'});
+		$request->execute( $current_context->{'DATABASE_ID'});
 		
 		
 		while($row = $request->fetchrow_hashref){
@@ -78,17 +91,18 @@ sub download_prolog_resp{
 		};
 	}
 	
-	if($resp->{'RESPONSE'}[0] eq 'STOP'){
-		$resp->{'RESPONSE'} = ['OTHER'];
-	}
+# 	if($resp->{'RESPONSE'}[0] eq 'STOP'){
+# 		$resp->{'RESPONSE'} = ['OTHER'];
+# 	}
 	
 	return(0);
 }
 
 sub download_handler{
 	# Initialize data
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $result = $CURRENT_CONTEXT{'XML_ENTRY'};
+	my $current_context = shift;
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $result = $current_context->{'XML_ENTRY'};
 	my $request;
 	
 	$request = $dbh->prepare('SELECT ID FROM download_enable WHERE FILEID=?');
@@ -99,7 +113,7 @@ sub download_handler{
 		WHERE NAME="DOWNLOAD" 
 		AND HARDWARE_ID=? 
 		AND IVALUE=?',
-		{}, $result->{'ERR'}, $CURRENT_CONTEXT{'DATABASE_ID'}, $row->{'ID'} ) 
+		{}, $result->{'ERR'}, $current_context->{'DATABASE_ID'}, $row->{'ID'} ) 
 			or return(APACHE_SERVER_ERROR);
 	}else{
 		&_log(2501, 'download');

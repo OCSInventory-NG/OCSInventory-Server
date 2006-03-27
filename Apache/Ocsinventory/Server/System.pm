@@ -7,11 +7,57 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::System;
 
 use strict;
 
-our %CURRENT_CONTEXT;
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw /
+	_log
+	_lock
+/;
+
+our %EXPORT_TAGS = (
+	'server' => [ 
+		qw/
+		_get_sys_options
+		_database_connect
+		_end
+		_check_deviceid
+		_log
+		_lock
+		/
+	]
+);
+
+our @EXPORT_OK = (
+	qw /
+	_log 
+	_lock
+	_modules_get_request_handler
+	_modules_get_inventory_options
+	_modules_get_prolog_readers
+	_modules_get_prolog_writers
+	_modules_get_duplicate_handlers
+	/
+);
+
+Exporter::export_ok_tags('server');
+
+use Apache::Ocsinventory::Server::Constants;
 
 sub _init_sys_options{
 	# If there is no defined value in ENV for an option, we define it with its default
@@ -27,7 +73,7 @@ sub _get_sys_options{
 	# Wich options enabled ?
 	#############
 	# We read the table config looking for the ivalues of these options
- 	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+ 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	my %options = %Apache::Ocsinventory::OPTIONS;
 	my $row;
 	my $request = $dbh->prepare('SELECT * FROM config');
@@ -61,7 +107,7 @@ sub _database_connect{
 	# Login
 	$DBuser = $ENV{'OCS_DB_USER'};
 	# Password
-	$DBpassword = $CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
+	$DBpassword = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
 	# Port
 	$Port = $ENV{'OCS_DB_PORT'};
 	# Host
@@ -69,7 +115,7 @@ sub _database_connect{
 	#
 	# To manage A specific database for the non connected computers
 	# If no database specified, we take the httpd DBNAME one
-	if(&_get_http_header('User-agent',$CURRENT_CONTEXT{'APACHE_OBJECT'}) =~ /local/i){
+	if(&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}) =~ /local/i){
 	    if($ENV{'OCS_DB_LOCAL'}){
 	      $Database = $ENV{'OCS_DB_LOCAL'};
 	    }else{
@@ -100,7 +146,7 @@ sub _check_deviceid{
 
 sub _lock{
  	my $device = shift;
-	if(${CURRENT_CONTEXT{'DBI_HANDLE'}}->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
+	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
 		return(0);
 	}else{
 		return(1);
@@ -110,7 +156,7 @@ sub _lock{
 
 sub _unlock{
 	my $device = shift;
-	if(${CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=?', {}, $device)){
+	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=?', {}, $device)){
 		return(0);
 	}else{
 		return(1);
@@ -121,26 +167,27 @@ sub _log{
 	my $code = shift;
 	my $phase = shift;
 	my $comment = shift;
-	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
-
-	print LOG localtime().";$code;$DeviceID;".$ENV{'REMOTE_ADDR'}.";".&_get_http_header('User-agent',$CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
+	my $fh = \*Apache::Ocsinventory::LOG;
+	
+	print $fh localtime().";$code;$DeviceID;".$ENV{'REMOTE_ADDR'}.";".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
 }
 
 # Subroutine called at the end of execution
 sub _end{
 	
 	my $ret = shift;
- 	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+ 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
 	if($ret == APACHE_SERVER_ERROR){
-		&_log(515,"end") if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(515,'end', 'Processing error') if $ENV{'OCS_OPT_LOGLEVEL'};
 		$dbh->rollback;
 	}else{
 		$dbh->commit;
 	}
 	#Non-transactionnal table
-	&_unlock($DeviceID) if $CURRENT_CONTEXT{'LOCK_FL'};
+	&_unlock($DeviceID) if $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'};
 	close(LOG);
 	#$dbh->disconnect;
 	return $ret;
@@ -230,8 +277,8 @@ sub _send_file{
 	my $context = shift;
 	my $request;
 	my $row;
-	my $r = $CURRENT_CONTEXT{'APACHE_OBJECT'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $r = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'};
+	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
 	if($context eq 'deploy'){
 		my $file = shift;
@@ -240,7 +287,7 @@ sub _send_file{
 
 		# If not, we return a bad request and log the event
 		unless($request->rows){
-			&_log(511,'deploy') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(511,'deploy','No file') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}else{
 			# We extract the file and send it
@@ -253,7 +300,7 @@ sub _send_file{
 			$r->print($row->{'CONTENT'});
 
 			# We log it
-			&_log(302,'deploy') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(302,'deploy','File transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_OK;
 		}
 
@@ -265,7 +312,7 @@ sub _send_file{
 		my $version = shift;
 
 		unless($platform and $name and $version){
-			&_log(512,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(512,'update','Bad version desc') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}
 
@@ -274,18 +321,18 @@ sub _send_file{
 
 		unless($request->rows){
 			$request->finish;
-			&_log(512,'deploy') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(512,'update','No file') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}else{
 			$row=$request->fetchrow_hashref();
 			# Sending
-			$row->{'CONTENT'}=Compress::Zlib::compress($row->{'CONTENT'}) or &_log(506,'update'),return APACHE_BAD_REQUEST;
+			$row->{'CONTENT'}=Compress::Zlib::compress($row->{'CONTENT'}) or &_log(506,'update','Compress stage'),return APACHE_BAD_REQUEST;
 			&_set_http_content_type('Application/octet-stream',$r);
 			&_set_http_header('Cache-control', $ENV{'OCS_OPT_PROXY_REVALIDATE_DELAY'},$r);
 			&_set_http_header('Content-length', length($row->{'CONTENT'}),$r);
 			&_send_http_headers($r);
 			$r->print($row->{'CONTENT'});
-			&_log(305,'update') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(305,'update','File transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$request->finish;
 			return APACHE_OK;
 		}

@@ -7,30 +7,47 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Duplicate;
 
 use strict;
 
-our %CURRENT_CONTEXT;
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw / _duplicate_main /;
+
+use Apache::Ocsinventory::Server::Constants;
+use Apache::Ocsinventory::Server::System qw /:server _modules_get_duplicate_handlers/;
 
 # Subroutine called at the end of database inventory insertions
 sub _duplicate_main{
 	my %exist;
 	my $red;
-
-	my $result = $CURRENT_CONTEXT{'XML_INVENTORY'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+	
+	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
+	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
 	# If the duplicate is specified
-	if($result->{CONTENT}->{OLD_DEVICEID} and $result->{CONTENT}->{OLD_DEVICEID} ne $CURRENT_CONTEXT{'DEVICEID'}){
+	if($result->{CONTENT}->{OLD_DEVICEID} and $result->{CONTENT}->{OLD_DEVICEID} ne $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}){
 		# Looking for database id of old deviceid
 		my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
 		$request->execute($result->{CONTENT}->{OLD_DEVICEID});
 		if(my $row = $request->fetchrow_hashref){
 			if(&_duplicate_replace($row->{'ID'})){
 				# If there is an invalid old deviceid
-				&_log(513,'duplicate') if $ENV{'OCS_OPT_LOGLEVEL'};
+				&_log(513,'duplicate','old deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
 				$dbh->rollback;
 			}else{
 				$dbh->commit;
@@ -47,7 +64,7 @@ sub _duplicate_main{
 		for(keys(%exist)){
 			if(&_duplicate_evaluate(\%exist, $_)){
 				if(&_duplicate_replace($_)){
-					&_log(517,'duplicate') if $ENV{'OCS_OPT_LOGLEVEL'};
+					&_log(517,'duplicate','Replacing error') if $ENV{'OCS_OPT_LOGLEVEL'};
 					$dbh->rollback;
 				}else{
 					$dbh->commit;
@@ -90,9 +107,9 @@ sub _duplicate_detect{
 
 	my $exist = shift;
 	
-	my $result = $CURRENT_CONTEXT{'XML_INVENTORY'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
+	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 		
 	my $request;
 	my $row;
@@ -145,9 +162,9 @@ sub _duplicate_replace{
 	#Locks the device
 	return 1 if(&_lock($device));
 	
-	my $DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $result = $CURRENT_CONTEXT{'XML_INVENTORY'};
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
+	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
 					
 	# We keep the old quality and fidelity
 	my $request=$dbh->prepare('SELECT QUALITY,FIDELITY,CHECKSUM FROM hardware WHERE ID=?');
@@ -203,13 +220,13 @@ sub _duplicate_replace{
 	for(&_modules_get_duplicate_handlers()){
 		last if $_==0;
 		# Returning 1 will abort replacement
-		unless(&$_($device)){
+		unless(&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $device)){
 			&_unlock($device);
 			return(1);
 		}
 	}
 
-	&_log(300,'duplicate') if $ENV{'OCS_OPT_LOGLEVEL'};
+	&_log(300,'duplicate',"$device => $DeviceID") if $ENV{'OCS_OPT_LOGLEVEL'};
 
 	#Remove lock
 	&_unlock($device);

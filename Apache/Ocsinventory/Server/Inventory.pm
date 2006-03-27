@@ -7,11 +7,31 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Inventory;
 
 use strict;
 
-our %CURRENT_CONTEXT;
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw /_inventory_handler/;
+
+use Apache::Ocsinventory::Server::Constants;
+use Apache::Ocsinventory::Server::System qw /:server _modules_get_inventory_options/;
+use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Duplicate;
+
 
 my $DeviceID;
 my @accountkeys;
@@ -27,24 +47,24 @@ my $dbh;
 sub _inventory_handler{
 
 	# Initialize data
-	$dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	$data = $CURRENT_CONTEXT{'DATA'};
+	$dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	$data = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'};
 	undef @accountkeys;
 	
 	# XML to Perl
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
-		&_log(507,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(507,'inventory','Xml error') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_BAD_REQUEST;
 	}
 	
 	# Ref to xml in global struct 
-	$CURRENT_CONTEXT{'XML_INVENTORY'} = $result;
+	$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'} = $result;
 
 	#Inventory incoming
-	&_log(104,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
+	&_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
-	if(&_check_deviceid($CURRENT_CONTEXT{'DEVICEID'})){
-		&_log(502,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
+	if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
+		&_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return(APACHE_BAD_REQUEST);
 	}
 
@@ -81,22 +101,22 @@ sub _inventory_handler{
 	&_post_inventory();
 	
 	# That's all
-	&_log(101,'inventory') if $ENV{'OCS_OPT_LOGLEVEL'};
+	&_log(101,'inventory','Transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
 	return APACHE_OK;
 }
 
 sub _context{
 	
-	if($CURRENT_CONTEXT{'EXIST_FL'}){
-		$DeviceID = $CURRENT_CONTEXT{'DATABASE_ID'};
+	if($Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'}){
+		$DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 		$update = 1;
 	}else{
-		$dbh->do('INSERT INTO hardware(DEVICEID) VALUES(?)', {}, $CURRENT_CONTEXT{'DEVICEID'}) or return(1);
-		#unless($CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
+		$dbh->do('INSERT INTO hardware(DEVICEID) VALUES(?)', {}, $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}) or return(1);
+		#unless($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
 			my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
-			$request->execute($CURRENT_CONTEXT{'DEVICEID'}) or return(1);
+			$request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}) or return(1);
 			my $row = $request->fetchrow_hashref;
-			$CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
+			$Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
 			$DeviceID = $row->{'ID'};
 		#}
 		$update=0;
@@ -107,7 +127,7 @@ sub _context{
 # Inserting values of <HARDWARE> in hardware table
 sub _hardware{
 	my $base = $result->{CONTENT}->{HARDWARE};
-	my $ua = _get_http_header('User-agent', $CURRENT_CONTEXT{'APACHE_OBJECT'});
+	my $ua = _get_http_header('User-agent', $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'});
 	# We replace all data but quality and fidelity. The last come becomes the last date.
 
 $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
@@ -524,7 +544,7 @@ sub _post_inventory{
 		
 		}else{
 			# There is a problem. The device MUST be present in the table
-			&_log(509,'postinventory') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(509,'postinventory','No account infos') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$request->finish;
 			$elements{'RESPONSE'} = [ 'ACCOUNT_UPDATE' ];
                         for(@{$result->{CONTENT}->{ACCOUNTINFO}}){
@@ -551,7 +571,7 @@ sub _post_inventory{
 sub _options{
 	for(&_modules_get_inventory_options()){
 		last if $_== 0;
-		&$_();
+		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
 	}
 }
 1;

@@ -7,11 +7,33 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory;
+package Apache::Ocsinventory::Server::Communication;
 
 use strict;
 
-our %CURRENT_CONTEXT;
+BEGIN{
+	if($ENV{'OCS_MODPERL_VERSION'} == 1){
+		require Apache::Ocsinventory::Server::Modperl1;
+		Apache::Ocsinventory::Server::Modperl1->import();
+	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+		require Apache::Ocsinventory::Server::Modperl2;
+		Apache::Ocsinventory::Server::Modperl2->import();
+	}
+}
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw / _send_response _prolog/;
+
+use Apache::Ocsinventory::Server::Constants;
+
+use Apache::Ocsinventory::Server::System(qw/
+ 	:server
+ 	_modules_get_prolog_readers
+ 	_modules_get_prolog_writers
+/);
 
 # Subroutine wich answer to client prolog
 sub _prolog{
@@ -23,9 +45,9 @@ sub _prolog{
 	my $request;
 	my $row;
 	
-	my $DeviceID = $CURRENT_CONTEXT{'DEVICEID'};
-	my $dbh = $CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $info = $CURRENT_CONTEXT{'DETAILS'};
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
+	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $info = $Apache::Ocsinventory::CURRENT_CONTEXT{'DETAILS'};
 	
 	
 	&_prolog_read();
@@ -35,12 +57,12 @@ sub _prolog{
 	# If we do not have the default frequency
 	unless(defined($frequency)){
 		&_prolog_resp(PROLOG_RESP_STOP);
-		&_log(503,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(503,'prolog','No frequency') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_OK;
 	}
 
 	# We have this computer in the database
-	if($CURRENT_CONTEXT{'EXIST_FL'}){
+	if($Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'}){
 		# Get the current timestamp
 		$now = time();
 		
@@ -107,7 +129,7 @@ sub _prolog{
 			&_prolog_resp(PROLOG_RESP_BREAK);
 			return APACHE_OK;
 		}else{
-			&_log(103,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(103,'prolog','Accepted') if $ENV{'OCS_OPT_LOGLEVEL'};
 			&_prolog_resp(PROLOG_RESP_SEND);
 			return APACHE_OK;
 		}	
@@ -118,7 +140,7 @@ sub _prolog{
 sub _send_response{
 
 	my( $xml, $message, $d, $status );
-	my $r = $CURRENT_CONTEXT{'APACHE_OBJECT'};
+	my $r = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'};
 
 	# Generate the response
 	# Generation of xml message
@@ -126,7 +148,7 @@ sub _send_response{
 	                 NoSort => 1, SuppressEmpty => undef);
 	# send
 	unless($message = Compress::Zlib::compress( $message )){
-		&_log(506,'send_response') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(506,'send_response','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_BAD_REQUEST;
 	}
 	
@@ -145,11 +167,11 @@ sub _prolog_resp{
 	&_prolog_build_resp($decision, \%resp);
 
 	if($resp{'RESPONSE'}[0] eq 'STOP'){
-		&_log(102,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(102,'prolog','Declined') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}elsif($resp{'RESPONSE'}[0] eq 'SEND'){
-		&_log(100,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(100,'prolog','Accepted') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}elsif($resp{'RESPONSE'}[0] eq 'OTHER'){
-		&_log(105,'prolog') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_log(105,'prolog','') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	&_send_response(\%resp);
 	return(0);
@@ -172,7 +194,7 @@ sub _prolog_build_resp{
 
 	for(&_modules_get_prolog_writers()){
 		last if $_ == 0;
-		&$_($resp);
+		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $resp);
 	}
 	return(0);
 }
@@ -180,7 +202,7 @@ sub _prolog_build_resp{
 sub _prolog_read{
 	for(&_modules_get_prolog_readers()){
 		last if $_==0;
-		&$_();
+		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
 	}
 	return(0);
 }
