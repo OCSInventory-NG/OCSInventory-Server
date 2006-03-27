@@ -114,7 +114,7 @@ CREATE TABLE devices (
   IVALUE INTEGER default NULL,
   TVALUE VARCHAR(255) default NULL,
   COMMENTS TEXT,
-  PRIMARY KEY  (HARDWARE_ID, NAME),
+  INDEX HARDWARE_ID (HARDWARE_ID),
   INDEX TVALUE (TVALUE)
 ) ENGINE=INNODB ;
 
@@ -355,6 +355,23 @@ CREATE TABLE deleted_equiv(
   EQUIVALENT VARCHAR(255) default NULL
 ) ENGINE=MYISAM ;
 
+CREATE TABLE download_available(
+	FILEID VARCHAR(255) NOT NULL PRIMARY KEY,
+	NAME VARCHAR(255) NOT NULL,
+	PRIORITY INTEGER NOT NULL,
+	FRAGMENTS INTEGER NOT NULL,
+	SIZE INTEGER NOT NULL,
+	OSNAME VARCHAR(255) NOT NULL,
+	COMMENT TEXT
+) ENGINE = INNODB;
+
+CREATE TABLE download_enable(
+	ID INTEGER NOT NULL auto_increment PRIMARY KEY,
+	FILEID VARCHAR(255) NOT NULL,
+	LOCATION VARCHAR(255) NOT NULL,
+	CERT VARCHAR(255) NOT NULL
+) ENGINE = INNODB;
+
 ALTER TABLE monitors ADD COLUMN SERIAL VARCHAR(255);
 ALTER TABLE netmap ADD COLUMN MASK VARCHAR(15);
 ALTER TABLE netmap ADD COLUMN NETID VARCHAR(15);
@@ -365,7 +382,7 @@ ALTER TABLE networks ADD COLUMN IPSUBNET VARCHAR(15);
 ALTER TABLE networks ADD INDEX IPSUBNET (IPSUBNET);
 ALTER TABLE networks ADD INDEX MACADDR (MACADDR);
 ALTER TABLE hardware ADD COLUMN CHECKSUM INTEGER default NULL;
-ALTER TABLE hardware CHANGE COLUMN CHECKSUM CHECKSUM INTEGER default 0;
+ALTER TABLE hardware CHANGE COLUMN CHECKSUM CHECKSUM INTEGER default 131071;
 
 ALTER TABLE hardware CHANGE ID ID INTEGER;
 ALTER TABLE hardware DROP PRIMARY KEY;
@@ -390,7 +407,7 @@ ALTER TABLE devices DROP PRIMARY KEY;
 ALTER TABLE devices ADD COLUMN HARDWARE_ID integer not NULL FIRST;
 UPDATE devices SET devices.HARDWARE_ID= (SELECT ID FROM hardware WHERE devices.DEVICEID = hardware.DEVICEID);
 ALTER TABLE devices DROP DEVICEID;
-ALTER TABLE devices ADD PRIMARY KEY(HARDWARE_ID,NAME);
+ALTER TABLE devices ADD INDEX HARDWARE_ID (HARDWARE_ID);
 
 ALTER TABLE controllers change ID ID INTEGER;
 ALTER TABLE controllers DROP PRIMARY KEY;
@@ -577,7 +594,12 @@ INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4014', 'Version of the installed
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
-INSERT INTO `config` VALUES ('DOWNLOAD', 0, '', 'Activate softwares auto deployment feature (not yet implemented');
+INSERT INTO `config` VALUES ('DOWNLOAD', 0, '', 'Activate softwares auto deployment feature');
+INSERT INTO `config` VALUES ('DOWNLOAD_CYCLE_LATENCY', 60, '', 'Modify that if you know what you are doing');
+INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Modify that if you know what you are doing');
+INSERT INTO `config` VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Modify that if you know what you are doing');
+INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Modify that if you know what you are doing');
+INSERT INTO `config` VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Modify that if you know what you are doing');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
