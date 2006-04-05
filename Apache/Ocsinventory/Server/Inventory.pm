@@ -40,6 +40,27 @@ my $result;
 my $data;
 my $dbh;
 
+#To apply to $checksum with an OR
+my %mask = (
+	'hardware' 	=> 1,
+	'bios'		=> 2,
+	'memories'	=> 4,
+	'slots'		=> 8,
+	'registry'	=> 16,
+	'controllers'	=> 32,
+	'monitors'	=> 64,
+	'ports'		=> 128,
+	'storages'	=> 256,
+	'drives'	=> 512,
+	'inputs'	=> 1024,
+	'modems'	=> 2048,
+	'networks'	=> 4096,
+	'printers'	=> 8192,
+	'sounds'	=> 16384,
+	'videos'	=> 32768,
+	'softwares'	=> 65536
+);
+
 #Proceed with inventory
 #######################
 #
@@ -174,6 +195,9 @@ sub _accesslog{
 # Inserting values of <BIOS> in bios table
 sub _bios{
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('bios');
+		}
 		if(!$dbh->do('DELETE FROM bios WHERE HARDWARE_ID=?', {},$DeviceID)){
 			return(1);
 		}
@@ -222,14 +246,16 @@ sub _accountinfo{
 
 # Inserting values of <MEMORIES> in memories table
 sub _memories{
-	my $sth = $dbh->prepare('INSERT INTO memories(HARDWARE_ID, CAPTION, DESCRIPTION, CAPACITY, PURPOSE, TYPE, SPEED, NUMSLOTS) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('memories');
+		}		
 		if(!$dbh->do('DELETE FROM memories WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO memories(HARDWARE_ID, CAPTION, DESCRIPTION, CAPACITY, PURPOSE, TYPE, SPEED, NUMSLOTS) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{MEMORIES};
 	
 	for(@$array){
@@ -242,14 +268,16 @@ sub _memories{
 
 # Inserting values of <SLOTS> in slots table
 sub _slots{
-	my $sth = $dbh->prepare('INSERT INTO slots(HARDWARE_ID, NAME, DESCRIPTION, DESIGNATION, PURPOSE, STATUS, PSHARE) VALUES(?, ?, ?, ?, ?, ?, ?)');	
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('slots');
+		}
 		if(!$dbh->do('DELETE FROM slots WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO slots(HARDWARE_ID, NAME, DESCRIPTION, DESIGNATION, PURPOSE, STATUS, PSHARE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{SLOTS};
 	
 	for(@$array){
@@ -262,14 +290,16 @@ sub _slots{
 
 # Inserting values of <CONTROLLERS> in controllers table
 sub _controllers{
-	my $sth = $dbh->prepare('INSERT INTO controllers(HARDWARE_ID, MANUFACTURER, NAME, CAPTION, DESCRIPTION, VERSION, TYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('controllers');
+		}
 		if(!$dbh->do('DELETE FROM controllers WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO controllers(HARDWARE_ID, MANUFACTURER, NAME, CAPTION, DESCRIPTION, VERSION, TYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{CONTROLLERS};
 	
 	for(@$array){
@@ -282,15 +312,18 @@ sub _controllers{
 
 # Inserting values of <MONITORS> in monitors table
 sub _monitors{
-	my $sth = $dbh->prepare('INSERT INTO monitors(HARDWARE_ID, MANUFACTURER, CAPTION, DESCRIPTION, TYPE, SERIAL) VALUES(?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('monitors');
+		}
 		if(!$dbh->do('DELETE FROM monitors WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO monitors(HARDWARE_ID, MANUFACTURER, CAPTION, DESCRIPTION, TYPE, SERIAL) VALUES(?, ?, ?, ?, ?, ?)');	
 	my $array = $result->{CONTENT}->{MONITORS};
+	
 	for(@$array){
 		if(!$sth->execute($DeviceID, $_->{MANUFACTURER}, $_->{CAPTION}, $_->{DESCRIPTION}, $_->{TYPE}, $_->{SERIAL})){
 			return(1);
@@ -301,14 +334,16 @@ sub _monitors{
 
 # Inserting values of <PORTS> in ports table
 sub _ports{
-	my $sth = $dbh->prepare('INSERT INTO ports(HARDWARE_ID, TYPE, NAME, CAPTION, DESCRIPTION) VALUES(?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('ports');
+		}
 		if(!$dbh->do('DELETE FROM ports WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO ports(HARDWARE_ID, TYPE, NAME, CAPTION, DESCRIPTION) VALUES(?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{PORTS};
 	
 	for(@$array){
@@ -321,14 +356,16 @@ sub _ports{
 
 # Inserting values of <STORAGES> in storages table
 sub _storages{
-	my $sth = $dbh->prepare('INSERT INTO storages(HARDWARE_ID, MANUFACTURER, NAME, MODEL, DESCRIPTION, TYPE, DISKSIZE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('storages');
+		}
 		if(!$dbh->do('DELETE FROM storages WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO storages(HARDWARE_ID, MANUFACTURER, NAME, MODEL, DESCRIPTION, TYPE, DISKSIZE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{STORAGES};
 	
 	for(@$array){
@@ -341,14 +378,16 @@ sub _storages{
 
 # Inserting values of <DRIVES> in drives table
 sub _drives{
-	my $sth = $dbh->prepare('INSERT INTO drives(HARDWARE_ID, LETTER, TYPE, FILESYSTEM, TOTAL, FREE, NUMFILES, VOLUMN) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+# 		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+# 			return(0) unless _has_changed('drives');
+# 		}
 		if(!$dbh->do('DELETE FROM drives WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO drives(HARDWARE_ID, LETTER, TYPE, FILESYSTEM, TOTAL, FREE, NUMFILES, VOLUMN) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{DRIVES};
 	
 	for(@$array){
@@ -361,14 +400,16 @@ sub _drives{
 
 # Inserting values of <INPUTS> in inputs table
 sub _inputs{
-	my $sth = $dbh->prepare('INSERT INTO inputs(HARDWARE_ID, TYPE, MANUFACTURER, CAPTION, DESCRIPTION, INTERFACE, POINTTYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('inputs');
+		}
 		if(!$dbh->do('DELETE FROM inputs WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO inputs(HARDWARE_ID, TYPE, MANUFACTURER, CAPTION, DESCRIPTION, INTERFACE, POINTTYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{INPUTS};
 	
 	for(@$array){
@@ -381,14 +422,16 @@ sub _inputs{
 
 # Inserting values of <MODEMS> in modems table
 sub _modems{
-	my $sth = $dbh->prepare('INSERT INTO modems(HARDWARE_ID, NAME, MODEL, DESCRIPTION, TYPE) VALUES(?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('modems');
+		}
 		if(!$dbh->do('DELETE FROM modems WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO modems(HARDWARE_ID, NAME, MODEL, DESCRIPTION, TYPE) VALUES(?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{MODEMS};
 	
 	for(@$array){
@@ -401,14 +444,16 @@ sub _modems{
 
 # Inserting values of <NETWORKS> in networks table
 sub _networks{
-	my $sth = $dbh->prepare('INSERT INTO networks(HARDWARE_ID, DESCRIPTION, TYPE, TYPEMIB, SPEED, MACADDR, STATUS, IPADDRESS, IPMASK, IPGATEWAY, IPSUBNET, IPDHCP) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('networks');
+		}
 		if(!$dbh->do('DELETE FROM networks WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO networks(HARDWARE_ID, DESCRIPTION, TYPE, TYPEMIB, SPEED, MACADDR, STATUS, IPADDRESS, IPMASK, IPGATEWAY, IPSUBNET, IPDHCP) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{NETWORKS};
 	
 	for(@$array){
@@ -421,14 +466,16 @@ sub _networks{
 
 # Inserting values of <PRINTERS> in printers table
 sub _printers{
-	my $sth = $dbh->prepare('INSERT INTO printers(HARDWARE_ID, NAME, DRIVER, PORT) VALUES(?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('printers');
+		}
 		if(!$dbh->do('DELETE FROM printers WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO printers(HARDWARE_ID, NAME, DRIVER, PORT) VALUES(?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{PRINTERS};
 	
 	for(@$array){
@@ -441,14 +488,16 @@ sub _printers{
 
 # Inserting values of <SOUNDS> in sounds table
 sub _sounds{
-	my $sth = $dbh->prepare('INSERT INTO sounds(HARDWARE_ID, MANUFACTURER, NAME, DESCRIPTION) VALUES(?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('sounds');
+		}
 		if(!$dbh->do('DELETE FROM sounds WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO sounds(HARDWARE_ID, MANUFACTURER, NAME, DESCRIPTION) VALUES(?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{SOUNDS};
 	
 	for(@$array){
@@ -461,14 +510,16 @@ sub _sounds{
 
 # Inserting values of <VIDEOS> in videos table
 sub _videos{
-	my $sth = $dbh->prepare('INSERT INTO videos(HARDWARE_ID, NAME, CHIPSET, MEMORY, RESOLUTION) VALUES(?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('videos');
+		}
 		if(!$dbh->do('DELETE FROM videos WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO videos(HARDWARE_ID, NAME, CHIPSET, MEMORY, RESOLUTION) VALUES(?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{VIDEOS};
 	
 	for(@$array){
@@ -480,14 +531,16 @@ sub _videos{
 }
 # Inserting values of <SOFTWARES> in softwares table
 sub _softwares{
-	my $sth = $dbh->prepare('INSERT INTO softwares(HARDWARE_ID, PUBLISHER, NAME, VERSION, FOLDER, COMMENTS, FILENAME, FILESIZE, SOURCE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)');
-	
 	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed('softwares');
+		}
 		if(!$dbh->do('DELETE FROM softwares WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
 	
+	my $sth = $dbh->prepare('INSERT INTO softwares(HARDWARE_ID, PUBLISHER, NAME, VERSION, FOLDER, COMMENTS, FILENAME, FILESIZE, SOURCE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)');
 	my $array = $result->{CONTENT}->{SOFTWARES};
 	
 	for(@$array){
@@ -572,6 +625,17 @@ sub _options{
 	for(&_modules_get_inventory_options()){
 		last if $_== 0;
 		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
+	}
+}
+
+sub _has_changed{
+	my $section = shift;
+	
+	# Check checksum to know if section has changed
+	if( defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM}) ){
+		return($mask{$section} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM});
+	}else{
+		return(1);
 	}
 }
 1;

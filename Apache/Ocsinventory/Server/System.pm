@@ -28,6 +28,7 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw /
 	_log
 	_lock
+	_unlock
 /;
 
 our %EXPORT_TAGS = (
@@ -39,6 +40,7 @@ our %EXPORT_TAGS = (
 		_check_deviceid
 		_log
 		_lock
+		_unlock
 		/
 	]
 );
@@ -180,16 +182,17 @@ sub _end{
  	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
+	#Non-transactionnal table
+	&_unlock($DeviceID) if $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'};
+	
 	if($ret == APACHE_SERVER_ERROR){
 		&_log(515,'end', 'Processing error') if $ENV{'OCS_OPT_LOGLEVEL'};
 		$dbh->rollback;
 	}else{
 		$dbh->commit;
 	}
-	#Non-transactionnal table
-	&_unlock($DeviceID) if $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'};
 	close(LOG);
-	#$dbh->disconnect;
+	$dbh->disconnect;
 	return $ret;
 
 }

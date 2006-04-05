@@ -56,9 +56,9 @@ sub download_prolog_resp{
 	my @packages;
 	
 	push @packages,{
-		'TYPE' 				=> 'CONF',
-		'ON' 				=> $ENV{'OCS_OPT_DOWNLOAD'},
-		'TIMEOUT' 			=> $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'},
+		'TYPE' 			=> 'CONF',
+		'ON' 			=> $ENV{'OCS_OPT_DOWNLOAD'},
+		'TIMEOUT' 		=> $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'},
 		'PERIOD_LENGTH' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'},
 		'PERIOD_LATENCY' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'},
 		'FRAG_LATENCY' 		=> $ENV{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'},
@@ -66,7 +66,7 @@ sub download_prolog_resp{
 	};
 	
 	if($ENV{'OCS_OPT_DOWNLOAD'}){
-		$request = $dbh->prepare( q {SELECT FILEID,LOCATION,CERT 
+		$request = $dbh->prepare( q {SELECT FILEID,LOCATION,CERT_PATH, CERT_FILE
 		FROM devices,download_enable 
 		WHERE HARDWARE_ID=? 
 		AND devices.IVALUE=download_enable.ID 
@@ -82,15 +82,15 @@ sub download_prolog_resp{
 				'TYPE' 	=> 'PACK',
 				'ID' 	=> $row->{'FILEID'},
 				'LOC' 	=> $row->{'LOCATION'},
-				'CERT' 	=> $row->{'CERT'}
+				'CERT_PATH' 	=> $row->{'CERT_PATH'},
+				'CERT_FILE' 	=> $row->{'CERT_FILE'}
 			};
 		}
-		push @{ $resp->{'OPTION'} },{
-			'NAME' 	=> ['DOWNLOAD'],
-			'PARAM' => \@packages
-		};
 	}
-	
+	push @{ $resp->{'OPTION'} },{
+		'NAME' 	=> ['DOWNLOAD'],
+		'PARAM' => \@packages
+	};
 # 	if($resp->{'RESPONSE'}[0] eq 'STOP'){
 # 		$resp->{'RESPONSE'} = ['OTHER'];
 # 	}

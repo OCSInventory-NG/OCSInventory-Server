@@ -37,6 +37,8 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_AUTO_DUPLICATE_LVL'} = 7;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOGLEVEL'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROXY_REVALIDATE_DELAY'} = 3600;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_DIFF'} = 1;
+
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
@@ -62,7 +64,7 @@ sub handler{
 	# Will be used to handle all globales
 	%CURRENT_CONTEXT = (
 		'APACHE_OBJECT' => undef,
-		'DBI_HANDLE' => undef,
+		#'DBI_HANDLE' => undef,
 		'DEVICEID' => undef,
 		'DATABASE_ID' => undef,
 		'DATA' => undef,
