@@ -223,14 +223,6 @@ sub _init{
 	if($request->rows){
 		my $row = $request->fetchrow_hashref;
 		
-		# Lock device
-		if(&_lock($row->{'ID'})){
-			return(APACHE_FORBIDDEN);
-			return(1);
-		}else{
-			$CURRENT_CONTEXT{'LOCK_FL'} = 1;
-		}
-		
 		$CURRENT_CONTEXT{'EXIST_FL'} = 1;
 		$CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
 		$CURRENT_CONTEXT{'DETAILS'} = {

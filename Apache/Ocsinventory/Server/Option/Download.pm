@@ -21,8 +21,6 @@ BEGIN{
 	}
 }
 
-use constant CODE_SUCCESS => 0;
-
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Constants;
@@ -71,7 +69,7 @@ sub download_prolog_resp{
 		WHERE HARDWARE_ID=? 
 		AND devices.IVALUE=download_enable.ID 
 		AND devices.NAME='DOWNLOAD'
-		AND TVALUE IS NULL} );
+		AND (TVALUE IS NULL OR TVALUE='NOTIFIED')} );
 		
 		# Retrieving packages associated to the current device
 		$request->execute( $current_context->{'DATABASE_ID'});
@@ -94,6 +92,8 @@ sub download_prolog_resp{
 # 	if($resp->{'RESPONSE'}[0] eq 'STOP'){
 # 		$resp->{'RESPONSE'} = ['OTHER'];
 # 	}
+	$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
+	,{}, $current_context->{'DATABASE_ID'});
 	
 	return(0);
 }

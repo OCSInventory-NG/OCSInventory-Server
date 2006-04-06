@@ -72,6 +72,13 @@ sub _inventory_handler{
 	$data = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'};
 	undef @accountkeys;
 	
+	# Lock device
+	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
+		return(APACHE_FORBIDDEN);
+	}else{
+		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
+	}
+	
 	# XML to Perl
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
 		&_log(507,'inventory','Xml error') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -581,7 +588,6 @@ sub _post_inventory{
 				# we write the xml data
 				$elements{'RESPONSE'} = [ 'ACCOUNT_UPDATE' ];
 				for(@accountkeys){
-					print LOG @accountkeys;
 					push @{$elements{'ACCOUNTINFO'}}, { 'KEYNAME' => [ $_ ], 'KEYVALUE' => [ $row->{$_} ] };
 				}
 				$request->finish;
