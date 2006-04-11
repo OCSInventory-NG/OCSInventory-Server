@@ -400,7 +400,7 @@ ALTER TABLE hardware CHANGE COLUMN CHECKSUM CHECKSUM INTEGER default 131071;
 ALTER TABLE hardware CHANGE ID ID INTEGER;
 ALTER TABLE hardware DROP PRIMARY KEY;
 ALTER TABLE hardware ADD COLUMN ID integer not NULL FIRST;
-ALTER TABLE hardware ADD INDEX(ID);
+ALTER TABLE hardware ADD INDEX ID (ID);
 ALTER TABLE hardware CHANGE ID ID INTEGER auto_increment;
 ALTER TABLE hardware add PRIMARY KEY(DEVICEID, ID);
 
@@ -448,6 +448,9 @@ ALTER TABLE registry ADD INDEX ID (ID);
 ALTER TABLE registry change ID ID INTEGER auto_increment;
 ALTER TABLE registry ADD PRIMARY KEY(HARDWARE_ID,ID);
 ALTER TABLE registry DROP DEVICEID;
+
+INSERT INTO network_devices(DESCRIPTION,TYPE,MACADDR,IPADDRESS,IPSUBNET,`USER`) SELECT DESCRIPTION,TYPE,MACADDR,IPADDRESS,IPSUBNET,TYPEMIB FROM networks WHERE DEVICEID LIKE "NETWORK_DEVICE-%";
+DELETE FROM network_devices WHERE DEVICEID LIKE "NETWORK_DEVICE-%";
 
 ALTER TABLE networks change ID ID INTEGER;
 ALTER TABLE networks DROP PRIMARY KEY;
@@ -571,36 +574,12 @@ ALTER TABLE locks DROP DEVICEID;
 ALTER TABLE locks ADD HARDWARE_ID INTEGER NOT NULL PRIMARY KEY FIRST;
 ALTER TABLE locks ADD INDEX SINCE (SINCE);
 
-INSERT INTO network_devices(DESCRIPTION,TYPE,MACADDR,IPADDRESS,IPSUBNET,`USER`) SELECT DESCRIPTION,TYPE,MACADDR,IPADDRESS,IPSUBNET,TYPEMIB FROM networks WHERE DEVICEID LIKE "NETWORK_DEVICE-%";
-
-ALTER TABLE hardware engine="INNODB";
-ALTER TABLE accesslog engine="INNODB";
-ALTER TABLE bios engine="INNODB";
-ALTER TABLE memories engine="INNODB";
-ALTER TABLE slots engine="INNODB";
-ALTER TABLE registry engine="INNODB";
-ALTER TABLE registry engine="INNODB";
-ALTER TABLE monitors engine="INNODB";
-ALTER TABLE ports engine="INNODB";
-ALTER TABLE storages engine="INNODB";
-ALTER TABLE drives engine="INNODB";
-ALTER TABLE inputs engine="INNODB";
-ALTER TABLE modems engine="INNODB";
-ALTER TABLE networks engine="INNODB";
-ALTER TABLE printers engine="INNODB";
-ALTER TABLE sounds engine="INNODB";
-ALTER TABLE videos engine="INNODB";
-ALTER TABLE softwares engine="INNODB";
-ALTER TABLE accountinfo engine="INNODB";
-ALTER TABLE netmap engine="INNODB";
-ALTER TABLE devices engine="INNODB";
-ALTER TABLE locks engine="HEAP";
-
 DELETE FROM `config` WHERE name='GUI_VERSION';
 DELETE FROM `config` WHERE NAME='IP_MIN_QUALITY';
 
 INSERT INTO `config` VALUES ('FREQUENCY', 0, '', 'Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)');
 INSERT INTO `config` VALUES ('IPDISCOVER', 2, '', 'Max number of computers per gateway retrieving IP on the network');
+INSERT INTO `config` VALUES ('INVENTORY_DIFF', 1, '', 'Activate/Deactivate inventory incremental writing');
 INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry query function');
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
