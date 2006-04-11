@@ -210,12 +210,9 @@ CREATE TABLE network_devices(
   DESCRIPTION VARCHAR(255) default NULL,
   `TYPE` VARCHAR(255) default NULL,
   MACADDR VARCHAR(255) default NULL,
-  IPADDRESS VARCHAR(255) default NULL,
-  IPSUBNET VARCHAR(255) default NULL,
   `USER` VARCHAR(255) default NULL,
   PRIMARY KEY (ID),
-  INDEX MACADDR (MACADDR),
-  INDEX IPSUBNET (IPSUBNET)
+  INDEX MACADDR (MACADDR)
 ) ENGINE=MYISAM ;
 
 CREATE TABLE operators (
@@ -449,7 +446,7 @@ ALTER TABLE registry change ID ID INTEGER auto_increment;
 ALTER TABLE registry ADD PRIMARY KEY(HARDWARE_ID,ID);
 ALTER TABLE registry DROP DEVICEID;
 
-INSERT INTO network_devices(DESCRIPTION,TYPE,MACADDR,IPADDRESS,IPSUBNET,`USER`) SELECT DESCRIPTION,TYPE,MACADDR,IPADDRESS,IPSUBNET,TYPEMIB FROM networks WHERE DEVICEID LIKE "NETWORK_DEVICE-%";
+INSERT INTO network_devices(DESCRIPTION,TYPE,MACADDR,`USER`) SELECT DESCRIPTION,TYPE,MACADDR,TYPEMIB FROM networks WHERE DEVICEID LIKE "NETWORK_DEVICE-%";
 DELETE FROM network_devices WHERE DEVICEID LIKE "NETWORK_DEVICE-%";
 
 ALTER TABLE networks change ID ID INTEGER;
@@ -584,7 +581,7 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4014', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4016', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
