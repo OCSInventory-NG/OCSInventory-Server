@@ -31,6 +31,7 @@ $Apache::Ocsinventory::VERSION = '0.80';
 
 # Defaults
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_FREQUENCY'} = 3;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROLOG_FREQ'} = 24;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DEPLOY'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_TRACE_DELETED'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_AUTO_DUPLICATE_LVL'} = 7;

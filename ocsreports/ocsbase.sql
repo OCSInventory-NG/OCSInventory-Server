@@ -575,6 +575,7 @@ DELETE FROM `config` WHERE name='GUI_VERSION';
 DELETE FROM `config` WHERE NAME='IP_MIN_QUALITY';
 
 INSERT INTO `config` VALUES ('FREQUENCY', 0, '', 'Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)');
+INSERT INTO `config` VALUES ('PROLOG_FREQ', 24, '', 'Specify the frequency (hours) of prolog, on agents');
 INSERT INTO `config` VALUES ('IPDISCOVER', 2, '', 'Max number of computers per gateway retrieving IP on the network');
 INSERT INTO `config` VALUES ('INVENTORY_DIFF', 1, '', 'Activate/Deactivate inventory incremental writing');
 INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry query function');

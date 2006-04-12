@@ -183,6 +183,9 @@ sub _prolog_build_resp{
 	my $module;
 	my $state;
 
+	#Agent execution periodicity
+	$resp->{'PROLOG_FREQ'} = [ $ENV{'OCS_OPT_PROLOG_FREQ'} ];
+	
 	if($decision == PROLOG_RESP_BREAK){
 		$resp->{'RESPONSE'} = [ 'STOP' ];
 		return(0);
@@ -191,7 +194,7 @@ sub _prolog_build_resp{
 	}elsif($decision == PROLOG_RESP_SEND){
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 	}
-
+	
 	for(&_modules_get_prolog_writers()){
 		last if $_ == 0;
 		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $resp);
