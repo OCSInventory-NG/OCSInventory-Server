@@ -29,6 +29,7 @@ our @EXPORT = qw /
 	_log
 	_lock
 	_unlock
+	_send_file
 /;
 
 our %EXPORT_TAGS = (
@@ -41,6 +42,7 @@ our %EXPORT_TAGS = (
 		_log
 		_lock
 		_unlock
+		_send_file
 		/
 	]
 );
@@ -172,7 +174,7 @@ sub _log{
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
 	my $fh = \*Apache::Ocsinventory::LOG;
 	
-	print $fh localtime().";$code;$DeviceID;".($ENV{'HTTP_X_FORWARDED_FOR'})?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'}).";".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
+	print $fh localtime().";$code;$DeviceID;".(($ENV{'HTTP_X_FORWARDED_FOR'})?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'}).";".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
 }
 
 # Subroutine called at the end of execution

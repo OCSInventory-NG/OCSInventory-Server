@@ -72,17 +72,19 @@ sub _inventory_handler{
 	$data = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'};
 	undef @accountkeys;
 	
+	# XML to Perl
+	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
+		&_log(507,'inventory','Xml error') if $ENV{'OCS_OPT_LOGLEVEL'};
+		return APACHE_BAD_REQUEST;
+	}
+	
+	&_context();
+	
 	# Lock device
 	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
 		return(APACHE_FORBIDDEN);
 	}else{
 		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
-	}
-	
-	# XML to Perl
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
-		&_log(507,'inventory','Xml error') if $ENV{'OCS_OPT_LOGLEVEL'};
-		return APACHE_BAD_REQUEST;
 	}
 	
 	# Ref to xml in global struct 
@@ -91,16 +93,10 @@ sub _inventory_handler{
 	#Inventory incoming
 	&_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
-	if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
-		&_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
-		return(APACHE_BAD_REQUEST);
-	}
-
 	# Put the inventory in the database
 	return APACHE_SERVER_ERROR if
 	# To know more about the situation (update, new machine...)
-	&_context()
-	or &_hardware()
+	&_hardware()
 	or &_accountinfo()
 	or &_accesslog()
 	or &_bios()

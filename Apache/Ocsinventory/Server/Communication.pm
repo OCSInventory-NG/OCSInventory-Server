@@ -129,7 +129,7 @@ sub _prolog{
 			&_prolog_resp(PROLOG_RESP_BREAK);
 			return APACHE_OK;
 		}else{
-			&_log(103,'prolog','Accepted') if $ENV{'OCS_OPT_LOGLEVEL'};
+			&_log(103,'prolog','New deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
 			&_prolog_resp(PROLOG_RESP_SEND);
 			return APACHE_OK;
 		}	

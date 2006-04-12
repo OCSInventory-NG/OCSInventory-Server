@@ -1,6 +1,6 @@
 Ocsinventory-NG logs format
 
---> GDH;Event code;IP address;User agent;Phase;(comment)
+--> GDH;Event code;DeviceID;IP address;User agent;Phase;(comment)
 
 Codes événements :
 

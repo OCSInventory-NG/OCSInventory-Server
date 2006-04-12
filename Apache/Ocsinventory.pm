@@ -172,8 +172,15 @@ sub handler{
 
 		# Get the request type
 		my $request=$query->{QUERY};
-		$CURRENT_CONTEXT{'DEVICEID'} = $query->{DEVICEID};
-
+		$CURRENT_CONTEXT{'DEVICEID'} = $query->{DEVICEID} or $CURRENT_CONTEXT{'DEVICEID'} = $query->{CONTENT}->{DEVICEID};
+		
+		unless($request eq 'UPDATE'){
+			if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
+				&_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
+				return(APACHE_BAD_REQUEST);
+			}
+		}
+		
 		 # Must be filled
 		unless($request){
 			&_log(500,'handler','Request not defined');
