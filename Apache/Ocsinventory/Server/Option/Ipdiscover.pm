@@ -121,7 +121,7 @@ sub _ipdiscover_main{
 				}elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
 					# The computer is elected, we have to write it in devices
 					$dbh->do('INSERT INTO devices(HARDWARE_ID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return(1);
-					&_log(1001,'ipdiscover','Elected') if $ENV{'OCS_OPT_LOGLEVEL'};
+					&_log(1001,'ipdiscover','Elected'."($subnet)") if $ENV{'OCS_OPT_LOGLEVEL'};
 					return(0);
 				}else{
 					return(0);
@@ -263,16 +263,20 @@ sub _ipdiscover_evaluate{
 
 			# If not over, we compare our quality with the one of the worth on this subnet.
 			# If it is better more than one, we replace it
-			if(($quality < $worth[1] and ($worth[1]-$quality>1)) or $over){
-				# Compare to the current and replace it if needed
-				if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
-					return(1);
+			if(@worth){
+				if(($quality < $worth[1] and ($worth[1]-$quality>1)) or $over){
+					# Compare to the current and replace it if needed
+					if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
+						return(1);
+					}
+					&_log(1001,'ipdiscover',($over?'over':'better')."($_->{IPSUBNET})") if $ENV{'OCS_OPT_LOGLEVEL'};
+					return(0);
 				}
-				&_log(1001,'ipdiscover',$over?'over':'better') if $ENV{'OCS_OPT_LOGLEVEL'};
 			}
 		}else{
 				next;
 		}
 	}
+	return(0);
 }
 1;
