@@ -114,7 +114,7 @@ sub _ipdiscover_main{
 		$request->execute($DeviceID);
 
 		if($row = $request->fetchrow_hashref){
-	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} =! 0){
+	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} != 0){
 				$subnet = &_ipdiscover_find_iface($result, $current_context->{'DBI_HANDLE'});
 				if(!$subnet){
 					return(&_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID));
@@ -240,10 +240,10 @@ sub _ipdiscover_evaluate{
 
 	my $base = $result->{CONTENT}->{NETWORKS};
 	for(@$base){
-		if(defined($_->{SUBNET}) and $_->{SUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/){
+		if(defined($_->{IPSUBNET}) and $_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ ){
 
 			$request = $dbh->prepare('select h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST from hardware h,devices d where d.HARDWARE_ID=h.ID and d.TVALUE=? AND h.ID<>?');
-			$request->execute($_->{SUBNET}, $DeviceID);
+			$request->execute($_->{IPSUBNET}, $DeviceID);
 
 			while($row = $request->fetchrow_hashref){
 				# If we find an ipdiscover that is older than IP_MAX_ALIVE, we replace it with the current
@@ -265,7 +265,7 @@ sub _ipdiscover_evaluate{
 			# If it is better more than one, we replace it
 			if(($quality < $worth[1] and ($worth[1]-$quality>1)) or $over){
 				# Compare to the current and replace it if needed
-				if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE SET HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
+				if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
 					return(1);
 				}
 				&_log(1001,'ipdiscover',$over?'over':'better') if $ENV{'OCS_OPT_LOGLEVEL'};

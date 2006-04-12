@@ -84,6 +84,8 @@ sub download_prolog_resp{
 				'CERT_FILE' 	=> $row->{'CERT_FILE'}
 			};
 		}
+		$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
+	,{}, $current_context->{'DATABASE_ID'}) if $request->rows;
 	}
 	push @{ $resp->{'OPTION'} },{
 		'NAME' 	=> ['DOWNLOAD'],
@@ -92,8 +94,6 @@ sub download_prolog_resp{
 # 	if($resp->{'RESPONSE'}[0] eq 'STOP'){
 # 		$resp->{'RESPONSE'} = ['OTHER'];
 # 	}
-	$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
-	,{}, $current_context->{'DATABASE_ID'});
 	
 	return(0);
 }
