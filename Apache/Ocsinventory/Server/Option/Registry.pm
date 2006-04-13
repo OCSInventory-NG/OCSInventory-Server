@@ -48,19 +48,24 @@ sub _registry_main{
 	my $DeviceID = $current_context->{'DEVICEID'};
 	my $update = $current_context->{'EXIST_FL'};
 	my $data = $current_context->{'DATA'};
-
+	
 	my $result;
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
 		return(1);
 	}
-
-	my $sth = $dbh->prepare('INSERT INTO registry(HARDWARE_ID, NAME, REGVALUE) VALUES(?, ?, ?)');
 
 	if($update){
 		if(!$dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $DeviceID)){
 			return(1);
 		}
 	}
+	
+	unless($result->{CONTENT}->{REGISTRY}){
+		$dbh->commit;
+		return(0);
+	}
+	
+	my $sth = $dbh->prepare('INSERT INTO registry(HARDWARE_ID, NAME, REGVALUE) VALUES(?, ?, ?)');
 
 	my $array = $result->{CONTENT}->{REGISTRY};
 
@@ -69,6 +74,7 @@ sub _registry_main{
 			return(1);
 		}
 	}
+	$dbh->commit;
 	return(0);
 }
 

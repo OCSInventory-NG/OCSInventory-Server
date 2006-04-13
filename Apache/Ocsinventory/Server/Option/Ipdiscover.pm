@@ -139,6 +139,7 @@ sub _ipdiscover_main{
 		if(!$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID)){
 			return(1);
 		}
+		$dbh->commit;
 		&_log(1002,'ipdiscover','Removed') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	0;
@@ -178,6 +179,7 @@ sub _ipdiscover_read_result{
 				$insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N});
 			}
 		}
+		$dbh->commit;
 	}else{
 		return(1);
 	}
@@ -269,6 +271,7 @@ sub _ipdiscover_evaluate{
 					if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
 						return(1);
 					}
+					$dbh->commit;
 					&_log(1001,'ipdiscover',($over?'over':'better')."($_->{IPSUBNET})") if $ENV{'OCS_OPT_LOGLEVEL'};
 					return(0);
 				}
