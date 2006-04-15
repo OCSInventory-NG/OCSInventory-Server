@@ -14,10 +14,10 @@
 ################################################################################
 #
 # Rotate OCS Inventory NG Communication server logs weekly, only if not empty
-# Save 4 weeks old logs under compressed mode
+# Save 7 days old logs under compressed mode
 PATH_TO_LOG_DIRECTORY/*.log {
-	weekly
-	rotate 4
+	daily
+	rotate 7
 	compress
 	notifempty
 	missingok
