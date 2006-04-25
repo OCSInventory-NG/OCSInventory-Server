@@ -23,6 +23,7 @@ ERRORS
 515--Script error, rollback transaction.
 516--Deviceid locked, inventory refused
 517--Cannot handle normal duplicate
+518--Cannot retrieve database id
 
 INVENTORY
 ---------

@@ -78,7 +78,7 @@ sub _inventory_handler{
 		return APACHE_BAD_REQUEST;
 	}
 	
-	&_context();
+	return APACHE_SERVER_ERROR if &_context();
 	
 	# Lock device
 	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
@@ -138,7 +138,10 @@ sub _context{
 		$dbh->do('INSERT INTO hardware(DEVICEID) VALUES(?)', {}, $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}) or return(1);
 		#unless($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
 			my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
-			$request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}) or return(1);
+			unless($request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
+				&_log(518,'inventory','ID error') if $ENV{'OCS_OPT_LOGLEVEL'};
+				return(1);
+			}
 			my $row = $request->fetchrow_hashref;
 			$Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
 			$DeviceID = $row->{'ID'};
