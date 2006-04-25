@@ -45,7 +45,7 @@ sub _registry_main{
 	
 	my $current_context = shift;
 	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DEVICEID'};
+	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $update = $current_context->{'EXIST_FL'};
 	my $data = $current_context->{'DATA'};
 	
