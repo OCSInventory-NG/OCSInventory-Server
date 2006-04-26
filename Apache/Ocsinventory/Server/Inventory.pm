@@ -181,8 +181,9 @@ $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).",
 		WINPRODID=".$dbh->quote($base->{WINPRODID})."
 		WHERE ID=".$DeviceID)
 or return(1);
-
-0;
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
+	0;
 }
 
 
@@ -196,6 +197,9 @@ sub _accesslog{
 	if(!$dbh->do('INSERT INTO accesslog(HARDWARE_ID, USERID, LOGDATE, PROCESSES) VALUES (?, ?, ?, ?)', {}, $DeviceID, $result->{CONTENT}->{ACCESSLOG}->{USERID}, $result->{CONTENT}->{ACCESSLOG}->{LOGDATE}, $result->{CONTENT}->{ACCESSLOG}->{PROCESSES})){
 		return(1);
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
+	0;
 
 }
 # Inserting values of <BIOS> in bios table
@@ -212,7 +216,9 @@ sub _bios{
 	if(!$dbh->do('INSERT INTO bios(HARDWARE_ID, SMANUFACTURER, SMODEL, SSN, TYPE, BMANUFACTURER, BVERSION, BDATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {}, $DeviceID, $result->{CONTENT}->{BIOS}->{SMANUFACTURER}, $result->{CONTENT}->{BIOS}->{SMODEL}, $result->{CONTENT}->{BIOS}->{SSN}, $result->{CONTENT}->{BIOS}->{TYPE}, $result->{CONTENT}->{BIOS}->{BMANUFACTURER}, $result->{CONTENT}->{BIOS}->{BVERSION}, $result->{CONTENT}->{BIOS}->{BDATE})){
 		return(1);
 	}
-
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
+	0;
 }
 
 # Inserting values of <ACCOUNTINFO> in accountinfo table
@@ -247,6 +253,8 @@ sub _accountinfo{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -269,6 +277,8 @@ sub _memories{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -291,6 +301,8 @@ sub _slots{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -313,6 +325,8 @@ sub _controllers{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -335,6 +349,8 @@ sub _monitors{
 			return(1);
 		}	
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -357,6 +373,8 @@ sub _ports{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -379,6 +397,8 @@ sub _storages{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -401,6 +421,8 @@ sub _drives{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -423,6 +445,8 @@ sub _inputs{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -445,6 +469,8 @@ sub _modems{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -467,6 +493,8 @@ sub _networks{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -489,6 +517,8 @@ sub _printers{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -511,6 +541,8 @@ sub _sounds{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
@@ -533,6 +565,8 @@ sub _videos{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 # Inserting values of <SOFTWARES> in softwares table
@@ -554,6 +588,8 @@ sub _softwares{
 			return(1);
 		}
 	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
 	0;
 }
 
