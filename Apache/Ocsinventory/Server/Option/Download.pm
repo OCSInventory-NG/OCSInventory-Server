@@ -80,8 +80,8 @@ sub download_prolog_resp{
 				'TYPE' 	=> 'PACK',
 				'ID' 	=> $row->{'FILEID'},
 				'LOC' 	=> $row->{'LOCATION'},
-				'CERT_PATH' 	=> $row->{'CERT_PATH'},
-				'CERT_FILE' 	=> $row->{'CERT_FILE'}
+				'CERT_PATH' 	=> $row->{'CERT_PATH'}?$row->{'CERT_PATH'}:'INSTALL_PATH',
+				'CERT_FILE' 	=> $row->{'CERT_FILE'}?$row->{'CERT_FILE'}:'INSTALL_PATH'
 			};
 		}
 		$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
@@ -103,6 +103,7 @@ sub download_handler{
 	my $current_context = shift;
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $result = $current_context->{'XML_ENTRY'};
+	my $r = $current_context->{'APACHE_OBJECT'};
 	my $request;
 	
 	$request = $dbh->prepare('SELECT ID FROM download_enable WHERE FILEID=?');
@@ -115,8 +116,11 @@ sub download_handler{
 		AND IVALUE=?',
 		{}, $result->{'ERR'}, $current_context->{'DATABASE_ID'}, $row->{'ID'} ) 
 			or return(APACHE_SERVER_ERROR);
+		&_send_http_headers($r);
+		return(APACHE_OK);
 	}else{
 		&_log(2501, 'download');
+		&_send_http_headers($r);
 		return(APACHE_OK);
 	}
 }
