@@ -130,6 +130,6 @@ sub _registry_duplicate{
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 
 	# If we encounter problems, it aborts whole replacement
-	return $dbh->do('UPDATE registry SET HARDWARE_ID=? WHERE HARDWARE_ID=?',{}, $DeviceID, $device);
+	return $dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $device);
 }
 1;
