@@ -64,7 +64,7 @@ sub download_prolog_resp{
 	};
 	
 	if($ENV{'OCS_OPT_DOWNLOAD'}){
-		$request = $dbh->prepare( q {SELECT FILEID,LOCATION,CERT_PATH, CERT_FILE
+		$request = $dbh->prepare( q {SELECT FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE
 		FROM devices,download_enable 
 		WHERE HARDWARE_ID=? 
 		AND devices.IVALUE=download_enable.ID 
@@ -79,7 +79,8 @@ sub download_prolog_resp{
 			push @packages,{
 				'TYPE' 	=> 'PACK',
 				'ID' 	=> $row->{'FILEID'},
-				'LOC' 	=> $row->{'LOCATION'},
+				'INFO_LOC' 	=> $row->{'INFO_LOC'},
+				'PACK_LOC' 	=> $row->{'PACK_LOC'},
 				'CERT_PATH' 	=> $row->{'CERT_PATH'}?$row->{'CERT_PATH'}:'INSTALL_PATH',
 				'CERT_FILE' 	=> $row->{'CERT_FILE'}?$row->{'CERT_FILE'}:'INSTALL_PATH'
 			};
