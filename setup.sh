@@ -32,6 +32,11 @@ APACHE_ROOT_DOCUMENT=""
 APACHE_MOD_PERL_VERSION=""
 # Where are located OCS Communication server log files
 OCS_COM_SRV_LOG="/var/log/ocsinventory-NG"
+# Where is located perl interpreter
+PERL_BIN=`which perl`
+# Where is located make utility
+MAKE=`which make`
+
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -184,13 +189,13 @@ do
     then
         res=1
     else
-        echo "ERROR: $APACHE_BIN is not executable !"
+        echo "*** ERROR: $APACHE_BIN is not executable !"
         res=0
     fi
     # Ensure file is not a directory
     if test -d $APACHE_BIN
     then 
-        echo "ERROR: $APACHE_BIN is a directory !"
+        echo "*** ERROR: $APACHE_BIN is a directory !"
         res=0
     fi
 done
@@ -229,7 +234,7 @@ do
     # Ensure file is not a directory
     if test -d $APACHE_CONFIG_FILE
     then 
-        echo "ERROR: $APACHE_CONFIG_FILE is a directory !"
+        echo "*** ERROR: $APACHE_CONFIG_FILE is a directory !"
         res=0
     fi
     # Ensure file exists and is readable
@@ -237,7 +242,7 @@ do
     then
         res=1
     else
-        echo "ERROR: $APACHE_CONFIG_FILE is not readable !"
+        echo "*** ERROR: $APACHE_CONFIG_FILE is not readable !"
         res=0
     fi
 done
@@ -272,7 +277,7 @@ do
     # Ensure group exist in /etc/passwd
     if test `cat /etc/passwd | grep $APACHE_USER | wc -l` -eq 0
     then
-        echo "ERROR: account $APACHE_USER not found in system table /etc/passwd !"
+        echo "*** ERROR: account $APACHE_USER not found in system table /etc/passwd !"
     else
         res=1
     fi
@@ -314,7 +319,7 @@ do
     # Ensure group exist in /etc/group
     if test `cat /etc/group | grep $APACHE_GROUP | wc -l` -eq 0
     then
-        echo "ERROR: group $APACHE_GROUP not found in system table /etc/group !"
+        echo "*** ERROR: group $APACHE_GROUP not found in system table /etc/group !"
     else
         res=1
     fi
@@ -322,6 +327,29 @@ done
 echo "OK, Apache is running under users group $APACHE_GROUP ;-)"
 echo "Using Apache user group $APACHE_GROUP" >> setup.log
 echo
+
+
+echo
+echo "+----------------------------------------------------------+"
+echo "| Checking for PERL Interpreter...                         |"
+echo "+----------------------------------------------------------+"
+echo
+echo "Checking for PERL Interpreter" >> setup.log
+if test -z $PERL_BIN
+then
+	echo "PERL Interpreter not found !"
+	echo "PERL Interpreter not found" >> setup.log
+	echo "OCS Inventory NG is not able to work without PERL Interpreter."
+	echo "Setup manually PERL first."
+	echo "Installation aborted !"
+	echo "installation aborted" >> setup.log
+	exit 1
+else
+	echo "OK, PERL Intrepreter found at <$PERL_BIN> ;-)"
+	echo "PERL Intrepreter found at <$PERL_BIN>" >> setup.log
+fi
+echo
+
 
 echo
 echo -n "Do you wish to setup Communication server on this computer ([y]/n)?"
@@ -333,6 +361,26 @@ then
     echo "Installing Communication server" >> setup.log
     echo
     
+	echo
+	echo "+----------------------------------------------------------+"
+	echo "| Checking for Make utility...                             |"
+	echo "+----------------------------------------------------------+"
+	echo
+	echo "Checking for Make utility" >> setup.log
+	if test -z $MAKE
+	then
+		echo "Make utility not found !"
+		echo "Make utility not found" >> setup.log
+		echo "Setup is not able to build Perl module."
+		echo "Unable to build Perl module !" >> setup.log
+		exit 1
+	else
+		echo "OK, Make utility found at <$MAKE> ;-)"
+		echo "Make utility found at <$MAKE>" >> setup.log
+	fi
+	echo
+
+
     echo
     echo "+----------------------------------------------------------+"
     echo "| Checking for Apache Include configuration directory...   |"
@@ -392,7 +440,7 @@ then
             then
                 res=1
             else
-                echo "ERROR: $APACHE_CONFIG_DIRECTORY is not a directory !"
+                echo "*** ERROR: $APACHE_CONFIG_DIRECTORY is not a directory !"
                 res=0
             fi
             # Ensure file exists and is writable
@@ -400,7 +448,7 @@ then
             then
                 res=1
             else
-                echo "ERROR: $APACHE_CONFIG_DIRECTORY is not writable !"
+                echo "*** ERROR: $APACHE_CONFIG_DIRECTORY is not writable !"
                 res=0
             fi
         fi
@@ -421,39 +469,54 @@ then
     echo "| Checking for Apache mod_perl version...                  |"
     echo "+----------------------------------------------------------+"
     echo
-    echo "Checking for Apache mod_perl version" >> setup.log
-    if test -z $APACHE_MOD_PERL_VERSION
-    then
-        # Ask user 
-        res=0
-        while test $res -eq 0
-        do
-            echo "Apache must have module mod_perl enabled. As configuration differs from"
-            echo "mod_perl 1.999_21 or previous AND mod_perl 1.999_22 or higher, Setup must"
-            echo "know which release Apache is using."
-            echo "You can find which release you are using by running the following command"
-            echo "  - On RPM enabled OS, rpm -q mod_perl"
-            echo "  - On DPKG enabled OS, dpkg -l libapache*-mod-perl*"
-            echo "Enter 1 for mod_perl 1.999_21 or previous."
-            echo "Enter 2 for mod_perl 1.999_22 and higher."
-            echo -n "Which version of Apache mod_perl the computer is running ([1]/2) ?"
-            read ligne
-            if test -z $ligne
-            then
-                APACHE_MOD_PERL_VERSION=1
-            else
-                APACHE_MOD_PERL_VERSION=$ligne
-            fi
-            res=1
-        done
-    fi
+    echo "Checking for Apache mod_perl version 1.99_22 or higher"
+    echo "Checking for Apache mod_perl version 1.99_22 or higher" >> setup.log
+	$PERL_BIN -mmod_perl2 -e 'print "mod_perl 1.99_22 or higher is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		# mod_perl 2 not found !
+		echo "Checking for Apache mod_perl version 1.99_21 or previous"
+		$PERL_BIN -mmod_perl -e 'print "mod_perl 1.99_21 or previous is available\n"' >> setup.log 2>&1
+		if [ $? != 0 ]
+		then
+			# mod_perl 1 not found => Ask user 
+			res=0
+			while test $res -eq 0
+			do
+				echo "Setup is unable to determine your Apache mod_perl version."
+				echo "Apache must have module mod_perl enabled. As configuration differs from"
+				echo "mod_perl 1.99_21 or previous AND mod_perl 1.99_22 or higher, Setup must"
+				echo "know which release Apache is using."
+				echo "You can find which release you are using by running the following command"
+				echo "  - On RPM enabled OS, rpm -q mod_perl"
+				echo "  - On DPKG enabled OS, dpkg -l libapache*-mod-perl*"
+				echo "Enter 1 for mod_perl 1.99_21 or previous."
+				echo "Enter 2 for mod_perl 1.99_22 and higher."
+				echo -n "Which version of Apache mod_perl the computer is running ([1]/2) ?"
+				read ligne
+				if test -z $ligne
+				then
+					APACHE_MOD_PERL_VERSION=1
+				else
+					APACHE_MOD_PERL_VERSION=$ligne
+				fi
+				res=1
+			done
+		else
+		    echo "Found that mod_perl version 1.99_21 or previous is available."
+			APACHE_MOD_PERL_VERSION=1
+		fi
+	else
+	    echo "Found that mod_perl version 1.99_22 or higher is available."
+		APACHE_MOD_PERL_VERSION=2
+	fi
     if test $APACHE_MOD_PERL_VERSION -eq 1
     then
-        echo "OK, Apache is using mod_perl version 1.999_21 or previous ;-)"
-        echo "Using mod_perl version 1.999_21 or previous" >> setup.log
+        echo "OK, Apache is using mod_perl version 1.99_21 or previous ;-)"
+        echo "Using mod_perl version 1.99_21 or previous" >> setup.log
 	else
-        echo "OK, Apache is using mod_perl version 1.999_22 or higher ;-)"
-        echo "Using mod_perl version 1.999_22 or higher" >> setup.log
+        echo "OK, Apache is using mod_perl version 1.99_22 or higher ;-)"
+        echo "Using mod_perl version 1.99_22 or higher" >> setup.log
 	fi
 	echo
 
@@ -492,37 +555,103 @@ then
     #    - Compress::Zlib 1.33 or higher
     #    - XML::Simple 2.12 or higher
     #    - Net::IP 1.21 or higher
-    # Setup Perl module Ocsinventory.pm into Perl include path
-    # Setup mass importation utility Ocsinventory_local.pl into /usr/bin
     #
     echo
     echo "+----------------------------------------------------------+"
     echo "| Checking for required Perl Modules...                    |"
     echo "+----------------------------------------------------------+"
     echo
-    echo "Checking for required Perl Modules (perl Makefile.PL)" >> ../setup.log
-    perl Makefile.PL
+	echo "Checking for DBI PERL module..."
+	echo "Checking for DBI PERL module" >> setup.log
+	$PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module DBI is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module DBI is available."
+    fi
+	echo "Checking for Apache::DBI PERL module..."
+	echo "Checking for Apache::DBI PERL module" >> setup.log
+	$PERL_BIN -mApache::DBI -e 'print "PERL module Apache::DBI is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module Apache::DBI is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module Apache::DBI is available."
+    fi
+	echo "Checking for DBD::mysql PERL module..."
+	echo "Checking for DBD::mysql PERL module" >> setup.log
+	$PERL_BIN -mDBD::mysql -e 'print "PERL module DBD::mysql is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module DBD::mysql is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module DBD::mysql is available."
+    fi
+	echo "Checking for Compress::Zlib PERL module..."
+	echo "Checking for Compress::Zlib PERL module" >> setup.log
+	$PERL_BIN -mCompress::Zlib -e 'print "PERL module Compress::Zlib is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module Compress::Zlib is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module Compress::Zlib is available."
+    fi
+	echo "Checking for XML::Simple PERL module..."
+	echo "Checking for XML::Simple PERL module" >> setup.log
+	$PERL_BIN -mXML::Simple -e 'print "PERL module XML::Simple is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module XML::Simple is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module XML::Simple is available."
+    fi
+	echo "Checking for Net::IP PERL module..."
+	echo "Checking for Net::IP PERL module" >> setup.log
+	$PERL_BIN -mNet::IP -e 'print "PERL module Net::IP is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module Net::IP is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module Net::IP is available."
+    fi
+
+
+    echo
+    echo "+----------------------------------------------------------+"
+    echo "| OK, looks good ;-)                                       |"
+    echo "|                                                          |"
+    echo "| Configuring Communication server Perl modules...         |"
+    echo "+----------------------------------------------------------+"
+    echo
+    echo "Configuring Communication server (perl Makefile.PL)" >> ../setup.log
+    $PERL_BIN Makefile.PL
     if [ $? != 0 ]
     then
-        echo -n "Warning: Prerequisites missing ! Do you wish to continue (y/[n])?"
+        echo -n "Warning: Prerequisites too old ! Do you wish to continue (y/[n])?"
         read ligne
         if test $ligne = "y"
         then
             echo "Maybe Communication server will encounter problems. Continuing anyway."
-            echo "Warning: Prerequisites missing ! Continuing anyway" >> ../setup.log
-        else
-            echo "Installation aborted !"
-            exit 1
-        fi
-    else
-        echo
-        echo "Ensure prerequisites are OK, otherwise Communication server may encounter"
-        echo "problems. If you were not prompted for warnings, all seems good ;-)"
-        echo -n "Do you wish to continue ([y]/n) ?"
-        read ligne
-        if (test -z $ligne) || (test $ligne = "y")
-        then
-            echo "Assuming prerequisites are OK."
+            echo "Warning: Prerequisites too old ! Continuing anyway" >> ../setup.log
         else
             echo "Installation aborted !"
             exit 1
@@ -536,10 +665,10 @@ then
     echo "+----------------------------------------------------------+"
     echo
     echo "Preparing Communication server Perl modules (make)" >> ../setup.log
-    make >> ../setup.log 2>&1
+    $MAKE >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Prepare failed, please look at error in setup.log and fix !"
+        echo "*** ERROR: Prepare failed, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -553,10 +682,10 @@ then
     echo "+----------------------------------------------------------+"
     echo
     echo "Installing Communication server Perl modules (make install)" >> ../setup.log
-    make install >> ../setup.log 2>&1
+    $MAKE install >> ../setup.log 2>&1
     if [ $? != 0 ]
     then 
-        echo "ERROR: Install of Perl modules failed, please look at error in setup.log and fix !"
+        echo "*** ERROR: Install of Perl modules failed, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -574,7 +703,7 @@ then
     mkdir -p $OCS_COM_SRV_LOG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to create log directory, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to create log directory, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -585,7 +714,7 @@ then
     chown -R root:$APACHE_GROUP $OCS_COM_SRV_LOG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -593,7 +722,7 @@ then
     chmod -R gu+rwx $OCS_COM_SRV_LOG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -601,7 +730,7 @@ then
     chmod -R o-rwx $OCS_COM_SRV_LOG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -622,7 +751,7 @@ EOF
     cp -f logrotate.ocsinventory-NG.local /etc/logrotate.d/ocsinventory-NG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to configure log rotation, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to configure log rotation, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -684,7 +813,7 @@ EOF
         cp -f ocsinventory.conf.local $APACHE_CONFIG_DIRECTORY/ocsinventory.conf >> ../setup.log 2>&1
         if [ $? != 0 ]
         then
-            echo "ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/ocsinventory.conf, please look at error in setup.log and fix !"
+            echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/ocsinventory.conf, please look at error in setup.log and fix !"
             echo
             echo "Installation aborted !"
             exit 1
@@ -742,13 +871,61 @@ then
         then
             res=1
         else
-            echo "ERROR: $APACHE_ROOT_DOCUMENT is not a directory !"
+            echo "*** ERROR: $APACHE_ROOT_DOCUMENT is not a directory !"
         fi
     done
     echo "OK, Apache root document directory is $APACHE_ROOT_DOCUMENT ;-)"
     echo "Using Apache root document directory $APACHE_ROOT_DOCUMENT" >> setup.log
     echo
     
+    # Check for required Perl Modules (if missing, please install before)
+    #    - DBI 1.40 or higher
+    #    - XML::Simple 2.12 or higher
+    #    - Net::IP 1.21 or higher
+    #
+    echo
+    echo "+----------------------------------------------------------+"
+    echo "| Checking for required Perl Modules...                    |"
+    echo "+----------------------------------------------------------+"
+    echo
+	echo "Checking for DBI PERL module..."
+	echo "Checking for DBI PERL module" >> setup.log
+	$PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module DBI is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module DBI is available."
+    fi
+	echo "Checking for XML::Simple PERL module..."
+	echo "Checking for XML::Simple PERL module" >> setup.log
+	$PERL_BIN -mXML::Simple -e 'print "PERL module XML::Simple is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module XML::Simple is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module XML::Simple is available."
+    fi
+	echo "Checking for Net::IP PERL module..."
+	echo "Checking for Net::IP PERL module" >> setup.log
+	$PERL_BIN -mNet::IP -e 'print "PERL module Net::IP is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module Net::IP is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module Net::IP is available."
+    fi
+
+
     echo
     echo "+----------------------------------------------------------+"
     echo "| Installing files for Administration server...            |"
@@ -759,7 +936,7 @@ then
     mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -767,7 +944,7 @@ then
     mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports/ipd >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports/ipd, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports/ipd, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -779,7 +956,7 @@ then
     cp -Rf ocsreports/* $APACHE_ROOT_DOCUMENT/ocsreports/ >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -791,7 +968,7 @@ then
     chown -R root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -799,7 +976,7 @@ then
     chmod -R go-w $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -807,7 +984,7 @@ then
     chmod g+w $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -815,7 +992,7 @@ then
     chmod -R g+w $APACHE_ROOT_DOCUMENT/ocsreports/ipd >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -840,7 +1017,7 @@ EOF
     cp ipdiscover-util/ipdiscover-util.pl.local $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -851,7 +1028,7 @@ EOF
     chown root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -859,7 +1036,7 @@ EOF
     chmod gou+x $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> setup.log 2>&1
     if [ $? != 0 ]
     then
-        echo "ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
