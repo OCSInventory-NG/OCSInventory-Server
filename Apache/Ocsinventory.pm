@@ -162,6 +162,7 @@ sub handler{
 		($data, $status) = $d->inflate($data);
 		unless( $status == Z_OK or $status == Z_STREAM_END){
 			&_log(506,'handler','Compress stage');
+			return APACHE_SERVER_ERROR;
 		}
 		##########################
 		# Parse the XML request

@@ -117,10 +117,12 @@ sub download_handler{
 		AND IVALUE=?',
 		{}, $result->{'ERR'}, $current_context->{'DATABASE_ID'}, $row->{'ID'} ) 
 			or return(APACHE_SERVER_ERROR);
+		&_set_http_header('content-length', 0, $r);
 		&_send_http_headers($r);
 		return(APACHE_OK);
 	}else{
 		&_log(2501, 'download');
+		&_set_http_header('content-length', 0, $r);
 		&_send_http_headers($r);
 		return(APACHE_OK);
 	}
