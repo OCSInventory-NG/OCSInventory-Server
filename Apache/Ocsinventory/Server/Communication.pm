@@ -92,7 +92,7 @@ sub _prolog{
 		}
 		
 		# Saving lastdate
-		$lastdate = $info->{'LCOME'};
+		$lastdate = $info->{'LDATE'};
 
 		# Maybe there are computer's special frequency
 		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="FREQUENCY"');
