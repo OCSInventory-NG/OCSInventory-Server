@@ -96,7 +96,7 @@ sub _prolog{
 
 		# Maybe there are computer's special frequency
 		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="FREQUENCY"');
-		$request->execute($DeviceID);
+		$request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'});
 		if($row=$request->fetchrow_hashref()){
 			$frequency=$row->{'IVALUE'};
 		}

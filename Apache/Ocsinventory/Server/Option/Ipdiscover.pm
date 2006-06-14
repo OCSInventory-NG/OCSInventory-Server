@@ -25,6 +25,10 @@ use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Constants;
 
+use constant IPD_NEVER => 0;
+use constant IPD_ON => 1;
+use constant IPD_MAN => 2;
+
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_PROLOG_READ' => undef,
@@ -61,8 +65,8 @@ sub _ipdiscover_prolog_resp{
 	# What is the current state of this option ?
 
 	#ipdiscover for this device ?
-	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');
-	$request->execute($DeviceID);
+	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER" AND (IVALUE=? OR IVALUE=?)');
+	$request->execute($DeviceID, IPD_ON, IPD_MAN);
 	if($request->rows){
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 		$row = $request->fetchrow_hashref();
@@ -81,6 +85,7 @@ sub _ipdiscover_main{
 	my $subnet;
 	my $remove;
 	my $result;
+	my $ivalue;
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
 	
@@ -94,12 +99,19 @@ sub _ipdiscover_main{
 	}
 
 	# Is the device already have the ipdiscover function ?
-	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');
+	$request=$dbh->prepare('SELECT IVALUE, TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');
 	$request->execute($DeviceID);
 	if($request->rows){
 		$row = $request->fetchrow_hashref;
+		#IVALUE = 0 means that computer will not ever be elected
+		if( ($ivalue = $row->{IVALUE}) == IPD_NEVER ){
+			return 0;
+		}
 		# get 1 on removing and 0 if ok
 		$remove = &_ipdiscover_read_result($dbh, $result, $row->{'TVALUE'});
+		if( $ivalue == IPD_MAN ){
+			$remove = 0;
+		}
 		$request->finish;
 		if(!defined($remove)){
 			return(1);
@@ -244,8 +256,11 @@ sub _ipdiscover_evaluate{
 	for(@$base){
 		if(defined($_->{IPSUBNET}) and $_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ ){
 
-			$request = $dbh->prepare('select h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST from hardware h,devices d where d.HARDWARE_ID=h.ID and d.TVALUE=? AND h.ID<>?');
-			$request->execute($_->{IPSUBNET}, $DeviceID);
+			$request = $dbh->prepare('
+			SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST 
+			FROM hardware h,devices d 
+			WHERE d.HARDWARE_ID=h.ID AND d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER"');
+			$request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN);
 
 			while($row = $request->fetchrow_hashref){
 				# If we find an ipdiscover that is older than IP_MAX_ALIVE, we replace it with the current
