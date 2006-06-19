@@ -178,8 +178,9 @@ $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).",
 		DESCRIPTION=".$dbh->quote($base->{DESCRIPTION}).",
 		WINCOMPANY=".$dbh->quote($base->{WINCOMPANY}).",
 		WINOWNER=".$dbh->quote($base->{WINOWNER}).",
-		WINPRODID=".$dbh->quote($base->{WINPRODID})."
-		WHERE ID=".$DeviceID)
+		WINPRODID=".$dbh->quote($base->{WINPRODID}).",
+		WINPRODKEY=".$dbh->quote($base->{WINPRODKEY})."
+		 WHERE ID=".$DeviceID)
 or return(1);
 	
 	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
