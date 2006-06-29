@@ -36,7 +36,9 @@ OCS_COM_SRV_LOG="/var/log/ocsinventory-NG"
 PERL_BIN=`which perl`
 # Where is located make utility
 MAKE=`which make`
-
+# Where is located logrotate configuration directory
+LOGROTATE_CONF_DIR="/etc/logrotate.d"
+ 
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -746,9 +748,9 @@ EOF
     echo "******** Begin updated logrotate.ocsinventory-NG ***********" >> ../setup.log
     cat logrotate.ocsinventory-NG.local >> ../setup.log
     echo "******** End updated logrotate.ocsinventory-NG ***********" >> ../setup.log
-    echo "Writing communication server logrotate to file /etc/logrotate.d/ocsinventory-NG"
-    echo "Writing communication server logrotate to file /etc/logrotate.d/ocsinventory-NG" >> ../setup.log
-    cp -f logrotate.ocsinventory-NG.local /etc/logrotate.d/ocsinventory-NG >> ../setup.log 2>&1
+    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/ocsinventory-NG"
+    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/ocsinventory-NG" >> ../setup.log
+    cp -f logrotate.ocsinventory-NG.local $LOGROTATE_CONF_DIR/ocsinventory-NG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
         echo "*** ERROR: Unable to configure log rotation, please look at error in setup.log and fix !"
@@ -880,6 +882,7 @@ then
     
     # Check for required Perl Modules (if missing, please install before)
     #    - DBI 1.40 or higher
+    #    - DBD::mysql 2.9004 or higher
     #    - XML::Simple 2.12 or higher
     #    - Net::IP 1.21 or higher
     #
@@ -899,6 +902,18 @@ then
         exit 1
 	else
 		echo "Found that PERL module DBI is available."
+    fi
+	echo "Checking for DBD::mysql PERL module..."
+	echo "Checking for DBD::mysql PERL module" >> setup.log
+	$PERL_BIN -mDBD::mysql -e 'print "PERL module DBD::mysql is available\n"' >> setup.log 2>&1
+	if [ $? != 0 ]
+	then
+		echo "*** ERROR: PERL module DBD::mysql is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+	else
+		echo "Found that PERL module DBD::mysql is available."
     fi
 	echo "Checking for XML::Simple PERL module..."
 	echo "Checking for XML::Simple PERL module" >> setup.log
@@ -1057,6 +1072,8 @@ echo
 echo "Setup has created a log file setup.log. Please, save this file."
 echo "If you encounter error while running OCS Inventory NG Management server,"
 echo "we can ask you to show us his content !"
+echo
+echo "DON'T FORGET TO RESTART APACHE DAEMON !"
 echo
 echo "Enjoy OCS Inventory NG ;-)"
 echo
