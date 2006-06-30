@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 11/25/2005
+//Modified on 06/30/2006
 
 set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
@@ -206,14 +206,19 @@ if($dbf_handle = @fopen($db_file, "r")) {
 		$li++;
 		if(!mysql_query($sql_line)) {
 			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1044 || mysql_errno()==1065 || mysql_errno()==1060 || mysql_errno()==1054 || mysql_errno()==1091 || mysql_errno()==1061) 
-				continue;			
+				continue;		
+
+			if(  mysql_errno()==1071 ) {
+				echo "<br><center><font color=red><b>ERROR: line $li: query:[$sql_line] failed, KEY was too long<br>You need to redo this query later or you will experience severe performance issues.</b><br>";
+				continue;
+			}
 			
 			if(mysql_errno()==1007 || mysql_errno()==1050) {
 				$dejaLance = 1;
 				continue;
 			}
 			
-			echo "<br><center><font color=red><b>ERROR: line $li: query failed</b><br>";
+			echo "<br><center><font color=red><b>ERROR: line $li: query:[$sql_line] failed</b><br>";
 			echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
 			$nberr++;
 		}
