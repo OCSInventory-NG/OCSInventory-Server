@@ -11,102 +11,227 @@
 //Modified on 12/14/2005
 
 	printEnTete($l->g(9));
+	$req = NULL;
+	
 	if( !isset($_SESSION["optCol"]) ) {
-		$reqCol = "SELECT * FROM accountinfo LIMIT 0,1";
+		$reqCol = "SHOW COLUMNS FROM accountinfo";
 		$resCol = mysql_query($reqCol, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
-		while($colname=mysql_fetch_field($resCol))
-			if( $colname->name != TAG_NAME )
-				$_SESSION["optCol"][] = $colname->name;	
+		while($colname=mysql_fetch_array($resCol)) {
+			if( strcasecmp($colname["Field"], TAG_NAME) != 0 )
+				$_SESSION["optCol"][] = $colname["Field"] ;	
+		}
 	}	
 	
 	include("req.class.php");
 	$indLigne=0;
 	$softPresent = false;
 	$cuPresent = -1;
+	$leSelect = array_merge( array("h.id"=>"h.id", "deviceid"=>"deviceid"), $_SESSION["currentFieldList"] );
+	
+	if( is_array($_SESSION["selectSofts"]) && $_POST["sub"]!=$l->g(30)) 
+		$leSelect = array_merge( $leSelect, $_SESSION["selectSofts"] );
+	$selFinal ="";
+	
 	if($_POST["reset"]==$l->g(41))
 	{
 		unset($_SESSION["OPT"]);
 		unset($_SESSION["reqs"]);
+		unset($_SESSION["softs"]);
 	}
 	else if($_POST["selOpt"])
 	{
 		$_POST["selOpt"] = urldecode( $_POST["selOpt"] );
-		if(   (! is_array($_SESSION["OPT"]))  ||   ( !in_array($_POST["selOpt"],$_SESSION["OPT"]))) {
+		if( $_POST["selOpt"]==$l->g(20) ||  ((! is_array($_SESSION["OPT"]))  ||   ( !in_array($_POST["selOpt"],$_SESSION["OPT"])))) {
 			$_SESSION["OPT"][]=stripslashes($_POST["selOpt"]);
 		}
 	}	
 	else if($_POST["sub"]==$l->g(30))
 	{
-		unset($_SESSION["query"]);
-					
+		unset($_SESSION["selectSofts"]);
+		unset($_SESSION["storedRequest"], $_SESSION["c"],$_SESSION["reqs"],$_SESSION["softs"]);
 		$i=0; $nb=0; 
-		$laRequete="SELECT a.".TAG_NAME." AS \"".TAG_LBL."\",$selectH";			
-		unset( $_SESSION["reqs"] );
-		for($i=0;$i<$_POST["max"];$i++)	{				
+		$laRequete="";				
 
+		for($i=0;$i<$_POST["max"];$i++)	{
+		
+			if( urldecode($_POST["lbl_".$i]) == $l->g(20))
+				$_SESSION["softs"][] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i], 
+				strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] ); 
+			
 			$_SESSION["reqs"][ urldecode($_POST["lbl_".$i]) ] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i], 
 			strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] ); 
 							
 			if(!isset($_POST["act_".$i]))
-				continue;
-				
-			if( ($_POST["chm_".$i]=="name") && $_POST["ega_".$i]==$l->g(129) ) {			
+				continue;			
+		
+			/*VOIRif( ($_POST["chm_".$i]=="name") && $_POST["ega_".$i]==$l->g(129) ) {			
 				$laRequete.=", s.name AS \"".$l->g(20)."\"";
-			}
-				
+			}*/			
+
 			$nb++;			
 		}
-		$laRequete.=" FROM hardware h,accountinfo a,bios b,";				
+
+		$from = " hardware h LEFT JOIN accountinfo a ON a.hardware_id=h.id LEFT JOIN bios b ON b.hardware_id=h.id,";	
+		//$laRequete.=" FROM hardware h,accountinfo a, bios b, ";		
 			
 		$softTable = false ;
+		$logIndex = 1;
+		$fromPrelim  ="";
 		for($i=0;$i<$_POST["max"];$i++)
 		{
+			
 			if(!isset($_POST["act_".$i]))
 			continue;
 			
 			//jokers
-			$_POST["val_".$i] = strtr($_POST["val_".$i], "?*", "_%");
-			
+			if( $_POST["ega_".$i] != $l->g(410) )
+				$_POST["val_".$i] = strtr($_POST["val_".$i], "?*", "_%");
+						
 			if( isFieldDate($_POST["chm_".$i]) ) {
 				$_POST["val_".$i] = dateToMysql($_POST["val_".$i]);
 			}
-						
-			if( ($_POST["chm_".$i]=="name") && ! $softTable && $_POST["ega_".$i]==$l->g(129) ) {			
-				$laRequete.=" softwares s,";
-				$softTable = true ;
+			
+			if( ($_POST["chm_".$i]=="name") && ($_POST["ega_".$i]==$l->g(129) || $_POST["ega_".$i]==$l->g(410))) {		
+				$leSelect["s".$logIndex.".name"] = $l->g(20)." $logIndex";
+				$_SESSION["selectSofts"]["s".$logIndex.".name"] = $l->g(20)." $logIndex";
 			}
 			
-			if( ($_POST["chm_".$i]=="regval" || $_POST["chm_".$i]=="regname") && $_POST["ega_".$i]==$l->g(129)) {
-					$laRequete.=" registry r,";
+			$regRes = null;
+			if( ($_POST["ega_".$i]==$l->g(129)||$_POST["ega_".$i]==$l->g(410)) && $_POST["chm_".$i]=="name" ) {
+				//$fromPrelim.=" softwares s".$logIndex.",";
+				$from .= " softwares s".$logIndex.",";
+				$logIndex++;
+			}
+			
+			if( ($_POST["chm_".$i]=="regval" || $_POST["chm_".$i]=="regname") && ($_POST["ega_".$i]==$l->g(129)||$_POST["ega_".$i]==$l->g(410))) {
+				$fromPrelim.=" registry r,";
 			}
 			
 			if($_POST["chm_".$i]=="smonitor") {
-					$laRequete.=" monitors m,";
+				$fromPrelim.=" monitors m,";
+			}
+			
+			if($_POST["chm_".$i]=="free") {
+				$fromPrelim.=" drives dr,";
 			}
 
-			if(($_POST["chm_".$i]=="ipmask"||$_POST["chm_".$i]=="ipgateway"||$_POST["chm_".$i]=="ipaddr"||$_POST["chm_".$i]=="ipsubnet") && !$netTable) {
-				$laRequete.=" networks n,";
+			if(($_POST["chm_".$i]=="ipmask"||$_POST["chm_".$i]=="ipgateway"||$_POST["chm_".$i]=="ipaddr"||$_POST["chm_".$i]=="ipsubnet"||$_POST["chm_".$i]=="macaddr") && !$netTable) {
+				$fromPrelim.=" networks n,";
 				$netTable=true;
-			}
-			
+			}		
 		}
 		
-		if($laRequete[strlen($laRequete)-1]==",")
-			$laRequete[strlen($laRequete)-1]=" ";
-			
-		$laRequete.="WHERE h.deviceid=a.deviceid AND h.deviceid=b.deviceid ";
-			
-		
+		if($fromPrelim[strlen($fromPrelim)-1]==",")
+			$fromPrelim[strlen($fromPrelim)-1]=" ";
+		if($from[strlen($from)-1]==",")
+			$from[strlen($from)-1]=" ";
+
+		$first = true;
 		for($i=0;$i<$_POST["max"];$i++)
 		{				
 			if(!isset($_POST["act_".$i]))
 				continue;
+				
+					
+			if( $_POST["act_".$i]="checked" && $_POST["chm_".$i] == "ipdisc" ) {
+							
+				if( !$first )
+					$laRequete.= " AND ";
+					
+				$first = false;
+				$laRequete.= " h.id ";
+				switch( $_POST["val_".$i] ) {
+					case "elu":
+						$laRequete.= "IN (SELECT hardware_id FROM devices WHERE ivalue=1 AND name='IPDISCOVER') "; 
+					break;
+					case "for":
+						$laRequete.= "IN (SELECT hardware_id FROM devices WHERE ivalue=2 AND name='IPDISCOVER') "; 
+					break;
+					case "nelu":
+						$laRequete.= "NOT IN (SELECT hardware_id FROM devices WHERE ivalue=1 AND name='IPDISCOVER') "; 
+					break;
+					case "eli":
+						$laRequete.= "NOT IN (SELECT hardware_id FROM devices WHERE ivalue=0 AND name='IPDISCOVER') ";
+					break;
+					case "neli":
+						$laRequete.= "IN (SELECT hardware_id FROM devices WHERE ivalue=0 AND name='IPDISCOVER') ";
+					break;
+				}
+				continue;
+			}
+			
+			if( $_POST["act_".$i]="checked" && $_POST["chm_".$i] == "freq" ) {
+							
+				if( !$first )
+					$laRequete.= " AND ";
+					
+				$first = false;
+				$laRequete.= " h.id ";
+				switch( $_POST["val_".$i] ) {
+					case "std":
+						$laRequete.= "NOT IN (SELECT hardware_id FROM devices WHERE name='FREQUENCY') "; 
+					break;
+					case "always":
+						$laRequete.= "IN (SELECT hardware_id FROM devices WHERE name='FREQUENCY' AND ivalue=0) "; 
+					break;
+					case "never":
+						$laRequete.= "IN (SELECT hardware_id FROM devices WHERE name='FREQUENCY' AND ivalue=-1) "; 
+					break;
+					case "custom":
+						$laRequete.= "IN (SELECT hardware_id FROM devices WHERE name='FREQUENCY' AND ivalue>0)  ";
+					break;					
+				}
+				continue;
+			}
+			
+			if( $_POST["act_".$i]="checked" && $_POST["chm_".$i] == "tele" ) {
+							
+				if( !$first )
+					$laRequete.= " AND ";
+					
+				$first = false;
+				$laRequete.= " h.id ";
+				
+				if( $_POST["ega_".$i] == "ayant" ) {
+					$laRequete.= " IN ";
+				}
+				else if( $_POST["ega_".$i] == "nayant" ) {
+					$laRequete.= " NOT IN ";
+				}
+				
+				switch( $_POST["val2_".$i] ) {
+					case "suc":
+						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
+						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
+						 "' AND d.tvalue like 'SUCCESS_%' AND e.fileid=a.fileid AND e.id=d.ivalue) "; 
+					break;
+					case "nsuc":
+						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
+						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
+						 "' AND (d.tvalue not like 'SUCCESS_%' OR d.tvalue IS NULL) AND e.fileid=a.fileid AND e.id=d.ivalue) "; 
+					break;
+					case "ind":
+						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
+						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
+						 "' AND e.fileid=a.fileid AND e.id=d.ivalue) "; 
+					break;
+					default: //standard case
+						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
+						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
+						 "' AND d.tvalue='".$_POST["val2_".$i]."' AND e.fileid=a.fileid AND e.id=d.ivalue) ";  
+					break;									
+				}
+				continue;
+			}
 			
 			if( $_POST["act_".$i]="checked" && ! (  ($cuPresent != -1 ) && $_POST["chm_".$i] == "cu") )
 			{				
-				// cas particulier avec LOGICIEL DIFFERENT DE
-				if( ($_POST["chm_".$i] == "name" /*|| $_POST["chm_".$i] == "version" */) && ($_POST["ega_".$i] == $l->g(130) || $unSoftnEgal) ) {
-					$softDiff[]=Array($_POST["val_".$i],$_POST["ega_".$i]);
+				// cas particulier avec LOGICIEL
+				if( ($_POST["chm_".$i] == "name" ) ) {
+					if( $_POST["ega_".$i] == $l->g(129)||$_POST["ega_".$i]==$l->g(410) )
+						$softsEg[] = Array( $_POST["val_".$i], urldecode($_POST["lbl_".$i]), $_POST["ega_".$i] );
+					else
+						$softsDi[] = Array( $_POST["val_".$i], urldecode($_POST["lbl_".$i]), "" );
 					continue ;
 				}
 				
@@ -116,18 +241,17 @@
 					continue ;
 				}
 				
-				if($nb>0)
+				if($nb>0&&!$first)
 				{
 					$laRequete.=" AND ";						
 				}
-				
+				if( $first ) $first = false;				
 				$forceEgal=false;
-				
+												
 				if($_POST["chm_".$i]=="regname") {
-					$laRequete.="r.deviceid=h.deviceid AND ";
-					$regPres = true;
+					$laRequete.="r.hardware_id=h.id AND ";
 				}
-										
+				$tblIneq = "h";						
 				switch($_POST["chm_".$i])
 				{
 					case "ssn": $laRequete.="b.ssn";break;
@@ -135,19 +259,26 @@
 					case "bversion": $laRequete.="b.bversion";break;
 					case "smanufacturer": $laRequete.="b.smanufacturer";break;
 					case "smodel": $laRequete.="b.smodel";break;
-					case "ipmask": $laRequete.="n.deviceid=h.deviceid AND n.ipmask";break;
-					case "ipgateway": $laRequete.="n.deviceid=h.deviceid AND n.ipgateway";break;
-					case "ipsubnet": $laRequete.="n.deviceid=h.deviceid AND n.ipsubnet";break;
+					case "ipmask": $laRequete.="n.hardware_id=h.id AND n.ipmask";break;
+					case "ipgateway": $laRequete.="n.hardware_id=h.id AND n.ipgateway";break;
+					case "free": $laRequete.="dr.hardware_id=h.id AND dr.free";$tblIneq="dr";break;
+					case "ipsubnet": $laRequete.="n.hardware_id=h.id AND n.ipsubnet";break;
 					case "regname": 
-							if( $_POST["valreg_".$i] != $l->g(265) )
-								$laRequete.="r.regvalue='".$_POST["valreg_".$i]."' AND ";
+							if( $_POST["valreg_".$i] != $l->g(265) ) {
+								if( $_POST["ega_".$i] != $l->g(410) )
+									$_POST["valreg_".$i] = strtr($_POST["valreg_".$i], "?*", "_%");
+								$comp = $_POST["ega_".$i] == $l->g(129) ? " like '%" : " = '";
+							    $compFin = $_POST["ega_".$i] == $l->g(129) ? "%' " : "' ";
+								$laRequete.="r.regvalue$comp".$_POST["valreg_".$i]."{$compFin}AND ";
+							}
 							$laRequete.="r.name";
 							$forceEgal=true;
 							break;					
 					
-					case "name": $laRequete.="s.deviceid=h.deviceid AND s.name";
+					case "name": 							
+							$laRequete.="s.hardware_id=h.id AND s.name";
 							$softPresent = true;
-							if( $_POST["ega_".$i] == $l->g(129) )
+							if( $_POST["ega_".$i] == $l->g(129)||$_POST["ega_".$i]==$l->g(410) )
 								$unSoftnEgal = true ;
 							break;			
 							
@@ -156,31 +287,38 @@
 					case "PRODUCTID": $laRequete.="a.productid";break;
 					case "BILLDATE": $laRequete.="a.billnbr";break;
 					case "cu": $laRequete.="a.".TAG_NAME;$forceEgal=true;break;
-					case "processors": $laRequete.="h.processors";$forceEgal=true;break;
-					case "memory": $laRequete.="h.memory";$forceEgal=true;break;
-					case "osname": $laRequete.="h.osname";$forceEgal=true;break;
+					case "processors": $laRequete.="h.processors";break;
+					case "memory": $laRequete.="h.memory";break;
+					case "osname": $laRequete.="h.osname";$forceEgal=false;break;
 					case "userid": $laRequete.="h.userid";break;
-					case "ipaddr": $laRequete.="n.deviceid=h.deviceid AND n.ipaddress";break;
+					case "ipaddr": $laRequete.="n.hardware_id=h.id AND n.ipaddress";break;
+					case "macaddr": $laRequete.="n.hardware_id=h.id AND n.macaddr";break;
 					case "useragent": $laRequete.="h.useragent";$forceEgal=true;break;
-					case "workgroup": $laRequete.="h.workgroup";break;
+					case "workgroup": $laRequete.="h.workgroup";$forceEgal=true;break;
 					case "hname": $laRequete.="h.name";break;
+					case "description": $laRequete.="h.description";break;
 					case "lastdate": $laRequete.="h.lastdate";break;
-					case "smonitor": $laRequete.="m.deviceid=h.deviceid AND m.serial";break;
+					case "smonitor": $laRequete.="m.hardware_id=h.id AND m.serial";break;
 					default: $laRequete.="a.".$_POST["chm_".$i]; break;
 				}		
 				
-				switch($_POST["ega_".$i])
-				{
-					case $l->g(129): $laRequete.=" LIKE ";$forceLike=true; break;						
-					case $l->g(130): $laRequete.=" NOT LIKE ";$forceLike=true; break;					
-					case $l->g(346):
-					case $l->g(201): $laRequete.="<";break;
-					case $l->g(347):
-					case $l->g(202): $laRequete.=">";break;
-					case $l->g(203): $laRequete.="<'".$_POST["val2_".$i]."' AND h.".$_POST["chm_".$i].">";break;
-					//case $l->g(204): $laRequete.=">'".$_POST["val2_".$i]."' OR h.".$_POST["chm_".$i]."<";break;
-					default: $laRequete.=" LIKE "; $forceLike=true;break;
+				if( ! $forceEgal ) {
+					switch($_POST["ega_".$i]) {
+						case $l->g(410): $laRequete.=" = ";$forceEgal=true; break;	
+						case $l->g(129): $laRequete.=" LIKE ";$forceLike=true; break;						
+						case $l->g(130): $laRequete.=" NOT LIKE ";$forceLike=true; break;					
+						case $l->g(346):
+						case $l->g(201): $laRequete.="<"; $forceEgal=true; break;
+						case $l->g(347):
+						case $l->g(202): $laRequete.=">"; $forceEgal=true; break;
+						case $l->g(203): $laRequete.="<'".$_POST["val2_".$i]."' AND $tblIneq.".$_POST["chm_".$i].">"; $forceEgal=true; break;
+						//case $l->g(204): $laRequete.=">'".$_POST["val2_".$i]."' OR h.".$_POST["chm_".$i]."<";break;
+						default: $laRequete.=" LIKE "; $forceLike=true;break;
+					}
 				}
+				else 
+					$laRequete.=" = ";
+				
 				if( $forceEgal || !$forceLike )
 					$laRequete.="'".$_POST["val_".$i]."'";	
 				else
@@ -189,52 +327,64 @@
 		}
 		
 		if( $nb > 0 ) {		
-			$laRequeteF=$laRequete;	
-			//val ega
-			for($ii=0;$ii<sizeof($softDiff);$ii++) {
-				if($softDiff[$ii][1] == $l->g(130) )
-					$condSoft = "NOT ";
+			$laRequeteF=$laRequete;				
+			$logIndexEg = 1;
+	
+			for($ii=0;$ii<sizeof($softsEg);$ii++) {			
+				$selFinal .= " AND ";
+				if( ! $first  ) {
+						$laRequeteF .= " AND ";								
+				}
 				else
-					$condSoft = "";
-				$laRequeteF .= "AND h.deviceid {$condSoft}IN(SELECT DISTINCT(ss.deviceid) FROM softwares ss WHERE ss.name LIKE '%".$softDiff[$ii][0]."%')";
+					$first = false;
+				
+				$comp = $softsEg[$ii][2] == $l->g(129) ? " like '%" : " = '";
+				$compFin = $softsEg[$ii][2] == $l->g(129) ? "%' " : "' ";
+				$laRequeteF .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name$comp".$softsEg[$ii][0]."$compFin";
+				$selFinal .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name$comp".$softsEg[$ii][0]."$compFin";
+				$logIndexEg++;
+			}
+						
+			for($ii=0;$ii<sizeof($softsDi);$ii++) {
+				$reqInterm = "";
+				if( !$first ) $laRequeteF .=" AND";
+				$first = false;				
+				$laRequeteF .= " h.id NOT IN(SELECT DISTINCT(ss.hardware_id) FROM softwares ss WHERE ss.name like '%".$softsDi[$ii][0]."%')";
 			}
 			
 			if(sizeof($regDiff)>=1) {
-				if($regDiff[1]!=$l->g(265))
-					$valRegR = " AND rr.regvalue = '".$regDiff[1]."'";
+				if($regDiff[1]!=$l->g(265)) {
+					$valRegR = "AND rr.regvalue = '".$regDiff[1]."'";
+				}
 				
-				$laRequeteF .= "AND h.deviceid NOT IN(SELECT DISTINCT(rr.deviceid) FROM registry rr WHERE rr.name = '".$regDiff[0]."' $valRegR)";
+				if( !$first ) $laRequeteF .= " AND";
+				$laRequeteF .= " h.id NOT IN(SELECT DISTINCT(rr.hardware_id) FROM registry rr WHERE rr.name = '".$regDiff[0]."' $valRegR)";
 			}
+			if( ! $first && $mesMachines != "" ) $laRequeteF .= " AND ";
 			
-			$tok = split(  "FROM hardware h,accountinfo a",$laRequeteF);
-			$requeteCount = "SELECT COUNT(DISTINCT h.deviceid) FROM hardware h,accountinfo a".$tok[1];		
-				
-			$laRequeteF .=  " GROUP BY h.deviceid";
+			
+			$group =  " h.id";
 			
 			$lbl="Recherche multicritères";	
-			$lblChmp[0]=NULL; 		
-			$req=new Req($lbl,$laRequeteF,$requeteCount,$lblChmp,$sqlChmp,$typChmp,NULL,true); // Instanciation du nouvel objet de type "Req"
-			//echo 	$laRequeteF;	
-			
-			ShowResults($req,true,false,false,true,false,true);
-			$_SESSION["query"]=$laRequeteF;				
-		}
-		
+			$lblChmp[0]=NULL;
+			$selectPrelim = array("h.id"=>"h.id");
+			$linkId = "h.id";
+			$whereId = "h.id";
+			$countId = "h.id";
+   
+			$req=new Req($lbl,$whereId,$linkId,$laRequeteF,$leSelect,$selectPrelim,$from,$fromPrelim,$group,"h.lastdate DESC",$countId,null,true,null,null,null,null,$selFinal);
+		}		
 	}
-	else if($_GET["c"] || $_GET["av"] || $_GET["page"] || isset($_GET["pcparpage"]) || isset($_GET["newcol"])  )
+	else if($_GET["redo"] || $_GET["c"] || $_GET["av"] || $_GET["page"] || isset($_GET["pcparpage"]) || isset($_GET["newcol"])  )
 	{
-		$tok = split( "FROM hardware h,accountinfo a",$_SESSION["query"]);
-		$tok2 = "SELECT COUNT(DISTINCT h.deviceid) FROM hardware h,accountinfo a".$tok[1];		
-		$requeteCount = split( "GROUP BY" , $tok2 );
-				
-		$lbl="Recherche multicritères";	
-		$lblChmp[0]=NULL; 		
-		$req=new Req($lbl,$_SESSION["query"],$requeteCount[0],$lblChmp,$sqlChmp,$typChmp,NULL,true); // Instanciation du nouvel objet de type "Req"		
-		
-		ShowResults($req,true,false,false,true,false,true);		
+		$lblChmp[0]=NULL;				
+		$req=new Req($_SESSION["storedRequest"]->label,$_SESSION["storedRequest"]->whereId,$_SESSION["storedRequest"]->linkId,$_SESSION["storedRequest"]->where,$leSelect,$_SESSION["storedRequest"]->selectPrelim,
+		$_SESSION["storedRequest"]->from,$_SESSION["storedRequest"]->fromPrelim,$_SESSION["storedRequest"]->group,$_SESSION["storedRequest"]->order,$_SESSION["storedRequest"]->countId,null,true,null,null,null,null,$_SESSION["storedRequest"]->selFinal); // Instanciation du nouvel objet de type "Req"		
+		//echo $requeteCount[0];
 	}	
 	
-	
+	if( $req != NULL )
+		ShowResults($req);
 
 ?>
 
@@ -243,9 +393,9 @@
 <form name='optionss' action='index.php?multi=1' method='post'><b><?echo $l->g(31);?>:&nbsp;&nbsp;&nbsp;</b> 
 <select name=selOpt OnChange="optionss.submit();"><?
 
-$optArray = array($l->g(34), $l->g(33), $l->g(20)." (1)", $l->g(20)." (2)", $l->g(26), $l->g(35),
-$l->g(36), $l->g(207), $l->g(25), $l->g(24), $l->g(27), $l->g(65), $l->g(284), $l->g(64), $l->g(359), 
-TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331),$l->g(209));
+$optArray = array($l->g(34), $l->g(33), $l->g(20), $l->g(26), $l->g(35),
+$l->g(36), $l->g(207), $l->g(25), $l->g(24), $l->g(377), $l->g(65), $l->g(284), $l->g(64), $l->g(359), 
+TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331),$l->g(209),$l->g(53),$l->g(45), $l->g(312), $l->g(429), $l->g(512),$l->g(95));
 
 $optArray  = array_merge( $optArray, $_SESSION["optCol"]);
 sort($optArray);
@@ -253,7 +403,7 @@ $countHl++;
 echo "<option".($countHl%2==1?" class='hi'":"").">".$l->g(32)."</option>"; $countHl++;
 
 foreach( $optArray as $val) {
-	if( !in_array($val,$_SESSION["OPT"]) && $val!="DEVICEID") {
+	if( (!is_array($_SESSION["OPT"]) || !in_array($val,$_SESSION["OPT"])) && $val!="DEVICEID"&& $val!="HARDWARE_ID" || $val==$l->g(20)) {
 		$countHl++;
 		echo "<option".($countHl%2==1?" class='hi'":"").">$val</option>";
 	}
@@ -271,42 +421,51 @@ if($_SESSION["OPT"]!=0)
 {	
 	echo "<form name=machine action=index.php?multi=1 method=post><table border=1 class= 'Fenetre' WIDTH = '75%' ALIGN = 'Center' CELLPADDING='5'>";
 	
-	$ligne[] = array( $l->g(34),"ipaddr","hardware","",2,5);
-	$ligne[] = array( $l->g(33),"workgroup","hardware","SELECT workgroup FROM hardware GROUP BY workgroup",1,1);
-	$ligne[] = array( $l->g(20)." (1)","name","softwares","",2,5);
-	$ligne[] = array( $l->g(20)." (2)","name","softwares","",2,5);
-	/*$ligne[] = array( $l->g(20)." (3)","name","softwares","",2,5);
-	$ligne[] = array( $l->g(20)." (4)","name","softwares","",2,5);*/
-	$ligne[] = array( $l->g(26),"memory","hardware","",2,3,"MO");
-	$ligne[] = array( $l->g(35),"hname","hardware","SELECT name FROM hardware GROUP BY name",2,1);
+	$ligne[] = array( $l->g(34),"ipaddr","hardware","",2,5,"",false,true);
+	$ligne[] = array( $l->g(33),"workgroup","hardware","SELECT workgroup FROM hardware GROUP BY workgroup",1,1,"",false,true);
+	
+	foreach( $_SESSION["OPT"] as $op )
+		if( $op == $l->g(20) )
+			$ligne[] = array( $l->g(20),"name","softwares","",2,7,"",false,true);
+	
+	$ligne[] = array( $l->g(26),"memory","hardware","",2,3,"MO",false,false);
+	$ligne[] = array( $l->g(35),"hname","hardware","",2,1,"",false,true);
+	$ligne[] = array( $l->g(53),"description","hardware","",2,1,"",false,true);
 	$ligne[] = array( $l->g(46),"lastdate","hardware","",2,2,"",true);
-	$ligne[] = array( $l->g(357),"useragent","hardware","SELECT useragent FROM hardware GROUP BY useragent",1,1);
-	$ligne[] = array( $l->g(36),"ssn","bios","",2,1);	
-	$ligne[] = array( $l->g(64),"smanufacturer","bios","",2,1);
-	$ligne[] = array( $l->g(65),"smodel","bios","",2,1);
-	$ligne[] = array( $l->g(284),"bmanufacturer","bios","",2,1);
-	$ligne[] = array( $l->g(207),"ipgateway","networks","",2,5);
-	$ligne[] = array( $l->g(331),"ipsubnet","networks","",2,5);
-	$ligne[] = array( $l->g(25),"osname","hardware","SELECT osname FROM hardware GROUP BY osname",1,1);
-	$ligne[] = array( $l->g(24),"userid","hardware","SELECT userid FROM hardware GROUP BY userid",2,1);
-	$ligne[] = array( $l->g(27),"processors","hardware","",2,3,"MHZ");
-	$ligne[] = array( $l->g(257),"regname","hardware","SELECT DISTINCT(name) FROM registry",1,6);	
-	$ligne[] = array( $l->g(359),"smonitor","hardware","",2,1);
-	$ligne[] = array( $l->g(209),"bversion","bios","",2,1);
+	$ligne[] = array( $l->g(357),"useragent","hardware","SELECT useragent FROM hardware GROUP BY useragent",1,1,"",false,false);
+	$ligne[] = array( $l->g(36),"ssn","bios","",2,1,"",false,true);	
+	$ligne[] = array( $l->g(64),"smanufacturer","bios","",2,1,"",false,true);
+	$ligne[] = array( $l->g(65),"smodel","bios","",2,1,"",false,true);
+	$ligne[] = array( $l->g(284),"bmanufacturer","bios","",2,1,"",false,true);
+	$ligne[] = array( $l->g(207),"ipgateway","networks","",2,5,"",false,true);
+	$ligne[] = array( $l->g(331),"ipsubnet","networks","",2,5,"",false,true);
+	$ligne[] = array( $l->g(95),"macaddr","networks","",2,5,"",false,true);
+	$ligne[] = array( $l->g(25),"osname","hardware","SELECT osname FROM hardware GROUP BY osname",1,1,"",false,false);
+	$ligne[] = array( $l->g(24),"userid","hardware","SELECT userid FROM hardware GROUP BY userid",2,1,"",false,true);
+	$ligne[] = array( $l->g(377),"processors","hardware","",2,3,"MHZ",false,false);
+	$ligne[] = array( $l->g(45),"free","drives","",2,3,"MB",false,false);
+	$ligne[] = array( $l->g(257),"regname","hardware","SELECT DISTINCT(name) FROM registry",1,6,"",false,false);
+	$ligne[] = array( $l->g(359),"smonitor","hardware","",2,1,"",false,true);
+	$ligne[] = array( $l->g(209),"bversion","bios","",2,1,"",false,true);
 
-	$ligne[] = array( TAG_LBL,"cu","accountinfo","",2,1);
-
+	//HARDCODED OPTIONS
+	$ligne[] = array( $l->g(312), "ipdisc");
+	$ligne[] = array( $l->g(429), "freq" );
+	$ligne[] = array( $l->g(512), "tele" );
+	//GEND
+	$ligne[] = array( TAG_LBL,"cu","accountinfo","",2,4,"",false,false);
+	//FGEND	
 	foreach($_SESSION["optCol"] AS $col) {
-		if($col!="TAG"&&$col!="DEVICEID") {
+		if($col!="TAG"&&$col!="DEVICEID"&&$col!="HARDWARE_ID") {
 			$isDate = isFieldDate($col);
-			$ligne[]  =  array( $col,$col,"hardware","accountinfo",2,$isDate ? 2 : 1,"",$isDate);
+			$ligne[]  =  array( $col,$col,"hardware","accountinfo",2,$isDate ? 2 : 1,"",$isDate,true);
 		}
 	}
 	
 	foreach( $ligne as $laLigne) {
 		$colATrier[] = $laLigne[0];
 	}
-	
+	$indLigneSoft = 0;
 	sort($colATrier);
 	foreach($colATrier as $nomLigne) {
 		foreach($ligne as $laLigne) {
@@ -328,12 +487,12 @@ if($_SESSION["OPT"]!=0)
 	if($_SESSION["OPT"]!=0)
 	{
 		echo "<center><i>".$l->g(358)."</i></font></center><br>";
-	}
+	}	
 }
 
 function afficheLigne($ligne)
 {	
-	global $indLigne,$l,$_POST;	
+	global $indLigne,$indLigneSoft,$l,$_POST;	
 	
 	$label = $ligne[0];
 	$champ = $ligne[1];
@@ -343,6 +502,7 @@ function afficheLigne($ligne)
 	$type = isset($ligne[5]) ? $ligne[5] : 1 ;
 	$leg = isset($ligne[6]) ? $ligne[6] : "" ;
 	$isDate = isset($ligne[7]) ? $ligne[7] : false ;
+	$allowExact = isset($ligne[8]) ? $ligne[8] : true ;
 
 	if(is_array($_SESSION["OPT"])) {
 		if(!in_array($label,$_SESSION["OPT"]))
@@ -353,6 +513,23 @@ function afficheLigne($ligne)
 	
 	$color=$indLigne%2==0?"#F2F2F2":"#FFFFFF";
 	$suff="_".$indLigne;
+	
+	if( $type == 7) {// un soft
+		echo"<tr bgcolor=$color><td>
+			<input type=checkbox id='act$suff' name='act$suff'".($_SESSION["softs"][$indLigneSoft][0]=="on"?" checked":"").">&nbsp;".$l->g(205)."</input>
+			<input type=hidden name='chm$suff' value=$champ>
+			<input type=hidden name='lbl$suff' value='".urlencode($label)."'>
+		</td><td>$label</td><td>";
+		echo "<select OnClick='act$suff.checked=true' name='ega$suff'>";		
+		echo "<option".($_SESSION["softs"][$indLigneSoft][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>";
+		if( $allowExact ) echo "<option".($_SESSION["softs"][$indLigneSoft][2]==$l->g(410)?" selected":"").">".$l->g(410)."</option>";
+		echo "<option".($_SESSION["softs"][$indLigneSoft][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option>";
+		echo "</select>&nbsp;&nbsp;";
+		echo "<input OnClick='act$suff.checked=true' name='val$suff' value=\"".stripslashes($_SESSION["softs"][$indLigneSoft][3])."\">";
+		$indLigne++;
+		$indLigneSoft++;
+		return;
+	}
 
 	echo"		
 	<tr bgcolor=$color>
@@ -364,15 +541,67 @@ function afficheLigne($ligne)
 		<td>
 			$label
 		</td>
-		<td>";
-			
+		<td>";	
 		
-		if($type != 4 ) {
+	if( $champ == "ipdisc" ) {	
+		echo "<select OnClick='act$suff.checked=true' name='val$suff'>
+		<option ".($_SESSION["reqs"][$label][3]=="elu"?" selected":"")." value='elu'>".$l->g(502)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="for"?" selected":"")." value='for'>".$l->g(503)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="nelu"?" selected":"")." value='nelu'>".$l->g(504)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="eli"?" selected":"")." value='eli'>".$l->g(505)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="neli"?" selected":"")." value='neli'>".$l->g(506)."</option></select></td></tr>";
+		$indLigne++;
+		return;	
+	}
+	else if( $champ == "freq" ) {
+		echo "<select OnClick='act$suff.checked=true' name='val$suff'>
+		<option ".($_SESSION["reqs"][$label][3]=="std"?" selected":"")." value='std'>".$l->g(488)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="always"?" selected":"")." value='always'>".$l->g(485)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="never"?" selected":"")." value='never'>".$l->g(486)."</option>
+		<option ".($_SESSION["reqs"][$label][3]=="custom"?" selected":"")." value='custom'>".$l->g(487)."</option></select></td></tr>";
+		$indLigne++;
+		return;	
+	}
+	else if( $champ == "tele" ) {
 		
+		$resTele = @mysql_query("SELECT distinct(NAME) FROM download_available", $_SESSION["readServer"]);
+		
+		if( mysql_num_rows( $resTele ) >0 ) {		
+			echo "<select OnClick='act$suff.checked=true' name='ega$suff'>
+			<option ".($_SESSION["reqs"][$label][2]=="ayant"?" selected":"")." value='ayant'>".$l->g(507)."</option>
+			<option ".($_SESSION["reqs"][$label][2]=="nayant"?" selected":"")." value='nayant'>".$l->g(508)."</option>
+			</select>  ".$l->g(498).": <select OnClick='act$suff.checked=true' name='val$suff'>";
+			while( $valTele = mysql_fetch_array( $resTele )) {
+				echo "<option ".($_SESSION["reqs"][$label][3]==$valTele["NAME"]?" selected":"").">".$valTele["NAME"]."
+				</option>";	
+			}				
 			
+			echo "</select> ".$l->g(546).": <select OnClick='act$suff.checked=true' name='val2$suff'>
+			<option ".($_SESSION["reqs"][$label][4]=="ind"?" selected":"")." value='ind'>".$l->g(509)."</option>
+			<option ".($_SESSION["reqs"][$label][4]=="nsuc"?" selected":"")." value='nsuc'>".$l->g(548)."</option>
+			<option ".($_SESSION["reqs"][$label][4]=="suc"?" selected":"")." value='suc'>SUCCESS</option>";
+			
+			$resState = @mysql_query("SELECT distinct(tvalue) FROM devices WHERE name='DOWNLOAD' AND tvalue NOT LIKE
+			 'SUCCESS_%' AND tvalue IS NOT NULL", $_SESSION["readServer"]);
+			while( $valState = @mysql_fetch_array( $resState )) {
+				echo "<option ".($_SESSION["reqs"][$label][4]==$valState["tvalue"]?" selected":"")." value='".$valState["tvalue"]."'>".$valState["tvalue"]."</option>";
+			}		 
+			
+			echo "</select>";
+			$indLigne++;
+		}
+		else {
+			echo $l->g(510);	
+		}
+		return;	
+	}
+		
+		if($type != 4 && $type != 6) {
+					
 			echo "<select OnClick='act$suff.checked=true' name='ega$suff'>			
-			<option".($_SESSION["reqs"][$label][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>
-			<option".($_SESSION["reqs"][$label][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option>";
+			<option".($_SESSION["reqs"][$label][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>";
+			if( $allowExact ) echo "<option".($_SESSION["reqs"][$label][2]==$l->g(410)?" selected":"").">".$l->g(410)."</option>";
+			echo "<option".($_SESSION["reqs"][$label][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option>";
 	
 			if( $isDate) {
 				echo "<option".($_SESSION["reqs"][$label][2]==$l->g(346)?" selected":"").">".$l->g(346)."</option><option".($_SESSION["reqs"][$label][2]==$l->g(347)?" selected":"").">".$l->g(347)."</option>"; 
@@ -386,15 +615,22 @@ function afficheLigne($ligne)
 				echo "<option".($_SESSION["reqs"][$label][2]==$l->g(203)?" selected":"").">".$l->g(203)."</option>";//<option".($_POST["ega$suff"]==$l->g(204)?" selected":"").">".$l->g(204)."</option>";		
 			}
 		}
-		else
+		else if( $type != 6)
 			echo $l->g(129);
-		
-		echo	"</select>&nbsp;&nbsp;";
+		if( $type != 6)
+			echo "</select>&nbsp;&nbsp;";
 			
 	if($combo==1)
 	{
 		echo "<select OnClick='act$suff.checked=true' name='val$suff'>";	
 		$res=mysql_query($laRequete, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		
+		$linSel = "Linux"== $_SESSION["reqs"][$label][3] ?" selected":"";
+		$winSel = "Windows"== $_SESSION["reqs"][$label][3] ?" selected":"";
+		
+		if( $champ=="osname")
+			echo "<option value='Linux' $linSel>LINUX (".$l->g(547).")</option>
+				  <option value='Windows' $winSel>WINDOWS (".$l->g(547).")</option>";
 		
 		while($row=mysql_fetch_array($res))
 		{
@@ -418,19 +654,23 @@ function afficheLigne($ligne)
 			echo "&nbsp;&nbsp;--&nbsp;&nbsp;<input OnClick='act$suff.checked=true' name='val2$suff' value='".$_SESSION["reqs"][$label][4]."'>";
 		}	
 	}
-	if($type==6) {
-			$reqRes = mysql_query("SELECT DISTINCT(regvalue) FROM registry", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"])); //todo mesmachines
-			echo "&nbsp;&nbsp;".$l->g(224).":&nbsp;&nbsp;<select OnClick='act$suff.checked=true' name='valreg$suff'>
-			<option>".$l->g(265)."</option>";
+	if( $type == 6) {
+			echo "<select OnClick='act$suff.checked=true' name='ega$suff'>			
+			<option".($_SESSION["reqs"][$label][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>";
+			if( $allowExact ) echo "<option".($_SESSION["reqs"][$label][2]==$l->g(410)?" selected":"").">".$l->g(410)."</option>";
+			echo "<option".($_SESSION["reqs"][$label][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option></select>";
+			/*$reqRes = mysql_query("SELECT DISTINCT(regvalue) FROM registry", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"])); //todo mesmachines
+			echo "&nbsp;&nbsp;".$l->g(224).":&nbsp;&nbsp;*/
+			echo "<input OnClick='act$suff.checked=true' name='valreg$suff' value='".($_SESSION["reqs"][$label][5])."'>";
 					
-			while($row=mysql_fetch_array($reqRes))
+			/*while($row=mysql_fetch_array($reqRes))
 			{
 				if($row[0]=="") continue;	
 				$selected = $row[0]== $_SESSION["reqs"][$label][5] ?" selected":"";
 				echo "<option$selected>".$row[0]."</option>\n";	
-			}
+			}*/
 			
-			echo "</select>";			
+			echo "</input>";			
 	}	
 	
 	echo "&nbsp;&nbsp;&nbsp;$leg</td></tr>";

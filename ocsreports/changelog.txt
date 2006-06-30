@@ -1,3 +1,47 @@
+ver 4.0.2.0
+
+- Added auto-deploy interfac
+- Added mass-processing (delete, package affectation, frequency)
+- Added custom parameters in computers ( packages, ipdiscover, frequency)
+- Added new checkings in install.php
+- Added mac adress search
+- Added logical ip ordering
+- Added calendar translation
+- Added 'all linux' and 'all windows' search
+- Added search by frequency
+- Added search by ipdiscover status
+- Added search by auto-deploy packages
+- Added red indicator to know customized computers
+- Improved server configuration interface
+- Removed update features (replaced by auto-deploy)
+- Many bug fixes
+
+ver 4.0.1.6
+
+- Improved install.php
+- Added optimized 2 step queries
+- Added optimized join using integer indexes
+- Added folder detail in software view
+- Added new columns in "show column" combobox
+- Added a visible sorting flag
+- Added "exact" match queries in "multi criteria" search
+- Added direct network name modification in "security"
+- Added direct network name submission in "security"
+- Added "computer per page" saving (cookie based)
+- Added language saving (cookie based)
+- Added showed columns saving (cookie based)
+- Added icons in the computer summary
+- Added "description" search
+- Added "disk size available" search
+- Added uninventoried computers export
+- Added uninventoried computers deletion
+- Added GLPI checksum modification in dictionnary
+- Fixed user name bug when submitting a network device
+- Fixed "PPP" interfaces shown in security tab problem
+- Fixed label overwriting agent bug
+- Fixed dictionnary sorting bug
+- Many bug fixes
+
 ver 4.0.1.1
 
 Added tag search

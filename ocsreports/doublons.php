@@ -10,117 +10,98 @@
 //====================================================================================
 //Modified on 11/25/2005
 
-$select = "h.deviceid, h.name AS \"".$l->g(23)."\", b1.ssn AS \"".$l->g(36)."\", n1.macaddr AS \"".$l->g(95)."\",h.lastdate AS \"".$l->g(46)."\",h.userid AS \"".$l->g(24)."\", a.".TAG_NAME." AS '".TAG_LBL."', h.OSNAME AS \"".$l->g(25)."\", 
-h.memory AS \"Ram (MO)\", h.processors AS \"CPU (MHz)\", h.winprodid";
-
 $filtreSSN="
-AND b1.ssn <> 'N/A'
-AND b1.ssn <> '(null string)'
-AND b1.ssn <> ''
-AND b1.ssn <> 'INVALID'
-AND b1.ssn <> 'SYS-1234567890'
-AND b1.ssn <> 'SYS-9876543210'
-AND b1.ssn <> 'SN-12345'
-AND b1.ssn <> 'SN-1234567890'
-AND b1.ssn <> '1111111111'
-AND b1.ssn <> '1111111'
-AND b1.ssn <> '1'
-AND b1.ssn <> '0123456789'
-AND b1.ssn <> '12345'
-AND b1.ssn <> '123456'
-AND b1.ssn <> '1234567'
-AND b1.ssn <> '12345678'
-AND b1.ssn <> '123456789'
-AND b1.ssn <> '1234567890'
-AND b1.ssn <> '123456789000'
-AND b1.ssn <> '12345678901234567'
-AND b1.ssn <> '0000000000'
-AND b1.ssn <> '000000000'
-AND b1.ssn <> '00000000'
-AND b1.ssn <> '0000000'
-AND b1.ssn <> '000000'
-AND b1.ssn <> 'NNNNNNN'
-AND b1.ssn <> 'xxxxxxxxxxx' 
-AND b1.ssn <> 'EVAL'
-AND b1.ssn <> 'IATPASS'
-AND b1.ssn <> 'none'
-AND b1.ssn <> 'To Be Filled By O.E.M.'
-AND b1.ssn <> 'Tulip Computers'
-AND b1.ssn <> 'Serial Number xxxxxx'
-AND b1.ssn <> 'SN-123456fvgv3i0b8o5n6n7k'";
+AND b.ssn <> 'N/A'
+AND b.ssn <> '(null string)'
+AND b.ssn <> ''
+AND b.ssn <> 'INVALID'
+AND b.ssn <> 'SYS-1234567890'
+AND b.ssn <> 'SYS-9876543210'
+AND b.ssn <> 'SN-12345'
+AND b.ssn <> 'SN-1234567890'
+AND b.ssn <> '1111111111'
+AND b.ssn <> '1111111'
+AND b.ssn <> '1'
+AND b.ssn <> '0123456789'
+AND b.ssn <> '12345'
+AND b.ssn <> '123456'
+AND b.ssn <> '1234567'
+AND b.ssn <> '12345678'
+AND b.ssn <> '123456789'
+AND b.ssn <> '1234567890'
+AND b.ssn <> '123456789000'
+AND b.ssn <> '12345678901234567'
+AND b.ssn <> '0000000000'
+AND b.ssn <> '000000000'
+AND b.ssn <> '00000000'
+AND b.ssn <> '0000000'
+AND b.ssn <> '000000'
+AND b.ssn <> 'NNNNNNN'
+AND b.ssn <> 'xxxxxxxxxxx' 
+AND b.ssn <> 'EVAL'
+AND b.ssn <> 'IATPASS'
+AND b.ssn <> 'none'
+AND b.ssn <> 'To Be Filled By O.E.M.'
+AND b.ssn <> 'Tulip Computers'
+AND b.ssn <> 'Serial Number xxxxxx'
+AND b.ssn <> 'SN-123456fvgv3i0b8o5n6n7k'";
 
 $filtreMAC="
 AND n1.macaddr <> '44:45:53:54:00:00'
 AND n1.macaddr <> '44:45:53:54:00:01'
 AND n1.macaddr <> '00:00:00:00:00:00'";
 
-$from="FROM accountinfo a,hardware h, bios b1 LEFT OUTER JOIN networks n1 on b1.deviceid=n1.deviceid,";
-
-$where="WHERE a.deviceid = h.deviceid
-AND b1.deviceid = h.deviceid
-AND n1.deviceid = h.deviceid";
-
+$fromBase="hardware h LEFT JOIN accountinfo a ON a.hardware_id = h.id LEFT JOIN bios b ON b.hardware_id = h.id LEFT OUTER JOIN networks n1 on b.hardware_id=n1.hardware_id";
+$whereBase="n1.hardware_id = h.id ";
+if( $mesMachines ) {
+	$whereBase .= "AND $mesMachines";
+}
+$from = array();
+$where = array();
+$group = array();
+$order = array();
 // hostname seul
-$req4 = "hardware h2 $where
-AND h.name = h2.name
-AND h.deviceid <> h2.deviceid";
-
-$req4F = " GROUP BY h.deviceid ORDER BY h.name";
+$from[4] = "hardware h2";
+$where[4] = " $whereBase AND h.name = h2.name AND h.id <> h2.id";
+$group[4] = "h.id";
+$order[4] = "h.name";
 
 // ssn seul
-$req5 = "hardware h2, bios b2 $where
-AND b2.deviceid = h2.deviceid
-AND b2.ssn = b1.ssn
-AND h.deviceid <> h2.deviceid $filtreSSN";
- 
-$req5F = " GROUP BY h.deviceid ORDER BY b1.ssn";
+$from[5] = "hardware h2, bios b2";
+$where[5] = "$whereBase AND b2.hardware_id = h2.id AND b2.ssn = b.ssn AND h.id <> h2.id $filtreSSN";
+$group[5] = "h.id";
+$order[5] = "b.ssn";
 
 //mac seule
-$req6="hardware h2, networks n2 $where
-AND n2.deviceid = h2.deviceid
-AND n2.macaddr = n1.macaddr
-AND h.deviceid <> h2.deviceid
-$filtreMAC";
- 
-$req6F = " GROUP BY h.deviceid ORDER BY n1.macaddr";
+$from[6] = "hardware h2, networks n2";
+$where[6] = " $whereBase AND n2.hardware_id = h2.id AND n2.macaddr = n1.macaddr AND h.id <> h2.id $filtreMAC"; 
+$group[6] = "h.id";
+$order[6] = "n1.macaddr";
 
 // hostname + ssn
-$req1 = "hardware h2, bios b2 $where
-AND b2.deviceid = h2.deviceid
-AND h.name = h2.name
-AND b2.ssn = b1.ssn
-AND h.deviceid <> h2.deviceid
-$filtreSSN";
- 
-$req1F =  " GROUP BY h.deviceid ORDER BY h.name,b1.ssn";
+$from[1] = "hardware h2, bios b2";
+$where[1] = " $whereBase AND b2.hardware_id = h2.id AND h.name=h2.name AND b2.ssn = b.ssn AND h.id <> h2.id $filtreSSN";
+$group[1] = "h.id";
+$order[1] = "h.name,b.ssn";
 
 // hostname + mac
-$req2 = "hardware h2, networks n2 $where
-AND n2.deviceid = h2.deviceid
-AND h.name = h2.name
-AND n2.macaddr = n1.macaddr
-AND h.deviceid <> h2.deviceid
-$filtreMAC";
-
-$req2F =  " GROUP BY h.deviceid ORDER BY h.name,b1.ssn";
+$from[2]  = "hardware h2, networks n2";
+$where[2] = " $whereBase AND n2.hardware_id = h2.id AND h.name = h2.name AND n2.macaddr = n1.macaddr AND h.id <> h2.id $filtreMAC";
+$group[2] = "h.id";
+$order[2] = "h.name,b.ssn";
 
 // mac + ssn
-$req3 = "networks n2, bios b2 $where
-AND b2.deviceid = n2.deviceid
-AND b2.deviceid <> b1.deviceid
-AND n1.macaddr = n2.macaddr
-AND b2.ssn = b1.ssn
-$filtreSSN
-$filtreMAC";
- 
-$req3F = " GROUP BY h.deviceid ORDER BY n1.macaddr,b1.ssn";
+$from[3] = "networks n2, bios b2";
+$where[3] = " $whereBase AND b2.hardware_id = n2.hardware_id AND b2.hardware_id <> b.hardware_id AND n1.macaddr = n2.macaddr AND b2.ssn = b.ssn $filtreSSN $filtreMAC";
+$group[3] = "h.id";
+$order[3] = "n1.macaddr,b.ssn";
 
 if(isset($_POST["subredon"])) {
 	for( $i = 1 ; $i <= $_POST["maxredon"] ; $i++) {
 		if(! isset($_POST["ch".$i]))
 			continue;
 		
-		$res = mysql_query("SELECT deviceid,lastcome FROM hardware WHERE deviceid='".$_POST["ch".$i]."'", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));		
+		$res = mysql_query("SELECT deviceid,id,lastcome FROM hardware WHERE id=".$_POST["ch".$i], $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));		
 		$afus[] = mysql_fetch_array($res,MYSQL_ASSOC);			
 	}
 	
@@ -147,19 +128,28 @@ if(isset($_POST["typ"]) && $_POST["typ"]!=$l->g(192)) {
 	$_SESSION["typ"] = $_POST["typ"];
 	
 	switch($_POST["typ"]) {
-		case $l->g(194): $laReqt = $req2; $laF = $req2F ; break ;
-		case $l->g(195): $laReqt = $req3; $laF = $req3F ; break ;
-		case $l->g(196): $laReqt = $req4; $laF = $req4F ; break;
-		case $l->g(197):  $laReqt = $req5; $laF = $req5F; break ;
-		case $l->g(198):  $laReqt = $req6; $laF = $req6F; break ;
+		case $l->g(194): $ind = 2 ; break ;
+		case $l->g(195): $ind = 3 ; break ;
+		case $l->g(196): $ind = 4 ; break;
+		case $l->g(197): $ind = 5 ; break ;
+		case $l->g(198): $ind = 6 ; break ;
 		/*case $l->g(193)*/
-		default :$laReqt = $req1.$req1F; break ;
+		default : $ind = 1 ; break ;
 	}
 
-	$laReq = "SELECT $select $from $laReqt $mesMachines $laF";
-	$laReqC = "SELECT COUNT(DISTINCT h.deviceid) $from $laReqt $mesMachines";
-	
-	//echo $laReq;
+	$rq_sql = $where[$ind];
+	$rq_whereId = "h.id";
+	$rq_linkId = "h.id";
+	$rq_select = array_merge( array("h.id"=>"h.id", "deviceid"=>"deviceid","n1.macaddr"=>$l->g(95),"b.ssn"=>$l->g(36)),
+	$_SESSION["currentFieldList"] );
+
+	//$select = array_merge( array("h.id"=>"h.id" ,"deviceid"=>"deviceid", "a.".TAG_NAME=>TAG_LBL), $_SESSION["currentFieldList"] );	
+	$rq_selectPrelim = array( "h.id"=>"h.id" );
+	$rq_from = $fromBase;
+	$rq_fromPrelim = $from[$ind];
+	$rq_group = $group[$ind];
+	$rq_order = $order[$ind];
+	$rq_countId = "h.id";
 }
 
 echo "<table width=100%><tr align=right><td><form name='formtyp' action='index.php?multi=6' method='POST'>
@@ -178,16 +168,16 @@ echo "	<option".($_POST["typ"]==$l->g(32)?" selected":"").">".$l->g(32).":</opti
 printEnTete($l->g(199));
 
 if($_POST["typ"]!=$l->g(192)) {
-	$requete = new Req("Doublons",$laReq,$laReqC,"","","");
-	ShowResults($requete,true,false,true);
+	$req=new Req("Doubles",$rq_whereId,$rq_linkId,$rq_sql,$rq_select,$rq_selectPrelim,$rq_from,$rq_fromPrelim,$rq_group,$rq_order,$rq_countId,true);	
+	ShowResults($req,true,false,true,true,false);
 }
 else {
 	echo "<br><table BORDER='0' WIDTH = '25%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	for($j=1;$j<=6;$j++) {
-		$nameReq = "req".$j;
 		
-		$rres = mysql_query( "SELECT COUNT(DISTINCT h.deviceid) $from ".$$nameReq ." ".$mesMachines, $_SESSION["readServer"]);
-		
+		$rrqs = "SELECT COUNT(DISTINCT h.id) FROM ".$fromBase.",".$from[$j]." WHERE ".$where[$j];		
+		$rres = mysql_query( $rrqs, $_SESSION["readServer"]);
+	
 		$valr = mysql_fetch_row($rres);
 		echo "<tr><td align='center'>";
 		//if ( $valr[0] > 0 ) {
@@ -201,11 +191,13 @@ else {
 			}
 			echo  ":&nbsp;<b>".$valr[0]."</b></td></tr>";
 		//}
+
 	}
 	echo "</table><br>";
 }
 
 function fusionne($afus) {
+
 	global $l;
 	$i=0;
 	$maxStamp = 0;
@@ -227,43 +219,44 @@ function fusionne($afus) {
 	if($afus[$minInd]["deviceid"]!="") {
 		$okLock = true;
 		foreach($afus as $a) {
-			if( ! $okLock = ($okLock && lock($a["deviceid"])) )
+			if( ! $okLock = ($okLock && lock($a["id"])) )
 				break;
 			else
-				$locked[] = $a["deviceid"];
+				$locked[] = $a["id"];
 		}
 		
 		if( $okLock ) {
 			//TRACE_DELETED
 			if(mysql_num_rows(mysql_query("SELECT * FROM config WHERE IVALUE>0 AND NAME='TRACE_DELETED'", $_SESSION["writeServer"]))){
 				foreach($afus as $a) {	
-					if($afus[$minInd]["deviceid"]==$a["deviceid"]){continue;}
-					mysql_query("insert into deleted_equiv(DELETED,EQUIVALENT) values('".$a["deviceid"]."','".$afus[$minInd]["deviceid"]."')", $_SESSION["writeServer"]);
+					if($afus[$maxInd]["deviceid"]==$a["deviceid"]){continue;}
+					mysql_query("insert into deleted_equiv(DELETED,EQUIVALENT) values('".$a["deviceid"]."','".$afus[$maxInd]["deviceid"]."')", $_SESSION["writeServer"]) ;
 				}
 			}
 			
 			//KEEP OLD QUALITY,FIDELITY AND CHECKSUM
-			$persistent_req = mysql_query("SELECT CHECKSUM,QUALITY,FIDELITY FROM hardware WHERE DEVICEID='".$afus[$minInd]["deviceid"]."'");
+			$persistent_req = mysql_query("SELECT CHECKSUM,QUALITY,FIDELITY FROM hardware WHERE ID=".$afus[$minInd]["id"]) ;
 					
-			$reqDelAccount = "DELETE FROM accountinfo WHERE deviceid='".$afus[$maxInd]["deviceid"]."'";
-			mysql_query($reqDelAccount, $_SESSION["writeServer"]);
+			$reqDelAccount = "DELETE FROM accountinfo WHERE hardware_id=".$afus[$maxInd]["id"];
+			mysql_query($reqDelAccount, $_SESSION["writeServer"]) ;
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
-			$reqRecupAccount = "UPDATE accountinfo SET deviceid='".$afus[$maxInd]["deviceid"]."' WHERE deviceid='".$afus[$minInd]["deviceid"]."'";
+			$reqRecupAccount = "UPDATE accountinfo SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];
 			
-			mysql_query($reqRecupAccount, $_SESSION["writeServer"]);
+			mysql_query($reqRecupAccount, $_SESSION["writeServer"]) ;
 			//echo $reqRecupAccount;
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$minInd]["deviceid"]." ".$l->g(206)." ".$afus[$maxInd]["deviceid"]."</font></center><br>";
 			$i=0;
 			foreach($afus as $a) {
 				if($i != $maxInd) {
-					deleteDid($a["deviceid"], false);
+					deleteDid($a["id"], false, false);
 				}			
 				$i++;
 			}
 			
 			//RESTORE PERSISTENT VALUES
 			$persistent_values = mysql_fetch_row($persistent_req);
-			mysql_query("UPDATE hardware SET QUALITY=".$persistent_values[1].",FIDELITY=".$persistent_values[2].",CHECKSUM=CHECKSUM|".$persistent_values[0]." WHERE DEVICEID='".$afus[$maxInd]["deviceid"]."'");
+			mysql_query("UPDATE hardware SET QUALITY=".$persistent_values[1].",FIDELITY=".$persistent_values[2].",CHECKSUM=CHECKSUM|".$persistent_values[0]." WHERE id=".$afus[$maxInd]["id"]) ;
+			
 		}
 		else
 			errlock();

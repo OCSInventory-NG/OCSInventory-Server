@@ -13,8 +13,8 @@
 	$okReq=0;
 	foreach($requetes as $req) // On met dans $req la requete demandée
 	{		
-		if((isset($_POST["lareq"])&&$req->label==$_POST["lareq"])||
-		(!isset($_POST["lareq"])&&isset($_SESSION["lareq"])&&$req->label==$_SESSION["lareq"])) {
+		if((isset($_GET["lareq"])&&$req->label==$_GET["lareq"])||
+		(!isset($_GET["lareq"])&&isset($_SESSION["lareq"])&&$req->label==$_SESSION["lareq"])) {
 			$okReq=1;
 			break;
 		}		

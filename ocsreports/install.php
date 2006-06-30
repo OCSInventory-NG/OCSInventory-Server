@@ -9,6 +9,7 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on 11/25/2005
+
 set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
 ?>
@@ -24,7 +25,7 @@ printEnTeteInstall("OCS Inventory Installation");
 if( isset($fromAuto) && $fromAuto==true)
 echo "<center><br><font color='green'><b>Current installed version ".$valUpd["tvalue"]." is lower than this version (".GUI_VER.") automatic install launched</b></red><br></center>";
 
-
+/*
 if(!isset($_POST["name"])) {
 	if( $hnd = @fopen("dbconfig.inc.php", "r") ) {
 		fclose($hnd);
@@ -39,7 +40,7 @@ if(!isset($_POST["name"])) {
 		$_POST["host"] = "localhost";
 	}
 	$firstAttempt=true;
-}
+}*/ 
 
 if(!function_exists('session_start')) {	
 	echo "<br><center><font color=red><b>ERROR: Sessions for PHP is not properly installed.<br>Try installing the php4-session package.</b></font></center>";
@@ -59,33 +60,74 @@ if(!function_exists('zip_read')) {
 	echo "<br><center><font color=orange><b>WARNING: Zip for PHP is not properly installed.<br>You will not be able to upload windows agents<br>Try uncommenting \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-zip package (Linux).</b></font></center>";
 }
 
+if(!function_exists('imagefontwidth')) {	
+	echo "<br><center><font color=orange><b>WARNING: GD for PHP is not properly installed.<br>You will not be able to see any graphical display<br>Try uncommenting \";extension=php_gd2.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-gd package (Linux).</b></font></center>";
+}
+
+if(!function_exists('openssl_open')) {	
+	echo "<br><center><font color=orange><b>WARNING: OpenSSL for PHP is not properly installed.<br>Some automatic deployment features won't be available<br>Try uncommenting \";extension=php_openssl.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-openssl package (Linux).</b></font></center>";
+}
+
+@mkdir($_SERVER["DOCUMENT_ROOT"]."/download");
+$pms = "post_max_size";
+$umf = "upload_max_filesize";
+
+$valTpms = ini_get( $pms );
+$valTumf = ini_get( $umf );
+
+$valBpms = return_bytes( $valTpms );
+$valBumf = return_bytes( $valTumf );
+
+if( $valBumf>$valBpms )
+	$MaxAvail = $valTpms;
+else
+	$MaxAvail = $valTumf;
+
+echo "<br><center><font color=orange><b>WARNING: You will not be able to build any auto deployment package with size 
+greater than $MaxAvail.<br>You must raise both post_max_size and upload_max_filesize in your php.ini to correct this.</b></font></center>";
+
 include ('fichierConf.class.php');
+
 $l = new FichierConf("english"); // on crée l'instance pour avoir les mots dans la langue choisie
-if( (!$link=@mysql_connect($_POST["host"],$_POST["name"],$_POST["pass"]))) {
-$firstAttempt=false;
-echo "<br><center><font color=red><b>ERROR: ".$l->g(249)." (host=".$_POST["host"]." name=".$_POST["name"]." pass=".$_POST["pass"].")<br>
-	Mysql error: ".mysql_error()."</b></font></center>
-	<br>
-	<form name='fsub' action='install.php' method='POST'><table width='100%'>
+if( isset($_POST["name"])) {
+		if( (!$link=@mysql_connect($_POST["host"],$_POST["name"],$_POST["pass"]))) {
+		$firstAttempt=false;
+		echo "<br><center><font color=red><b>ERROR: ".$l->g(249)." (host=".$_POST["host"]." name=".$_POST["name"]." pass=".$_POST["pass"].")<br>
+			Mysql error: ".mysql_error()."</b></font></center>";
+	}
+	else
+		$instOk = true;
+}
+if( ! $instOk ) {
+
+	if( $hnd = @fopen("dbconfig.inc.php", "r") ) {
+			fclose($hnd);
+			include("dbconfig.inc.php");
+			$valNme = $_SESSION["COMPTE_BASE"];
+			$valPass = $_SESSION["PSWD_BASE"];
+			$valServ = $_SESSION["SERVEUR_SQL"];
+	}
+
+	echo "<br><form name='fsub' action='install.php' method='POST'><table width='100%'>
 	<tr>
 		<td align='right' width='50%'>
 			<font face='Verdana' size='-1'>".$l->g(247)." :&nbsp;&nbsp;&nbsp;&nbsp;</font>
 		</td>
-		<td width='50%' align='left'><input size=40 name='name'>
+		<td width='50%' align='left'><input size=40 name='name' value='$valNme'>
 		</td>
 	</tr>
 	<tr>
 		<td align='right' width='50%'>
 			<font face='Verdana' size='-1'>".$l->g(248)." :&nbsp;&nbsp;&nbsp;&nbsp;</font>
 		</td>
-		<td width='50%' align='left'><input size=40 type='password' name='pass'>
+		<td width='50%' align='left'><input size=40 type='password' name='pass' value='$valPass'>
 		</td>
 	</tr>
 	<tr>
 		<td align='right' width='50%'>
 			<font face='Verdana' size='-1'>".$l->g(250)." :&nbsp;&nbsp;&nbsp;&nbsp;</font>
 		</td>
-		<td width='50%' align='left'><input size=40 name='host'>
+		<td width='50%' align='left'><input size=40 name='host' value='$valServ'>
 		</td>
 	</tr>
 	<tr><td>&nbsp;</td></tr>
@@ -98,6 +140,7 @@ echo "<br><center><font color=red><b>ERROR: ".$l->g(249)." (host=".$_POST["host"
 	</table></form>";
 	die();
 }
+
 
 if($firstAttempt==true && $_POST["pass"] == "") {
 	echo "<br><center><font color=orange><b>WARNING: your the default root password is set on your mysql server. Change it asap. (using root password=blank)</b></font></center>";
@@ -150,15 +193,19 @@ fwrite($ch,"<?\n\$_SESSION[\"SERVEUR_SQL\"]=\"".$_POST["host"]."\";\n\$_SESSION[
 fclose($ch);
 
 echo "<br><center><font color=green><b>MySql config file successfully written</b></font></center>";
-	
+
 $db_file = "ocsbase.sql";
 if($dbf_handle = @fopen($db_file, "r")) {
+	echo "<br><center><font color=black><b>Please wait, database update may take up to 30 minutes...";
+	flush();
 	$sql_query = fread($dbf_handle, filesize($db_file));
 	fclose($dbf_handle);
 	$dejaLance=0;
+	$li = 0;
 	foreach ( explode(";", "$sql_query") as $sql_line) {
+		$li++;
 		if(!mysql_query($sql_line)) {
-			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1044 || mysql_errno()==1065 || mysql_errno()==1060) 
+			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1044 || mysql_errno()==1065 || mysql_errno()==1060 || mysql_errno()==1054 || mysql_errno()==1091 || mysql_errno()==1061) 
 				continue;			
 			
 			if(mysql_errno()==1007 || mysql_errno()==1050) {
@@ -166,19 +213,84 @@ if($dbf_handle = @fopen($db_file, "r")) {
 				continue;
 			}
 			
-			echo "<br><center><font color=red><b>ERROR: query failed</b><br>";
+			echo "<br><center><font color=red><b>ERROR: line $li: query failed</b><br>";
 			echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
 			$nberr++;
 		}
+		echo ".";
+		flush();
 	}
+	echo "</b></font></center>";
 	if(!$nberr&&!$dejaLance)
 		echo "<br><center><font color=green><b>Database successfully generated</b></font></center>";
 }
-else
+else {
 	echo "<br><center><font color=red><b>ERROR: $db_file needed</b></font></center>";
+	die();
+}
 
 if($dejaLance>0)	
-	echo "<br><center><font color=green><b>Updating existing database</b></font></center>";
+	echo "<br><center><font color=green><b>Existing database updated</b></font></center>";
+	
+echo "<br><center><font color=black><b>Database engine checking...";
+flush();
+$tableEngines = array("hardware"=>"InnoDB","accesslog"=>"InnoDB","bios"=>"InnoDB","memories"=>"InnoDB","slots"=>"InnoDB",
+"registry"=>"InnoDB","monitors"=>"InnoDB","ports"=>"InnoDB","storages"=>"InnoDB","drives"=>"InnoDB","inputs"=>"InnoDB",
+"modems"=>"InnoDB","networks"=>"InnoDB","printers"=>"InnoDB","sounds"=>"InnoDB","videos"=>"InnoDB","softwares"=>"InnoDB",
+"accountinfo"=>"InnoDB","netmap"=>"InnoDB","devices"=>"InnoDB", "locks"=>"HEAP");
+
+$nbconv = 0;
+$erralter = false;
+foreach( $tableEngines as $tbl=>$eng ) {
+	if( $res = mysql_query("show table status like '$tbl'") ) {
+		$val = mysql_fetch_array( $res );
+		if( $val["Engine"] == $eng ) {
+			echo ".";
+			flush();
+		}
+		else {
+			$nbconv++;
+			echo ".";
+			flush();
+			if( ! $resAlter = mysql_query("ALTER TABLE $tbl engine='$eng'") ) {
+				$nberr++;
+				$erralter = true;
+				echo "</b></font></center><br><center><font color=red><b>ERROR: Alter query failed</b><br>";
+				echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
+			}
+		}
+	}
+	else {
+		echo "</b></font></center><br><center><font color=red><b>ERROR: Show table status query failed</b><br>";
+		echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
+		$nberr++;
+		$erralter = true;
+	}
+}
+$oneFailed = false;
+foreach( $tableEngines as $tbl=>$eng ) {
+	if( $res = mysql_query("show table status like '$tbl'") ) {
+		$val = mysql_fetch_array( $res );
+		if( (strcasecmp($val["Engine"],$eng) != 0) && (strcasecmp($eng,"InnoDB") == 0) && $oneFailed == false ) {
+			echo "<br><br><center><font color=red><b>ERROR: InnoDB conversion failed, install InnoDB  mysql engine support on your server<br>or you will experience severe performance issues.<br>
+			(Try to uncomment \"#skip-innodb\" in your mysql config file.)<br>Reinstall when corrected.</b></font><br>";
+			$oneFailed = true;
+		}
+		if ( (strcasecmp($val["Engine"],$eng)!=0) && (strcasecmp($eng,"HEAP")) && (strcasecmp($val["Engine"],"MEMORY")!=0)  ) {
+			echo "<br><br><center><font color=red><b>ERROR: HEAP conversion failed, install HEAP mysql engine support on your server<br>or you will experience severe performance issues.</b></font><br>";
+		}
+	}
+	else {
+		echo "</b></font></center><br><center><font color=red><b>ERROR: Show table status query failed</b><br>";
+		echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
+		$nberr++;
+		$erralter = true;
+	}
+}
+
+if( ! $erralter ) {
+	echo "</b></font></center><br><center><font color=green><b>Database engine successfully updated ($nbconv table(s) altered)</b></font></center>";
+}
 	
 if($nberr) {
 	echo "<br><center><font color=red><b>ERROR: The installer ended unsuccessfully, rerun install.php once problems are corrected</b></font></center>";
@@ -190,6 +302,7 @@ $dir = "files";
 $filenames = Array("ocsagent.exe");
 $dejaLance=0;
 $filMin = "";
+
 mysql_query("DELETE FROM deploy");
 mysql_select_db("ocsweb"); 
 foreach($filenames as $fil) {
@@ -240,14 +353,14 @@ if($dejaLance>0)
 
 if(!$nberr&&!$dejaLance&&!$errNorm)
 	echo "<br><center><font color=green><b>Deploy files successfully inserted</b></font></center>";
-	
+
 mysql_query("DELETE FROM files");
 $nbDeleted = mysql_affected_rows();
 if( $nbDeleted > 0)
 	echo "<br><center><font color=green><b>Table 'files' truncated</b></font></center>";
 else
 	echo "<br><center><font color=green><b>Table 'files' was empty</b></font></center>";
-	
+
 if($nberr) {
 	echo "<br><center><font color=red><b>ERROR: The installer ended unsuccessfully, rerun install.php once problems are corrected</b></font></center>";
 	unlink("dbconfig.inc.php");
@@ -310,7 +423,7 @@ $errNet = 0;
 $sucNet = 0;
 $dejNet = $valDej["nbid"];
 
-$reqNet = "SELECT deviceid, id, ipaddress, ipmask FROM networks WHERE ipsubnet='' OR ipsubnet IS NULL";
+$reqNet = "SELECT hardware_id, id, ipaddress, ipmask FROM networks WHERE ipsubnet='' OR ipsubnet IS NULL";
 $resNet = mysql_query($reqNet) or die(mysql_error());
 while ($valNet = mysql_fetch_array($resNet) ) {
 	$netid = getNetFromIpMask( $valNet["ipaddress"], $valNet["ipmask"] );
@@ -318,7 +431,7 @@ while ($valNet = mysql_fetch_array($resNet) ) {
 		$errNet++;
 	}
 	else {
-		mysql_query("UPDATE networks SET ipsubnet='$netid' WHERE deviceid='".$valNet["deviceid"]."' AND id='".$valNet["id"]."'");
+		mysql_query("UPDATE networks SET ipsubnet='$netid' WHERE hardware_id='".$valNet["hardware_id"]."' AND id='".$valNet["id"]."'");
 		if( mysql_errno() != "") {
 			$errNet++;
 			echo "<br><center><font color=red><b>ERROR: Could not update netid to $netid, error ".mysql_errno().": ".mysql_error()."</b></font></center>";
@@ -382,7 +495,23 @@ function printEnTeteInstall($ent) {
 <?
 
 function getNetFromIpMask($ip, $mask) {	
-	return (  long2ip(ip2long($ip)&ip2long($mask)) ); 
+	return ( long2ip(ip2long($ip)&ip2long($mask)) ); 
+}
+
+function return_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val{strlen($val)-1});
+    switch($last) {
+        // Le modifieur 'G' est disponible depuis PHP 5.1.0
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
+    }
+
+    return $val;
 }
 
 ?>

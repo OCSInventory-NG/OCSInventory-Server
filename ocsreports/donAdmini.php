@@ -14,12 +14,13 @@ include ('fichierConf.class.php');
 include('req.class.php');
 if($_GET["suppAcc"]) {
 	@mysql_query("ALTER TABLE accountinfo DROP ".$_GET["suppAcc"], $_SESSION["writeServer"]);
-	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"]);
+	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"], $_SESSION["optCol"]);
 	echo "<br><br><center><font face='Verdana' size=-1 color='red'><b>". $_GET["suppAcc"] ."</b> ".$l->g(226)." </font></center><br>";
 }
 
 if($_POST["nom"])
 {
+	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"], $_SESSION["optCol"]);
 	switch($_POST["type"]) {
 		case $l->g(229): $suff = "VARCHAR(255)"; break;
 		case $l->g(230): $suff = "INT"; break;
@@ -78,15 +79,15 @@ echo "
 	</table></center></form><br>
 	";
 	printEnTete($l->g(233));
-	$reqAc = mysql_query("SELECT * FROM accountinfo LIMIT 0,1", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	$reqAc = mysql_query("SHOW COLUMNS FROM accountinfo", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	echo "<br><table BORDER='0' WIDTH = '50%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr><td align='center'><b>".$l->g(49)."</b></font></td><td align='center'><b>".$l->g(66)."</b></font></td></tr>";		
-	while($colname=mysql_fetch_field($reqAc)) {		
-		if( $colname->name!="DEVICEID" && $colname->name!=TAG_NAME) {
+	while($colname=mysql_fetch_array($reqAc)) {		
+		if( $colname["Field"] != "DEVICEID" && $colname["Field"] != TAG_NAME && $colname["Field"] != "HARDWARE_ID" ) {
 			$x++;
 			echo "<TR height=20px bgcolor='". ($x%2==0 ? "#FFFFFF" : "#F2F2F2") ."'>";	// on alterne les couleurs de ligne			
-			echo "<td align=center>".$colname->name."</font></td><td align=center>".$colname->type."</font></td><td align=center>
-			<a href=# OnClick='confirme(\"".$colname->name."\");'><img src=image/supp.png></a></td></tr>";
+			echo "<td align=center>".$colname["Field"]."</font></td><td align=center>".$colname["Type"]."</font></td><td align=center>
+			<a href=# OnClick='confirme(\"".$colname["Field"]."\");'><img src=image/supp.png></a></td></tr>";
 		}
 	}
 	echo "</table><br>";

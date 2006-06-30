@@ -41,7 +41,7 @@ if( isset($_GET["cat"]) ) {
 	
 	if($laCat == "NEW") {		
 		if(! isset($_GET["order"])) $sens = "DESC";
-		$reqLog = "SELECT COUNT(deviceid) as 'nbdef',name as 'extracted' FROM softwares WHERE{$condG} name NOT IN 
+		$reqLog = "SELECT COUNT(hardware_id) as 'nbdef',name as 'extracted' FROM softwares WHERE{$condG} name NOT IN 
 		(SELECT DISTINCT(extracted) FROM dico_soft) AND name NOT IN 
 		(SELECT DISTINCT(extracted) FROM dico_ignored) GROUP BY name ORDER BY $order $sens";
 		$reqCount = "SELECT COUNT(DISTINCT(name)) as 'nb' FROM softwares WHERE{$condG} name NOT IN 
@@ -188,15 +188,15 @@ if( isset($_GET["cat"]) ) {
 	if( $maxPgeNumber > 1 ){
 		echo "<td align='center'>"."<form name='allera' method='post' action='index.php?multi=14'>".$l->g(397).":</font>"
 		        .comboCat( isset($_GET["cat"])?$_GET["cat"]:"","","alleracat")."<input type='submit'></form></td>";
-		$link = "<a href=\"?$link&rg=";
+		$link = "<a href=\"?$link&order=".$_GET["order"]."&rg=";
 		$min = 0;
 		$prev = $rg - $pgSize < 0 ? 0 : $rg - $pgSize ;
 		$next = $rg + $pgSize > $valCount["nb"] ? $valCount["nb"] - $pgSize : $rg + $pgSize ;
 		$last = $valCount["nb"] - $pgSize > 0 ? $valCount["nb"] - $pgSize : 0 ;
 		
 		$linkMin  = $rg == 0 ? "1..</font>" : $link.$min."\">1..</a>";
-		$linkPrev = $rg == 0 ? "<<</font>" : $link.$prev."\"><<</a>";
-		$linkNext =  $rg >= $valCount["nb"] - $pgSize ? ">></font>" : $link.$next."\">>></a>";
+		$linkPrev = $rg == 0 ? "<img src='image/prec24.png'></font>" : $link.$prev."\"><img src='image/prec24.png'></a>";
+		$linkNext =  $rg >= $valCount["nb"] - $pgSize ? "<img src='image/proch24.png'></font>" : $link.$next."\"><img src='image/proch24.png'></a>";
 		$linkLast  = $rg >= $valCount["nb"] - $pgSize ? "..$maxPgeNumber</font>" : $link.$last."\">..$maxPgeNumber</a>";
 		$current = ceil( $rg / $pgSize )+1;
 		
@@ -286,7 +286,7 @@ else {
 		echo "<br><table width='60%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 		echo "<tr height='20px'><td align='center' width='70%'><b>".$l->g(391)."</b></font></td><td align='center' width='15%'><b>".$l->g(381)."</b></font></td><td align='center' width='15%'><b>".$l->g(392)."</b></font></td></tr>";
 		$ligne = 0;
-		$reqNew = "SELECT COUNT(DISTINCT(name)) as nbNew FROM softwares WHERE name NOT IN (SELECT DISTINCT(extracted) FROM dico_soft) LIMIT 0,1";
+		$reqNew = "SELECT COUNT(DISTINCT(name)) as nbNew FROM softwares WHERE name NOT IN (SELECT DISTINCT(extracted) FROM dico_soft)";
 		
 		while($cat = mysql_fetch_array($resCat)) {
 		
@@ -315,8 +315,8 @@ else {
 		$last = $valCount["nb"] - $pgSize > 0 ? $valCount["nb"] - $pgSize : 0 ;
 		
 		$linkMin  = $rg == 0 ? "1..</font>" : $link.$min."\">1..</a>";
-		$linkPrev = $rg == 0 ? "<<</font>" : $link.$prev."\"><<</a>";
-		$linkNext =  $rg >= $valCount["nb"] - $pgSize ? ">></font>" : $link.$next."\">>></a>";
+		$linkPrev = $rg == 0 ? "<img src='image/prec24.png'></font>" : $link.$prev."\"><img src='image/prec24.png'></a>";
+		$linkNext =  $rg >= $valCount["nb"] - $pgSize ? "<img src='image/proch24.png'></font>" : $link.$next."\"><img src='image/proch24.png'></a>";
 		$linkLast  = $rg >= $valCount["nb"] - $pgSize ? "..$maxPgeNumber</font>" : $link.$last."\">..$maxPgeNumber</a>";
 		$current = ceil( $rg / $pgSize )+1;
 		
@@ -325,6 +325,12 @@ else {
 		echo "<td align='left'>{$linkLast}</td><td align='left'>{$linkNext}</td>";
 	}
 	echo "</tr></table>";
+}
+
+if( isset( $_SESSION["toBeMod"] ) ) {
+	//var_dump( $_SESSION["toBeMod"]);
+	computeChecksums();
+	unset( 	$_SESSION["toBeMod"] );
 }
 
 /*function allerA() {
@@ -388,20 +394,23 @@ function addSoft( $cat, $def) {
 	}
 	else {
 		delIgnored($def);
-		$reqUpd = "UPDATE dico_soft SET formatted='$cat' WHERE extracted='$def'";
+		$reqUpd = "UPDATE dico_soft SET formatted='$cat' WHERE extracted='$def'";//GLPI
 		//echo $reqUpd."<br>";	
 		mysql_query($reqUpd, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 		if( mysql_affected_rows() <= 0) {
-			$reqUpd = "INSERT INTO dico_soft(formatted,extracted) VALUES('$cat', '$def')";
+			$reqUpd = "INSERT INTO dico_soft(formatted,extracted) VALUES('$cat', '$def')";//GLPI
 			//echo $reqUpd."<br>";
 			@mysql_query($reqUpd, $_SESSION["writeServer"]);
+			
 		}
+		alterChecksum($def);			
 	}
 }
 
 function delSoft($def) {
-	$reqDcat = "DELETE FROM dico_soft WHERE extracted='$def'";
+	$reqDcat = "DELETE FROM dico_soft WHERE extracted='$def'";//GLPI
 	mysql_query($reqDcat, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+	alterChecksum($def);
 }
 
 function delIgnored($def) {
@@ -410,8 +419,44 @@ function delIgnored($def) {
 }
 
 function delCat($cat) {
-	$reqDcat = "DELETE FROM dico_soft WHERE formatted='$cat'";
-	mysql_query($reqDcat, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+	alterChecksum(false,$cat);
+	$reqDcat = "DELETE FROM dico_soft WHERE formatted='$cat'";//GLPI
+	mysql_query($reqDcat, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));	
+}
+
+function alterChecksum($ext, $form=false) {
+
+	if($ext) {
+		$_SESSION["toBeMod"][]=$ext;
+		//$reqCheck = "UPDATE hardware SET checksum=checksum|$softMod WHERE id IN( SELECT hardware_id FROM softwares WHERE name='$ext')";
+		//mysql_query($reqCheck, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+	}
+	else {		
+		$reqSofts = "SELECT DISTINCT(extracted) FROM dico_soft WHERE formatted='$form'";
+		
+		$resSofts = mysql_query($reqSofts, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+		while( $valSofts = mysql_fetch_array($resSofts) ) {
+			alterChecksum($valSofts["extracted"]);
+		}
+	}
+}
+
+function computeChecksums() {
+	echo "COMPUTING: ".sizeof($_SESSION["toBeMod"])."<br>";
+	flush();
+	
+	$softMod = "65536";
+	$reqCheck = "UPDATE hardware SET checksum=checksum|$softMod WHERE id IN (SELECT DISTINCT(hardware_id) FROM softwares WHERE name IN(";
+	$first = true;
+	foreach( $_SESSION["toBeMod"] as $soft ) {
+		if( !$first )
+			$reqCheck .= ",";
+		$reqCheck .= "'$soft'";
+		if( $first ) $first = false;	
+	}
+	$reqCheck .= "));";
+	//echo $reqCheck;
+	mysql_query($reqCheck, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 }
 
 ?>

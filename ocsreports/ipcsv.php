@@ -9,11 +9,20 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on 12/13/2005
-	
+include("req.class.php");
 include("preferences.php");
 
-$dlQuery = str_replace("h.deviceid,","",$_SESSION["query"]);
-$result=mysql_query($dlQuery, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+if( isset($_SESSION["forcedRequest"] )) {
+	$lareq = $_SESSION["forcedRequest"];
+	unset( $_SESSION["forcedRequest"] );
+}
+else
+	$lareq = $_SESSION["storedRequest"]->getFullRequest();
+
+$lareq = str_replace("h.id AS \"h.id\",","",$lareq);
+$lareq = str_replace("deviceid AS \"deviceid\",","",$lareq);
+//echo $lareq;die();
+$result=mysql_query($lareq, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 
 // iexplorer problem
 if( ini_get("zlib.output-compression"))

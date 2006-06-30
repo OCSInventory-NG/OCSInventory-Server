@@ -35,10 +35,24 @@ switch ($_GET["typeDemande"]) :
 			mysql_query("delete from regconfig where id='".$_GET["id"]."'", $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 			
 		echo "&nbsp;";
-		//TODO: nimporte koi les espaces
-		$requete = new Req($l->g(108),"select name ,regtree ,regkey ,regvalue from regconfig","select count(id) from regconfig","","","");
-		printEnTete($requete->label);
-		ShowResults($requete,true);
+		$lbl=$l->g(2);		//Nom de la requete	
+	
+	$sql = "";
+	$whereId = "id";
+	$linkId = "id";
+	$select = array("name"=>"name" ,"regtree"=>"regtree", "regkey"=>"regkey", "regvalue"=>"regvalue");	
+	$selectPrelim = array( "id"=>"id" );
+	$from = "regconfig";
+	$fromPrelim = "";
+	$group = "";
+	$order = "";
+	$countId = "id";
+	
+	$req=new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId);
+	
+	printEnTete($requete->label);
+	ShowResults($req,true);
+		
 		echo "<br><br><table align='right'><tr><td>";
 		echo "<input  class='bouton' name='ajout' type='submit' value='".$l->g(116)."' onClick='window.location=\"index.php?multi=5&typeDemande=ajout\"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "<input  class='bouton' name='modif' type='submit' value='".$l->g(115)."' onClick='window.location=\"index.php?multi=5&typeDemande=modif\"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";

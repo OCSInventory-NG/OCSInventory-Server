@@ -11,7 +11,8 @@
 //Modified on 7/7/2005
 printEntete($l->g(263));
 
-if($_POST["newlabel"]!="") {
+if( $_POST["newlabel"]!="" && str_replace(" ", "", $_POST["newlabel"] )!="" ) {
+	$_POST["newlabel"] = str_replace(array("\t","\n","\r"), array("","",""), $_POST["newlabel"] );
 	@mysql_query("DELETE FROM deploy WHERE name='label'");
 	$queryL = "INSERT INTO deploy VALUES('label','".$_POST["newlabel"]."');";
 	mysql_query($queryL) or die(mysql_error());

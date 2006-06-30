@@ -11,6 +11,7 @@
 //Modified on 12/13/2005
 
 error_reporting(E_ALL & ~E_NOTICE);
+set_time_limit(0);
 @session_start();
 
 include("preferences.php");
@@ -39,11 +40,12 @@ if( isset($_GET["first"] )) {
 <html>
 <head>
 <TITLE>OCS Inventory</TITLE>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
 <LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
-<script language="javascript" type="text/javascript" src="datetimepicker.js"></script>
-<? 
-if($_GET["multi"] == 3 && $_GET["mode"] == 1) {?>
+<? incPicker(); ?>
 <script language='javascript'>
+<?if($_GET["multi"] == 3 && $_GET["mode"] == 1) {?>
 	function scrollHeaders() {
 		var monSpan = document.getElementById("headers");
 		if( document.body.scrollTop > 200) {
@@ -58,6 +60,11 @@ if($_GET["multi"] == 3 && $_GET["mode"] == 1) {?>
 			monSpan.style.visibility = 'hidden';
 	}
 <?}?>
+	
+	function wait( sens ) {	
+		var mstyle = document.getElementById('wait').style.display	= (sens!=0?"block" :"none");	
+	}
+
 </script>
 </head> 
 <?
@@ -146,11 +153,12 @@ if( !isset($_GET["popup"] )) {
 		die();
 	}
 	
-	$limitedAccess = array(2,3,4,5,6,7,8,9,14,13);
+	$limitedAccess = array(2,3,4,5,6,7,8,9,14,13,22,23,24,27,20,21,26);
 	if( in_array($_GET["multi"],$limitedAccess) && $_SESSION["lvluser"]!=1) {
 		echo "<br><br><center><b><font color=red>ACCESS DENIED</font></b></center><br>";
 		unset($_GET["multi"]);
 		die();
 	}
+
 	
 ?>

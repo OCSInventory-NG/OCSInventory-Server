@@ -10,7 +10,7 @@
 //====================================================================================
 //Modified on 11/25/2005
 
-echo"<br><table class='headfoot'>";
+echo"<br></div><table class='headfoot'>";
 echo"<tr height=25px><td align='center'>&nbsp;";
 echo"</td></tr></table>";
 ?>

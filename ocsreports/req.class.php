@@ -18,27 +18,92 @@ if(!class_exists("Req"))
  */
 class Req
 {		
-	var 	$label,   /// Nom et description de la requete      
-		$sql,     /// Commande SQL de la requête	
-		$sqlCount,     /// Commande SQL de la requete de comptage des résultats
+	var $label,   	   /// Nom et description de la requete   
+		$whereId,
+		$linkId,
+		$where,     	   /// Commande SQL de la requête	
+		$select, 	   /// Les champs à selectionner
+		$selectPrelim, 	   /// Les champs à selectionner
+		$from, 	       /// Les champs à selectionner
+		$fromPrelim,
+		$group,
+		$order,
+		$countId,
 		$labelChamps,  /// Tableau contenant le texte de tous les paramètres de la requete
 		$sqlChamps,    /// Tableau contenant toutes les requetes de préremplissage des ComboBox de choix des parametres
 		$typeChamps,   /// Tableau contenant les types de champs de saisie des parametres de la requete:
 					   /// COMBO: combobox préremplie par les requetes de $sqlChamps ou
 					   /// FREE : champ texte libre)					   
 		$isNumber,     /// Tableau indiquant si un nombre est attendu pour le parametre 
-		$columnEdit;   /// Indique si les colonnes sont éditables
+		$pics,  	//les images
+		$columnEdit,   /// Indique si les colonnes sont éditables
+		$selFinal;
 		
-	function Req($label,$sql,$sqlCount,$labelChamps,$sqlChamps,$typeChamps,$isNumber=NULL,$columnEdit=false) // constructeur
+	function Req($label,$whereId,$linkId,$where,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,$pics=NULL,$columnEdit=false,$labelChamps=NULL,$sqlChamps=NULL,$typeChamps=NULL,$isNumber=NULL,$selFinal="") // constructeur
 	{
 		$this->label=$label;
-		$this->sql=$sql;
-		$this->sqlCount=$sqlCount;
+		$this->whereId=$whereId;
+		$this->linkId=$linkId;
+		$this->where=$where;		
+		$this->select=$select;
+		$this->selectPrelim=$selectPrelim;
+		$this->from=$from;
+		$this->fromPrelim=$fromPrelim;
+		$this->group=$group;
+		$this->order=$order;
+		$this->countId=$countId;
+		$this->pics=$pics;
 		$this->labelChamps=$labelChamps;
 		$this->sqlChamps=$sqlChamps;
 		$this->typeChamps=$typeChamps;
 		$this->isNumber=$isNumber;
 		$this->columnEdit=$columnEdit;
+		$this->selFinal=$selFinal;
+	}
+	
+	function getSelect() {
+		$toRet = "";
+		$prems = true;
+		foreach( $this->select as $key=>$val ) {
+			if( !$prems ) $toRet .= ",";
+			$toRet .= $key." AS \"".$val."\"";
+			$prems = false;
+		}
+		return $toRet;
+	}
+	
+	function getFullRequest() {
+		
+		$ret = "SELECT ".$this->getSelect();
+		if( $this->from || $this->fromPrelim ) {
+			$ret .= " FROM ";
+			if( $this->from ) {
+				$ret .= $this->from;
+				$dej = 1;
+			}
+			if( $this->fromPrelim ) {
+				if( $dej ) $ret .= ",";
+				$ret .= $this->fromPrelim;
+			}
+		}
+		if( $this->where ) $ret .= " WHERE ".$this->where;
+		if( $this->group ) $ret .= " GROUP BY ".$this->group;
+		if( $this->order ) $ret .= " ORDER BY ".$this->order;
+			
+		return $ret;
+	}
+	
+	function getSelectPrelim() {
+		if( ! is_array($this->selectPrelim) )
+			return;
+		$toRet = "";
+		$prems = true;
+		foreach( $this->selectPrelim as $key=>$val ) {
+			if( !$prems ) $toRet .= ",";
+			$toRet .= $key." AS \"".$val."\"";
+			$prems = false;
+		}
+		return $toRet;
 	}
 	
 	function toHtml($link) // renvoie la page html présentant la requete
