@@ -587,16 +587,16 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4016', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4020', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
-INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
+INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
 INSERT INTO `config` VALUES ('DOWNLOAD', 0, '', 'Activate softwares auto deployment feature');
-INSERT INTO `config` VALUES ('DOWNLOAD_CYCLE_LATENCY', 60, '', 'Modify that if you know what you are doing');
-INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Modify that if you know what you are doing');
-INSERT INTO `config` VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Modify that if you know what you are doing');
-INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Modify that if you know what you are doing');
-INSERT INTO `config` VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Modify that if you know what you are doing');
+INSERT INTO `config` VALUES ('DOWNLOAD_CYCLE_LATENCY', 60, '', 'Time between two cycles (seconds)');
+INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Number of cycles in a period');
+INSERT INTO `config` VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Time between two downloads (seconds)');
+INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Time between two periods (seconds)');
+INSERT INTO `config` VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Validity of a package (in days)');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
