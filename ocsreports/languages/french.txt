@@ -23,6 +23,7 @@
 41 Réinitialiser
 42 Aucun résultat
 43 Menu principal
+45 Espace libre
 46 Dernier inventaire
 48 Affichage système
 49 Nom
@@ -200,13 +201,13 @@
 292 Ajout / supression d'un périphérique
 293 Types de périphériques
 294 Noms des sous réseaux
-295 Localisation
+295 Cliquer pour éditer
 296 Id
 297 Ne peut écrire dans le répertoire
 298 Tous les champs doivent être remplis
 299 Adresse IP invalide (format valide: x.x.x.x)
-300 Masque invalide (format valide: x.x.x.x ou xx)
-301 Nouveau réseau inséré
+300 Masque invalide: format valide: x.x.x.x ou xx (xx<32)
+301 Réseau inséré
 302 Réseau supprimé
 303 Ajouter un sous-réseau
 304 Nom réseau
@@ -300,5 +301,147 @@
 396 Reset
 397 Aller a la categorie
 398 Liste des categories
-
-
+410 EXACTEMENT
+411 Vous ne devez entrer que des chiffres !
+412 Activer/désactiver la fonctionnalité de recherche dans le registre
+413 Activer/désactiver la fonctionnalité de mise à jour automatique
+414 Activer/désactiver la fonctionnalité de déploiement automatique
+415 Activer/désactiver la fonctionnalité d'enregistrement des supressions (nécessaire pour GLPI).
+416 Activer/désactiver la fonctionnalité de log sur le serveur.
+417 Activer/désactiver la fonctionnalité de télédéploiement (non encore implémentée).
+418 Activer/désactiver la fonctionnalité d'inventaires différentiels.
+419 Nombre de jour maximal avant qu'une machine ipdiscover ne soit remplacée.
+420 Télédéploiement: voir documentation.
+421 Télédéploiement: voir documentation.
+422 Télédéploiement: voir documentation.
+423 Télédéploiement: voir documentation (Les paquets ayant une valeur supérieure ou égale ne seront plus téléchargés).
+424 Nombre de jour maximal de validité d'un paquet à télécharger sur une machine.
+425 Nombre d'ordinateurs remontants les machines de leurs réseaux.
+426 Nombre de jour avant lequel le serveur demande à nouveau à une machine d'envoyer son inventaire.
+427 Défini les critères devant être indentiques pour qu'une fusion automatique ait lieu.
+428 Télédéployer
+429 Fréquence
+430 Traitement par lots
+431 Activer
+432 Non notifiés
+433 Affecter
+434 Fabrication d'un paquet de télédéploiement
+435 Création d'un nouveau paquet
+436 Ne peut pas ouvrir le fichier:
+437 Votre paquet a bien été créé dans le répertoire
+438 Création d'un nouveau paquet
+439 Protocole
+440 Priorité
+441 Algorithme de digest
+442 Encodage digest
+443 Action
+444 Commande
+445 Chemin
+446 Nom du fichier
+447 Interactions utilisateur
+448 Prévenir utilisateur
+449 Texte
+450 Compte à rebours
+451 L'utilisateur peut annuler
+452 L'utilisateur peut remettre a plus tard
+453 La fin de l'installation nécessite une intervention utilisateur
+454 NON
+455 OUI
+456 Exécuter
+457 Stocker
+458 Lancer
+459 Le compte à rebours doit être un nombre
+460 Identifiant unique
+461 Digest
+462 Taille totale
+463 Taille fragment ( 1 Ko min )
+464 Nombre de fragments
+465 Activation de paquets
+466 ATTENTION: Le fichier d'information est introuvable à l'adresse
+467 ATTENTION: Les fragments sont introuvables à l'adresse
+468 Etes vous sur de vouloir tout de même activer le paquet avec ces paramètres ?
+469 Paquet activé, il peut maintenant être affecté
+470 Serveur https
+471 Serveur de fichiers
+472 ERREUR: Ne peut supprimer le répertoire
+473 Le timestamp doit etre un nombre
+474 Le timestamp doit faire dix chiffres de long
+475 Timestamp
+476 Ou activer un paquet manuellement
+477 Affecter un paquet
+478 Machine(s)
+479 PAS DE MACHINE SELECTIONNEE
+480 fragments
+481 Paquets activés
+482 ATTENTE NOTIFICATION
+483 Valider SUCCES
+484 Affecter une fréquence personnalisée
+485 Toujours inventorié
+486 Jamais inventorié
+487 Personnalisé
+488 Défaut
+489 Comportement IpDiscover
+490 Forcé jamais IpDiscover
+491 Forcé toujours IpDiscover du réseau
+492 Elue IpDiscover du réseau
+493 Standard (peut être élue)
+494 Fréquence d'inventaire personnalisée
+495 Inventorier tous les 
+496 jours
+497 Standard, utilise le paramètre 'FREQUENCY' des options générales.
+498 Paquet
+499 serveur
+500 Traitements personnalisés
+501 ajouter paquet
+502 élu
+503 élu forcé
+504 non élu
+505 éligible
+506 non éligible
+507 AYANT
+508 N'AYANT PAS
+509 INDIFFERENT
+510 Pas de paquet
+511 secondes
+512 Télédéploiement
+513 Création
+514 Activation
+515 Activés
+516 Ko
+517 Cette option ne peut être affectée que pour une machine à la fois
+518 Forcer IpDiscover
+519 Machine déja ELUE ipdiscover pour le réseau
+520 Machine déja FORCEE ipdiscover pour le réseau
+521 Machine forcée inéligible ipdiscover
+522 Machine standard
+523 Remettre dans l'état par défaut
+524 Ne PLUS JAMAIS affecter
+525 ETES VOUS SUR ?
+526 PAS DE MACHINE AFFECTEE
+527 Janvier
+528 Fevrier
+529 Mars
+530 Avril
+531 Mai
+532 Juin
+533 Juillet
+534 Aout
+535 Septembre
+536 Octobre
+537 Novembre
+538 Decembre
+539 Dimanche
+540 Lundi
+541 Mardi
+542 Mercredi
+543 Jeudi
+544 Vendredi
+545 Samedi
+546 dans l'état
+547 tous
+548 Tout sauf SUCCESS
+549 Fichier (deployé sur les ordinateurs client)
+550 Fichier (facultatif, peut être utiliser par "exécuter")
+551 Ce nom de paquet est déja utilisé
+552 <i>Vous devez faire une recherche multicritères puis cliquer sur 'Télédéployer' pour affected un de ces paquets activés à des machines<br>Vous pouvez aussi affecter un paquet à une machine unique en utilisant l'onglet 'Traitements personnalisés' dans les détails d'une machine</i>.
+553 Clé Windows

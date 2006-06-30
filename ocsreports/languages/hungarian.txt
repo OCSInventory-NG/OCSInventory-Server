@@ -1,0 +1,539 @@
+1 Kérések
+2 Összes számítógép
+3 Számítógépek szoftver nélkül...
+4 számítógép szoftverrel...
+5 Hatáskörömbe tartozó egységek
+6 Lejárt garanciájú gépek
+7 Lejárt garanciájú gépek részletesen
+8 Válassza ki, mit kíván
+9 Paraméterek szerinti keresés
+10 Számítógépek jellemzok szerint
+11 Számítógépek jellemzok szerint
+12 Szoba
+13 Küld
+14 Menedzselés
+15 Azonosítók
+16 Adminisztrátorok
+17 Ügynök
+18 Felvétel dátuma
+19 Szoftver verzió
+20 Szoftver
+21 Elso dátum
+22 Garancia lejárata
+23 Számítógép
+24 Felhasználó
+25 Operációs rendszer
+26 Memória
+27 CPU órajel (MHz)
+28 Gépek száma
+29 Az LDAP szerver nem válaszol
+30 Keresés
+31 Válasszon paramétert
+32 Választ
+33 Domén
+34 IP cím
+35 Számítógép neve
+36 Széria szám
+37 Parancs
+38 Megrendelés
+39 Eredet
+40 Kód
+41 Alapállapot
+42 Nincs eredmény
+43 Fomenu
+44 Válasszon opciókat
+45 Szabad hely
+46 Utolsó leltár
+47 Utolsó lap
+48 Számítógép részletek
+49 Név
+50 Swap
+51 Megjegyzés
+52 Licenc
+53 Leírás
+54 Processor(ok)
+55 Szám
+56 Adminisztratív adatok
+57 Parancs szám
+58 Parancs dátum
+59 Kód
+60 Szállítólevél
+61 Video kártya
+62 Felbontás
+63 Tárolók
+64 Gyártó
+65 Modell
+66 Típus
+67 Diszk méret
+68 Könyvtár
+69 Gyártó
+70 Designation
+71 Garancia
+72 Beavatkozás(ok)
+73 Ár
+74 Demand date
+75 Demand type
+76 Leltár dátuma
+77 Leltár típus
+78 Számla
+79 Printer(ek)
+80 Muködés
+81 Státusz
+82 Hálózat(ok)
+83 Kapacitás
+84 Interface
+85 Levél
+86 File rendszer
+87 Összesen
+88 Szabad
+89 Delivery order date
+90 találat
+91 Input eszközök
+92 Diszk(ek)
+93 Kontroler(ek)
+94 Slot szám
+95 MAC cím
+96 Hang
+97 Monitor(ok)
+98 Vigyázat, csak 8 opciót választhat !
+99 Számítógép részletek
+100 Kezdeti paraméterek
+101 Rendezés
+102 Új kereséd
+103 Modosítás
+104 közvetlenül érintett
+105 Egységekben
+106 Konfigurációs beállítások
+107 Konfiguráció
+108 Registry kérések
+109 Számítógép típus
+110 -hoz
+111 Windows licenc szám
+112 Garancia dátum
+113 Mégsem
+114 Rendben
+115 Módosít
+116 Új
+117 Registry
+118 Lapra ugrás
+119 Valóban törölni akarja: ID n°
+120 null
+121 Számítógép törlés
+122 TÖRLÉS
+123 Számítógép típus módosítás
+124 Új számítógép típus
+125 Utolsó
+126 Következo
+127 Elso
+128 Vissza
+129 EGYENLO
+130 NEM EGYENLO
+131 Icon állomány
+132 Image állomány
+133 Leltár
+134 Új zip állomány hozzáadása
+135 Vigyázat, véglegesen törli az állományt !
+136 Letöltés
+137 Állomány
+138 Létrehozás
+139 Létrehozás / törlés
+140 Szuper adminisztrátorok
+141 Adminisztrátorok
+142 Helyi adminisztrátorok
+143 The super administrators see all the machines and can give unity tag to the administrators.
+144 The administrators see all the machines but cannot give unity tag.
+145 The local administrators see only their machine and cannot give unity tag.
+146 Choose an administrator
+147 Be careful, you're about to delete the rights definitively !
+148 ISMERETLEN TAG
+149 Unity tags under the responsibility of
+150 jog(ok) módosítva
+151 jog(ok) törölve
+152 Vigyázat, ez a muvelet törli az érintett adminisztrátor jogait !
+153 No tag unity affected to this administator
+154 Add a tag to an administrador
+155 Add administrator to a tag
+156 Add a unity tag
+157 Másol
+158 Copy the rights to
+159 rights copied from
+160 No administrator for this tag
+161 Unity tag under the responsibility of
+162 Delete the selection
+163 Service Grade Name
+164 Persons responsible of unity tag
+165 You have to enter a name or a difusion list to search !
+166 You have to choose an element from the list !
+167 See the details
+168 This format file is invalid (it must be zip, pl or unix binary)
+169 hozzádás
+170 Ez az állomány már létezik !
+171 Állomány törölve
+172 Hiba történt, az állomány:
+173 nem adtható hozzá
+174 IP keresés
+175 Duplikátumok
+176 IP-k
+177 Redundáns gépek összefuzése
+178 Szoba / gépek száma
+179 Egység neve
+180 Nem regisztrált felhasználó
+181 Bejelentkezési probléma
+182 A megadott tulajdonsággal rendelkezo gépek
+183 Letöltés
+184 This file does not contain \"use constant version\"
+185 Version must be over 1
+186 This file does not contain the ver file
+187 This file is not a valid zip file
+188 Vissza
+189 Legalább 2 gépet ki kellválasztani
+190 Számla infó:
+191 törölve
+192 Redundancia özssefoglalás
+193 Hosztnév + Széria szám
+194 Hosztnév + Mac cím
+195 Mac cím + Széria szám
+196 Hosztnév
+197 Széria szám
+198 Mac cím
+199 Redundancia
+200 A számláló csökkentve
+201 KISEBB
+202 NAGYOBB
+203 KÖZÖTT
+204 KÍVÜL
+205 Enabled
+206 saved for
+207 Átjáró
+208 maszk
+209 BIOS Verzió
+210 BIOS Dátum
+211 Registry
+212 Kulcs név
+213 Kulcs érték
+214 Nyomtat
+215 Összes információ
+216 Jelszó hiba
+217 Jelszó
+218 Ügynök verziók
+219 Nem leltározott hálózati csatoló
+220 törölt
+221 IP cím felderíto gépek
+222 Vigyázat ! Az összes kijelölt gépet összefuzí ! Biztos benne ?
+223 Információ
+224 Érték
+225 Admin.infó
+226 sikeresen a törölve az accountinfo táblából
+227 Biztos, hogy törli az oszlopot
+228 Írja be az új adminisztratív információt
+229 Szöveg (255)
+230 Egész
+231 Valós
+232 Dátum
+233 Aktuális adat
+234 sikeresen beszúrva
+235 Felhasználók
+236 Jelszó váltás
+237 Új jelszó
+238 Megerosítés
+239 Minden mezot ki kell tölteni
+240 A jelszavak nem egyeznek meg
+241 A jelszó sikeresen módosítva
+242 Adminisztrátor
+243 Felhasználó
+244 Új felhasználó
+245 sikeresen törölve
+246 Biztos, hogy törli a felhasználót
+247 MySql bejelentkezés
+248 MySql jelszó
+249 MySql nem elérheto. Kérem, adjon meg helyes bejelentkezést/jelszót.
+250 MySql Hosztnév
+251 Kilépés
+252 Név (Ön választja)
+253 A registry "fejezet" száma <br>(0: HKEY_CLASSES_ROOT, 1: HKEY_CURRENT_USER stb.)
+254 A kulcs helye (pl.: SOFTWARE/Mozilla)
+255 A kulcs megnevezése
+256 Választás
+257 Registry kulcs
+258 Registry kulcs érték
+259 Hiba, az adat nem szúrható be (speciális karakterek nem megengedettek)
+260 Címke állomány módosítás rendben
+261 Címke állomány törölve
+262 Írjon be egy címkét
+263 Címke állomány konfiguráció
+264 Nincs címke állomány
+265 Bármi
+266 Hibás dátum
+267 yyyy/mm/dd
+268 Sebesség
+269 %Y/%m/%d
+270 Modem(ek)
+271 Slot(ok)
+272 Port(ok)
+273 BIOS
+274 Op.rsz. neve
+275 Op.rsz. verziója
+276 Chip készlet
+277 Verzió
+278 Meghajtó
+279 Port
+280 MIB típus
+281 DHCP IP
+282 Átjárók
+283 Lehetoség
+284 BIOS gyártó
+285 Válassza ki a módosítandó paramétert
+286 Szervíz csomag
+287 Helyi import
+288 Helyi importálás
+289 Hálózat információ
+290 Ip lekérdezés
+291 Gyakorlott mód
+292 Hálózati eszköz felvétel / törlés
+293 Hálózati eszköz típusok
+294 Alhálózat nevek
+295 Hely
+296 Uid
+297 Can't write in directory
+298 Minden mezot ki kell tölteni
+299 Helytelen IP cím (formátum: x.x.x.x)
+300 Helytelen maszk: formátum: x.x.x.x or xx (xx<32)
+301 Hálózat felvéve
+302 Hálózat törölve
+303 Alhálózat hozzáadása
+304 Hálózat név
+305 Uid
+306 Alhálózat lista
+307 Új típus
+308 Típus neve
+309 Hálózati eszköz típusok
+310 IpFelderítés kisebb mint
+311 Gép
+312 Ip felderítés
+313 Gateway számítógépek
+314 Ip felderito gateway számítógépek
+315 Nem leltározott számítógépek
+316 Alhálózat
+317 VIZSZGÁL
+318 DNS név
+319 Hálózat vizsgálat eredményei
+320 Ez az analízis már végrehajtódott
+321 látni akarja cache adatait ?
+322 Adat a cache-ból
+323 készült
+324 A GÉP ELNEVEZVE MINT
+325 üres
+326 nincs maszk megadva
+327 Számítógép részletek
+328 Felfedezett
+329 Leltározott
+330 NetBIOS név
+331 Hálózat szám
+332 Kérem , várjon ...
+333 Új hálózati eszköz
+334 Hálózati eszköz lista
+335 Eszköz típus
+336 Eszköz leírása
+337 A PROGRAM NEM KÜLD SEMMIT
+338 Csökkentett mód
+339 A gyakorlott módhoz szükség van az ipdiscover-util.pl programra (Csak Linuxon fut)
+340 Megtekint
+340 Sorok száma
+341 nem indítható, állítsa be a végrehajtási jogokat
+342 Írási jogot kell bállítania a gyökér könyvtárra , hogy használhassa
+344 Hiba
+345 EZ AZ ANALÍZIS FOLYAMATBAN VAN, PRÓBÁLJA KÉSOBB
+346 ELOTT
+347 UTÁN
+348 Windows felhasználó
+349 Új oszlop
+350 CPU típus
+351 CPU szám
+352 Utolsó belépés
+353 Minoség
+354 Érzékenység
+355 Cég
+356 Tulajdonos
+357 OCS ágens
+358 Jokerek: ? (egy karakter), * (több karakter)
+359 Monitor szériaszáma
+360 Gyártva (hét/év)
+362 A hálózat
+363 már létezik
+364 Leltározott
+365 Nem leltározott
+366 Felismert
+367 Hálózati eszközök
+368 hálózat
+369 Rögzítette
+370 Közzététel
+371 Összes komponens
+372 Válasszon komponenst
+373 Regisztrált felhasználó
+374 Regisztrált szervezet
+375 OCS NG Agens verzió
+376 A számítógép zárolt. Próbálja késobb
+377 Processzor sebesség (Mhz)
+380 Szoftver
+381 Szám
+382 Szoftver név
+383 Lap
+384 Mindet mozgatja
+385 új kategóriába
+386 VAGY
+387 létezo kategóriába
+388 Kategória
+389 Semmi
+390 Szofver kategóriák
+391 Kategória név
+392 Törlés
+393 Keresés
+394 Kategória keresés
+395 Szoftver keresés MINDENHOL
+396 Reset
+397 Ugrás kategóriára
+398 Kategória lista
+410 EXACTLY
+411 Fields must contain only numbers !
+412 Enable/disable the registry key gathering functionality
+413 Enable/disable the automatic update functionality
+414 Enable/disable the automatic deployment functionality
+415 Enable/disable the deletion logging functionality (needed by GLPI).
+416 Enable/disable the logging functionality.
+417 Enable/disable the automatic software distribution functionality.
+418 Enable/disable the differentiate inventories functionality.
+419 Maximum number of day before an ipdiscover computer is replaced.
+420 Automatic software distribution: see documentation.
+421 Automatic software distribution: see documentation.
+422 Automatic software distribution: see documentation.
+423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
+424 Maximum number of days before a package to be downloaded on a computer become obsolete.
+425 Max number of computers per gateway retrieving IP on the network.
+426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
+427 Defines criteria that must be equals for two computers to be automatically merged.
+428 Deploy
+429 Frequency
+430 Mass processing
+431 Activate
+432 Non notified
+433 Affect
+434 Package builder
+435 New package building
+436 Can't open file
+437 Your package was successfully created in the directory
+438 New package building
+439 Protocol
+440 Priority
+441 Digest algorithm
+442 Digest encoding
+443 Action
+444 Command
+445 Path
+446 File name
+447 User notifications
+448 Warn user
+449 Text
+450 Countdown
+451 User can abort
+452 User can delay
+453 Installation completion need user action
+454 NO
+455 YES
+456 Execute
+457 Store
+458 Launch
+459 Countdown must be a number
+460 Unique identifier
+461 Digest
+462 Total size
+463 Fragments size (1 KB min)
+464 Fragments number
+465 Package activation
+466 WARNING: Can't find information file at
+467 WARNING: Can't find fragments files at
+468 Are you sure to want to activate this package ?
+469 Package activated, it can now be affected
+470 Https url
+471 Fragments url
+472 ERROR: Can't delete directory
+473 Timestamp must be a number
+474 Timestamp must be 10 digits long
+475 Timestamp
+476 Or activate a package manually
+477 Affect a package
+478 Computer(s)
+479 No computer selected
+480 fragments
+481 Activated packages
+482 WAITING NOTIFICATION
+483 Validate SUCCESSES
+484 Affect a custom frequency
+485 Always inventoried
+486 Never inventoried
+487 Custom
+488 Default
+489 IpDiscover behaviour
+490 NEVER IpDiscover
+491 ALWAYS IpDiscover of network
+492 ELECTED IpDiscover of network
+493 Default (can be elected)
+494 Custom inventory frequency
+495 Inventoried every 
+496 day(s)
+497 Default, uses the 'FREQUENCY' parameter.
+498 Package
+499 server
+500 Customization
+501 add package
+502 Elected
+503 Force elected
+504 Not elected
+505 Electable
+506 Not electable
+507 HAVING
+508 NOT HAVING
+509 ANY
+510 No package
+511 seconds
+512 Deployment
+513 Build
+514 Activate
+515 Activated
+516 KB
+517 This option can only be affected to one computer at a time.
+518 Force IpDiscover
+519 Computer already elected for network
+520 Computer already FORCED ipdiscover for network
+521 Computer already FORCED unelectable
+522 Standard computer
+523 Revert back to standard state
+524 NEVER affect again
+525 ARE YOU SURE ?
+526 NO COMPUTER AFFECTED
+527 January
+528 February
+529 March
+530 April
+531 May
+532 June
+533 July
+534 August
+535 September
+536 October
+537 November
+538 December
+539 Sunday
+540 Monday
+541 Tuesday
+542 Wednesday
+543 Thursday
+544 Friday
+545 Saturday
+546 in state
+547 all
+548 All but SUCCESS
+549 File (deployed on client computers)
+550 File (not mandatory, may be used by "execute" commmand)
+551 This package name already exists
+552 <i>You must make a computer search, and then click 'deploy' to affect these activated packages<br>You may also affect a package to a single computer by using the 'customization' tab of any computer details</i>.
+553 Windows key

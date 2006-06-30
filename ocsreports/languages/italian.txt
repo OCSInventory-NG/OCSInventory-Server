@@ -23,6 +23,7 @@
 41 Reset
 42 Non ci sono risultati
 43 Menù principale
+45 Free space
 46 Ultimo inventario
 48 Dettagli Computer
 49 Nome
@@ -207,8 +208,8 @@
 297 Non è possibile scrivere nella cartella
 298 Tutti i campi devono essere riempiti
 299 Indirizzo IP errato (deve essere: x.x.x.x)
-300 Maschera errata (deve essere: x.x.x.x or xx)
-301 La nuova rete è stata inserita
+300 Maschera errata: deve essere: x.x.x.x or xx (xx<32)
+301 La rete è stata inserita
 302 La rete è stata cancellata
 303 Aggiungi una subnet
 304 Nome rete
@@ -303,3 +304,147 @@
 396 Reset
 397 Go to the category
 398 Categories list
+410 EXACTLY
+411 Fields must contain only numbers !
+412 Enable/disable the registry key gathering functionality
+413 Enable/disable the automatic update functionality
+414 Enable/disable the automatic deployment functionality
+415 Enable/disable the deletion logging functionality (needed by GLPI).
+416 Enable/disable the logging functionality.
+417 Enable/disable the automatic software distribution functionality.
+418 Enable/disable the differentiate inventories functionality.
+419 Maximum number of day before an ipdiscover computer is replaced.
+420 Automatic software distribution: see documentation.
+421 Automatic software distribution: see documentation.
+422 Automatic software distribution: see documentation.
+423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
+424 Maximum number of days before a package to be downloaded on a computer become obsolete.
+425 Max number of computers per gateway retrieving IP on the network.
+426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
+427 Defines criteria that must be equals for two computers to be automatically merged.
+428 Deploy
+429 Frequency
+430 Mass processing
+431 Activate
+432 Non notified
+433 Affect
+434 Package builder
+435 New package building
+436 Can't open file
+437 Your package was successfully created in the directory
+438 New package building
+439 Protocol
+440 Priority
+441 Digest algorithm
+442 Digest encoding
+443 Action
+444 Command
+445 Path
+446 File name
+447 User notifications
+448 Warn user
+449 Text
+450 Countdown
+451 User can abort
+452 User can delay
+453 Installation completion need user action
+454 NO
+455 YES
+456 Execute
+457 Store
+458 Launch
+459 Countdown must be a number
+460 Unique identifier
+461 Digest
+462 Total size
+463 Fragments size (1 KB min)
+464 Fragments number
+465 Package activation
+466 WARNING: Can't find information file at
+467 WARNING: Can't find fragments files at
+468 Are you sure to want to activate this package ?
+469 Package activated, it can now be affected
+470 Https url
+471 Fragments url
+472 ERROR: Can't delete directory
+473 Timestamp must be a number
+474 Timestamp must be 10 digits long
+475 Timestamp
+476 Or activate a package manually
+477 Affect a package
+478 Computer(s)
+479 No computer selected
+480 fragments
+481 Activated packages
+482 WAITING NOTIFICATION
+483 Validate SUCCESSES
+484 Affect a custom frequency
+485 Always inventoried
+486 Never inventoried
+487 Custom
+488 Default
+489 IpDiscover behaviour
+490 NEVER IpDiscover
+491 ALWAYS IpDiscover of network
+492 ELECTED IpDiscover of network
+493 Default (can be elected)
+494 Custom inventory frequency
+495 Inventoried every 
+496 day(s)
+497 Default, uses the 'FREQUENCY' parameter.
+498 Package
+499 server
+500 Customization
+501 add package
+502 Elected
+503 Force elected
+504 Not elected
+505 Electable
+506 Not electable
+507 HAVING
+508 NOT HAVING
+509 ANY
+510 No package
+511 seconds
+512 Deployment
+513 Build
+514 Activate
+515 Activated
+516 KB
+517 This option can only be affected to one computer at a time.
+518 Force IpDiscover
+519 Computer already elected for network
+520 Computer already FORCED ipdiscover for network
+521 Computer already FORCED unelectable
+522 Standard computer
+523 Revert back to standard state
+524 NEVER affect again
+525 ARE YOU SURE ?
+526 NO COMPUTER AFFECTED
+527 January
+528 February
+529 March
+530 April
+531 May
+532 June
+533 July
+534 August
+535 September
+536 October
+537 November
+538 December
+539 Sunday
+540 Monday
+541 Tuesday
+542 Wednesday
+543 Thursday
+544 Friday
+545 Saturday
+546 in state
+547 all
+548 All but SUCCESS
+549 File (deployed on client computers)
+550 File (not mandatory, may be used by "execute" commmand)
+551 This package name already exists
+552 <i>You must make a computer search, and then click 'deploy' to affect these activated packages<br>You may also affect a package to a single computer by using the 'customization' tab of any computer details</i>.
+553 Windows key

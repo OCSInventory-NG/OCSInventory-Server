@@ -1,19 +1,31 @@
 /* OCSReports Style Sheet */
+
+
 body {
 	background-color:#FFFFFF;
 	font-family: Verdana;
 	font-size: 8pt;
 }
 
-a, img, .lienBleu, .norm, td, b {  
+.fondu {
+	background-image: url(../image/fond.png);
+	width:100%;
+	background-position : top center ;
+	background-repeat: no-repeat;
+		background-attachment: fixed;
+}
+
+a, img, .lienBleu, .norm, td, b,.warn {  
 	text-decoration: none;
 	border-width: 0px;
 	font-family: Verdana;
 	font-size: 8pt;
 }
 
-b {
-	font-style: bold;
+.warn {
+	font-size: 8pt;
+	color: red;
+	font-weight:bold;
 }
 
 a,a:visited, .lienBleu {
@@ -173,4 +185,45 @@ select.ge {
 	border-width: 1px;
 	border-collapse: collapse;
 	width: 240px;
+}
+
+dl, dt, dd, ul, li {
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+
+#menu dt {
+cursor: pointer;
+margin: 2px 0;
+text-align: center;
+font-weight: bold;
+}
+
+#menu dd {
+position: absolute;
+z-index: 100;
+margin-top: 5px;
+width: 18em;
+background: #C7D9F5;
+border: 1px solid gray;
+}
+
+#menu ul {
+padding: 2px;
+}
+#menu li {
+text-align: center;
+font-size: 85%;
+height: 18px;
+line-height: 18px;
+}
+#menu li a, #menu dt a {
+color: #000;
+text-decoration: none;
+display: block;
+}
+
+#menu li a:hover {
+text-decoration: underline;
 }
