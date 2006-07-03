@@ -946,6 +946,17 @@ then
     echo "| Installing files for Administration server...            |"
     echo "+----------------------------------------------------------+"
     echo
+    echo "Creating directory $APACHE_ROOT_DOCUMENT/download."
+    echo "Creating directory $APACHE_ROOT_DOCUMENT/download" >> setup.log
+    mkdir -p $APACHE_ROOT_DOCUMENT/download >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to create $APACHE_ROOT_DOCUMENT/download, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo
     echo "Creating directory $APACHE_ROOT_DOCUMENT/ocsreports."
     echo "Creating directory $APACHE_ROOT_DOCUMENT/ocsreports" >> setup.log
     mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
@@ -988,6 +999,14 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    chown -R root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/download >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/download, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod -R go-w $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
     if [ $? != 0 ]
     then
@@ -996,10 +1015,26 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    chmod -R go-w $APACHE_ROOT_DOCUMENT/download >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/download, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     chmod g+w $APACHE_ROOT_DOCUMENT/ocsreports >> setup.log 2>&1
     if [ $? != 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in setup.log and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    chmod g+w $APACHE_ROOT_DOCUMENT/download >> setup.log 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/download, please look at error in setup.log and fix !"
         echo
         echo "Installation aborted !"
         exit 1
