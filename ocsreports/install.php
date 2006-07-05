@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 06/30/2006
+//Modified on 07/05/2005
 
 set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
@@ -54,10 +54,6 @@ if(!function_exists('xml_parser_create')) {
 if(!function_exists('mysql_connect')) {	
 	echo "<br><center><font color=red><b>ERROR: MySql for PHP is not properly installed.<br>Try installing mysql for php package (Debian: php4-mysql)</b></font></center>";
 	die();
-}
-
-if(!function_exists('zip_read')) {	
-	echo "<br><center><font color=orange><b>WARNING: Zip for PHP is not properly installed.<br>You will not be able to upload windows agents<br>Try uncommenting \";extension=php_zip.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-zip package (Linux).</b></font></center>";
 }
 
 if(!function_exists('imagefontwidth')) {	
