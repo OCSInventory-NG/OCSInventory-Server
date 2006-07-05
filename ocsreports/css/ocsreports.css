@@ -23,7 +23,7 @@ a, img, .lienBleu, .norm, td, b,.warn {
 }
 
 .warn {
-	font-size: 8pt;
+	font-size: 10pt;
 	color: red;
 	font-weight:bold;
 }

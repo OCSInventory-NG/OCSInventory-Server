@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/07/2005
+//Modified on 07/05/2006
+
 set_time_limit(0);
 $nbpop=0;
 $fipdisc = "ipdiscover-util.pl" ;
@@ -811,8 +812,6 @@ function printTab($t ,$modeReg=false, $tailles=null, $unSurDeux=false, $scroll =
 
 function runCommand($command="") {
 	global $l;
-	echo "<center><span id='wait'><h3><font color=red>".$l->g(332)."</font></h3></span></center>";
-	flush();
 	$command = "perl ipdiscover-util.pl $command -xml -h=".$_SESSION["SERVEUR_SQL"]." -u=".$_SESSION["COMPTE_BASE"]." -p=".$_SESSION["PSWD_BASE"];
 	//echo $command."<br>";
 	$fd = popen($command,"r");	
@@ -826,9 +825,7 @@ function runCommand($command="") {
 	}
 	
 	pclose ($fd);
-	echo "<script language=javascript>document.getElementById(\"wait\").innerHTML=\"\";</script>";
-	flush();
-
+	
 	if($buffer == "") {
 		echo "<br><center><font color='red'><b>".$l->g(337)."</b></font></center>";
 		return FALSE;
