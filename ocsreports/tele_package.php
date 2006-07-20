@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 06/23/2006
+//Modified on 07/20/2006
 ?>
 <script language='javascript'>
 
@@ -68,11 +68,11 @@
 				$raw = false;
 				if( $_POST["digest_encod"] == "Base64"  )
 					$raw = true;
-		
+				
 				if( $_POST["digest_algo"] == "SHA1" )
 					$digest = sha1_file($_FILES["fichier"]["tmp_name"],$raw);
 				else
-					$digest = md5_file($_FILES["fichier"]["tmp_name"],$raw);
+					$digest = md5_file($_FILES["fichier"]["tmp_name"]);
 					
 				if( $_POST["digest_encod"] == "Base64" )
 					$digest = base64_encode( $digest );
@@ -264,7 +264,7 @@
 	<tr height='30px' bgcolor='white'><td><? echo $l->g(453); ?>:</td><td colspan='2'><select name='NOTIFY_CAN_DELAY' name='NEED_DONE_ACTION'><option value='0'><? echo $l->g(454); ?></option><option value='1'><? echo $l->g(455); ?></option></td></tr>
 	<tr height='30px' bgcolor='white'><td align='right' colspan='10'>				
 	<input type='hidden' id='digest_algo' name='digest_algo' value='MD5'>
-	<input type='hidden' id='digest_encod' name='digest_encod' value='Base64'>
+	<input type='hidden' id='digest_encod' name='digest_encod' value='Hexa'>
 	<input type='button' name='send' OnClick='checkAll()' value='<? echo $l->g(13); ?>'></td></tr>
 </form>
 </table></p>
