@@ -8,11 +8,11 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 11/25/2005
+//Modified on 08/20/2006
 
-if(is_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'])) {
-	$fd = fopen($HTTP_POST_FILES['userfile']['tmp_name'], "r");
-	$contents = fread($fd, filesize ($HTTP_POST_FILES['userfile']['tmp_name']));
+if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+	$fd = fopen($_FILES['userfile']['tmp_name'], "r");
+	$contents = fread($fd, filesize ($_FILES['userfile']['tmp_name']));
 	fclose($fd);
 
 	$result = post_it($contents, "http://".LOCAL_SERVER."/ocsinventory");
