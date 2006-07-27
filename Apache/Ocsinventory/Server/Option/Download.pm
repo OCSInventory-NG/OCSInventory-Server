@@ -107,8 +107,11 @@ sub download_handler{
 	my $r = $current_context->{'APACHE_OBJECT'};
 	my $request;
 	
-	$request = $dbh->prepare('SELECT ID FROM download_enable WHERE FILEID=?');
-	$request->execute( $result->{'ID'} );
+	$request = $dbh->prepare('
+		SELECT ID FROM download_enable 
+		WHERE FILEID=? 
+		AND ID IN (SELECT IVALUE FROM devices WHERE NAME="download" AND HARDWARE_ID=?)');
+	$request->execute( $result->{'ID'}, $current_context->{'DATABASE_ID'});
 	
 	if(my $row = $request->fetchrow_hashref()){
 		$dbh->do('UPDATE devices SET TVALUE=? 
