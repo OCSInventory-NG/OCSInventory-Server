@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 07/20/2006
+//Modified on 08/01/2006
 ?>
 <script language='javascript'>
 
@@ -64,13 +64,9 @@
 			if( $fSize ) {
 				$size = $_FILES["fichier"]["size"];
 				$id = time();
-				
-				$raw = false;
-				if( $_POST["digest_encod"] == "Base64"  )
-					$raw = true;
-				
+		
 				if( $_POST["digest_algo"] == "SHA1" )
-					$digest = sha1_file($_FILES["fichier"]["tmp_name"],$raw);
+					$digest = sha1_file($_FILES["fichier"]["tmp_name"],true);
 				else
 					$digest = md5_file($_FILES["fichier"]["tmp_name"]);
 					
@@ -242,10 +238,13 @@
 	
 	<tr height='30px' bgcolor='white'><td><span id='filetext'><? echo $l->g(549); ?></span>:</td><td colspan='2'><input id='fichier' name='fichier' type='file' accept='archive/zip'></td></tr>
 	<tr height='30px' bgcolor='white'><td><? echo $l->g(443); ?>:</td><td><select id='action' name='action' OnChange='active("EXECUTE_div", false);active("STORE_div", false);active("LAUNCH_div", false);active(this.value + "_div", true);'>
-	<option value='STORE'><? echo $l->g(457); ?></option><option value='EXECUTE'><? echo $l->g(456); ?></option><option value='LAUNCH'><? echo $l->g(458); ?>
-	</option></select></td>
-		<td width='43%' align='right'><div id='EXECUTE_div' style='display:block'><? echo $l->g(444); ?>: <input id='command' name='command'></div>
-		<div id='STORE_div' style='display:none'><? echo $l->g(445); ?>: <input id='path' name='path'></div>
+	<option value='STORE' selected><? echo $l->g(457); ?></option>
+	<option value='EXECUTE'><? echo $l->g(456); ?></option>
+	<option value='LAUNCH'><? echo $l->g(458); ?></option>
+	</select></td>
+		<td width='43%' align='right'>
+		<div id='EXECUTE_div' style='display:none'><? echo $l->g(444); ?>: <input id='command' name='command'></div>
+		<div id='STORE_div' style='display:block'><? echo $l->g(445); ?>: <input id='path' name='path'></div>
 		<div id='LAUNCH_div' style='display:none'><? echo $l->g(446); ?>: <input id='nme' name='nme'></div></td>
 	</tr>
 	<tr height='30px' BGCOLOR='#C7D9F5'><td align='center' colspan='10'><b><? echo $l->g(447); ?></b></td></tr>

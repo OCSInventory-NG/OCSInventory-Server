@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 06/15/2006
+//Modified on 08/01/2006
 
 PrintEnTete($l->g(465));
 
@@ -24,8 +24,17 @@ if( isset( $_POST["actpack"] )) {
 	$opensslOk = function_exists("openssl_open");
 	if( $opensslOk )
 		$httpsOk = @fopen("https://".$_POST["https"]."/".$_POST["actpack"]."/info", "r");
-
-	$fragOk = @fopen("http://".$_POST["frag"]."/".$_POST["actpack"]."/".$_POST["actpack"]."-1", "r");
+		
+	// checking if this package contains fragments
+	$reqFrags = "SELECT fragments FROM download_available WHERE fileid='".$_POST["actpack"]."'";
+	$resFrags = mysql_query( $reqFrags, $_SESSION["readServer"] );	
+	$valFrags = mysql_fetch_array( $resFrags );
+	$fragAvail = ($valFrags["fragments"] > 0) ;
+	
+	if( $fragAvail )
+		$fragOk = @fopen("http://".$_POST["frag"]."/".$_POST["actpack"]."/".$_POST["actpack"]."-1", "r");
+	else
+		$fragOk = true;
 
 	if( !isset($_POST["conf"] )) {		
 		
@@ -37,7 +46,7 @@ if( isset( $_POST["actpack"] )) {
 		if( $httpsOk ) fclose( $httpsOk );
 		
 		if( ! $fragOk ) echo "<br><center><b><font color='red'>".$l->g(467)." http://".$_POST["frag"]."/".$_POST["actpack"]."/</font></b></center>";
-		else fclose( $fragOk );		
+		else if( $fragAvail ) fclose( $fragOk );		
 	}
 	
 	if( (! $fragOk || ! $httpsOk || ! $opensslOk) && !isset($_POST["conf"]) ) {?>

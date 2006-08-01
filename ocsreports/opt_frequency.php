@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 06/23/2006
+//Modified on 08/01/2006
 
 
 if( isset($_POST["systemid"]) )
@@ -31,7 +31,11 @@ if( isset($_POST["frequency"]) ) {
 		$ok = setFrequency( $toBeSet );		
 	}
 	if( $ok ) {
-		echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
+		if( ! isset( $_GET["systemid"] ) )
+			echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
+		else
+			echo "<script language='javascript'>history.go(-2);</script>";	
+
 		die();
 	}
 }
@@ -43,8 +47,10 @@ else
 
 PrintEnTete( $l->g(484)." <font class='warn'>($nbMach ".$l->g(478).")</font>");
 
-echo "<br><center><a href='#' OnClick=\"window.location='index.php?redo=1".$_SESSION["queryString"]."';\"><= ".$l->g(188)."</a></center>";
-
+if( ! isset( $_GET["systemid"] ) )
+	echo "<br><center><a href='#' OnClick=\"window.location='index.php?redo=1".$_SESSION["queryString"]."';\"><= ".$l->g(188)."</a></center>";
+else
+	echo "<br><center><a href='#' OnClick='history.go(-1);'><= ".$l->g(188)."</a></center>";
 ?>
 <script language='javascript'>
 	function modif(id, val) {
