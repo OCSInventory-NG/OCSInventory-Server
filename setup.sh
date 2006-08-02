@@ -1047,6 +1047,17 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    if test -r $APACHE_ROOT_DOCUMENT/ocsreports/dbconfig.inc.php
+    then
+        chmod g+w $APACHE_ROOT_DOCUMENT/ocsreports/dbconfig.inc.php >> setup.log 2>&1
+        if [ $? != 0 ]
+        then
+            echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports/dbconfig.inc.php, please look at error in setup.log and fix !"
+            echo
+            echo "Installation aborted !"
+            exit 1
+        fi
+    fi
     
     echo
     echo "Configuring IPDISCOVER-UTIL Perl script."
