@@ -38,7 +38,8 @@ PERL_BIN=`which perl`
 MAKE=`which make`
 # Where is located logrotate configuration directory
 LOGROTATE_CONF_DIR="/etc/logrotate.d"
- 
+# Where is located ed simple editor
+ED_BIN=`which ed` 
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -352,6 +353,27 @@ else
 fi
 echo
 
+
+echo
+echo "+----------------------------------------------------------+"
+echo "| Checking for ED Editor...                                |"
+echo "+----------------------------------------------------------+"
+echo
+echo "Checking for ED Editor" >> setup.log
+if test -z $ED_BIN
+then
+	echo "ED Editor not found !"
+	echo "ED Editor not found" >> setup.log
+	echo "OCS Inventory NG setup is not able to work without ED Editor."
+	echo "Setup ED Editor first, or install OCS Inventory NG manually."
+	echo "Installation aborted !"
+	echo "installation aborted" >> setup.log
+	exit 1
+else
+	echo "OK, ED Editor found at <$ED_BIN> ;-)"
+	echo "ED Editor found at <$ED_BIN>" >> setup.log
+fi
+echo
 
 echo
 echo -n "Do you wish to setup Communication server on this computer ([y]/n)?"
@@ -740,7 +762,7 @@ then
     echo "Configuring logrotate for Communication server."
     echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> ../setup.log
     cp logrotate.ocsinventory-NG logrotate.ocsinventory-NG.local
-    ed logrotate.ocsinventory-NG.local << EOF >> ../setup.log 2>&1
+    $ED_BIN logrotate.ocsinventory-NG.local << EOF >> ../setup.log 2>&1
         1,$ g/^ *PATH_TO_LOG_DIRECTORY*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
         w
         q
@@ -769,7 +791,7 @@ EOF
     echo
     echo "Configuring Apache web server (ed ocsinventory.conf)" >> ../setup.log
     cp ocsinventory.conf ocsinventory.conf.local
-    ed ocsinventory.conf.local << EOF >> ../setup.log 2>&1
+    $ED_BIN ocsinventory.conf.local << EOF >> ../setup.log 2>&1
         1,$ g/^ *PerlSetEnv OCS_DB_HOST*/s#DATABASE_SERVER#$DB_SERVER_HOST#
         1,$ g/^ *PerlSetEnv OCS_DB_PORT*/s#DATABASE_PORT#$DB_SERVER_PORT#
         1,$ g/^ *PerlSetEnv OCS_MODPERL_VERSION*/s#VERSION_MP#$APACHE_MOD_PERL_VERSION#
@@ -1063,7 +1085,7 @@ then
     echo "Configuring IPDISCOVER-UTIL Perl script."
     echo "Configuring IPDISCOVER-UTIL Perl script (ed ipdiscover-util.pl)" >> setup.log
     cp ipdiscover-util/ipdiscover-util.pl ipdiscover-util/ipdiscover-util.pl.local >> setup.log 2>&1
-    ed ipdiscover-util/ipdiscover-util.pl.local << EOF >> ../setup.log 2>&1
+    $ED_BIN ipdiscover-util/ipdiscover-util.pl.local << EOF >> ../setup.log 2>&1
         1,$ g/^ *my $dbhost*/s#localhost#$DB_SERVER_HOST#
         1,$ g/^ *my $dbp*/s#3306#$DB_SERVER_PORT#
         w
