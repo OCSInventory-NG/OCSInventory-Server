@@ -783,12 +783,12 @@ function getBrowserLang() {
                                   return "polish";
                            }
                            else
-                               // Portugueuse
-		                 return "portugueuse";
+                               // Portuguese
+		                 return "portuguese";
                        }
                        else
-                           // Brazilian portugueuse
-		             return "brazilian_portugueuse";
+                           // Brazilian portuguese
+		             return "brazilian_portuguese";
                    }
                    else
                        // Italian
