@@ -396,14 +396,15 @@ function print_storages($systemid)
 	print_item_header($l->g(63));
 	
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
-	echo "<tr>  $td1 ".$l->g(64)."   </td>   $td1 ".$l->g(65)."         </td>
+	echo "<tr>  $td1 ".$l->g(49)."   </td> $td1 ".$l->g(64)."   </td>   $td1 ".$l->g(65)."         </td>
 		  		$td1 ".$l->g(53)."  </td>    $td1 ".$l->g(66)."         </td>
 		  		$td1 ".$l->g(67)." (MB) </td> </tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>";
-		echo "$td3".utf8_decode($item->MANUFACTURER)."</td>
+		echo "$td3".utf8_decode($item->NAME)."</td>
+                    $td3".utf8_decode($item->MANUFACTURER)."</td>
 			  $td3".utf8_decode($item->MODEL)."       </td>
 	          $td3".utf8_decode($item->DESCRIPTION)." </td>
      		  $td3".utf8_decode($item->TYPE)."        </td>
@@ -449,7 +450,7 @@ function print_softwares($systemid)
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 		
 	//echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
-	echo "<tr> $td1 ".$l->g(69)."     </td> $td1 ".$l->g(49)."     </td>   $td1 ".$l->g(277)."  </td>   $td1 ".$l->g(295)."  </td>";
+	echo "<tr> $td1 ".$l->g(69)."     </td> $td1 ".$l->g(49)."     </td>   $td1 ".$l->g(277)."  </td>   $td1 ".$l->g(445)."  </td>";
 	          // $td1 $rep     </td> $td1 $com     </td>  </tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
@@ -724,7 +725,7 @@ function print_drives($systemid)
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr>";
 	echo "$td1 ".$l->g(85)."     </td>  $td1 ".$l->g(66)."       </td> $td1 ".$l->g(86)."  </td>
-		  $td1 ".$l->g(87)." (MB) </td> $td1 ".$l->g(88)." (MB)   </td></tr>";
+		  $td1 ".$l->g(87)." (MB) </td> $td1 ".$l->g(88)." (MB)   </td> $td1 ".$l->g(70)."</td></tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
@@ -734,6 +735,7 @@ function print_drives($systemid)
 		      $td3 ".utf8_decode($item->FILESYSTEM)." </td>
 		      $td3 ".utf8_decode($item->TOTAL)."      </td>
 		      $td3 ".utf8_decode($item->FREE)."       </td>
+		      $td3 ".utf8_decode($item->VOLUMN)."       </td>
 			  </tr>";
 	}
 	echo "</table><br>";		
