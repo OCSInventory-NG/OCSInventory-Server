@@ -28,7 +28,7 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw /_inventory_handler/;
 
 use Apache::Ocsinventory::Server::Constants;
-use Apache::Ocsinventory::Server::System qw /:server _modules_get_inventory_options/;
+use Apache::Ocsinventory::Server::System qw /:server _modules_get_pre_inventory_options _modules_get_post_inventory_options/;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Duplicate;
 
@@ -93,6 +93,8 @@ sub _inventory_handler{
 	#Inventory incoming
 	&_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
+	# Call to preinventory handlers
+	&_pre_options();
 	# Put the inventory in the database
 	return APACHE_SERVER_ERROR if
 	# To know more about the situation (update, new machine...)
@@ -117,8 +119,8 @@ sub _inventory_handler{
 
 	#Committing inventory
 	$dbh->commit;
-
-	&_options();
+	#Call to post inventory handlers
+	&_post_options();
 
 	#############
 	# Manage several questions, including duplicates
@@ -663,8 +665,15 @@ sub _post_inventory{
 	0;
 }
 
-sub _options{
-	for(&_modules_get_inventory_options()){
+sub _pre_options{
+	for(&_modules_get_pre_inventory_options()){
+		last if $_== 0;
+		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
+	}
+}
+
+sub _post_options{
+	for(&_modules_get_post_inventory_options()){
 		last if $_== 0;
 		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
 	}

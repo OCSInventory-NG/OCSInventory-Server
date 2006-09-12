@@ -29,7 +29,8 @@ use Apache::Ocsinventory::Server::Constants;
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&download_prolog_resp,
-	'HANDLER_INVENTORY' => undef,
+	'HANDLER_PRE_INVENTORY' => undef,
+	'HANDLER_POST_INVENTORY' => undef,
 	'REQUEST_NAME' => 'DOWNLOAD',
 	'HANDLER_REQUEST' => \&download_handler,
 	'HANDLER_DUPLICATE' => undef,

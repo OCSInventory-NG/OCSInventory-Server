@@ -52,7 +52,8 @@ our @EXPORT_OK = (
 	_log 
 	_lock
 	_modules_get_request_handler
-	_modules_get_inventory_options
+	_modules_get_pre_inventory_options
+	_modules_get_post_inventory_options
 	_modules_get_prolog_readers
 	_modules_get_prolog_writers
 	_modules_get_duplicate_handlers
@@ -209,9 +210,14 @@ sub _modules_get_request_handler{
 	return($ret[0]);
 }
 
-# Retrieve options with inventory handler
-sub _modules_get_inventory_options{
-	return(&_modules_search(undef, 'HANDLER_INVENTORY'));
+# Retrieve options with preinventory handler
+sub _modules_get_pre_inventory_options{
+	return(&_modules_search(undef, 'HANDLER_POST_INVENTORY'));
+}
+
+# Retrieve options with postinventory handler
+sub _modules_get_post_inventory_options{
+	return(&_modules_search(undef, 'HANDLER_PRE_INVENTORY'));
 }
 
 # Retrieve options with prolog_read

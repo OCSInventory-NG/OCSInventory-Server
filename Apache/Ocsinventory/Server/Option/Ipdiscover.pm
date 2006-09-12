@@ -33,7 +33,8 @@ use constant IPD_MAN => 2;
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
-	'HANDLER_INVENTORY' => \&_ipdiscover_main,
+	'HANDLER_PRE_INVENTORY' => undef,
+	'HANDLER_POST_INVENTORY' => \&_ipdiscover_main,
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
 	'HANDLER_DUPLICATE' => undef,

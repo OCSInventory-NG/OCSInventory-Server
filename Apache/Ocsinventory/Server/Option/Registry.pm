@@ -29,7 +29,8 @@ use Apache::Ocsinventory::Server::Constants;
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&_registry_prolog_resp,
-	'HANDLER_INVENTORY' => \&_registry_main,
+	'HANDLER_PRE_INVENTORY' => undef,
+	'HANDLER_POST_INVENTORY' => \&_registry_main,
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
 	'HANDLER_DUPLICATE' => \&_registry_duplicate,
