@@ -73,9 +73,9 @@ sub _ipdiscover_prolog_resp{
 		$row = $request->fetchrow_hashref();
 		push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ]};
 		&_set_http_header('Connection', 'close', $current_context->{'APACHE_OBJECT'});
-		return(1);
+		return 1;
 	}else{
-		return(0);
+		return 0;
 	}
 }
 
@@ -96,7 +96,7 @@ sub _ipdiscover_main{
 	my $data = $current_context->{'DATA'};
 	
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
-		return(1);
+		return 1;
 	}
 
 	# Is the device already have the ipdiscover function ?
@@ -115,11 +115,11 @@ sub _ipdiscover_main{
 		}
 		$request->finish;
 		if(!defined($remove)){
-			return(1);
+			return 1;
 		}
 	}else{
 		if($result->{CONTENT}->{HARDWARE}->{OSNAME}!~/xp|2000|linux/i){
-			return(0);
+			return 0;
 		}
 		
 		# Get quality and fidelity
@@ -130,17 +130,17 @@ sub _ipdiscover_main{
 	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} != 0){
 				$subnet = &_ipdiscover_find_iface($result, $current_context->{'DBI_HANDLE'});
 				if(!$subnet){
-					return(&_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID));
+					return &_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID);
 				}elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
 					# The computer is elected, we have to write it in devices
-					$dbh->do('INSERT INTO devices(HARDWARE_ID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return(1);
+					$dbh->do('INSERT INTO devices(HARDWARE_ID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return 1;
 					&_log(1001,'ipdiscover','Elected'."($subnet)") if $ENV{'OCS_OPT_LOGLEVEL'};
-					return(0);
+					return 0;
 				}else{
-					return(0);
+					return 0;
 				}
 			}else{
-				return(0);
+				return 0;
 			}
 		}
 	}
@@ -150,7 +150,7 @@ sub _ipdiscover_main{
 	# If needed, we remove
 	if($remove){
 		if(!$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID)){
-			return(1);
+			return 1;
 		}
 		$dbh->commit;
 		&_log(1002,'ipdiscover','Removed') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -194,7 +194,7 @@ sub _ipdiscover_read_result{
 		}
 		$dbh->commit;
 	}else{
-		return(1);
+		return 1;
 	}
 
 	# Maybe There are too much ipdiscover per subnet ?
@@ -202,10 +202,10 @@ sub _ipdiscover_read_result{
 	$request->execute($subnet);
 	if($request->rows > $ENV{'OCS_OPT_IPDISCOVER'}){
 		$request->finish;
-		return(1);
+		return 1;
 	}
 	
-	return(0);
+	return 0;
 }
 
 sub _ipdiscover_find_iface{
@@ -237,7 +237,7 @@ sub _ipdiscover_find_iface{
 		# Looking for ipdiscover older than ipdiscover_max_value
 		# and compare current computer with actual ipdiscover
 	}
-	return(0);
+	return 0;
 	
 }
 
@@ -285,17 +285,17 @@ sub _ipdiscover_evaluate{
 				if(($quality < $worth[1] and ($worth[1]-$quality>1)) or $over){
 					# Compare to the current and replace it if needed
 					if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
-						return(1);
+						return 1;
 					}
 					$dbh->commit;
 					&_log(1001,'ipdiscover',($over?'over':'better')."($_->{IPSUBNET})") if $ENV{'OCS_OPT_LOGLEVEL'};
-					return(0);
+					return 0;
 				}
 			}
 		}else{
 				next;
 		}
 	}
-	return(0);
+	return 0;
 }
 1;

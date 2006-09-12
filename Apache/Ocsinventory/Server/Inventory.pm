@@ -94,7 +94,10 @@ sub _inventory_handler{
 	&_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
 	# Call to preinventory handlers
-	&_pre_options();
+	if( &_pre_options() == INVENTORY_STOP ){
+		&_log(107,'inventory','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
+		return APACHE_FORBIDDEN;
+	}
 	# Put the inventory in the database
 	return APACHE_SERVER_ERROR if
 	# To know more about the situation (update, new machine...)
@@ -668,7 +671,9 @@ sub _post_inventory{
 sub _pre_options{
 	for(&_modules_get_pre_inventory_options()){
 		last if $_== 0;
-		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
+		if (&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT) == INVENTORY_STOP){
+			return INVENTORY_STOP;
+		}
 	}
 }
 

@@ -50,7 +50,11 @@ sub _prolog{
 	my $info = $Apache::Ocsinventory::CURRENT_CONTEXT{'DETAILS'};
 	
 	
-	&_prolog_read();
+	if( &_prolog_read() == PROLOG_STOP ){
+		&_log(106,'prolog','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
+		&_prolog_resp(PROLOG_RESP_BREAK);
+		return APACHE_OK;
+	}
 
 	$frequency = $ENV{'OCS_OPT_FREQUENCY'};
 
@@ -157,7 +161,7 @@ sub _send_response{
 	&_set_http_content_type('application/x-compressed',$r);
 	&_send_http_headers($r);
 	$r->print($message);
-	return(0);
+	return 0;
 }
 
 sub _prolog_resp{
@@ -174,7 +178,7 @@ sub _prolog_resp{
 		&_log(105,'prolog','') if $ENV{'OCS_OPT_LOGLEVEL'};
 	}
 	&_send_response(\%resp);
-	return(0);
+	return 0;
 }
 
 sub _prolog_build_resp{
@@ -188,7 +192,7 @@ sub _prolog_build_resp{
 	
 	if($decision == PROLOG_RESP_BREAK){
 		$resp->{'RESPONSE'} = [ 'STOP' ];
-		return(0);
+		return 0;
 	}elsif($decision == PROLOG_RESP_STOP){
 		$resp->{'RESPONSE'} = [ 'STOP' ];
 	}elsif($decision == PROLOG_RESP_SEND){
@@ -199,14 +203,16 @@ sub _prolog_build_resp{
 		last if $_ == 0;
 		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $resp);
 	}
-	return(0);
+	return 0;
 }
 
 sub _prolog_read{
 	for(&_modules_get_prolog_readers()){
 		last if $_==0;
-		&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT);
+		if(&$_(\%Apache::Ocsinventory::CURRENT_CONTEXT)==PROLOG_STOP){
+			return PROLOG_STOP;
+		}
 	}
-	return(0);
+	return PROLOG_CONTINUE;
 }
 1;

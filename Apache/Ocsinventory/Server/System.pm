@@ -212,12 +212,12 @@ sub _modules_get_request_handler{
 
 # Retrieve options with preinventory handler
 sub _modules_get_pre_inventory_options{
-	return(&_modules_search(undef, 'HANDLER_POST_INVENTORY'));
+	return(&_modules_search(undef, 'HANDLER_PRE_INVENTORY'));
 }
 
 # Retrieve options with postinventory handler
 sub _modules_get_post_inventory_options{
-	return(&_modules_search(undef, 'HANDLER_PRE_INVENTORY'));
+	return(&_modules_search(undef, 'HANDLER_POST_INVENTORY'));
 }
 
 # Retrieve options with prolog_read

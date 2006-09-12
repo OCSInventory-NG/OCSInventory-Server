@@ -2,7 +2,7 @@ Ocsinventory-NG logs format
 
 --> GDH;Event code;DeviceID;IP address;User agent;Phase;(comment)
 
-Codes événements :
+Codes ï¿½ï¿½ements :
 
 ERRORS
 ------
@@ -33,6 +33,8 @@ INVENTORY
 103--New machine(deviceid)
 104--Inventory incoming
 105--Inventory refused but other task required
+106--Prolog stopped by module
+107--Inventory stopped by module
 
 MANAGEMENT
 ----------

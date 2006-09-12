@@ -52,18 +52,18 @@ sub _registry_main{
 	
 	my $result;
 	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
-		return(1);
+		return 1;
 	}
 
 	if($update){
 		if(!$dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
+			return 1;
 		}
 	}
 	
 	unless($result->{CONTENT}->{REGISTRY}){
 		$dbh->commit;
-		return(0);
+		return 0;
 	}
 	
 	my $sth = $dbh->prepare('INSERT INTO registry(HARDWARE_ID, NAME, REGVALUE) VALUES(?, ?, ?)');
@@ -72,11 +72,11 @@ sub _registry_main{
 
 	for(@$array){
 		if(!$sth->execute($DeviceID, $_->{NAME}, $_->{REGVALUE})){
-			return(1);
+			return 1;
 		}
 	}
 	$dbh->commit;
-	return(0);
+	return 0;
 }
 
 
@@ -116,9 +116,9 @@ sub _registry_prolog_resp{
 					'NAME'  => [ 'REGISTRY' ],
 					'PARAM'	=> \@registry
 				};
-		return(1);
+		return 1;
 	}else{
-		return(0);
+		return 0;
 	}
 }
 

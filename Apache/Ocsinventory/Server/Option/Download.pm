@@ -97,7 +97,7 @@ sub download_prolog_resp{
 # 		$resp->{'RESPONSE'} = ['OTHER'];
 # 	}
 	
-	return(0);
+	return 0;
 }
 
 sub download_handler{
