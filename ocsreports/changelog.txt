@@ -1,6 +1,9 @@
+ver 4.0.2.1
+- Added orphan removing code to installer
+
 ver 4.0.2.0
 
-- Added auto-deploy interfac
+- Added auto-deploy interface
 - Added mass-processing (delete, package affectation, frequency)
 - Added custom parameters in computers ( packages, ipdiscover, frequency)
 - Added new checkings in install.php

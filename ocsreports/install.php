@@ -474,6 +474,29 @@ while ($valNet = mysql_fetch_array($resNet) ) {
 }
 echo "<br><center><font color=green><b>Netmap netid was computed=> $sucNet successful, <font color=orange>$dejNet were already computed</font>, <font color=red>$errNet were not computable</font></b></font></center>";
 
+//ORPH	
+echo "<br><center><font color=green><b>Cleaning orphans...</b></font></center>";
+
+flush();
+$tables=Array("accountinfo","bios","controllers","drives",
+	"inputs","memories","modems","monitors","networks","ports","printers","registry",
+	"slots","softwares","sounds","storages","videos","devices");
+
+foreach( $tables as $laTable) {
+		
+	$reqSupp = "DELETE FROM $laTable WHERE hardware_id NOT IN (SELECT DISTINCT(id) FROM hardware)";
+	$resSupp = @mysql_query( $reqSupp );
+	if( mysql_errno() != "") {			
+		echo "<br><center><font color=red><b>ERROR: Could not clean $laTable, error ".mysql_errno().": ".mysql_error()."</b></font></center>";
+	}
+	else {
+		if( $cleaned = mysql_affected_rows() )		
+			echo "<br><center><font color=green><b>Table $laTable: $cleaned lines deleted</b></font></center>";
+	}
+}	
+flush();
+//ORPH
+
 
 function printEnTeteInstall($ent) {
 	echo "<br><table border=1 class= \"Fenetre\" WIDTH = '62%' ALIGN = 'Center' CELLPADDING='5'>

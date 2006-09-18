@@ -42,7 +42,7 @@ if(isset($_GET["lang"])) {
 	}
 }
 
-define("GUI_VER", "4020");
+define("GUI_VER", "4021");
 define("SADMIN", 1);
 define("LADMIN", 2);   
 define("ADMIN", 3);
