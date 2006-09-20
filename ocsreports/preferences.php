@@ -519,7 +519,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				}
 				else if($chmp==$l->g(28))
 				{
-					echo "<a href=?cuaff=$leCuPrec>";
+					echo "<a href='?cuaff=$leCuPrec'>";
 				}
 				
 				if( $isDate[$chmp] )

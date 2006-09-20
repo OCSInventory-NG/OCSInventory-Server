@@ -1,3 +1,8 @@
+ver 4.0.2.1.1
+	- Fixed computer details page name
+	- Fixed memory bug in computer details
+	- Fixed space problem in preferences.php
+
 ver 4.0.2.1
 - Added orphan removing code to installer
 

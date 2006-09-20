@@ -57,7 +57,7 @@ $item     = mysql_fetch_object($result);
 
 echo "<html>\n";
 echo "<head>\n";
-echo "<TITLE>$aff -$systemid</TITLE>\n";
+echo "<TITLE>".$item->NAME."</TITLE>\n";
 echo "<LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>\n";
 
 incPicker();
@@ -89,7 +89,17 @@ echo "<tr>".$tdhd.$l->g(33).$tdhf.$tdhdpb.utf8_decode($item->WORKGROUP).$tdhfpb.
 echo "<tr>".$tdhd.$l->g(46).$tdhf.$tdhdpb.dateTimeFromMysql(utf8_decode($item->LASTDATE)).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(34).$tdhf.$tdhdpb.utf8_decode($item->IPADDR).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(24).$tdhf.$tdhdpb.utf8_decode($item->USERID).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(26).$tdhf.$tdhdpb.utf8_decode($item->MEMORY).$tdhfpb."</tr>";
+
+$sqlMem = "SELECT SUM(capacity) AS 'capa' FROM memories WHERE hardware_id=$systemid";
+$resMem = mysql_query($sqlMem, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+$valMem = mysql_fetch_array( $resMem );
+
+if( $valMem["capa"] > 0 )
+	$memory = $valMem["capa"];
+else
+	$memory = $item->MEMORY;
+
+echo "<tr>".$tdhd.$l->g(26).$tdhf.$tdhdpb.$memory.$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(50).$tdhf.$tdhdpb.utf8_decode($item->SWAP).$tdhfpb."</tr>";
 
 echo getNetName($systemid);
@@ -169,7 +179,7 @@ echo "<table width='80%' border=0 align='center' cellpadding='0' cellspacing='0'
 						echo img($imgAdm[0],$lblAdm[0], isAvail($lblAdm[0]), $opt);
 						echo img($imgAdm[1],$lblAdm[1], true, $opt);
 						
-						echo "<td width='80px'>&nbsp;</td>";
+						echo "<td width='80px'><img src='image/blanc.png'></td>";
 						//rouge
 						$cpt = 0;
 						foreach( $imgSof as $im ) {
