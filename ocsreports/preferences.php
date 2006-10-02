@@ -574,7 +574,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				echo "<br><center><b>".$l->g(430).":</b>";			
 				echo "&nbsp;&nbsp;<b><a href='index.php?multi=22' target=_top>".$l->g(429)."</a></b>";
 				//echo "&nbsp;&nbsp;<b><a href='index.php?multi=23' target=_top>".$l->g(312)."</a></b>";
-				echo "&nbsp;&nbsp;<b><a href='index.php?multi=24' target=_top>".$l->g(428)."</a></b>";
+				echo "&nbsp;&nbsp;<b><a href='index.php?frompref=1&multi=24' target=_top>".$l->g(428)."</a></b>";
 				echo "&nbsp;&nbsp;<b><a href='index.php?multi=27' target=_top>".$l->g(122)."</a></b>";			
 				echo "</center>";
 			}

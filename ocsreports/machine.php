@@ -22,6 +22,7 @@ if( isset($_GET["sessid"])){
 else
 	die("FORBIDDEN");
 
+$_GET["multi"] = 24; // To avoid storing systemid in querystring
 require ('preferences.php');
 
 if (isset($_GET['systemid'])) {

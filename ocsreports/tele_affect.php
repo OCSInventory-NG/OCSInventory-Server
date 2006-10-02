@@ -9,25 +9,33 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on 06/23/2006
+if( isset($_GET["frompref"]) && $_GET["frompref"] == 1 ) {
+	unset( $_SESSION["saveId"] );
+}
+else if( isset($_GET["systemid"]) ) {
+	$_SESSION["saveId"] = $_GET["systemid"];
+}
 
-
-if( ! isset($_SESSION["saveRequest"]))
+if( ! isset($_SESSION["saveRequest"])) {
 	$_SESSION["saveRequest"] = $_SESSION["storedRequest"];
+}
 
 if( isset($_GET["affpack"])) {
 	$ok = resetPack( $_GET["affpack"] );
 	$ok = $ok && setPack( $_GET["affpack"] );
-	if( $ok ) {
-		$_SESSION["storedRequest"] = $_SESSION["saveRequest"];
-		
-		if( ! isset( $_GET["systemid"] ) )
-			echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
-		else
-			echo "<script language='javascript'>history.go(-2);</script>";	
-		die();
-	}
 }
-else if( isset($_GET["suppack"])) {
+
+if( $_GET["retour"] == 1 || (isset($_GET["affpack"]) && $ok) ) {
+	$_SESSION["storedRequest"] = $_SESSION["saveRequest"];
+	unset( $_SESSION["saveRequest"] );
+	if( ! isset( $_SESSION["saveId"] ) )
+		echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
+	else
+		echo "<script language='javascript'>window.location='machine.php?systemid=".$_SESSION["saveId"]."&sessid=".session_id()."&option=".$l->g(500)."';</script>";
+	die();
+}
+
+if( isset($_GET["suppack"])) {
 	@mysql_query("DELETE FROM download_enable WHERE ID=".$_GET["suppack"], $_SESSION["writeServer"]) or die(mysql_error());	
 	
 	$reqSupp = "DELETE FROM devices WHERE name='DOWNLOAD' AND ivalue=".$_GET["suppack"];
@@ -49,11 +57,8 @@ if( $nbMach > 0 ) {
 else {
 	die($l->g(478));	
 }
-if( ! isset( $_GET["systemid"] ) )
-	echo "<br><center><a href='#' OnClick=\"window.location='index.php?redo=1".$_SESSION["queryString"]."';\"><= ".$l->g(188)."</a></center>";
-else
-	echo "<br><center><a href='#' OnClick='history.go(-1);'><= ".$l->g(188)."</a></center>";
 
+echo "<br><center><a href='#' OnClick=\"window.location='index.php?multi=24&retour=1'\"><= ".$l->g(188)."</a></center>";
 
 if( isset($_GET["systemid"]))
 	$canAc = 3; //preferences.php must set systemid in query string
@@ -74,7 +79,6 @@ $countId = "e.ID";
 
 $requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,true);
 ShowResults($requete,true,false,false,false,false,false,$canAc);
-$_SESSION["storedRequest"] = $_SESSION["saveRequest"];
 
 	function setPack( $packid ) {
 		global $_GET;

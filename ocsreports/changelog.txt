@@ -1,3 +1,6 @@
+ver 4.0.2.1.2
+	- Fixed "back" problem with package affectation
+
 ver 4.0.2.1.1
 	- Fixed computer details page name
 	- Fixed memory bug in computer details
