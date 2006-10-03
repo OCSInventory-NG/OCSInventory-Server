@@ -41,7 +41,7 @@ my $data;
 my $dbh;
 
 #To apply to $checksum with an OR
-my %mask = (
+our %mask = (
 	'hardware' 	=> 1,
 	'bios'		=> 2,
 	'memories'	=> 4,

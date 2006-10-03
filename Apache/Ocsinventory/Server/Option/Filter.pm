@@ -43,13 +43,26 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROLOG_FILTER_ON'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_ON'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_IP'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_INVENTORY'} = 0;
+
+my %autorized;
 
 sub prolog_filter{
+	# ON/OFF
 	return PROLOG_CONTINUE unless $ENV{'OCS_OPT_PROLOG_FILTER_ON'};
+	
+	my $block;
+	my $current_ip = $ENV{'HTTP_X_FORWARDED_FOR'})?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'};
 }
 
 sub inventory_filter{
+	# ON/OFF
 	return INVENTORY_CONTINUE unless $ENV{'OCS_OPT_INVENTORY_FILTER_ON'};
+	
+	my $block;
+	my $current_ip = $ENV{'HTTP_X_FORWARDED_FOR'})?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'};
+
 }
 1;
 
