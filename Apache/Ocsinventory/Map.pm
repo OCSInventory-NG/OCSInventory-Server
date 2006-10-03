@@ -23,7 +23,9 @@ our %data_map= (
 	hardware		=> {
 									mask => 1,
 									
-									fields => [qw /NAME	
+									fields => [qw /
+											ID
+											NAME	
 											WORKGROUP	
 											OSNAME 
 											OSVERSION 
@@ -40,6 +42,11 @@ our %data_map= (
 											WINCOMPANY 
 											WINOWNER 
 											WINPRODID
+											LASTDATE
+											LASTCOME
+											CHECKSUM
+											QUALITY
+											FIDELITY
 										/]
 									},
 										

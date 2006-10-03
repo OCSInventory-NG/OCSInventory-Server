@@ -20,9 +20,10 @@ sub get_computers_V1{
 	my $parsed_request = XML::Simple::XMLin( $request ) or die;
 	
 	for( search_engine($request, $parsed_request) ){
-		push @result, build_xml_inventory($_, $parsed_request->{CHECKSUM});
+		push @result, build_xml_inventory($_, 	$parsed_request->{CHECKSUM});
 	}
-	return @result;
+	print STDERR for @result;
+	return(@result);
 }
 1;
 
