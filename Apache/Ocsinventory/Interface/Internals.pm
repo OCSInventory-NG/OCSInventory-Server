@@ -42,17 +42,19 @@ sub engine_first {
 	}
   
 	if( $parsed_request->{TAG} ){
+		s/^(.*)$/\"$1\"/ for @{ $parsed_request->{TAG} };
 		$tag .= ' AND';
 		$tag .= ' accountinfo.TAG IN('.join(',', @{ $parsed_request->{TAG} }).')';
 	}
 	
 	if( $parsed_request->{CHECKSUM} ){
-		$checksum = ' AND ('.$parsed_request->{CHECKSUM}.'&hardware.CHECKSUM)';
+		$checksum = ' AND ('.$parsed_request->{CHECKSUM}.' & hardware.CHECKSUM)';
 	}
 
 	if( $parsed_request->{USERID} ){
+		s/^(.*)$/\"$1\"/ for @{ $parsed_request->{USERID} };
 		$userid .= ' AND';
-		$userid .= ' hardware.USERID='.$parsed_request->{USERID};
+		$userid .= ' hardware.USERID IN('.join(',', @{ $parsed_request->{USERID} } ).')';
 	}
   
   my $search_string = "SELECT DISTINCT hardware.ID FROM hardware,accountinfo WHERE hardware.ID=accountinfo.HARDWARE_ID $id $name $userid $checksum $tag";
