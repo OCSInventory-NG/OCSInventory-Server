@@ -22,7 +22,6 @@ sub get_computers_V1{
 	for( search_engine($request, $parsed_request) ){
 		push @result, build_xml_inventory($_, 	$parsed_request->{CHECKSUM});
 	}
-	print STDERR for @result;
 	return(@result);
 }
 1;
