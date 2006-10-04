@@ -19,10 +19,10 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / search_engine build_xml_inventory /;
+our @EXPORT = qw / search_engine build_xml_inventory build_xml_meta /;
 
 sub search_engine{
-#Available search engines
+# Available search engines
 	my %search_engines = (
 		'first'	=> \&engine_first
 	);
@@ -34,36 +34,36 @@ sub engine_first {
 	my $parsed_request = XML::Simple::XMLin( $request, ForceArray => ['ID', 'TAG', 'USERID'], SuppressEmpty => 1 ) or die;
 	my ($id, $name, $userid, $checksum, $tag);
 	  
-#database ids criteria
+# Database ids criteria
   if( $parsed_request->{ID} ){
   	$id .= ' AND';
 		$id .= ' hardware.ID IN('.join(',', @{ $parsed_request->{ID} }).')';
 	}
-#tag criteria
+# Tag criteria
 	if( $parsed_request->{TAG} ){
 		s/^(.*)$/\"$1\"/ for @{ $parsed_request->{TAG} };
 		$tag .= ' AND';
 		$tag .= ' accountinfo.TAG IN('.join(',', @{ $parsed_request->{TAG} }).')';
 	}
-#checksum criteria (only positive "&" will match
+# Checksum criteria (only positive "&" will match
 	if( $parsed_request->{CHECKSUM} ){
 		$checksum = ' AND ('.$parsed_request->{CHECKSUM}.' & hardware.CHECKSUM)';
 	}
-#associated user criteria
+# Associated user criteria
 	if( $parsed_request->{USERID} ){
 		s/^(.*)$/\"$1\"/ for @{ $parsed_request->{USERID} };
 		$userid .= ' AND';
 		$userid .= ' hardware.USERID IN('.join(',', @{ $parsed_request->{USERID} } ).')';
 	}
-#generate sql string
+# Generate sql string
   my $search_string = "SELECT DISTINCT hardware.ID FROM hardware,accountinfo WHERE hardware.ID=accountinfo.HARDWARE_ID $id $name $userid $checksum $tag";
-#play it	
+# Play it	
 	my $sth = get_sth($search_string);
-#get ids
+# Get ids
 	while( my $row = $sth->fetchrow_hashref() ){
 		push @{$computers}, $row->{ID};
 	}
-#destroy request object
+# Destroy request object
   $sth->finish();
 }
 
@@ -76,7 +76,7 @@ sub database_connect{
 		$Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD')
 	);
 }
-
+# Process the sql requests
 sub get_sth {
 	my ($sql, @values) = @_;
 	my $dbh = database_connect();
@@ -84,29 +84,58 @@ sub get_sth {
 	$request->execute( @values ) or die;
 	return $request;
 }
-
+# Build whole inventory (sections specified using checksum)
 sub build_xml_inventory {
 	my ($computer, $checksum) = @_;
 	my %xml;
-	
+# Whole inventory by default
 	$checksum = CHECKSUM_MAX_VALUE unless $checksum=~/\d+/;
-	
+# Build each section using ...standard_section
 	for( keys(%data_map) ){
 		if( ($checksum & $data_map{$_}->{mask} ) ){
 			&build_xml_standard_section($computer, \%xml, $_) or die;
 		}
 	}
+# Return the xml response to interface
 	return XML::Simple::XMLout( \%xml, 'RootName' => 'COMPUTER' ) or die;
 }
-
+# Build metadata of a computer
+sub build_xml_meta {
+	my $id = shift;
+	my %xml;
+# For mapped fields
+	my @mapped_fields = qw / DEVICEID LASTDATE LASTCOME CHECKSUM DATABASEID/;
+# For others
+	my @other_fields = qw //;
+	
+	my $sql_str = qq/
+		SELECT 
+			hardware.DEVICEID AS DEVICEID,
+			hardware.LASTDATE AS LASTDATE,
+			hardware.LASTCOME AS LASTCOME,
+			hardware.checksum AS CHECKSUM,
+			hardware.ID AS DATABASEID
+		FROM hardware 
+		WHERE ID=?
+	/;
+	my $sth = get_sth( $sql_str, $id);
+	while( my $row = $sth->fetchrow_hashref ){
+		for( @mapped_fields ){
+			$xml{ $_ }=[$row->{ $_ }];
+		}
+	}
+	$sth->finish;
+	return XML::Simple::XMLout( \%xml, 'RootName' => 'COMPUTER' ) or die;
+}
+# Build a database mapped inventory section
 sub build_xml_standard_section{
 	my ($id, $xml_ref, $section) = @_;
 	my %element;
 	my @tmp;
-
+# Request database
 	my $deviceid = get_table_pk($section);
 	my $sth = get_sth("SELECT * FROM $section WHERE $deviceid=?", $id);
-	
+# Build data structure...
 	while ( my $row = $sth->fetchrow_hashref() ){		
 		for( @{ $data_map{ $section }->{fields} } ){
 			$element{$_} = [ $row->{ $_ } ];
@@ -119,13 +148,11 @@ sub build_xml_standard_section{
 	$xml_ref->{$section}=[ @tmp ];
 	@tmp = ();
 	$sth->finish;
-	return 1;
 }
-
+# Return the id field of an inventory section
 sub get_table_pk{
 	my $section = shift;
 	return ($section eq 'hardware')?'ID':'HARDWARE_ID';
-	
 }
 
 1;

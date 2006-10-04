@@ -15,27 +15,35 @@ use strict;
 
 sub get_computers_V1{
 	shift;
-#xml request
+# Xml request
 	my $request = shift;
-#returned values
+	my %build_functions = (
+		'INVENTORY' => \&build_xml_inventory,
+		'META' => \&build_xml_meta
+	);
+		
+# Returned values
 	my @result;
-#first xml parsing 
+# First xml parsing 
 	my $parsed_request = XML::Simple::XMLin( $request ) or die;
-#max number of responses sent back to client
+# Max number of responses sent back to client
 	my $max_responses = 100;
 	my @ids;
-#call search_engine stub
+# Call search_engine stub
 	search_engine($request, $parsed_request, \@ids);
-#generate boundaries
+# Generate boundaries
 	my $begin = $parsed_request->{'BEGIN'} > @ids ? return undef : $parsed_request->{'BEGIN'};
 	my $end = $#ids;
 	$end = $begin + ($max_responses-1) if ($end-$begin)>$max_responses;
+# Type of requested data (meta datas, inventories, special features..
+	my $type=$parsed_request->{'ASKING_FOR'}||'INVENTORY';
+	$type =~ s/^(.+)$/\U$1/;
 	
-#generate xml responses
+# Generate xml responses
 	for(@ids[$begin..$end]){
-		push @result, build_xml_inventory($_, $parsed_request->{CHECKSUM});
+			push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM});
 	}
-#send
+# Send
 	return(@result);
 }
 1;
