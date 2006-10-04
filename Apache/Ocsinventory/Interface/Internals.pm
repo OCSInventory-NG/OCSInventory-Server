@@ -22,50 +22,49 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw / search_engine build_xml_inventory /;
 
 sub search_engine{
-	my ($request, $parsed_request) = @_;
 #Available search engines
 	my %search_engines = (
 		'first'	=> \&engine_first
 	);
-	return &{ $search_engines{ $parsed_request->{ENGINE} } }( $request, $parsed_request );
+	&{ $search_engines{ $_[1]->{ENGINE} } }( @_ );
 }
 
 sub engine_first {
-	my @computers;
-	my ($request, $parsed_request) = @_;
-	my $parsed_request = XML::Simple::XMLin( $request, ForceArray => ['ID', 'TAG', 'USERID'] ) or die;
+	my ($request, $parsed_reques, $computers) = @_;
+	my $parsed_request = XML::Simple::XMLin( $request, ForceArray => ['ID', 'TAG', 'USERID'], SuppressEmpty => 1 ) or die;
 	my ($id, $name, $userid, $checksum, $tag);
 	  
+#database ids criteria
   if( $parsed_request->{ID} ){
   	$id .= ' AND';
 		$id .= ' hardware.ID IN('.join(',', @{ $parsed_request->{ID} }).')';
 	}
-  
+#tag criteria
 	if( $parsed_request->{TAG} ){
 		s/^(.*)$/\"$1\"/ for @{ $parsed_request->{TAG} };
 		$tag .= ' AND';
 		$tag .= ' accountinfo.TAG IN('.join(',', @{ $parsed_request->{TAG} }).')';
 	}
-	
+#checksum criteria (only positive "&" will match
 	if( $parsed_request->{CHECKSUM} ){
 		$checksum = ' AND ('.$parsed_request->{CHECKSUM}.' & hardware.CHECKSUM)';
 	}
-
+#associated user criteria
 	if( $parsed_request->{USERID} ){
 		s/^(.*)$/\"$1\"/ for @{ $parsed_request->{USERID} };
 		$userid .= ' AND';
 		$userid .= ' hardware.USERID IN('.join(',', @{ $parsed_request->{USERID} } ).')';
 	}
-  
+#generate sql string
   my $search_string = "SELECT DISTINCT hardware.ID FROM hardware,accountinfo WHERE hardware.ID=accountinfo.HARDWARE_ID $id $name $userid $checksum $tag";
-	
+#play it	
 	my $sth = get_sth($search_string);
-	
+#get ids
 	while( my $row = $sth->fetchrow_hashref() ){
-		push @computers, $row->{ID};
+		push @{$computers}, $row->{ID};
 	}
+#destroy request object
   $sth->finish();
-	return @computers;
 }
 
 # Database connection
