@@ -14,7 +14,7 @@ use Apache::Ocsinventory::Interface::Internals;
 use strict;
 
 sub get_computers_V1{
-	shift;
+	my $class = shift;
 # Xml request
 	my $request = shift;
 	my %build_functions = (
@@ -45,6 +45,28 @@ sub get_computers_V1{
 	}
 # Send
 	return(@result);
+}
+
+# Read a general config parameter
+# If a value is provided, set it to given parameters
+# If only a tvalue is given, set ivalue to NULL
+sub ocs_config{
+	my $class = shift;
+	my ($key, $value) = @_;
+	return undef unless $key;
+	ocs_config_write( $key, $value ) if defined($value);
+	return ocs_config_read( $key );
+}
+# Get a software dictionnary word
+sub get_dico_soft_element{
+	my $class = shift;
+	my $word = shift;
+	return get_dico_soft_extracted( $word );
+}
+# Get ipdiscover network device(s)
+sub network_devices{
+	my $class = shift;
+	
 }
 1;
 

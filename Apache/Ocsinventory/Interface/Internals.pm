@@ -19,7 +19,14 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / search_engine build_xml_inventory build_xml_meta /;
+our @EXPORT = qw / 
+	search_engine 
+	build_xml_inventory 
+	build_xml_meta 
+	ocs_config_write
+	ocs_config_read
+	get_dico_soft_extracted
+/;
 
 sub search_engine{
 # Available search engines
@@ -155,4 +162,69 @@ sub get_table_pk{
 	return ($section eq 'hardware')?'ID':'HARDWARE_ID';
 }
 
+# Return a config value
+sub ocs_config_read{
+	my $key = shift;
+	my $sth = get_sth('SELECT IVALUE,TVALUE FROM config WHERE NAME=?', $key);
+	unless($sth->rows){
+		$sth->finish();
+		return undef;	
+	}
+	my ($i,$t) = $sth->fetchrow_array();
+	$sth->finish();
+	return defined($i)?$i:$t;
+}
+
+# Set a config value in "config" table
+# If ocs GUI is not used,
+# you have to change parameters in ocsinventory.conf
+sub ocs_config_write{
+	my( $key, $value ) = @_;
+	my @parameters_t = (qw//);
+	my @parameters_i = (qw/ 
+		FREQUENCY
+		PROLOG_FREQ
+		DEPLOY
+		TRACE_DELETED
+		AUTO_DUPLICATE_LVL
+		LOGLEVEL
+		INVENTORY_DIFF
+		INVENTORY_TRANSACTION
+		PROXY_REVALIDATE_DELAY
+		IPDISCOVER
+		IPDISCOVER_MAX_ALIVE
+		REGISTRY
+		UPDATE
+		DOWNLOAD
+		DOWNLOAD_FRAG_LATENCY
+		DOWNLOAD_CYCLE_LATENCY
+		DOWNLOAD_PERIOD_LATENCY
+		DOWNLOAD_TIMEOUT
+	/);
+	
+	my $type='TVALUE';
+	$type='IVALUE' if grep /$key/,@parameters_i;
+	get_sth("UPDATE config SET ".$type."=? WHERE NAME=?", $value, $key )->finish();
+}
+
+# Return software name alias
+sub get_dico_soft_extracted{
+	my $extracted = shift;
+	my $sth = get_sth('SELECT FORMATTED FROM dico_soft WHERE EXTRACTED=?', $extracted);
+	unless($sth->rows){
+		$sth->finish();
+		return undef;	
+	}
+	my ($formatted) = $sth->fetchrow_array;
+	$sth->finish();
+	return $formatted;
+}
 1;
+
+
+
+
+
+
+
+
