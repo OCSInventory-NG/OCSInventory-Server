@@ -95,6 +95,7 @@ sub get_sth {
 sub build_xml_inventory {
 	my ($computer, $checksum) = @_;
 	my %xml;
+	my @special_sections = qw/ accountinfo /;
 # Whole inventory by default
 	$checksum = CHECKSUM_MAX_VALUE unless $checksum=~/\d+/;
 # Build each section using ...standard_section
@@ -102,6 +103,10 @@ sub build_xml_inventory {
 		if( ($checksum & $data_map{$_}->{mask} ) ){
 			&build_xml_standard_section($computer, \%xml, $_) or die;
 		}
+	}
+# Accountinfos
+	for( @special_sections ){
+		&build_xml_special_section($computer, \%xml, $_) or die;
 	}
 # Return the xml response to interface
 	return XML::Simple::XMLout( \%xml, 'RootName' => 'COMPUTER' ) or die;
@@ -155,6 +160,25 @@ sub build_xml_standard_section{
 	$xml_ref->{$section}=[ @tmp ];
 	@tmp = ();
 	$sth->finish;
+}
+
+# For non-standard sections
+sub build_xml_special_section {
+	my ($id, $xml_ref, $section) = @_;
+# Accountinfos retrieving
+	if($section eq 'accountinfo'){
+		my %element;
+		my @tmp;
+	# Request database
+		my $sth = get_sth("SELECT * FROM accountinfo WHERE HARDWARE_ID=?", $id);
+	# Build data structure...
+		my $row = $sth->fetchrow_hashref();
+		for( keys( %$row ) ){
+			push @tmp, { Name => $_ ,  content => $row->{ $_ } };
+		}
+		$xml_ref->{'ACCOUNTINFO'}{'ENTRY'} = [ @tmp ];
+		$sth->finish;
+	}
 }
 # Return the id field of an inventory section
 sub get_table_pk{
