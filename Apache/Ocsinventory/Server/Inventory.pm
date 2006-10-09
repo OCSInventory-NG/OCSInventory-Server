@@ -161,6 +161,8 @@ sub _hardware{
 	my $base = $result->{CONTENT}->{HARDWARE};
 	my $ua = _get_http_header('User-agent', $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'});
 	# We replace all data but quality and fidelity. The last come becomes the last date.
+	my $userid = '';
+	$userid = "USERID=".$dbh->quote($base->{USERID})."," if( $base->{USERID}!~/(system|localsystem)/i );
 
 $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
 		LASTDATE=NOW(), 
@@ -178,7 +180,7 @@ $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).",
 		SWAP=".(defined($base->{SWAP})?$base->{SWAP}:0).",
 		IPADDR=".$dbh->quote($base->{IPADDR}).",
 		ETIME=".$dbh->quote($base->{ETIME}).",
-		USERID=".$dbh->quote($base->{USERID}).",
+		$userid
 		TYPE=".(defined($base->{TYPE})?$base->{TYPE}:0).",
 		DESCRIPTION=".$dbh->quote($base->{DESCRIPTION}).",
 		WINCOMPANY=".$dbh->quote($base->{WINCOMPANY}).",
