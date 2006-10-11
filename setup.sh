@@ -735,7 +735,7 @@ then
     echo
     echo "Fixing Communication server log directory files permissions."
     echo "Fixing Communication server log directory permissions" >> ../setup.log
-    chown -R root:$APACHE_GROUP $OCS_COM_SRV_LOG >> ../setup.log 2>&1
+    chown -R $APACHE_USER:$APACHE_GROUP $OCS_COM_SRV_LOG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
         echo "*** ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
@@ -751,7 +751,7 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    chmod -R o-rwx $OCS_COM_SRV_LOG >> ../setup.log 2>&1
+    chmod -R o-w $OCS_COM_SRV_LOG >> ../setup.log 2>&1
     if [ $? != 0 ]
     then
         echo "*** ERROR: Unable to set log directory permissions, please look at error in setup.log and fix !"
