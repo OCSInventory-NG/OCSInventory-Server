@@ -16,24 +16,20 @@ BEGIN{
 			require Apache::Ocsinventory::Server::Modperl1;
 			Apache::Ocsinventory::Server::Modperl1->import();
 			require SOAP::Transport::HTTP;
-			SOAP::Transport::HTTP->import();
-			use constant SERVER => SOAP::Transport::HTTP::Apache;
+			our $server = SOAP::Transport::HTTP::Apache->dispatch_to('Apache::Ocsinventory::Interface');
 		}
 		elsif( $ENV{OCS_MODPERL_VERSION}==2 ){
 			require Apache::Ocsinventory::Server::Modperl2;
 			Apache::Ocsinventory::Server::Modperl2->import();
 			require SOAP::Transport::HTTP2;
-			SOAP::Transport::HTTP2->import();
-			use constant SERVER => SOAP::Transport::HTTP2::Apache;
+			our $server = SOAP::Transport::HTTP2::Apache->dispatch_to('Apache::Ocsinventory::Interface');
 		}
-		our $server = SERVER
-			-> dispatch_to('Apache::Ocsinventory::Interface');
 	}
 }
 
 sub handler {
 	our $apache_req = $_[0];
-	#return APACHE_FORBIDDEN unless $ENV{WEB_SERVICE_ENABLE};
+	return APACHE_FORBIDDEN unless $ENV{OCS_OPT_WEB_SERVICE_ENABLED};
 	$server->handler(@_);
 }
 1;
