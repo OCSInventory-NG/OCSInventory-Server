@@ -26,6 +26,8 @@ our @EXPORT = qw /
 	ocs_config_write
 	ocs_config_read
 	get_dico_soft_extracted
+	get_history_by_id
+	clear_history_by_id
 /;
 
 sub search_engine{
@@ -174,6 +176,7 @@ sub build_xml_special_section {
 	# Build data structure...
 		my $row = $sth->fetchrow_hashref();
 		for( keys( %$row ) ){
+			next if $_ eq get_table_pk('accountinfo');
 			push @tmp, { Name => $_ ,  content => $row->{ $_ } };
 		}
 		$xml_ref->{'ACCOUNTINFO'}{'ENTRY'} = [ @tmp ];
@@ -242,6 +245,43 @@ sub get_dico_soft_extracted{
 	my ($formatted) = $sth->fetchrow_array;
 	$sth->finish();
 	return $formatted;
+}
+
+# To get the computer's history
+sub get_history_by_id {
+	my( $id, $begin ) = @_;
+	my @tmp;
+# Max responses
+	my $max_event = 100;
+# Offset the result
+	$begin=0 if !defined($begin);
+	my $sql = "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ".($id eq '*'?"":"WHERE DELETED=?")." ORDER BY DATE LIMIT $begin,$max_event";
+	my $sth = ($id eq '*')?get_sth( $sql ):get_sth( $sql,$id );
+	
+	while( my $row = $sth->fetchrow_hashref() ){
+		push @tmp, {
+				'DELETED' => [ $row->{'DELETED'} ],
+				'DATE' => [ $row->{'DATE'} ],
+				'EQUIVALENT' => [ $row->{'EQUIVALENT'} ]
+		}
+	}
+	$sth->finish();
+# Send XML. Warning: It is possible to have more than one event for one deviceid
+# Example: Two different setuop on the same computer(A->B,B->A...etc)
+	return XML::Simple::XMLout( {'EVENT' => \@tmp} , RootName => 'EVENTS' );
+}
+
+sub clear_history_by_id {
+	my( $id, $limit ) = @_;
+	my $current = 0;
+	$limit = 100 unless $limit;
+	my $sth = get_sth('SELECT * FROM deleted_equiv where DELETED=? ORDER BY DATE', $id);
+	while( my $row = $sth->fetchrow_hashref() ) {
+		last if $current>$limit;
+		get_sth('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT=?', $row->{'DELETED'}, $row->{'DATE'}, $row->{'EQUIVALENT'})->finish();
+		$current++;
+	}
+	return 1;
 }
 1;
 

@@ -44,7 +44,7 @@ sub get_computers_V1{
 			push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM});
 	}
 # Send
-	return(@result);
+	return "<COMPUTERS>\n", @result, "</COMPUTERS>\n";
 }
 
 # Read a general config parameter
@@ -59,14 +59,25 @@ sub ocs_config{
 }
 # Get a software dictionnary word
 sub get_dico_soft_element{
-	my $class = shift;
-	my $word = shift;
+	my( $class, $word ) = @_;
 	return get_dico_soft_extracted( $word );
 }
 # Get ipdiscover network device(s)
 sub network_devices{
 	my $class = shift;
 	
+}
+
+# Get computer's history
+sub get_history{
+	my( $class, $id, $begin ) = @_;
+	return get_history_by_id( $id, $begin );
+}
+
+# Clear computer's history
+sub clear_history{
+	my( $class, $id, $limit ) = @_;
+	return clear_history_by_id( $id, $limit );
 }
 1;
 
