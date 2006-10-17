@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/13/2005
+//Modified on 10/17/2006
 
 error_reporting(E_ALL & ~E_NOTICE);
 set_time_limit(0);
@@ -42,6 +42,12 @@ if( isset($_GET["first"] )) {
 <TITLE>OCS Inventory</TITLE>
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html<? 
+	if($l->g(0)) 
+		echo "; charset=".$l->g(0).";";
+	else
+		echo "; charset=ISO-8859-1;";	
+?>">
 <LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
 <? incPicker(); ?>
 <script language='javascript'>

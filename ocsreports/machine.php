@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/13/2005
+//Modified on 10/17/2006
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
@@ -73,7 +73,13 @@ echo "\t{\n";
 echo "\t\twindow.open(\"./machine.php?action=MAJ_donnees&sessid=\" +sessid+ \"&systemid=\" + systemid, \"_self\");\n";
 echo "\t}\n";
 echo "</script>\n";
-echo "</head>\n";
+echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html";
+if($l->g(0)) 
+	echo ";charset=".$l->g(0).";";
+else
+	echo ";charset=ISO-8859-1;";
+
+echo "\"></head>\n";
 echo "<body style='font: Tahoma' alink='#000000' vlink='#000000' link='#000000' bgcolor='#ffffff' text='#000000'>\n";
 
 // COMPUTER SUMMARY
