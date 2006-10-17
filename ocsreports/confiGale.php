@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 9/30/2005
+//Modified on 10/17/2006
 require ('fichierConf.class.php');
 printEnTete($l->g(107));
 
@@ -122,6 +122,7 @@ function showOption($nme, $val) {
 		case "DOWNLOAD":
 		case "INVENTORY_DIFF":
 		case "INVENTORY_TRANSACTION":
+		case "WEB_SERVICE_ENABLED":
 			echo "<table><tr><td align='left'><input type='radio' name='$nme' value='ON' ".($val?"checked":"").">ON</td></tr>
 			<tr><td align='left'><input type='radio' name='$nme' value='OFF' ".($val?"":"checked").">OFF</td></tr></table>";
 			break;
