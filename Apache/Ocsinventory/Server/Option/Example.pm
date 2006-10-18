@@ -87,7 +87,7 @@ sub example_prolog_read{
 sub example_prolog_resp{
 # Enables you to add tags to xml prolog response
 # Commonly used to ask an agent module to do something
-	return;
+	return 1;
 }
 
 sub example_pre_inventory{
@@ -107,7 +107,7 @@ sub example_pre_inventory{
 sub example_post_inventory{
 # This handler is useful to read "extra section" of an inventory
 # Commonly used to read data added to inventory by an agent module
-	return;
+	return 1;
 }
 
 sub example_handler{
@@ -115,12 +115,12 @@ sub example_handler{
 # It is designed to implement your own requests by using agent modules
 # You return from here directly to apache
 # Then, you must use the apache constants redefined in MODPERL1 or 2 .pm
-	return;
+	return 1;
 }
 
 sub example_duplicate{
 # Useful to manage duplicate with your own tables/structures when a computer is evaluated as a duplicate and replaced
-	return;
+	return 1;
 }
 1;
 

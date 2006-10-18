@@ -167,7 +167,7 @@ sub _duplicate_replace{
 	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
 					
 	# We keep the old quality and fidelity
-	my $request=$dbh->prepare('SELECT QUALITY,FIDELITY,CHECKSUM FROM hardware WHERE ID=?');
+	my $request=$dbh->prepare('SELECT QUALITY,FIDELITY,CHECKSUM,USERID FROM hardware WHERE ID=?');
 	$request->execute($device);
 	
 	# If it does not exist
@@ -179,13 +179,15 @@ sub _duplicate_replace{
 	my $quality = $row->{'QUALITY'};
 	my $fidelity = $row->{'FIDELITY'};
 	my $checksum = $row->{'CHECKSUM'};
+	my $userid = $row->{'USERID'};
 	$request->finish;
 	
 	# Keeping the accountinfos and the devices options
 	unless(	$dbh->do("	UPDATE hardware SET QUALITY=".$dbh->quote($quality).",
 				FIDELITY=".$dbh->quote($fidelity).",
-				CHECKSUM=(".(defined($checksum)?$checksum:CHECKSUM_MAX_VALUE)."|".(defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM})?$result->{CONTENT}->{HARDWARE}->{CHECKSUM}:CHECKSUM_MAX_VALUE).") 
-				WHERE ID=".$DeviceID)
+				CHECKSUM=(".(defined($checksum)?$checksum:CHECKSUM_MAX_VALUE)."|".(defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM})?$result->{CONTENT}->{HARDWARE}->{CHECKSUM}:CHECKSUM_MAX_VALUE)."),
+				USERID=".$dbh->quote($userid)." 
+				 WHERE ID=".$DeviceID)
 		and
 		$dbh->do('DELETE FROM accountinfo WHERE HARDWARE_ID=?', {}, $DeviceID)
 		and
