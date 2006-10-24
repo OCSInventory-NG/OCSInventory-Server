@@ -28,7 +28,6 @@ echo "<br><center><input type='submit' value=\"".$l->g(455)."\" name='del'></for
 		
 		global $_GET;
 		if( isset($_GET["systemid"])) {
-			echo "del ".$_GET["systemid"]."<br>";
 			deleteDid( $_GET["systemid"] );
 		}
 		else {
@@ -36,7 +35,6 @@ echo "<br><center><input type='submit' value=\"".$l->g(455)."\" name='del'></for
 			if( ! $res = @mysql_query( $lareq, $_SESSION["readServer"] ))
 				return false;
 			while( $val = @mysql_fetch_array($res)) {
-				echo "del ".$val["h.id"]."<br>";
 				deleteDid( $val["h.id"] );
 			}
 		}
