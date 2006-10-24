@@ -542,3 +542,6 @@ permitidos)
 551 This package name already exists
 552 <i>You must make a computer search, and then click 'deploy' to affect these activated packages<br>You may also affect a package to a single computer by using the 'customization' tab of any computer details</i>.
 553 Windows key
+554 Monitor: serial
+555 Monitor: manufacturer
+556 Monitor: caption

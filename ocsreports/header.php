@@ -1,7 +1,7 @@
 <?
 //====================================================================================
 // OCS INVENTORY REPORTS
-// Copyleft Pierre LEMMET 2005
+// Copyleft Pierre LEMMET 2006
 // Web: http://ocsinventory.sourceforge.net
 //
 // This code is open source and may be copied and modified as long as the source

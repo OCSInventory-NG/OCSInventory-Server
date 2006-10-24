@@ -8,10 +8,10 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 10/21/2005
+//Modified on 10/24/2006
 error_reporting(E_ALL & ~E_NOTICE);
 include_once('req.class.php');
-
+@session_start();
 // First installation checking
 if( (!$fconf=@fopen("dbconfig.inc.php","r")) || (!function_exists('session_start')) || (!function_exists('mysql_connect'))) {
 	include('install.php');
@@ -20,7 +20,7 @@ if( (!$fconf=@fopen("dbconfig.inc.php","r")) || (!function_exists('session_start
 else
 	fclose($fconf);
 //
-@session_start();
+
 $showingReq = false;
 foreach( $_GET as $key=>$val) {
 	$_GET["key"] = urldecode($val);
@@ -204,6 +204,9 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		
 	echo "<center><span id='wait'><h3><font color=red>".$l->g(332)."</font></h3></span></center>";
 	flush();
+	if( $_GET["multi"] != 3 )
+		unset( $_SESSION["forcedRequest"] );
+		
 	switch($_GET["multi"]) {
 		case 1: include ('multicritere.php');	break;
 		case 3: include ('ipdiscover.php');	break;

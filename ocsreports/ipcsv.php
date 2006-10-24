@@ -8,13 +8,12 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/13/2005
+//Modified on 10/24/2006
 include("req.class.php");
 include("preferences.php");
 
 if( isset($_SESSION["forcedRequest"] )) {
 	$lareq = $_SESSION["forcedRequest"];
-	unset( $_SESSION["forcedRequest"] );
 }
 else
 	$lareq = $_SESSION["storedRequest"]->getFullRequest();

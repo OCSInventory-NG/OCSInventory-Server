@@ -8,15 +8,19 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 12/07/2005
+//Modified on 10/24/2006
 include("preferences.php");
 
 if($_GET["o"]&&$_GET["v"]&&$_GET["n"]&&$_GET["dl"])
 {
 	$dlQuery="SELECT content FROM ";
-	if( $_GET["n"] == "ocsagent.exe" ) {
+	if( strtolower($_GET["n"]) == "ocsagent.exe" ) {
 		$dlQuery .= "deploy WHERE name='".$_GET["n"]."'";
 		$fname = "ocsagent.exe";
+	}
+	else if( strtolower($_GET["n"]) == "ocspackage.exe" ) {
+		$dlQuery .= "deploy WHERE name='".$_GET["n"]."'";
+		$fname = "ocspackage.exe";
 	}
 	else {
 		$dlQuery .= "files WHERE name='".$_GET["n"]."' AND os='".$_GET["o"]."' AND version='".$_GET["v"]."'";

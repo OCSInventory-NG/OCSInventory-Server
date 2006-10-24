@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 09/03/2006
+//Modified on 10/24/2006
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -591,7 +591,7 @@ function getCount( $req ) {
 		$reqCount .= " WHERE ".$req->where;
 		
 	if($ech) echo "<br><font color='red'><b>$reqCount</b></font><br><br>";
-	$resCount = mysql_query($reqCount);
+	$resCount = mysql_query($reqCount, $_SESSION["readServer"]);
 	$valCount = mysql_fetch_array($resCount);
 	
 	return $valCount["cpt"];
