@@ -20,14 +20,6 @@ require Exporter;
 our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / 
-	search_engine 
-	build_xml_inventory 
-	build_xml_meta 
-	ocs_config_write
-	ocs_config_read
-	get_dico_soft_extracted
-	get_history_by_id
-	clear_history_by_id
 /;
 
 sub search_engine{
@@ -35,7 +27,7 @@ sub search_engine{
 	my %search_engines = (
 		'first'	=> \&engine_first
 	);
-	&{ $search_engines{ $_[1]->{ENGINE} } }( @_ );
+	&{ $search_engines{ (lc $_[1]->{ENGINE}) } }( @_ );
 }
 
 sub engine_first {
@@ -85,7 +77,7 @@ sub database_connect{
 		$Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD')
 	);
 }
-# Process the sql requests
+# Process the sql requests (prepare)
 sub get_sth {
 	my ($sql, @values) = @_;
 	my $dbh = database_connect();
@@ -93,11 +85,22 @@ sub get_sth {
 	$request->execute( @values ) or die;
 	return $request;
 }
+
+# Process the sql requests (do)
+sub do_sql {
+	my ($sql, @values) = @_;
+	my $dbh = database_connect();
+	return $dbh->do( $sql, {}, @values );
+}
+
 # Build whole inventory (sections specified using checksum)
 sub build_xml_inventory {
-	my ($computer, $checksum) = @_;
+	my ($computer, $checksum, $wanted) = @_;
 	my %xml;
-	my @special_sections = qw/ accountinfo /;
+	my %special_sections = (
+		accountinfo => 1,
+ 		dico_soft => 2
+	);
 # Whole inventory by default
 	$checksum = CHECKSUM_MAX_VALUE unless $checksum=~/\d+/;
 # Build each section using ...standard_section
@@ -107,8 +110,8 @@ sub build_xml_inventory {
 		}
 	}
 # Accountinfos
-	for( @special_sections ){
-		&build_xml_special_section($computer, \%xml, $_) or die;
+	for( keys( %special_sections ) ){
+		&build_xml_special_section($computer, \%xml, $_) if $special_sections{$_} & $wanted;
 	}
 # Return the xml response to interface
 	return XML::Simple::XMLout( \%xml, 'RootName' => 'COMPUTER' ) or die;
@@ -118,7 +121,7 @@ sub build_xml_meta {
 	my $id = shift;
 	my %xml;
 # For mapped fields
-	my @mapped_fields = qw / DEVICEID LASTDATE LASTCOME CHECKSUM DATABASEID/;
+	my @mapped_fields = qw / NAME TAG DEVICEID LASTDATE LASTCOME CHECKSUM DATABASEID/;
 # For others
 	my @other_fields = qw //;
 	
@@ -128,9 +131,12 @@ sub build_xml_meta {
 			hardware.LASTDATE AS LASTDATE,
 			hardware.LASTCOME AS LASTCOME,
 			hardware.checksum AS CHECKSUM,
-			hardware.ID AS DATABASEID
-		FROM hardware 
-		WHERE ID=?
+			hardware.ID AS DATABASEID,
+			hardware.NAME AS NAME,
+			accountinfo.TAG AS TAG
+		FROM hardware,accountinfo
+		WHERE accountinfo.HARDWARE_ID=hardware.ID
+		AND ID=?
 	/;
 	my $sth = get_sth( $sql_str, $id);
 	while( my $row = $sth->fetchrow_hashref ){
@@ -172,7 +178,7 @@ sub build_xml_special_section {
 		my %element;
 		my @tmp;
 	# Request database
-		my $sth = get_sth("SELECT * FROM accountinfo WHERE HARDWARE_ID=?", $id);
+		my $sth = get_sth('SELECT * FROM accountinfo WHERE HARDWARE_ID=?', $id);
 	# Build data structure...
 		my $row = $sth->fetchrow_hashref();
 		for( keys( %$row ) ){
@@ -182,6 +188,17 @@ sub build_xml_special_section {
 		$xml_ref->{'ACCOUNTINFO'}{'ENTRY'} = [ @tmp ];
 		$sth->finish;
 	}
+	elsif($section eq 'dico_soft'){
+		my @tmp;
+		my $sth = get_sth('SELECT dico_soft.FORMATTED AS FORMAT FROM softwares,dico_soft WHERE HARDWARE_ID=? AND EXTRACTED=NAME', $id);
+		while( my $row = $sth->fetchrow_hashref() ){
+			push @tmp, $row->{FORMAT};
+		}
+		$xml_ref->{'DICO_SOFT'}{WORD} = [ @tmp ];
+		$sth->finish;
+	}
+	
+	
 }
 # Return the id field of an inventory section
 sub get_table_pk{
@@ -248,16 +265,11 @@ sub get_dico_soft_extracted{
 }
 
 # To get the computer's history
-sub get_history_by_id {
-	my( $id, $begin ) = @_;
+sub get_history_events {
+	my( $begin, $num ) = @_;
 	my @tmp;
-# Max responses
-	my $max_event = 100;
-# Offset the result
-	$begin=0 if !defined($begin);
-	my $sql = "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ".($id eq '*'?"":"WHERE DELETED=?")." ORDER BY DATE LIMIT $begin,$max_event";
-	my $sth = ($id eq '*')?get_sth( $sql ):get_sth( $sql,$id );
-	
+	my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE LIMIT $begin,$num" );
+		
 	while( my $row = $sth->fetchrow_hashref() ){
 		push @tmp, {
 				'DELETED' => [ $row->{'DELETED'} ],
@@ -266,22 +278,22 @@ sub get_history_by_id {
 		}
 	}
 	$sth->finish();
-# Send XML. Warning: It is possible to have more than one event for one deviceid
-# Example: Two different setuop on the same computer(A->B,B->A...etc)
 	return XML::Simple::XMLout( {'EVENT' => \@tmp} , RootName => 'EVENTS' );
 }
 
-sub clear_history_by_id {
-	my( $id, $limit ) = @_;
-	my $current = 0;
-	$limit = 100 unless $limit;
-	my $sth = get_sth('SELECT * FROM deleted_equiv where DELETED=? ORDER BY DATE', $id);
+sub clear_history_events {
+	my( $begin, $num ) = @_;
+	my $sth = get_sth( "SELECT * FROM deleted_equiv ORDER BY DATE LIMIT $begin,$num" );
 	while( my $row = $sth->fetchrow_hashref() ) {
-		last if $current>$limit;
-		get_sth('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT=?', $row->{'DELETED'}, $row->{'DATE'}, $row->{'EQUIVALENT'})->finish();
-		$current++;
+		do_sql('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT=?', $row->{'DELETED'}, $row->{'DATE'}, $row->{'EQUIVALENT'}) or die;
 	}
 	return 1;
+}
+
+sub reset_checksum {
+	my( $checksum, $ref ) = @_;
+	my $where = join(',', @$ref);
+	return do_sql("UPDATE hardware SET CHECKSUM=? WHERE ID IN ($where)", $checksum);
 }
 1;
 

@@ -18,8 +18,8 @@ sub get_computers_V1{
 # Xml request
 	my $request = shift;
 	my %build_functions = (
-		'INVENTORY' => \&build_xml_inventory,
-		'META' => \&build_xml_meta
+		'INVENTORY' => \&Apache::Ocsinventory::Interface::Internals::build_xml_inventory,
+		'META' => \&Apache::Ocsinventory::Interface::Internals::build_xml_meta
 	);
 		
 # Returned values
@@ -30,7 +30,7 @@ sub get_computers_V1{
 	my $max_responses = 100;
 	my @ids;
 # Call search_engine stub
-	search_engine($request, $parsed_request, \@ids);
+	Apache::Ocsinventory::Interface::Internals::search_engine($request, $parsed_request, \@ids);
 # Generate boundaries
 	my $begin = $parsed_request->{'BEGIN'} > @ids ? return undef : $parsed_request->{'BEGIN'};
 	my $end = $#ids;
@@ -41,7 +41,7 @@ sub get_computers_V1{
 	
 # Generate xml responses
 	for(@ids[$begin..$end]){
-			push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM});
+			push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM}, $parsed_request->{WANTED});#Wanted=>special sections bitmap
 	}
 # Send
 	return "<COMPUTERS>\n", @result, "</COMPUTERS>\n";
@@ -50,34 +50,40 @@ sub get_computers_V1{
 # Read a general config parameter
 # If a value is provided, set it to given parameters
 # If only a tvalue is given, set ivalue to NULL
-sub ocs_config{
+sub ocs_config_V1{
 	my $class = shift;
 	my ($key, $value) = @_;
 	return undef unless $key;
-	ocs_config_write( $key, $value ) if defined($value);
-	return ocs_config_read( $key );
+	Apache::Ocsinventory::Interface::Internals::ocs_config_write( $key, $value ) if defined($value);
+	return Apache::Ocsinventory::Interface::Internals::ocs_config_read( $key );
 }
 # Get a software dictionnary word
-sub get_dico_soft_element{
+sub get_dico_soft_element_V1{
 	my( $class, $word ) = @_;
-	return get_dico_soft_extracted( $word );
+	return Apache::Ocsinventory::Interface::Internals::get_dico_soft_extracted( $word );
 }
 # Get ipdiscover network device(s)
-sub network_devices{
-	my $class = shift;
-	
-}
+# sub network_devices_V1{
+# 	my $class = shift;
+# 	
+# }
 
 # Get computer's history
-sub get_history{
-	my( $class, $id, $begin ) = @_;
-	return get_history_by_id( $id, $begin );
+sub get_history_V1{
+	my( $class, $begin, $num ) = @_;
+	return Apache::Ocsinventory::Interface::Internals::get_history_events( $begin, $num );
 }
 
 # Clear computer's history
-sub clear_history{
-	my( $class, $id, $limit ) = @_;
-	return clear_history_by_id( $id, $limit );
+sub clear_history_V1{
+	my( $class, $begin, $num ) = @_;
+	return Apache::Ocsinventory::Interface::Internals::clear_history_events( $begin, $num );
+}
+
+sub reset_checksum_V1 {
+	my $class = shift;
+	my $checksum = shift;
+	return Apache::Ocsinventory::Interface::Internals::reset_checksum( $checksum, \@_ );
 }
 1;
 
