@@ -182,6 +182,10 @@ sub _duplicate_replace{
 	my $userid = $row->{'USERID'};
 	$request->finish;
 	
+	# Current userid or previous ?
+	if( $result->{CONTENT}->{HARDWARE}->{USERID}!~/system|localsystem/ ){
+ 		$userid = $result->{CONTENT}->{HARDWARE}->{USERID};
+	}
 	# Keeping the accountinfos and the devices options
 	unless(	$dbh->do("	UPDATE hardware SET QUALITY=".$dbh->quote($quality).",
 				FIDELITY=".$dbh->quote($fidelity).",
