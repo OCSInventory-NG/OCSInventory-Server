@@ -597,7 +597,6 @@ INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Number of cycles
 INSERT INTO `config` VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Time between two downloads (seconds)');
 INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Time between two periods (seconds)');
 INSERT INTO `config` VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Validity of a package (in days)');
-INSERT INTO `config` VALUES ('WEB_SERVICE_ENABLED', 0, '', 'Activate or not soap service');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
