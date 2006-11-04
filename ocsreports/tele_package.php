@@ -260,7 +260,7 @@
 	<br>
 	</span>
 	</td></tr>
-	<tr height='30px' bgcolor='white'><td><? echo $l->g(453); ?>:</td><td colspan='2'><select name='NOTIFY_CAN_DELAY' name='NEED_DONE_ACTION'><option value='0'><? echo $l->g(454); ?></option><option value='1'><? echo $l->g(455); ?></option></td></tr>
+	<tr height='30px' bgcolor='white'><td><? echo $l->g(453); ?>:</td><td colspan='2'><select id='NEED_DONE_ACTION' name='NEED_DONE_ACTION'><option value='0'><? echo $l->g(454); ?></option><option value='1'><? echo $l->g(455); ?></option></td></tr>
 	<tr height='30px' bgcolor='white'><td align='right' colspan='10'>				
 	<input type='hidden' id='digest_algo' name='digest_algo' value='MD5'>
 	<input type='hidden' id='digest_encod' name='digest_encod' value='Hexa'>
