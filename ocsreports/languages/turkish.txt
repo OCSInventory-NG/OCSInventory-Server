@@ -1,0 +1,447 @@
+2 Bütün Bilgiyarlar
+3 Bilgisayar ve Bilgisayar yazýlýmý...
+5 Sorumluluðum Altýndaki Birlik
+9 Arama ve Kriterler
+12 Etki deðeri
+13 Gönder
+17 Temsilci
+19 Yazýlým versiyonu
+20 Yazýlým
+23 Bilgisayar
+24 Kullanýcý
+25 Ýþletim sistemi
+26 Bellek
+27 Bellek Hýzý (MHz)
+28 Bilgisayar Sayýsý
+30 Arama
+31 Bir parametre
+32 Seçim
+33 Alan
+34 IP Adresi
+35 Bilgisayar Adý
+36 Seri Numarasý
+41 Yenile
+42 Sonuç yok
+43 Ana Mönü
+45 Boþ yer
+46 Son envanter
+48 Bilgisayar ayrýntýsý
+49 Adý
+50 Deðiþtir
+51 Yorumlar
+53 Taným
+54 Ýþlemci
+55 Sayý
+56 Yönetimsel Bilgi
+61 Video Kartý
+62 Önerilen
+63 Depo
+64 Yapýmcý
+65 Model
+66 Tür
+67 Disk Boyutu
+69 Editör
+70 Ata
+79 Yazýcý(s)
+80 Baþlýk
+81 Konum
+82 Að(s)
+83 Kapasite
+84 Arayüz
+85 Mektup
+86 Sistem Dosyalarý
+87 Toplam
+88 Boþ
+90 Sonuç(s)
+91 Giriþ Aleti
+92 Disk(s)
+93 Kontrol(s)
+94 Slot numarasý
+95 MAC adresi
+96 Güvenli
+97 Monitör(s)
+98 Dikkat,Sadece 8 seçim hakkýnýz var !
+99 Bilgisayar ayrýntýlarý
+103 Güncelle
+107 Biçim
+108 Kayýt Talebi
+111 Pencere izni
+113 Ýptal
+114 Kayýt
+115 Güncelle
+116 Ekle
+117 Kayýt
+119 Silmek istediðinizden eminmisiniz ID n° 
+122 sil
+129 Eþitler
+130 Baþka
+134 Veri tabanýna yeni bir dosya ekle
+135 Dikkat, Dosyayý tamamen siliyorsunuz!
+136 Ýndir
+137 Dosya
+168 Bu biçimlendirme dosyasý geçersiz (dosya  zip, pl veya unix binary olmalý)
+170 Ayný dosya zaten var !
+171 Dosyayý Sil
+172 Bu dosya hatalý!
+173 Temele eklenmedi
+174 Güvenlik
+175 Çoðalt
+176 Ips
+177 Birleþtirmede gereðinden fazla bilgisayar var.
+178 Etiket/ Number of PC repartition
+180 Kullanýcý kayýtlý deðil
+182 Bilgisayarlarýn belirli bir etiketi var
+183 Ýndir
+184 Bu dosya içermemekte\"Deðiþik versiyon\"
+185 Versin 1
+186 Bu dosya balkon dosya içermemekte
+187 Bu dosya geçerli sýkýþtýrma dosyasý deðil
+188 Geri
+189 En iki bilgisayar seçmelisiniz
+190 Rapor bilgisi:
+191 Silindi
+192 Gereksiz özet
+193 Sunucu Adý + Seri numarasý
+194 Sunucu Adý + Mac adresi
+195 Mac adresi+ Seri numarasý
+196 Yanlýzca sunucu adý
+197 yanlýzca serinumarasý
+198 Yanlýzca mac adresi
+199 Gereksiz
+200 Uygun görülen artýklardaki azalma miktarý
+201 Küçükler
+202 Büyükler
+203 Arasýnda
+204 Dýþarda
+205 Kullanýlabilir
+206 Kaydet
+207 Að Geçidi 
+208 Maske 
+209 BIOS Versiyon
+210 BIOS Tarihi
+211 Sistem kütüðü
+212 Anahtar Adý
+213 Anahtar Deðeri
+214 Bu sayfayý yazdýr
+215 Þifre Hatalý
+217 Þifre
+218 Acenta Verisoyu
+219 uninventoried Að arayüzü
+220 Silindi
+221 IP Toplantý Bilgisayarlarý
+222 Uyarý! Seçili tüm bilgisayarlar tek bir bilgisayara doðru birleþtiriliyor ! Eminmisiniz ?
+223 Danýþma
+224 Deðer
+225 Yönetici Bilgisi
+226 Rapor bilgisi tablosu baþarýyla silindi
+227 sütünü silmek istediðinizden eminmisiniz?
+228 Yeni bir yönetel bilgi giriþi
+229 Yazý(255)
+230 Tamsayý 
+231 Gerçek 
+232 Tarih
+233 Güncel bilgi
+234 Baþarýyla eklendi
+235 Kullanýcýlar
+236 Deðiþtire geç
+237 Yeni þifre
+238 Doðrulama
+239 Her bir alan doldu
+240 Þifreniz farklý
+241 Þifreniz baþarýyla deðiþtirildi
+242 Yönetici 
+243 Kullanýcý
+244 Yeni Bir kullanýcý
+245 Baþarýyla silindi
+246 Kullanýcýyý silmek istediðinizden eminmisiniz?
+247 MySql Oturumu aç
+248 MySql Þifresi
+249 MySql baðlantýsý kurulmadý. Lütfen geçerli oturumu giriþini yapýnýz/Devam.
+250 MySql Sunucu Adý
+251 Oturum Kapat
+252 Adý (seçiminiz)        	
+253 Sistem kütüðü 	
+254 Anahtar yolu (Ex: yazýlým\Mozilla)  	
+255 Anahtar adý okunacak (* tamamý)
+256 seçim
+257 Sistem kütüðü anahtarý
+258 Sistem kütüðü anahtarý deðeri
+259 Hata ,Bilgi girilemedi (Özel karakter kullanmayýnýz)
+260 Label file modification ok
+261 Label file deleted
+262 Type in a label
+263 Dosya etiketi biçimi
+264 Dosya etiketi yok
+265 Herhangi biri
+266 Geçersiz tarih
+267 dd/mm/yyyy
+268 Hýz
+269 %m/%d/%Y
+270 Modem(s)
+271 Yarýk(s)
+272 Baðlama noktasý(s)
+273 BIOS
+274 Ýþletim sistemi adý
+275 Ýþletim sistemi Versiyonu
+276 Tümdevre ailesi
+277 Versiyon
+278 sürücü
+279 Baðlama noktasý
+280 MIB tipi
+281 DHCP IP
+282 Að Geçidi
+283 Amaç
+284 BIOS Yapýmcýsý
+285 Deðiþik bir parametre seçiniz
+286 Hizmet paketi
+287 Yerele getir
+288 Yerele ithal et
+289 Að danýþmaný
+290 Ip sorgusu
+291 Uzman modu
+292 Ekle/ að aygýtý sil
+293 að aygýtý tipi
+294 Alt að isimleri
+295 Düzelte týkla
+296 Uid
+297 Adres defterine yazýlmadý
+298 Bütün alanlar dolu
+299 Geçersiz ip adresi (olmalý: x.x.x.x)
+300 Geçersiz mask: olmalý: x.x.x.x or xx (xx<32)
+301 Aða girildi
+302 Að silindi
+303 Alt að ekle
+304 Að adý
+305 Uid
+306 Alt að listesi
+307 Yeni bir tip ekle
+308 Tip adý
+309 Að aygýtý tipi
+310 Ip sayýsý daha az olmalý
+311 Sunucular
+312 IpDis
+313 Að geçidi bilgisayarlarý
+314 IpDiscover Að geçidi bilgisayarlarý
+315 Saldýran bilgisayarlar
+316 Alt að
+317 Analiz
+318 DNS Adý
+319 að analiz sonucu
+320 bu analiz zaten bitti
+321 gizli dosyalarý görmek istermisiniz ?
+322 Gizli Dosyalar için
+323 Oluþtur
+324 Sunucu deðerlendir
+325 Boþ
+326 Meske tipi yok
+327 Bilgisayar detaylarý
+328 Bulundu
+329 Stok
+330 NetBIOS adý
+331 Að numarasý
+332 Lütfen bekleyiniz...
+333 Yenir br að aygýtý ekle
+334 Að aygýtý listesi
+335 Aygýt tipi
+336 aygýt tanýmý
+337 Bu program hiçbir þeye gönderilemedi
+338 Sýnýrlý mod
+339 Bulmanýz gereken -util.pl (Linux only) Uzman modu için
+340 Göster
+341 Baþlatýlamadý, ayarlarýnýzý düzgün yapmalýsýnýz
+342 Diðer kullancýlarý kök dizine doðru bir þekilde yazmanýz gerekiyor.
+344 Hata
+345 Bu analiz þu anda çalýþýyor, Lütfen bir kaç saniye sonra tekrar deneyniz
+346 Önceki
+347 Sonraki
+348 Pencere kullanýcýsý
+349 Sütün ekle
+350 CPU tipi
+351 CPU mumarasý
+352 Son
+353 Nitelik
+354 Baðlýlýk
+355 Þirket
+356 sahip
+357 Kullanýcý acentasý
+358 Joker: ? (Bir karakter), * (Bir kaç karakter)
+359 Monitör seri
+360 Yapým  (haftasý/yýlý)
+362 Að
+363 Zaten var
+364 Bulundu
+365 Saldýrý bulundu
+366 Kimlik saptandý
+367 Að aygýtý
+368 Að kapalý
+369 sunuldu
+370 Yayýlma
+371 Bütün bilgisayarlar
+372Bilgisayar seçimi
+373 Kayýtlý kullanýcý
+374 Kayýtlý Kurum
+375 OCS NG Acenta versiyonu
+376 Bilgisayar kapalý. Lütfen bir kaç saniye sonra tekrar deneyiniz.
+377 Ýþlemci hýzý (Mhz)
+380 Sözlük
+381 Sayý
+382 Yazýlým adý
+383 Sayfa
+384 Tümünü Taþý
+385 Yeni kategori
+386 Veya
+387 Kategori bulundu
+388 Kategori 
+389 Hiç
+390 sölzük kategorisi
+391 Kategori adý
+392 sil
+393 Ara
+394 Arama Kategorisi
+395 Yazýlýmý her yerde ara
+396 Yeniden baþlat
+397 Kategoriye git
+398 Kategori listesi
+410 Tamamen
+411 Alanlar sadece Sayýlarý kapsamakta !
+412 Seçilebilir/Seçilemez the Sistem kütüðü anahtarý geçerli
+413 Seçilebilir/Seçilemez Otomatik güncelleme geçerli
+414 Seçilebilir/Seçilemez otomatik yayýlma geçerli
+415 Seçilebilir/Seçilemez the deletion logging functionality (needed by GLPI).
+416 Seçilebilir/Seçilemez the logging functionality.
+417 Seçilebilir/Seçilemez the automatic software distribution functionality.
+418 Seçilebilir/Seçilemez the differentiate inventories functionality.
+419 Maximum number of day before an ipdiscover computer is replaced.
+420 Automatic software distribution: see documentation.
+421 Automatic software distribution: see documentation.
+422 Automatic software distribution: see documentation.
+423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
+424 Maximum number of days before a package to be downloaded on a computer become obsolete.
+425 Max number of computers per gateway retrieving IP on the network.
+426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
+427 Defines criteria that must be equals for two computers to be automatically merged.
+428 Mevzilendir
+429 Frekans
+430 Küme yýðýný
+431 Etkinleþtir
+432 Non notified
+433 Affect
+434 paket kuruldu
+435 Yeni paket oluþtur
+436 Dosya açýlmýyor
+437 Paketiniz baþarýlý bir þekilde dizine oluþturuldu
+438 Yei paket oluþtur
+439 Protokol
+440 Öncelik
+441 Algoritma
+442 Kodlayýcý
+443 Hareket
+444 Komut
+445 yol
+446 Dosya adý
+447 User notifications
+448 Kullancýyý uyar
+449 Yazý
+450 Geri sayým
+451 Kullanýcý durduruldu
+452 Kullanýcý ertelendi
+453 Installation completion need user action
+454 Hayýr
+455 Evet
+456 Yürüt
+457 Stok
+458 Baþlat
+459 Geri sayýlacak sayý
+460 Unique identifier
+461 Digest
+462 Toplam boyut
+463 Parça boyutu (1 KB min)
+464 Parça numarasý
+465 Etkin paket
+466 Uyarý: Bilgi dosyasý bulunamadý
+467 Uyarý: Dosya parçasý bulunamadý
+468 Bu paketi aktif hale getirmek istediðinizden eminmisiniz?
+469 Paket aktif, Sanal yapýlsýnmý?
+470 Https url
+471 Parça url
+472 Hata: Parça silinmedi
+473 Zaman izni numarasý
+474 Zaman izni 10 dan uzun
+475 Zaman izni
+476 Veya Paketi elle etiki hale getir
+477 Paketi etkile
+478 Bilgisayar(lar)
+479 Bilgisayar seçilmedi
+480 Parçalar
+481 Aktif paketler
+482 Uyarý Bildiri
+483 Onay Baþarýlý
+484 Özel frakansý etkile
+485 Herzaman Bul
+486 Asla Bulma
+487 Özel
+488 Varsayýlan
+489 Harekete izin ver
+490 Harekete Asla izin verme
+491 Harekete herzaman izin ver aðda
+492 ELECTED IpDiscover of network
+493 Default (can be elected)
+494 Custom inventory frequency
+495 Inventoried every 
+496 Gün(s)
+497 Varsayýlan, Kullanýcý parametre frekansý.
+498 Paket
+499 Sunucu
+500 Masa üstü uygulamasý
+501 Paket ekle
+502 Seçim
+503 Güç seçimi
+504 Seçim yok
+505 Seçimler
+506 seçimler yok
+507 Al
+508 Alma
+509 Biraz
+510 Paket yok
+511 Ýkinci
+512 Yayýlma
+513 Oluþturmak
+514 Çalýþtýr
+515 Çalýþtýrýldý
+516 KB
+517 Bu seçim sadece sahte birbilgisayarda yapýlýr.
+518 Güç keþfi
+519 Bilgisayar zaten að için seçilmiþ.
+520 Bilgisayar zaten zorunlu að için bulundu
+521 Bilgisayar zaten zorunlu seçimde
+522 Standart bilgisayar
+523 Eski duruma geri dön
+524 Birdaha tekrar etkileme
+525 Eminmisiniz?
+526 Sahte bilgisayar yok
+527 Ocak
+528 Þubat
+529 Nisan
+531 Mayýs
+532 Haziran
+533 Temmuz
+534 Aðustos
+535 Eylül
+536 Ekim
+537 Kasým
+538 Aralýk
+539 Pazar
+540 Pazartesi
+541 Salý
+542 Çarþamba
+543 Perþembe
+544 Cuma
+545 Cumartesi
+546 Durum
+547 Hepsi
+548 Tümü ama baþarýlý
+549 Dosya(Ekle, client bilgisayara)
+550 File (Zorunlu deðil, komutu geçmiþe"Uygula" )
+551 Bu paketin ismi zaten var
+552 <i>Bilgisayar aramanýz gerekiyor, ve aktivasyon paketinin mevkisini týklayýn<br>Hem bir bilgisara hemde bir pakete etki ediyor</i>.
+553 Pencere anahtarý
