@@ -166,6 +166,7 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 			if( @stat("dico.php"))
 				tab($l->g(380),14);
 			
+			tab($l->g(17) , 8);
 			tab($l->g(107), 4);
 			tab($l->g(211), 5);
 		
@@ -213,6 +214,7 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		case 4:	include ('confiGale.php');	break;
 		case 5:	include ('reqRegistre.php');	break;
 		case 6:	include ('doublons.php');	break;
+		case 8:	include ('uploadfile.php');	break;
 		case 9:	include ('donAdmini.php');	break;
 		case 10: include ('users.php');	break;
 		case 11: include ('pass.php');	break;
