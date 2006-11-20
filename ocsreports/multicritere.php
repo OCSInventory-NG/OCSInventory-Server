@@ -71,11 +71,6 @@
 							
 			if(!isset($_POST["act_".$i]))
 				continue;
-		
-			/*VOIRif( ($_POST["chm_".$i]=="name") && $_POST["ega_".$i]==$l->g(129) ) {			
-				$laRequete.=", s.name AS \"".$l->g(20)."\"";
-			}*/			
-
 			$nb++;			
 		}
 
@@ -114,7 +109,7 @@
 			$regRes = null;
 			if( ($_POST["ega_".$i]==$l->g(129)||$_POST["ega_".$i]==$l->g(410)) && $_POST["chm_".$i]=="name" ) {
 				//$fromPrelim.=" softwares s".$logIndex.",";
-				$from .= " softwares s".$logIndex.",";
+				$from .= ($from!=""?",":"")." softwares s".$logIndex.",";
 				$logIndex++;
 			}
 			
