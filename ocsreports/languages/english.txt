@@ -1,5 +1,5 @@
 2 All computers
-3 Computers with sotfware...
+3 Computers with software...
 5 Unity codes under my responsibility
 9 Search with various criteria
 12 Tag value
@@ -40,7 +40,7 @@
 65 Model
 66 Type
 67 Disk size
-69 Editor
+69 Manufacturer
 70 Designation
 79 Printer(s)
 80 Caption
@@ -73,10 +73,10 @@
 117 Registry
 119 Do you really want to delete the ID n° 
 122 Delete
-129 EQUALS
-130 DIFFERENT
+129 CONTAINS
+130 NOT EQUAL
 134 Add a new file in the database
-135 Be careful, you're about to delete this file definitively !
+135 Be careful, you're about to delete this file permanently !
 136 Download
 137 File
 168 This format file is invalid (it must be zip, pl or unix binary)
@@ -88,7 +88,7 @@
 175 Duplicates
 176 Ips
 177 Merge redundant computers
-178 Tag / Number of PC repartition
+178 Number of PCs / Tag
 180 User not registered
 182 Computers having a given tag
 183 Download
@@ -109,8 +109,8 @@
 198 Mac address only
 199 Redundancy
 200 Corresponding relay decremented
-201 SMALLER
-202 BIGGER
+201 LESS THAN
+202 GREATER THAN
 203 BETWEEN
 204 OUT OF
 205 Enabled
@@ -227,8 +227,8 @@
 316 Subnet
 317 ANALYZE
 318 DNS name
-319 Network analyze results
-320 This analyze was already done on
+319 Network analysis results
+320 This analysis was already done on
 321 do you want to see cached data ?
 322 Data from cache
 323 generated on
@@ -252,7 +252,7 @@
 341 can't be launched, you must set execution rights
 342 You need to set writing rights on the root directory in order to use
 344 Error
-345 THIS ANALYZE IS CURRENTLY RUNNING, PLEASE TRY AGAIN IN A FEW MINUTES
+345 THIS ANALYSIS IS CURRENTLY RUNNING, PLEASE TRY AGAIN IN A FEW MINUTES
 346 BEFORE
 347 AFTER
 348 Windows user
@@ -265,7 +265,7 @@
 355 Company
 356 Owner
 357 User agent
-358 Jokers: ? (one character), * (several characters)
+358 Wildcards: ? (one character), * (multiple characters)
 359 Monitor serial
 360 Manufactured on (week/year)
 362 The network
@@ -284,7 +284,7 @@
 375 OCS NG Agent Vesion
 376 Computer locked. Please retry in a few minutes
 377 Processor Speed (Mhz)
-380 Dictionnary
+380 Dictionary
 381 Number
 382 Software name
 383 The page
@@ -303,7 +303,7 @@
 396 Reset
 397 Go to the category
 398 Categories list
-410 EXACTLY
+410 EQUALS
 411 Fields must contain only numbers !
 412 Enable/disable the registry key gathering functionality
 413 Enable/disable the automatic update functionality
@@ -361,8 +361,8 @@
 465 Package activation
 466 WARNING: Can't find information file at
 467 WARNING: Can't find fragments files at
-468 Are you sure to want to activate this package ?
-469 Package activated, it can now be affected
+468 Are you sure you want to activate this package ?
+469 Package activated, it can now be deployed
 470 Https url
 471 Fragments url
 472 ERROR: Can't delete directory
@@ -382,7 +382,7 @@
 486 Never inventoried
 487 Custom
 488 Default
-489 IpDiscover behaviour
+489 IpDiscover behavior
 490 NEVER IpDiscover
 491 ALWAYS IpDiscover of network
 492 ELECTED IpDiscover of network
