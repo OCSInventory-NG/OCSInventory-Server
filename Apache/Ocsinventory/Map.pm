@@ -27,6 +27,7 @@ our %data_map= (
 											ID
 											NAME	
 											WORKGROUP	
+											USERDOMAIN
 											OSNAME 
 											OSVERSION 
 											OSCOMMENTS 

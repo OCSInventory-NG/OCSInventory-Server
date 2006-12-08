@@ -43,6 +43,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} = 100;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
 
 sub _ipdiscover_prolog_resp{
@@ -59,6 +60,8 @@ sub _ipdiscover_prolog_resp{
 	my $row;
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $DeviceID = $current_context->{'DATABASE_ID'};
+	# To handle the agent versions
+	my ($ua, $os, $v);
 		
 	################################
 	#IPDISCOVER
@@ -71,7 +74,28 @@ sub _ipdiscover_prolog_resp{
 	if($request->rows){
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 		$row = $request->fetchrow_hashref();
-		push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ]};
+	# Agents newer than 13(linux) ans newer than 4027(Win32) receive new xml formatting (including ipdisc_lat)
+		$ua = _get_http_header('User-agent', $current_context->{'APACHE_OBJECT'});
+		if( $ua=~/OCS-NG_windows_client_v(\d+)/ ){
+			$v = ($1>4027)?2:1;
+		}
+		elsif( $ua=~/OCS-NG_linux_client_v(\d+)/ ){
+			$v = ($1>13)?2:1;
+		}
+		
+		if( $v==1 ){		
+			push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ] };
+		}
+		elsif( $v==2 ){
+			push @{$$resp{'OPTION'}}, { 
+						'NAME' => [ 'IPDISCOVER' ], 
+						'PARAM' => { 
+								'IPDISC_LAT' => $ENV{'OCS_OPT_IPDISCOVER_LATENCY'}?$ENV{'OCS_OPT_IPDISCOVER_LATENCY'}:'0', 
+								'content' => $row->{'TVALUE'} 
+						} 
+			};
+		}
+		
 		&_set_http_header('Connection', 'close', $current_context->{'APACHE_OBJECT'});
 		return 1;
 	}else{
