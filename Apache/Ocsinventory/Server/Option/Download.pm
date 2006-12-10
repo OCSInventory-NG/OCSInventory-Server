@@ -29,7 +29,7 @@ use Apache::Ocsinventory::Server::Constants;
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&download_prolog_resp,
-	'HANDLER_PRE_INVENTORY' => undef,
+	'HANDLER_PRE_INVENTORY' => \&download_pre_inventory,
 	'HANDLER_POST_INVENTORY' => undef,
 	'REQUEST_NAME' => 'DOWNLOAD',
 	'HANDLER_REQUEST' => \&download_handler,
@@ -98,6 +98,29 @@ sub download_prolog_resp{
 # 	}
 	
 	return 0;
+}
+
+sub download_pre_inventory{
+	#return unless $ENV{'OCS_OPT_DOWNLOAD'};
+
+	my $current_context = shift;
+	my $data = $current_context->{'DATA'};
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $computerId = $current_context->{'DATABASE_ID'};
+	my $result;
+	
+	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['PACKAGES'] )){
+		return 1;
+	}
+	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $computerId);
+	# Reference to the module part
+
+	my $base = $result->{'CONTENT'}->{'DOWNLOAD'}->{'HISTORY'}->{'PACKAGE'};
+	my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
+	for( @{ $base }) {
+		$sth->execute( $computerId, $_->{'ID'});
+	}
+	0;
 }
 
 sub download_handler{
