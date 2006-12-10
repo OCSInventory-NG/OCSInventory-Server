@@ -33,7 +33,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_POST_INVENTORY' => undef,
 	'REQUEST_NAME' => 'DOWNLOAD',
 	'HANDLER_REQUEST' => \&download_handler,
-	'HANDLER_DUPLICATE' => undef,
+	'HANDLER_DUPLICATE' => \&download_duplicate,
 	'TYPE' => OPTION_TYPE_ASYNC
 };
 
@@ -154,5 +154,17 @@ sub download_handler{
 		return(APACHE_OK);
 	}
 }
+
+sub download_duplicate {
+	my $current_context = shift;
+	my $device = shift;
+	
+	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $DeviceID = $current_context->{'DATABASE_ID'};
+
+	# If we encounter problems, it aborts whole replacement
+	return $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $device);
+}
+
 1;
 
