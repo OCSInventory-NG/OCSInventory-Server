@@ -1,6 +1,6 @@
 #!/usr/bin/perl 
 ###############################################################################
-##IPDISCOVER Version 1.0 Beta
+##OCSINVENTORY-NG
 ##Copyleft Pascal DANEK 2005
 ##Web : http://ocsinventory.sourceforge.net
 ##
@@ -211,7 +211,6 @@ if($ipdiscover){
   }
   print <<EOF unless($xml);
 ############################
-#IPDISCOVER Ver 1.0b
 #IP DISCOVER IP/SUBNET REPORTS
 #$date
 #Subnets with max $ipd 
@@ -227,7 +226,7 @@ EOF
     my $ip = $network->[0];
     my $nbipd = $network->[1];
     next unless $ip =~ /^\d{1,3}(?:\.\d{1,3}){3}$/;
-    my $req = $dbh->prepare('select h.deviceid, h.name, h.quality,h.fidelity,h.lastcome,h.lastdate,osname, n.ipmask, n.ipaddress from hardware h,networks n where n.deviceid=h.deviceid and n.ipsubnet='.$dbh->quote($ip).' order by lastdate'); 
+    my $req = $dbh->prepare('select h.deviceid, h.id, h.name, h.quality,h.fidelity,h.lastcome,h.lastdate,osname, n.ipmask, n.ipaddress from hardware h,networks n where n.hardware_id=h.id and n.ipsubnet='.$dbh->quote($ip).' order by lastdate'); 
     $req->execute;
     #Get the subnet label
     unless($xml){
@@ -238,7 +237,7 @@ EOF
       printf("     %-25s %-9s %-9s %-25s %-15s %-15s %s\n", "<Name>","<Quality>","<Fidelity>","<LastInventory>","<IP>","<Netmask>","<OS>");
       print "-----------------------------------------------------------------------------------------------------------------------\n";
       while($result = $req->fetchrow_hashref){
-        my $r = $dbh->prepare('select * from devices where deviceid='.$dbh->quote($result->{'deviceid'}).' and tvalue='.$dbh->quote($ip).' and name="ipdiscover"');
+        my $r = $dbh->prepare('select * from devices where hardware_id='.$dbh->quote($result->{'id'}).' and tvalue='.$dbh->quote($ip).' and name="ipdiscover"');
 	$r->execute;
 	printf("#-> %-25s %-9s %-9s %-25s %-15s %15s %s %s\n",$result->{'name'},$result->{'quality'},$result->{'fidelity'},$result->{'lastdate'},$result->{'ipaddress'}, $result->{'ipmask'},$result->{'osname'} ,$r->rows?'*':'');
 	$r->finish;
@@ -297,7 +296,7 @@ if($iptarget){
   	$inv = 1;
 	$type = 'Computer';
   }else{
-  	$request = $dbh->prepare('SELECT IP,TYPE FROM netmap, networks WHERE MAC=MACADDR AND DEVICEID like "NETWORK_DEVICE%" AND IP='.$dbh->quote($iptarget));
+  	$request = $dbh->prepare('SELECT IP,TYPE FROM netmap, network_devices WHERE MAC=MACADDR AND IP='.$dbh->quote($iptarget));
   	$request->execute; 
 	if(my $row = $request->fetchrow_hashref){
 		$inv = 1, $type = $row->{'TYPE'};
@@ -578,7 +577,7 @@ if($analyse){
                $PR[$r] = $ref;
 	       $r++;
       	       next REF;
-             }elsif(/22\/f.+23\/f.+80\/f.+135\/f/){
+             }elsif(/(22\/f.+23\/f.+80\/f.+135\/c|22\/c.+23\/c.+80\/c.+135\/c)/){
                $PH[$j] = $ref;
 	       $j++;
                next REF;
