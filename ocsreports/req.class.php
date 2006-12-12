@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:43:49 $ by $Author: plemmet $ (version: $Revision: 1.3 $)
+//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
 
 if(!class_exists("Req"))
 { 
