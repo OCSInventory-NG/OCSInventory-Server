@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 10/24/2006
+//Modified on $Date: 2006-12-12 10:43:49 $ by $Author: plemmet $ (version: $Revision: 1.6 $)
 
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);

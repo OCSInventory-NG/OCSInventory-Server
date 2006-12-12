@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 9/30/2005
+//Modified on $Date: 2006-12-12 10:43:47 $ by $Author: plemmet $ (version: $Revision: 1.3 $)
+
 include ('fichierConf.class.php');
 
 include('req.class.php');

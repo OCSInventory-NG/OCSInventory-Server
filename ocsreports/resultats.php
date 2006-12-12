@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 8/12/2005
+//Modified on $Date: 2006-12-12 10:43:49 $ by $Author: plemmet $ (version: $Revision: 1.3 $)
+
 	global $query;		 	
 	$okReq=0;
 	foreach($requetes as $req) // On met dans $req la requete demandée
