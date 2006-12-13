@@ -96,7 +96,7 @@ sub _duplicate_evaluate{
 	$exist->{$key}->{'MASK'}|=DUP_MACADDR_FL if $exist->{$key}->{'MACADDRESS'};
 	
 	# If  
-	if((($ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'} & $exist->{$_}->{'MASK'})) == $ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'}){
+	if((($ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'} & $exist->{$key}->{'MASK'})) == $ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'}){
 		return(1);
 	}else{
 		return(0);
@@ -129,7 +129,7 @@ sub _duplicate_detect{
 	
 	# ...and one MAC of this machine
 	for(@{$result->{CONTENT}->{NETWORKS}}){
-		$request = $dbh->prepare('SELECT HARDWARE_ID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=? AND ID<>?');
+		$request = $dbh->prepare('SELECT HARDWARE_ID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=? AND HARDWARE_ID<>?');
 		$request->execute($_->{MACADDR}, $DeviceID);
 		while($row = $request->fetchrow_hashref()){
 			if(!&_already_in_array($row->{'MACADDR'}, \@bad_mac)){
