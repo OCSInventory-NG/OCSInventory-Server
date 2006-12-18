@@ -1,14 +1,14 @@
 <?
 //====================================================================================
 // OCS INVENTORY REPORTS
-// Copyleft Pierre LEMMET 2005
+// Copyleft Pierre LEMMET 2006
 // Web: http://ocsinventory.sourceforge.net
 //
 // This code is open source and may be copied and modified as long as the source
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on 10/17/2006
+//Modified on $Date: 2006-12-18 11:01:39 $$Author: plemmet $($Revision: 1.9 $)
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
