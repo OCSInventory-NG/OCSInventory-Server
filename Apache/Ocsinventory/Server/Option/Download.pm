@@ -109,7 +109,7 @@ sub download_pre_inventory{
 	my $computerId = $current_context->{'DATABASE_ID'};
 	my $result;
 	
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['PACKAGES'] )){
+	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['PACKAGE'] )){
 		return 1;
 	}
 	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $computerId);
