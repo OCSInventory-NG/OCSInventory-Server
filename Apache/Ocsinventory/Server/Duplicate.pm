@@ -183,7 +183,7 @@ sub _duplicate_replace{
 	$request->finish;
 	
 	# Current userid or previous ?
-	if( $result->{CONTENT}->{HARDWARE}->{USERID}!~/system|localsystem/ ){
+	if( $result->{CONTENT}->{HARDWARE}->{USERID}!~/system|localsystem/i ){
  		$userid = $result->{CONTENT}->{HARDWARE}->{USERID};
 	}
 	# Keeping the accountinfos and the devices options
