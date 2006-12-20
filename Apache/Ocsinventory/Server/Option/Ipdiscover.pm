@@ -142,7 +142,7 @@ sub _ipdiscover_main{
 			return 1;
 		}
 	}else{
-		if($result->{CONTENT}->{HARDWARE}->{OSNAME}!~/xp|2000|linux/i){
+		if($result->{CONTENT}->{HARDWARE}->{OSNAME}!~/xp|2000|linux|2003|vista/i){
 			return 0;
 		}
 		
