@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2006
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.8 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 set_time_limit(0);
@@ -23,7 +23,7 @@ if( !$valUpd || $valUpd["tvalue"]<GUI_VER ) {
 	$fromAuto = true;
 	include('install.php');
 	die();
-}//
+}
 
 if(isset($_GET["logout"])) {
 	foreach( $_SESSION as $key=>$val) {		
@@ -42,30 +42,29 @@ if( isset($_GET["first"] )) {
 <TITLE>OCS Inventory</TITLE>
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html<? 
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html<?php 
 	if($l->g(0)) 
 		echo "; charset=".$l->g(0).";";
 	else
 		echo "; charset=ISO-8859-1;";	
 ?>">
 <LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
-<? incPicker(); ?>
+<?php incPicker(); ?>
 <script language='javascript'>
-<?if($_GET["multi"] == 3 && $_GET["mode"] == 1) {?>
+<?php if($_GET["multi"] == 3 && $_GET["mode"] == 1) {?>
 	function scrollHeaders() {
 		var monSpan = document.getElementById("headers");
-		if( document.body.scrollTop > 200) {
-			monSpan.style.top = (( Math.ceil(document.body.scrollTop / 27)) * 27) + 3<?
-	if( getBrowser() == "MOZ" )
-		echo " - 17 + 27;\n";
-?>			
-			monSpan.style.visibility = 'visible';
-			// 15 Netsc 8ie
+		if( monSpan ) {
+			if( document.body.scrollTop > 200) {
+				monSpan.style.top = (( Math.ceil(document.body.scrollTop / 27)) * 27) + 3;		
+				monSpan.style.visibility = 'visible';
+				// 15 Netsc 8ie
+			}
+			else
+				monSpan.style.visibility = 'hidden';
 		}
-		else
-			monSpan.style.visibility = 'hidden';
 	}
-<?}?>
+<?php }?>
 	
 	function wait( sens ) {	
 		var mstyle = document.getElementById('wait').style.display	= (sens!=0?"block" :"none");	
@@ -73,7 +72,7 @@ if( isset($_GET["first"] )) {
 
 </script>
 </head> 
-<?
+<?php 
 echo "<body bottommargin='0' leftmargin='0' topmargin='0' rightmargin='0' marginheight='0' marginwidth='0'";
 if( $_GET["multi"] ==3 && $_GET["mode"] == 1) {
 	echo " OnScroll='javascript:scrollHeaders()'";
@@ -88,8 +87,8 @@ if( !isset($_GET["popup"] )) {
 <tr height=25px>
 	<td><a href='index.php?first'><img src='image/logo OCS-ng-48.png'></a></td>
 	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
-	<b>Ver. <?=GUI_VER?>&nbsp&nbsp&nbsp;</b>	
-<?
+	<b>Ver. <?php echo GUI_VER?>&nbsp&nbsp&nbsp;</b>	
+<?php 
 	}
 
 	if(isset($_POST["subLogin"])) {				

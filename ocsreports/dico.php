@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.6 $)
 
 $pgSize = $_SESSION["pcparpage"];
 $rg = isset($_GET["rg"])?$_GET["rg"]:0;	
@@ -112,7 +112,7 @@ if( isset($_GET["delcat"]) ) {
 				}
 			}
 		}
-</script><?
+</script><?php 
 
 //les GET globaux a rajouter
 $hiddens ="";

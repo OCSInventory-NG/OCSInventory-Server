@@ -116,7 +116,7 @@
 116 Hinzufuegen
 117 Registry
 118 Gehe zu Seite
-119 Wollen Sie wirklich ID loeschen n° 
+119 Wollen Sie wirklich ID loeschen 
 120 null
 121 Computer loeschen
 122 Loeschen
@@ -539,3 +539,14 @@
 554 Monitor: serial
 555 Monitor: manufacturer
 556 Monitor: caption
+557 Customized ipdiscover
+558 Affected packages
+559 This file is not .ocs
+560 To server
+561 Unknown (deleted package)
+562 Networks having uid:
+563 Manufacturer
+564 Agent auto-launching frequency
+565 Server used for local inventories
+566 Port used for local inventories
+567 Ipdiscover latency

@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
 
 include ('fichierConf.class.php');
 
@@ -16,7 +16,7 @@ include('req.class.php');
 if($_GET["suppAcc"]) {
 	dbconnect();
 	@mysql_query("DELETE FROM operators WHERE id='".$_GET["suppAcc"]."'");	
-	echo "<br><br><center><font face='Verdana' size=-1 color='red'><b>". $_GET["suppAcc"] ."</b> ".$l->g(245)." </font></center><br>";
+	echo "<br><br><center><font face='Verdana' size=-1 color='red'><b>". htmlentities(stripslashes($_GET["suppAcc"])) ."</b> ".$l->g(245)." </font></center><br>";
 }
 
 if($_POST["nom"])
@@ -34,11 +34,11 @@ if($_POST["nom"])
 			<script language=javascript>
 				function confirme(did)
 				{
-					if(confirm("<?echo $l->g(246)?> "+did+" ?"))
-						window.location="index.php?multi=<?=$_GET["multi"]?>&c=<?=($_SESSION["c"]?$_GET["c"]:2)?>&a=<?=$_GET["a"]?>&page=<?=$_GET["page"]?>&suppAcc="+did;
+					if(confirm("<?php echo $l->g(246)?> "+" ?"))
+						window.location="index.php?multi=<?php echo $_GET["multi"]?>&c=<?php echo ($_SESSION["c"]?$_GET["c"]:2)?>&a=<?php echo $_GET["a"]?>&page=<?php echo $_GET["page"]?>&suppAcc="+did;
 				}
 			</script>
-<?
+<?php 
 printEntete($l->g(244));		
 echo "<br>
 		 <form name='ajouter_reg' method='POST' action='index.php?multi=10'>
@@ -88,7 +88,7 @@ echo "<br>
 		$x++;
 		echo "<TR height=20px bgcolor='". ($x%2==0 ? "#FFFFFF" : "#F2F2F2") ."'>";	// on alterne les couleurs de ligne			
 		echo "<td align=center><FONT FACE='tahoma' SIZE=2>".$row["id"]."</font></td><td align=center><FONT FACE='tahoma' SIZE=2>".($row["accesslvl"]==1?$l->g(242):$l->g(243))."</font></td><td align=center>
-		<a href=# OnClick='confirme(\"".$row["id"]."\");'><img src=image/supp.png></a></td></tr>";
+		<a href=# OnClick='confirme(\"".urlencode($row["id"])."\");'><img src=image/supp.png></a></td></tr>";
 		
 	}
 	echo "</table><br>";

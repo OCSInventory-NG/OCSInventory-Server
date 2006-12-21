@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.7 $)
 
 include("req.class.php");
 include("preferences.php");
@@ -21,6 +21,8 @@ else
 
 $lareq = str_replace("h.id AS \"h.id\",","",$lareq);
 $lareq = str_replace("deviceid AS \"deviceid\",","",$lareq);
+$lareq = str_replace("h.n.ipmask","n.ipmask",$lareq);
+
 //echo $lareq;die();
 $result=mysql_query($lareq, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 

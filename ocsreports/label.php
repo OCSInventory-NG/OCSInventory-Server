@@ -1,14 +1,14 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
-// Copyleft Pierre LEMMET 2006
+// Copyleft Pierre LEMMET 2005
 // Web: http://ocsinventory.sourceforge.net
 //
 // This code is open source and may be copied and modified as long as the source
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-18 11:01:38 $$Author: plemmet $($Revision: 1.3 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.4 $)
 
 printEntete($l->g(263));
 
@@ -37,9 +37,9 @@ else {
 }
 $con[0] = stripslashes($con[0]);
 ?><br>
-<center><b><? echo $l->g(262);?>:</b>
+<center><b><?php echo $l->g(262);?>:</b>
 <form name='lab' action='index.php?multi=12' method='post'>
-	<textarea name='newlabel'><?=$con[0]?></textarea>
+	<textarea name='newlabel'><?php echo $con[0]?></textarea>
 	<input name='sublabel' type='submit' value='envoyer'>
 </form>
 </center>

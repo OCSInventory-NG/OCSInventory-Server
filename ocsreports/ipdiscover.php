@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.8 $)
 
 set_time_limit(0);
 $nbpop=0;
@@ -55,11 +55,10 @@ switch( $_GET["mode"] ) {
 	default;	
 }
 
-foreach ($_GET as $gk=>$gv) {
-	if($gk=="rev" || $gk=="c"|| $gk=="a") continue;
-//	$_SESSION["fromPage"] .= "&{$gk}=$gv"; TODO: cé koi ?
+if( isset($_GET["delmac"]) ) {
+	mysql_query("DELETE FROM netmap WHERE mac='".$_GET["delmac"]."'", $_SESSION["writeServer"] ) or die(mysql_error());
 }
-
+	
 if( ! $scriptPresent && ! $_GET["mode"] ) {
 	$scriptPresent = false ;
 }
@@ -87,12 +86,12 @@ else if( $_GET["mode"] == 9 ) {
 	$_SESSION["fromdet"] = false;
 	printEnTete($l->g(107));
 ?>	
-	<br><center><a href=index.php?multi=3><= <?echo $l->g(188);?></a></center><br>
+	<br><center><a href=index.php?multi=3><= <?php echo $l->g(188);?></a></center><br>
 	<table width='400px' border='0' align='center'>
-	<tr align='center'><td width='40px'><img src='image/Gest_admin1.png'></td><td align='left'><a href='?multi=3&mode=10'><?echo $l->g(293);?></a></img></td></tr>
-	<tr align='center'><td width='40px'><img src='image/Gest_admin1.png'></td><td align='left'><a href='?multi=3&mode=11'><?echo $l->g(294);?></a></img></td></tr>
+	<tr align='center'><td width='40px'><img src='image/Gest_admin1.png'></td><td align='left'><a href='?multi=3&mode=10'><?php echo $l->g(293);?></a></img></td></tr>
+	<tr align='center'><td width='40px'><img src='image/Gest_admin1.png'></td><td align='left'><a href='?multi=3&mode=11'><?php echo $l->g(294);?></a></img></td></tr>
 	</table>
-<?	
+<?php 	
 }
 else if( $_GET["mode"] == 11 ) {
 	if( isset($_GET["ipa"]) && ! isset($_GET["self"]) ) {
@@ -118,7 +117,7 @@ else if( $_GET["mode"] == 11 ) {
 			$reqInsert = "INSERT INTO subnet(name, id, netid, mask) VALUES ('".$_POST["nomrez"]."', '".$_POST["dpt"]."', '".$_POST["ipa"]."','".$_POST["ipm"]."')";
 			@mysql_query( $reqInsert, $_SESSION["writeServer"] );
 			if(mysql_affected_rows()>0)
-				echo "<br><center><font color='green'><b>".$l->g(301)." (".$_POST["nomrez"]."  ".$_POST["dpt"]."  ".$_POST["ipa"]." / ".$_POST["ipm"].")</b></font></center>";
+				echo "<br><center><font color='green'><b>".$l->g(301)." (".htmlentities(stripslashes($_POST["nomrez"]))."  ".$_POST["dpt"]."  ".$_POST["ipa"]." / ".$_POST["ipm"].")</b></font></center>";
 			else
 				echo "<br><center><font color='red'><b>".$l->g(362)." ".$_POST["ipa"]." ".$l->g(363)."</b></font></center>";
 		}
@@ -131,7 +130,7 @@ else if( $_GET["mode"] == 11 ) {
 		echo "<center><font color='green'><b>".$l->g(302)." (netid :".$_GET["delrez"]." )</b></font></center>";
 	}	
 	
-	$tab[0] = Array($l->g(295),$l->g(296),$l->g(82),$l->g(208));
+	$tab[0] = Array($l->g(295),$l->g(305),$l->g(34),$l->g(208));
 	$tailles = Array( 300, 30, 150,150 );
 	$types = Array("SORT_STRING","SORT_NUMERIC","SORT_STRING","SORT_STRING");
 	
@@ -147,25 +146,24 @@ else if( $_GET["mode"] == 11 ) {
 	
 	printEnTete($l->g(303));
 	$tri = isset($_GET["tri"])?$_GET["tri"]:$_POST["tri"];
-	$ValNomRez =  isset($_POST["nomrez"]) ? $_POST["nomrez"] : (isset($_GET["nomrez"]) ? $_GET["nomrez"] : "") ;
+	$ValNomRez =  stripslashes(isset($_POST["nomrez"]) ? $_POST["nomrez"] : (isset($_GET["nomrez"]) ? $_GET["nomrez"] : "")) ;
 	$ValDpt    =  isset($_POST["dpt"])? $_POST["dpt"] : (isset($_GET["dpt"]) ? $_GET["dpt"] : "") ;
 	$ValIpa    =  isset($_POST["ipa"])? $_POST["ipa"] : (isset($_GET["ipa"]) ? $_GET["ipa"] : "") ;
 	$ValIpm    =  isset($_POST["ipm"])? $_POST["ipm"] : (isset($_GET["ipm"]) ? $_GET["ipm"] : "") ;
-		
 	?>
 	<br><form name='formip' action='index.php?multi=3&mode=11' method='POST'>
 	<table align='center'>
-		<tr><td><?echo $l->g(304);?> :</td><td><input type='text' size='50' name='nomrez' value='<?echo $ValNomRez;?>'></td><td>&nbsp;&nbsp;
-		<?echo $l->g(305);?> :</td><td><input type='text' size='3' name='dpt' value='<?echo $ValDpt;?>'></td></tr>
-		</tr><tr><td><?echo $l->g(34);?> :</td><td><input type='text' name='ipa' value='<?echo $ValIpa;?>'</td><td>&nbsp;&nbsp;<?echo $l->g(208);?>:
-		</td><td><input type='text' name='ipm' value='<?echo $ValIpm;?>'></td></tr>
-		<tr><td align='right' colspan='4'><input type='submit' name='subRez' value='<?echo $l->g(13);?>'>
-		<input type='hidden' name='tri' value='<?echo $tri;?>'></td></tr>
+		<tr><td><?php echo $l->g(304);?> :</td><td><input type='text' size='50' name='nomrez' value="<?php echo htmlentities($ValNomRez);?>"></td><td>&nbsp;&nbsp;
+		<?php echo $l->g(305);?> :</td><td><input type='text' size='3' name='dpt' value='<?php echo $ValDpt;?>'></td></tr>
+		</tr><tr><td><?php echo $l->g(34);?> :</td><td><input type='text' name='ipa' value='<?php echo $ValIpa;?>'</td><td>&nbsp;&nbsp;<?php echo $l->g(208);?>:
+		</td><td><input type='text' name='ipm' value='<?php echo $ValIpm;?>'></td></tr>
+		<tr><td align='right' colspan='4'><input type='submit' name='subRez' value='<?php echo $l->g(13);?>'>
+		<input type='hidden' name='tri' value='<?php echo $tri;?>'></td></tr>
 		</tr>
 	</table>
 	</form>
-	<br><center><a href=index.php?multi=3&mode=<? echo $_SESSION["fromdet"]==true ? "1" : "9" ; ?>><= <?echo $l->g(188);?></a></center>
-	<?
+	<br><center><a href=index.php?multi=3&mode=<?php echo $_SESSION["fromdet"]==true ? "1" : "9" ; ?>><= <?php echo $l->g(188);?></a></center>
+	<?php 
 	if( $exist ) {
 		printEnTete($l->g(306));
 		echo "<br>";
@@ -194,15 +192,15 @@ else if( $_GET["mode"] == 10 ) {
 	}
 		
 	?>	
-	<br><center><a href='index.php?multi=3<?echo ($scriptPresent?"&mode=9":""); ?>'><= <?echo $l->g(188);?></a></center><br>
+	<br><center><a href='index.php?multi=3<?php echo ($scriptPresent?"&mode=9":""); ?>'><= <?php echo $l->g(188);?></a></center><br>
 	<br><form name='formip' action='index.php?multi=3&mode=10' method='POST'>
 	<table align='center'>
-		<tr><td><?echo $l->g(308);?> :</td><td><input type='text' size='50' name='nomtyp'></td></tr>
-		<tr><td align='right' colspan='4'><input type='submit' name='subTyp' value='<?echo $l->g(13);?>'></td></tr>
+		<tr><td><?php echo $l->g(308);?> :</td><td><input type='text' size='50' name='nomtyp'></td></tr>
+		<tr><td align='right' colspan='4'><input type='submit' name='subTyp' value='<?php echo $l->g(13);?>'></td></tr>
 	</table>
 	</form>
 
-	<?
+	<?php 
 	$reqTypes = "SELECT DISTINCT(name) FROM devicetype";
 	$resType = mysql_query( $reqTypes, $_SESSION["readServer"] ) or die(mysql_error($_SESSION["readServer"]));
 	$tab[0] = Array("Type","");
@@ -222,7 +220,7 @@ else if( $_GET["mode"] == 10 ) {
 }
 // Page with all detailed networks
 else if( $_GET["mode"] == 1 ) {
-			
+	
 	$reqIpConf = "SELECT ivalue FROM config WHERE name='IPDISCOVER'";
 	$resIpConf = mysql_query( $reqIpConf, $_SESSION["readServer"] ) or die(mysql_error($_SESSION["readServer"]));
 	$valIpConf = mysql_fetch_array( $resIpConf );
@@ -244,16 +242,63 @@ else if( $_GET["mode"] == 1 ) {
 	$totNinvRes = mysql_query( $totNinvReq, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$totNinvVal = mysql_fetch_array( $totNinvRes );
 
-	$t[0]    = Array("",$l->g(295),"","Uid","",$l->g(304),"",$l->g(364),"",$l->g(365),"",$l->g(312),"",$l->g(366));
+	$t[0]    = Array("",$l->g(295),"","Uid","",$l->g(34),"",$l->g(364),"",$l->g(365),"",$l->g(312),"",$l->g(366));
 	$types   = Array("","SORT_STRING","","SORT_NUMERIC","","SORT_STRING","","SORT_NUMERIC","","SORT_NUMERIC","","SORT_NUMERIC","","SORT_NUMERIC");
 	$tailles = Array( 0,250,0,50,0,250,0,70,0,70,0,70,0,70);	
 	
 	$cptL = 1;
-	$reqGateway = "SELECT ipsubnet as nbrez, COUNT(hardware_id) AS nbc FROM networks WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' GROUP BY(ipsubnet)";
-	$strEnTete = $l->g(289)."<br><br>(<font color='red'>".$totNinvVal["total"]."</font> ".$l->g(219).")";
-	
+	if( isset($_GET["uid"]) && is_numeric($_GET["uid"]) ) {
+		$dpt = $_GET["uid"];
+	}
+	else {
+		$dpt = $_COOKIE["DefNetwork"];
+	}
+		
+	if( !isset($dpt) || $_GET["uid"]==$l->g(215) || ( !isset($_GET["uid"]) && $_COOKIE["DefNetwork"]==$l->g(215)) ) {
+		$reqGateway = "SELECT ipsubnet as nbrez, COUNT(hardware_id) AS nbc FROM networks WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' GROUP BY(ipsubnet)";
+		$strEnTete = $l->g(289)."<br><br>(<font color='red'>".$totNinvVal["total"]."</font> ".$l->g(219).")";
+		$tout = true;
+		$dpt = -1;
+	}
+	else {				
+		$totNinvReqLoc = "
+			SELECT COUNT(DISTINCT mac) AS total 
+			FROM netmap n 
+			LEFT OUTER JOIN networks        ns ON ns.macaddr = mac 
+			LEFT OUTER JOIN network_devices nd ON nd.macaddr = mac
+			INNER      JOIN subnet          s  ON s.netid    = n.netid 
+			WHERE s.id='$dpt'
+			AND ns.macaddr IS NULL 
+			AND nd.macaddr IS NULL;
+		";
+
+		$totNinvResLoc = mysql_query( $totNinvReqLoc, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		$totNinvValLoc = mysql_fetch_array( $totNinvResLoc );
+		
+		echo "<center><b></b></center><br>";
+		$reqGateway = "SELECT ipsubnet as nbrez, COUNT(hardware_id) AS nbc FROM networks n,subnet s
+		WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' AND n.ipsubnet=s.netid AND s.id = '$dpt' GROUP BY(ipsubnet) ";
+		
+		$strEnTete =  $l->g(562)." ".$dpt."<br>";
+		$strEnTete .= "<br>(<font color='red'>".$totNinvValLoc["total"]."</font> ".$l->g(219).")";
+	}	
 	printEnTete($strEnTete);
-	echo "<br><center><a href=index.php?multi=3><= ".$l->g(188)."</a></center><br>";
+
+	echo "<table align='center' width='30%'><tr><td><center><a href=index.php?multi=3><= ".$l->g(188)."</a></center></td>";
+	
+	echo "<td width='50%'><table width='100%' align='center'><tr><td align='center'><b>".$l->g(305).":</b></td></tr>
+		<tr><td align='center'><form id='formDpt' name='formDpt' action='index.php' method='GET'>
+		<input type='hidden' name='multi' value='3'>
+		<input type='hidden' name='mode' value='1'>
+		<select name='uid' onchange='document.getElementById(\"formDpt\").submit();'>
+		<option".($tout?" selected":"").">".$l->g(215)."</option>";
+	$reqDropDown = "SELECT DISTINCT(id) FROM subnet ORDER BY id";
+	$resDropDown = mysql_query( $reqDropDown, $_SESSION["readServer"] );
+	while( $valDropDown = mysql_fetch_array( $resDropDown ) ) {
+		echo "<option".($valDropDown["id"]==$dpt?" selected":"")." value='".$valDropDown["id"]."'>".$valDropDown["id"]."</option>";
+	}
+	echo "</select></form></td></tr></table></td></tr>";	
+	echo "</table>";
 	$auMoinsUnRezo = false;
 	$resGateway = mysql_query($reqGateway, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));	
 
@@ -354,7 +399,7 @@ else if( $_GET["mode"] == 4 ) {
 	$sql = "n.ipsubnet $finSubnet";
 	$whereId = "n.id";
 	$linkId = "n.id";
-	$select = array_merge( array("h.id"=>"h.id", "h.deviceid"=>"deviceid","n.ipmask"=>$l->g(208),"n.ipgateway"=>"n.ipgateway","quality"=>"quality","fidelity"=>"fidelity"), $_SESSION["currentFieldList"] );	
+	$select = array_merge( $_SESSION["currentFieldList"], array("h.id"=>"h.id", "h.deviceid"=>"deviceid","n.ipmask"=>$l->g(208),"n.ipgateway"=>$l->g(207),"quality"=>$l->g(353),"fidelity"=>$l->g(354)) );	
 	$selectPrelim = array( "n.id"=>"n.id" );
 	$from = "hardware h LEFT JOIN accountinfo a ON a.hardware_id=h.id LEFT JOIN bios b ON b.hardware_id=h.id LEFT JOIN networks n ON n.hardware_id=h.id";
 	$fromPrelim = "";
@@ -362,8 +407,8 @@ else if( $_GET["mode"] == 4 ) {
 	$order = "";
 	$countId = "h.id";
 	
-	$requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,true);
-	ShowResults($requete,true,false,false,false);
+	$requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,NULL,true);
+	ShowResults($requete,true,false,false,true);
 }
 else  if( $_GET["mode"] == 5 ) {
 
@@ -380,7 +425,7 @@ else  if( $_GET["mode"] == 5 ) {
 	$sql = "d.name='IPDISCOVER' AND (d.ivalue=1||d.ivalue=2) AND d.tvalue ='".$_GET["pas"]."'";
 	$whereId = "d.name='IPDISCOVER' AND h.id";
 	$linkId = "h.id";
-	$select = array_merge( array("h.id"=>"h.id", "h.deviceid"=>"deviceid","quality"=>"quality","fidelity"=>"fidelity"), $_SESSION["currentFieldList"] );	
+	$select = array_merge( array("h.id"=>"h.id", "h.deviceid"=>"deviceid","quality"=>$l->g(353),"fidelity"=>$l->g(354)), $_SESSION["currentFieldList"] );	
 	$selectPrelim = array( "h.id"=>"h.id" );
 	$from = "hardware h LEFT JOIN accountinfo a ON a.hardware_id=h.id LEFT JOIN bios b ON b.hardware_id=h.id LEFT JOIN devices d ON d.hardware_id = h.id";
 	$fromPrelim = "";
@@ -388,8 +433,8 @@ else  if( $_GET["mode"] == 5 ) {
 	$order = "";
 	$countId = "h.id";
 	
-	$requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,true);
-	ShowResults($requete,true,false,false,false);	
+	$requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,NULL,true);
+	ShowResults($requete,true,false,false,true);
 }
 // Network analyze
 else  if( $_GET["mode"] == 3 ) {
@@ -398,7 +443,7 @@ else  if( $_GET["mode"] == 3 ) {
 	printEnTete($l->g(315));
 	$buf = runCommand();
 	$ret = getXmlFromBuffer($buf, "NETWORK", $tabBalises );	 
-	$ret[0] = Array($l->g(295),$l->g(296),$l->g(82),$l->g(55));
+	$ret[0] = Array($l->g(295),$l->g(305),$l->g(82),$l->g(55));
 	$tailles = Array( "300", "20", "200", "40");		
 	
 	$total = 0;
@@ -416,37 +461,37 @@ else  if( $_GET["mode"] == 3 ) {
 	printTab($ret,FALSE,$tailles);
 }
 else  if( $_GET["mode"] == 2 ) {
-	if( isset($_GET["delmac"]) ) {
-		mysql_query("DELETE FROM netmap WHERE mac='".$_GET["delmac"]."'", $_SESSION["writeServer"] ) or die(mysql_error());
-	}
+	
 	printEnTete($l->g(316)." ".$_GET["pas"]."<br><br>".$nomRez);
 ?>
 	<br><center><form name='analyse' action='index.php' method='GET'>
-<?
+<?php 
 if($scriptPresent) {
 ?>
-	<input type='submit' name='subbutton' value='<?echo $l->g(317);?>'>
-<?}?>
+	<input type='submit' name='subbutton' value='<?php echo $l->g(317);?>'>
+<?php }?>
 	<input type='hidden' name='multi' value='3'>
 	<input type='hidden' name='mode' value='6'>
-	<input type='hidden' name='pas' value='<?=$_GET["pas"]?>'>
+	<input type='hidden' name='pas' value='<?php echo $_GET["pas"]?>'>
 	<input type='hidden' name='popup' value='1'>
 	</form>
 	</center>
-<?
+<?php 
 	$reqRez = "SELECT ip, mac, mask, date, name FROM netmap WHERE netid='".$_GET["pas"]."' AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks) 
 	AND mac NOT IN (SELECT DISTINCT(macaddr) FROM network_devices)";
 	$resRez = mysql_query( $reqRez, $_SESSION["readServer"] ) or die(mysql_error());
 	$_SESSION["forcedRequest"] = $reqRez;
 	echo "<center><a href='ipcsv.php' target=_blank>(".$l->g(183).")</a></center><br>";
-	$t[0]    = Array($l->g(34),$l->g(95),$l->g(318),$l->g(232));
-	$types   = Array("SORT_STRING","SORT_STRING","SORT_STRING","SORT_STRING");
+	$t[0]    = Array($l->g(34),$l->g(95),$l->g(318),$l->g(232),$l->g(563));
+	$types   = Array("SORT_STRING","SORT_STRING","SORT_STRING","SORT_STRING","SORT_STRING");
 	$cptL = 1;
 	while( $valRez = mysql_fetch_array($resRez) )  {
-		//$hname = gethostbyaddr($valRez["ip"]); TODO:remettre
-		$t[ $cptL ] = array($valRez["ip"],$valRez["mac"],$valRez["name"],$valRez["date"]);
+		$t[ $cptL ] = array($valRez["ip"],$valRez["mac"],$valRez["name"],$valRez["date"],getConstructor($valRez["mac"]));
 		$cptL++;
 	}
+	
+	if( isset($_GET["delmac"]) )
+		$_SESSION["lastTri"] = "";
 	
 	if( isset($_SESSION["triEnreg"]) && ! isset($_GET["tri"])) {
 		$_GET["tri"] = $_SESSION["triEnreg"];
@@ -462,6 +507,7 @@ if($scriptPresent) {
 	printTab($tri,true,null,false,false,true);
 	
 }
+//ANALYZE MODE
 else  if( $_GET["mode"] == 6 ) {
 	
 	$pas = isset( $_GET["pas"] ) ? $_GET["pas"] : $_POST["pas"];
@@ -500,15 +546,24 @@ END;
 		$buf = runCommand("-cache -net=".$_GET["pas"]);
 	}
 		
-	$ret = getXmlFromBuffer($buf, "HOST" , $tabBalises);	 
-	$ret[0] = Array($l->g(34),$l->g(95),$l->g(318)."/NetBIOS",$l->g(232));
+	$ret = getXmlFromBuffer($buf, "HOST" , $tabBalises);
+	$ret[0] = Array($l->g(232),$l->g(34),$l->g(95),$l->g(318)."/NetBIOS");
 	
+	if( isset($_SESSION["mac"]) ) {
+		$ret[0][5] = $ret[0][4];
+		$ret[0][4] = $l->g(563);
+		for( $cptRet=1; $cptRet<count($ret); $cptRet++ ) {
+			$ret[$cptRet][5] = $ret[$cptRet][4];
+			$ret[ $cptRet ][4] = getConstructor( $ret[ $cptRet ][1] );
+		}
+	}
+	$types = Array("SORT_STRING","SORT_NUMERIC","SORT_STRING","SORT_STRING","SORT_STRING");
 	$tabTypes = Array("WINDOWS","LINUX","NETWORK","PHANTOM","FILTERED");
-	foreach( $tabTypes as $tt ) {		
-		$win = getLignes($ret, $tt, 4);
+	foreach( $tabTypes as $tt ) {	
+		$win = getLignes($ret, $tt, 5);
 		if( sizeof($win) > 1 ) {
 			echo "<br><br><center><b>".$l->g(324)." $tt</b></center><br>";
-			printTab($win,true);			
+			printTab($win,true,null,false,false,true);		
 		}
 	}
 	echo "<br>";
@@ -522,14 +577,14 @@ else  if( $_GET["mode"] == 7 ) {
 ?>
 	<br><form name='formip' action='index.php?multi=3&mode=7' method='POST'>
 	<table align='center'>
-		<tr><td><?echo $l->g(34);?> :</td><td><input type='text' name='ipa' 
-		<?echo ( isset($_POST["ipa"])?"value='".$_POST["ipa"]."'":""); ?>></td><td>&nbsp;&nbsp;<?echo $l->g(208);?>:</td><td><input type='text' name='ipm' 
-		<?echo ( isset($_POST["ipm"])?"value='".$_POST["ipm"]."'":""); ?>></td></tr>
-		<tr><td align='right' colspan='4'><input type='submit' value='<?echo $l->g(13);?>'></td></tr>
+		<tr><td><?php echo $l->g(34);?> :</td><td><input type='text' name='ipa' 
+		<?php echo ( isset($_POST["ipa"])?"value='".$_POST["ipa"]."'":""); ?>></td><td>&nbsp;&nbsp;<?php echo $l->g(208);?>:</td><td><input type='text' name='ipm' 
+		<?php echo ( isset($_POST["ipm"])?"value='".$_POST["ipm"]."'":""); ?>></td></tr>
+		<tr><td align='right' colspan='4'><input type='submit' value='<?php echo $l->g(13);?>'></td></tr>
 		</tr>
 	</table>
 	</form>
-<?
+<?php 
 	}
 	$ipa = isset( $_POST["ipa"] ) ?  $_POST["ipa"] :  ( isset ( $_GET["ipa"] ) ? $_GET["ipa"] : null );
 	$ipm = isset( $_POST["ipm"] ) ?  $_POST["ipm"] :  ( isset ( $_GET["ipm"] ) ? $_GET["ipm"] : null );
@@ -799,7 +854,7 @@ function printTab($t ,$modeReg=false, $tailles=null, $unSurDeux=false, $scroll =
 			if($ligne==0)
 				echo "<td align='center' width='30px'>&nbsp;</td>";
 			else
-				echo "<td align=center><a href=index.php?popup=1&multi=3&mode=2&delmac=".$t[$ligne][1]."&pas=".urlencode($_GET["pas"])."><img src='image/supp.png'></a></td>";
+				echo "<td align=center><a href=index.php?popup=1&multi=3&mode=".$_GET["mode"]."&delmac=".$t[$ligne][1]."&pas=".urlencode($_GET["pas"])."><img src='image/supp.png'></a></td>";
 		}
 		
 		echo "</tr>";

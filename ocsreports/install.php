@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.10 $)
 
 set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
@@ -19,7 +19,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 <LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
 </head><body>
 
-<?
+<?php 
 printEnTeteInstall("OCS Inventory Installation");
 
 if( isset($fromAuto) && $fromAuto==true)
@@ -185,7 +185,7 @@ if(!$ch = @fopen("dbconfig.inc.php","w")) {
 	die();
 }
 
-fwrite($ch,"<?\n\$_SESSION[\"SERVEUR_SQL\"]=\"".$_POST["host"]."\";\n\$_SESSION[\"COMPTE_BASE\"]=\"ocs\";\n\$_SESSION[\"PSWD_BASE\"]=\"ocs\";\n?>");
+fwrite($ch,"<?php \n\$_SESSION[\"SERVEUR_SQL\"]=\"".$_POST["host"]."\";\n\$_SESSION[\"COMPTE_BASE\"]=\"ocs\";\n\$_SESSION[\"PSWD_BASE\"]=\"ocs\";\n?>");
 fclose($ch);
 
 echo "<br><center><font color=green><b>MySql config file successfully written</b></font></center>";
@@ -475,27 +475,46 @@ while ($valNet = mysql_fetch_array($resNet) ) {
 echo "<br><center><font color=green><b>Netmap netid was computed=> $sucNet successful, <font color=orange>$dejNet were already computed</font>, <font color=red>$errNet were not computable</font></b></font></center>";
 
 //ORPH	
-echo "<br><center><font color=green><b>Cleaning orphans...</b></font></center>";
-
+echo "<br><center><font color=green><b>Cleaning orphans...";
 flush();
 $tables=Array("accountinfo","bios","controllers","drives",
 	"inputs","memories","modems","monitors","networks","ports","printers","registry",
 	"slots","softwares","sounds","storages","videos","devices");
+$cleanedNbr = 0;
 
 foreach( $tables as $laTable) {
 		
 	$reqSupp = "DELETE FROM $laTable WHERE hardware_id NOT IN (SELECT DISTINCT(id) FROM hardware)";
 	$resSupp = @mysql_query( $reqSupp );
 	if( mysql_errno() != "") {			
-		echo "<br><center><font color=red><b>ERROR: Could not clean $laTable, error ".mysql_errno().": ".mysql_error()."</b></font></center>";
+		echo "</b></font></center><br><center><font color=red><b>ERROR: Could not clean $laTable, error ".mysql_errno().": ".mysql_error()."</b></font></center>";
 	}
 	else {
-		if( $cleaned = mysql_affected_rows() )		
-			echo "<br><center><font color=green><b>Table $laTable: $cleaned lines deleted</b></font></center>";
+		if( $cleaned = mysql_affected_rows() )
+			$cleanedNbr += $cleaned;			
 	}
+	echo ".";
 }	
+echo "</b></font></center><br><center><font color=green><b>$cleanedNbr orphan lines deleted</b></font></center>";
 flush();
-//ORPH
+
+//NETMAP
+echo "<br><center><font color=green><b>Cleaning netmap...";
+flush();
+$cleanedNbr = 0;
+		
+$reqSupp = "DELETE FROM netmap WHERE netid NOT IN(SELECT DISTINCT(ipsubnet) FROM networks)";
+$resSupp = @mysql_query( $reqSupp );
+if( mysql_errno() != "") {			
+	echo "</b></font></center><br><center><font color=red><b>ERROR: Could not clean netmap, error ".mysql_errno().": ".mysql_error()."</b></font></center>";
+}
+else {
+	if( $cleaned = mysql_affected_rows() )
+		$cleanedNbr += $cleaned;			
+}
+
+echo "</b></font></center><br><center><font color=green><b>$cleanedNbr netmap lines deleted</b></font></center>";
+flush();
 
 
 function printEnTeteInstall($ent) {
@@ -510,13 +529,13 @@ function printEnTeteInstall($ent) {
 (Leave empty if you don't want a popup to be shown on each agent launch).</font></b><br><br>
 	<input name='label' size='40'>
 	<input type='hidden' name='fin' value='fin'>
-	<input type='hidden' name='name' value='<?=$_POST["name"];?>'>
-	<input type='hidden' name='pass' value='<?=$_POST["pass"];?>'>
-	<input type='hidden' name='host' value='<?=$_POST["host"];?>'>
+	<input type='hidden' name='name' value='<?php echo $_POST["name"];?>'>
+	<input type='hidden' name='pass' value='<?php echo $_POST["pass"];?>'>
+	<input type='hidden' name='host' value='<?php echo $_POST["host"];?>'>
 	<input type=submit>
 	
 </form></center>
-<?
+<?php 
 
 function getNetFromIpMask($ip, $mask) {	
 	return ( long2ip(ip2long($ip)&ip2long($mask)) ); 

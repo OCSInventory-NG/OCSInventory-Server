@@ -84,12 +84,6 @@ CREATE TABLE bios (
   INDEX SSN (SSN)
 ) ENGINE=INNODB ;
 
-CREATE TABLE tag (
-  TAG_NAME VARCHAR(255) default NULL,
-  LOGIN VARCHAR(255) default NULL,
-  PRIMARY KEY  (TAG_NAME, LOGIN)
-) ENGINE=MYISAM ;
-
 CREATE TABLE config (
   NAME VARCHAR(50) NOT NULL,
   IVALUE INTEGER default NULL,
@@ -281,7 +275,7 @@ CREATE TABLE softwares (
   ID INTEGER NOT NULL auto_increment,
   HARDWARE_ID INTEGER NOT NULL,
   PUBLISHER VARCHAR(255) default NULL,
-  NAME VARCHAR(255) not NULL,
+  NAME VARCHAR(255) default NULL,
   VERSION VARCHAR(255) default NULL,
   FOLDER text,
   COMMENTS text,
@@ -579,13 +573,17 @@ ALTER TABLE sounds change ID ID INTEGER auto_increment;
 ALTER TABLE sounds ADD PRIMARY KEY(HARDWARE_ID,ID);
 ALTER TABLE sounds DROP DEVICEID;
 
+DROP table tag;
+
 TRUNCATE TABLE locks;
+
+ALTER TABLE softwares CHANGE NAME NAME VARCHAR(255) default NULL;
 ALTER TABLE locks DROP DEVICEID;
 ALTER TABLE locks ADD HARDWARE_ID INTEGER NOT NULL PRIMARY KEY FIRST;
 ALTER TABLE locks ADD INDEX SINCE (SINCE);
 
 DELETE FROM `config` WHERE name='GUI_VERSION';
-DELETE FROM `config` WHERE NAME='IP_MIN_QUALITY';
+DELETE FROM `config` WHERE name='IP_MIN_QUALITY';
 
 INSERT INTO `config` VALUES ('FREQUENCY', 0, '', 'Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)');
 INSERT INTO `config` VALUES ('PROLOG_FREQ', 24, '', 'Specify the frequency (hours) of prolog, on agents');
@@ -597,7 +595,7 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4021', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4100', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
@@ -607,6 +605,8 @@ INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Number of cycles
 INSERT INTO `config` VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Time between two downloads (seconds)');
 INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Time between two periods (seconds)');
 INSERT INTO `config` VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Validity of a package (in days)');
+INSERT INTO `config` VALUES ('LOCAL_SERVER', 0, 'localhost', 'Server address used for local import');
+INSERT INTO `config` VALUES ('LOCAL_PORT', 80, '', 'Server port used for local import');
 
 INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 

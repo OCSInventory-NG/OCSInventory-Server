@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.3 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.4 $)
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
@@ -69,7 +69,7 @@ else {
 	</HEAD>
 	<BODY>
 
-	<?
+	<?php 
 	
 	$resStats = mysql_query("SELECT COUNT(DISTINCT HARDWARE_ID) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
 	AND e.id=d.ivalue AND name='DOWNLOAD'", $_SESSION["readServer"]);
@@ -81,7 +81,7 @@ else {
 	?>
 	</BODY>
 	</HTML>
-	<?
+	<?php 
 }
 
    function camembert($arr)

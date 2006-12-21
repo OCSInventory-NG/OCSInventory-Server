@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2006
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
 
 PrintEnTete($l->g(465));
 
@@ -50,18 +50,18 @@ if( isset( $_POST["actpack"] )) {
 	}
 	
 	if( (! $fragOk || ! $httpsOk || ! $opensslOk) && !isset($_POST["conf"]) ) {?>
-		<br><center><b><font color='red'><? echo $l->g(468);?></font></b></center>
+		<br><center><b><font color='red'><?php echo $l->g(468);?></font></b></center>
 		<form name='formserv' id='formserv' action='index.php?multi=21' method='POST'>
-		<input type='hidden' name='actpack' value='<? echo $_POST["actpack"]; ?>'>
-		<input type='hidden' name='https' id='https' value='<? echo $_POST["https"]; ?>'>
-		<input type='hidden' name='frag' id='frag' value='<? echo $_POST["frag"]; ?>'>
+		<input type='hidden' name='actpack' value='<?php echo $_POST["actpack"]; ?>'>
+		<input type='hidden' name='https' id='https' value='<?php echo $_POST["https"]; ?>'>
+		<input type='hidden' name='frag' id='frag' value='<?php echo $_POST["frag"]; ?>'>
 		<input type='hidden' name='conf' id='conf' value='OK'>		
 		<center>
-		<input type='submit' value='<? echo $l->g(455);?>'>
-		<input type='button' value='<? echo $l->g(454);?>' OnClick='window.location="index.php?multi=21"'>
+		<input type='submit' value='<?php echo $l->g(455);?>'>
+		<input type='button' value='<?php echo $l->g(454);?>' OnClick='window.location="index.php?multi=21"'>
 		</center>
 		</form>
-	<?
+	<?php 
 	}
 	else {	
 		$req = "INSERT INTO download_enable(FILEID, INFO_LOC, PACK_LOC, CERT_FILE, CERT_PATH ) VALUES
@@ -76,22 +76,22 @@ else if( isset( $_GET["actpack"] )) {?>
 <script language='javascript'>
 	function verifServ() {
 		if ( document.getElementById('https').value =="" || document.getElementById('frag').value ==""	)
-			alert("<? echo $l->g(239);?>");
+			alert("<?php echo $l->g(239);?>");
 		else document.getElementById('formserv').submit();
 			
 	}
 </script>
 <br>
 	<form name='formserv' id='formserv' action='index.php?multi=21' method='POST'>
-	<input type='hidden' name='actpack' value='<? echo $_GET["actpack"]; ?>'>
+	<input type='hidden' name='actpack' value='<?php echo $_GET["actpack"]; ?>'>
 	<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
-		<tr height='30px'><td align='center' colspan='10'><b><? echo $l->g(465);?> <? echo $_GET["actpack"]; ?></b></td></tr>
-		<tr height='30px' bgcolor='#FFFFFF'><td align='left'><? echo $l->g(470);?>:</td><td><input type='text' name='https' id='https'>/<? echo $_GET["actpack"]; ?></td></tr>
-		<tr height='30px' bgcolor='#F2F2F2'><td align='left'><? echo $l->g(471);?>:</td><td><input type='text' name='frag' id='frag'>/<? echo $_GET["actpack"]; ?></td></tr>
-		<tr height='30px' bgcolor='#FFFFFF'><td align='right' colspan='10'><input type='button' OnClick='javascript:verifServ();' id='envoyer' value='<? echo $l->g(13);?>'></td></tr>
+		<tr height='30px'><td align='center' colspan='10'><b><?php echo $l->g(465);?> <?php echo $_GET["actpack"]; ?></b></td></tr>
+		<tr height='30px' bgcolor='#FFFFFF'><td align='left'><?php echo $l->g(470);?>:</td><td><input type='text' name='https' id='https'>/<?php echo $_GET["actpack"]; ?></td></tr>
+		<tr height='30px' bgcolor='#F2F2F2'><td align='left'><?php echo $l->g(471);?>:</td><td><input type='text' name='frag' id='frag'>/<?php echo $_GET["actpack"]; ?></td></tr>
+		<tr height='30px' bgcolor='#FFFFFF'><td align='right' colspan='10'><input type='button' OnClick='javascript:verifServ();' id='envoyer' value='<?php echo $l->g(13);?>'></td></tr>
 	</table>
 	</form>	
-<?}
+<?php }
 else if( isset( $_GET["suppack"] )) {
 	@mysql_query("DELETE FROM download_available WHERE FILEID='".$_GET["suppack"]."'", $_SESSION["writeServer"]) or die(mysql_error());	
 	if( ! recursive_remove_directory( $_SERVER["DOCUMENT_ROOT"]."/download/".$_GET["suppack"] ))  {
@@ -145,10 +145,10 @@ function recursive_remove_directory($directory, $empty=FALSE) {
 <script language='javascript'>
 	function manualActive() {
 		if( isNaN(document.getElementById('tstamp').value) || document.getElementById('tstamp').value=="" )
-			alert('<? echo $l->g(473);?>');
+			alert('<?php echo $l->g(473);?>');
 		else {
 			if( document.getElementById('tstamp').value.length != 10 )
-				alert("<? echo $l->g(474);?>");
+				alert("<?php echo $l->g(474);?>");
 			else
 				window.location = 'index.php?multi=21&man=1&actpack=' + document.getElementById('tstamp').value;
 		}
@@ -156,8 +156,8 @@ function recursive_remove_directory($directory, $empty=FALSE) {
 	}
 </script>
 
-<p class='text' align='center'><b><? echo $l->g(476);?></b>
-&nbsp;&nbsp;&nbsp;<? echo $l->g(475);?>:<input id='tstamp' type='text' size='10'>
+<p class='text' align='center'><b><?php echo $l->g(476);?></b>
+&nbsp;&nbsp;&nbsp;<?php echo $l->g(475);?>:<input id='tstamp' type='text' size='10'>
 <a href='javascript:void(0);' OnClick='javascript:manualActive();'>
 &nbsp;&nbsp;&nbsp;<img src='image/Gest_admin1.png'></a></p>
 

@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.5 $)
 
 include ('fichierConf.class.php');
 
@@ -39,11 +39,11 @@ if($_POST["nom"])
 			<script language=javascript>
 				function confirme(did)
 				{
-					if(confirm("<?echo $l->g(227)?> "+did+" ?"))
-						window.location="index.php?multi=<?=$_GET["multi"]?>&c=<?=($_SESSION["c"]?$_GET["c"]:2)?>&a=<?=$_GET["a"]?>&page=<?=$_GET["page"]?>&suppAcc="+did;
+					if(confirm("<?php echo $l->g(227)?> "+did+" ?"))
+						window.location="index.php?multi=<?php echo $_GET["multi"]?>&c=<?php echo ($_SESSION["c"]?$_GET["c"]:2)?>&a=<?php echo $_GET["a"]?>&page=<?php echo $_GET["page"]?>&suppAcc="+did;
 				}
 			</script>
-<?
+<?php 
 printEnTete($l->g(56));
 echo "
 			<br>

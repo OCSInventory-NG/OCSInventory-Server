@@ -1,14 +1,14 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
-// Copyleft Pierre LEMMET 2006
+// Copyleft Pierre LEMMET 2005
 // Web: http://ocsinventory.sourceforge.net
 //
 // This code is open source and may be copied and modified as long as the source
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-18 11:01:39 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.10 $)
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
@@ -93,6 +93,7 @@ echo "<table width='100%' border='0' bgcolor='#C7D9F5' style='border: solid thin
 echo "<table width='80%' align='center' border='0' bgcolor='#C7D9F5'>";
 echo "<tr>".$tdhd.$l->g(49).$tdhf.$tdhdpb.utf8_decode($item->NAME).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(33).$tdhf.$tdhdpb.utf8_decode($item->WORKGROUP).$tdhfpb."</tr>";
+if( $item->USERDOMAIN ) echo "<tr>".$tdhd.$l->g(557).$tdhf.$tdhdpb.utf8_decode($item->USERDOMAIN).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(46).$tdhf.$tdhdpb.dateTimeFromMysql(utf8_decode($item->LASTDATE)).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(34).$tdhf.$tdhdpb.utf8_decode($item->IPADDR).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(24).$tdhf.$tdhdpb.utf8_decode($item->USERID).$tdhfpb."</tr>";
@@ -153,8 +154,8 @@ $lblAdm = Array($l->g(56), $l->g(500));
 $imgAdm = Array("adm", "spec");
 $lblHdw = Array($l->g(54), $l->g(26), $l->g(63), $l->g(92), $l->g(61), $l->g(96), $l->g(82), $l->g(93), $l->g(271), $l->g(272));
 $imgHdw = Array("processeur", "memoire","stockage","disque","video","son","reseau", "controleur", "slot","port" );
-$lblSof = Array($l->g(273), $l->g(20), $l->g(211));
-$imgSof = Array("bios", "logiciels", "registre");
+$lblSof = Array($l->g(273), $l->g(20),$l->g(512), $l->g(211));
+$imgSof = Array("bios", "logiciels","paquets", "registre");
 $lblOut = Array($l->g(97),$l->g(91),$l->g(79),$l->g(270));
 $imgOut = Array("moniteur", "peripherique", "imprimante", "modem");
 echo "<br><br>";
@@ -186,7 +187,7 @@ echo "<table width='80%' border=0 align='center' cellpadding='0' cellspacing='0'
 						echo img($imgAdm[0],$lblAdm[0], isAvail($lblAdm[0]), $opt);
 						echo img($imgAdm[1],$lblAdm[1], true, $opt);
 						
-						echo "<td width='80px'><img src='image/blanc.png'></td>";
+						//echo "<td width='80px'><img src='image/blanc.png'></td>";
 						//rouge
 						$cpt = 0;
 						foreach( $imgSof as $im ) {
@@ -233,6 +234,7 @@ if($_GET["tout"]==1)
 	print_controllers($systemid);
 	print_slots($systemid);
 	print_softwares($systemid);
+	print_packets($systemid);
 	print_modems($systemid);
 	print_registry($systemid);
 }
@@ -275,6 +277,8 @@ switch ($opt) :
 	case $l->g(211) : print_registry($systemid);
 						break;
 	case $l->g(500) : print_perso($systemid);
+						break;
+	case $l->g(512) : print_packets($systemid);
 						break;
 	default: print_inventory($systemid);
 						break;
@@ -467,22 +471,51 @@ function print_softwares($systemid)
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 		
 	//echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
-	echo "<tr> $td1 ".$l->g(69)."     </td> $td1 ".$l->g(49)."     </td>   $td1 ".$l->g(277)."  </td>   $td1 ".$l->g(445)."  </td>";
+	echo "<tr> $td1 ".$l->g(69)."     </td> $td1 ".$l->g(49)."     </td>   $td1 ".$l->g(277)."  </td>   $td1 ".$l->g(51)."  </td>";
 	          // $td1 $rep     </td> $td1 $com     </td>  </tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;	
 		echo "<tr>";
 		echo "$td3".htmlentities(utf8_decode($item->PUBLISHER))."</td>
-			  $td3".htmlentities(utf8_decode($item->NAME))."     </td>
+			  $td3".htmlentities(utf8_decode(utf8_decode($item->NAME)))."     </td>
 		      $td3".utf8_decode($item->VERSION)."  </td>
-			  $td3".htmlentities(utf8_decode($item->FOLDER))."     </td>";
+			  $td3".(htmlentities(utf8_decode($item->COMMENTS))?htmlentities(utf8_decode($item->COMMENTS)):"N/A")."     </td>";
 		/*      $td3".utf8_decode($item->FOLDER)."   </td>
 		      $td3".utf8_decode($item->COMMENTS)." </td>";*/
 		echo "</tr>";
 	}
 	echo "</table><br>";		
 }
+
+function print_packets($systemid)
+{	
+	global	$l, $td1, $td2, $td3, $td4;
+	
+	$queryDetails  = "SELECT h.pkg_id, a.name FROM download_history h LEFT JOIN download_available a ON h.pkg_id=a.fileid WHERE h.hardware_id=$systemid ORDER BY pkg_id DESC";
+	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	
+	if ( mysql_num_rows($resultDetails) == 0 )		 return;	
+	print_item_header($l->g(512));	
+	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
+		
+	//echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
+	echo "<tr> $td1 ".$l->g(475)."     </td> $td1 ".$l->g(49)."     </td>";
+	          // $td1 $rep     </td> $td1 $com     </td>  </tr>";
+
+	while($item = mysql_fetch_object($resultDetails))
+	{	$ii++; $td3 = $ii%2==0?$td2:$td4;	
+		echo "<tr>";
+		echo "$td3".htmlentities(utf8_decode($item->pkg_id))."</td>";
+		if( $item->name ) 
+			echo "$td3".htmlentities(utf8_decode($item->name))."</td>";
+		else
+			echo "$td3<font color='red'>".$l->g(561)."</font></td>";
+		echo "</tr>";
+	}
+	echo "</table><br>";		
+}
+
 
 function print_slots($systemid)
 {	
@@ -593,18 +626,19 @@ function print_networks($systemid)
 	print_item_header($l->g(82));
 	
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
-	echo "<tr> $td1 ".$l->g(53)."   </td>  $td1 ".$l->g(66)." </td>
+	echo "<tr><td width='20%' id='color' align='center'><FONT FACE='tahoma' SIZE=2 color=blue><b>".$l->g(53)."   </td>  $td1 ".$l->g(66)." </td>
 	      $td1 ".$l->g(268)."        </td>  $td1 ".$l->g(95)." </td> $td1 ".$l->g(81)."     </td>
 	      $td1 ".$l->g(34)."        </td>  $td1 ".$l->g(208)."</td>  $td1 ".$l->g(207)." </td>
 	      $td1 ".$l->g(331)."     </td>$td1 ".$l->g(281)."     </td></tr>";
 
 	while($item = mysql_fetch_object($resultDetails)) {	
 		$ii++; $td3 = $ii%2==0?$td2:$td4;
+		$const = getConstructor($item->MACADDR);
 		echo "<tr>
-		$td3".utf8_decode($item->DESCRIPTION)."</td>
+		<td width='20%' align='center' bgcolor='".($ii%2?"#F0F0F0":"white")."'><FONT FACE='tahoma'>".utf8_decode($item->DESCRIPTION)."</td>
 		$td3".utf8_decode($item->TYPE)."       </td>
 		$td3".utf8_decode($item->SPEED)."      </td>
-		$td3".utf8_decode($item->MACADDR)."    </td>
+		$td3".utf8_decode($item->MACADDR).($const?"<br>($const)":"")."    </td>
 		$td3".utf8_decode($item->STATUS)."     </td>
 		$td3".utf8_decode($item->IPADDRESS)."  </td>
 		$td3".utf8_decode($item->IPMASK)."     </td>
@@ -966,7 +1000,9 @@ function isAvail($lbl) {
 		case $l->g(270) : $tble = "modems";	
 							break;
 		case $l->g(211) : $tble = "registry";
-							break;	
+							break;
+		case $l->g(512) : $tble = "download_history";
+							break;					
 		case $l->g(54):	return true;
 		default: echo "bug";
 							break;

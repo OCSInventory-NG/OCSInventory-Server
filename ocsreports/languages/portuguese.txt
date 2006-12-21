@@ -116,7 +116,7 @@
 116 Adiciona
 117 Registry
 118 Vá para pág.
-119 Você quer mesmo apagar o ID n°
+119 Você quer mesmo apagar
 120 nulo
 121 Apaga o computador
 122 Apaga
@@ -545,3 +545,14 @@ permitidos)
 554 Monitor: serial
 555 Monitor: manufacturer
 556 Monitor: caption
+557 Customized ipdiscover
+558 Affected packages
+559 This file is not .ocs
+560 To server
+561 Unknown (deleted package)
+562 Networks having uid:
+563 Manufacturer
+564 Agent auto-launching frequency
+565 Server used for local inventories
+566 Port used for local inventories
+567 Ipdiscover latency

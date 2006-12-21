@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.9 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 include_once('req.class.php');
@@ -143,23 +143,23 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 	<dl id="menu">
 		<dt onmouseover="javascript:montre('smenu1');">
 		<a href='javascript:void(0);'>
-	<img src='image/pack<?
+	<img src='image/pack<?php 
 	$packAct = array(22,23,24,27,20,21,26);
 	if( in_array($_GET["multi"],$packAct) )
 		echo "_a";?>.png'></a></dt>
 			<dd id="smenu1" onmouseover="javascript:montre('smenu1');" onmouseout="javascript:montre();">
 				<ul>
-					<li><b><? echo $l->g(512); ?></b></li>
+					<li><b><?php echo $l->g(512); ?></b></li>
 					
-					<li><a href="index.php?multi=20"><? echo $l->g(513); ?></a></li>
-					<li><a href="index.php?multi=21"><? echo $l->g(514); ?></a></li>
-					<li><a href="index.php?multi=26"><? echo $l->g(515); ?></a></li>
+					<li><a href="index.php?multi=20"><?php echo $l->g(513); ?></a></li>
+					<li><a href="index.php?multi=21"><?php echo $l->g(514); ?></a></li>
+					<li><a href="index.php?multi=26"><?php echo $l->g(515); ?></a></li>
 				</ul>
 			</dd>
 	</dl>
 	</td>
 <script language='javascript'>montre();</script>	
-<?
+<?php 
 	
 			if( @stat("ipdiscover.php"))
 				tab($l->g(174), 3);
@@ -206,6 +206,11 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		
 	echo "<center><span id='wait'><h3><font color=red>".$l->g(332)."</font></h3></span></center>";
 	flush();
+	
+	if( ! isset( $_SESSION["mac"] ) ) {
+		loadMac();
+	}
+	
 	if( $_GET["multi"] != 3 )
 		unset( $_SESSION["forcedRequest"] );
 		

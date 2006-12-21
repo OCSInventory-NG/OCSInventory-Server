@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.17 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.18 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -28,6 +28,10 @@ if( !in_array( $_GET["multi"], array(20,21,26,22,24,27)) ) {
 require('dbconfig.inc.php');
 include("fichierConf.class.php");
 
+if( isset($_GET["uid"]) ) {
+	setcookie( "DefNetwork", $_GET["uid"], time() + 3600 * 24 * 15 );
+}
+
 if(isset($_GET["lang"])) {
 	$_SESSION["langueFich"] = "languages/".$_GET["lang"].".txt";
 	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"]);
@@ -42,12 +46,13 @@ if(isset($_GET["lang"])) {
 	}
 }
 
-define("GUI_VER", "4021");
+define("GUI_VER", "4100");
+define("MAC_FILE", "oui.txt");
 define("SADMIN", 1);
 define("LADMIN", 2);   
 define("ADMIN", 3);
 define("PC_PAR_PAGE", 15); // default computer / page value
-define("TAG_NAME", "tag"); // do NOT change
+define("TAG_NAME", "TAG"); // do NOT change
 define("LOCAL_SERVER", $_SESSION["SERVEUR_SQL"]); // adress of the server handler used for local import
 $_SESSION["SERVER_READ"] = $_SESSION["SERVEUR_SQL"];
 $_SESSION["SERVER_WRITE"] = $_SESSION["SERVEUR_SQL"];
@@ -76,7 +81,7 @@ if( ! isset($_SESSION["availFieldList"]) ) {
 	"h.workgroup"=>$l->g(33), "h.osversion"=>$l->g(275), "h.oscomments"=>$l->g(286), "h.processort"=>$l->g(350), "h.processorn"=>$l->g(351),
 	"h.swap"=>"Swap", "lastcome"=>$l->g(352), "h.quality"=>$l->g(353), "h.fidelity"=>$l->g(354),"h.description"=>$l->g(53), 
 	"h.wincompany"=>$l->g(355), "h.winowner"=>$l->g(356), "h.useragent"=>$l->g(357), "b.smanufacturer"=>$l->g(64),
-	"b.bmanufacturer"=>$l->g(284),"b.ssn"=>$l->g(36),"b.smodel"=>$l->g(65),"b.bversion"=>$l->g(209),"h.ipaddr"=>$l->g(34));
+	"b.bmanufacturer"=>$l->g(284),"b.ssn"=>$l->g(36),"b.smodel"=>$l->g(65),"b.bversion"=>$l->g(209),"h.ipaddr"=>$l->g(34), "h.userdomain"=>$l->g(557));
 	
 	$reqAc = "SHOW COLUMNS FROM accountinfo";
 	$reqB  = "SHOW COLUMNS FROM bios";
@@ -129,7 +134,8 @@ if(!isset($_SESSION["currentFieldList"])) {// gui just launched
 		sort($cookSort);
 		foreach( $cookSort as $val ) { // loading ordered values
 			$_SESSION["currentFieldList"][$val["name"]] = stripslashes($val["value"]);
-		}		
+		}
+		$loadedFromCookie = true;
 	}
 	else {// load default values
 		$_SESSION["currentFieldList"] = array("a.".TAG_NAME=>TAG_LBL,"h.lastdate"=>$l->g(46),"h.name"=>$l->g(23),
@@ -162,7 +168,7 @@ if(isset($_GET["suppCol"])) { // a column must be removed
 		}
 	}
 }
-if( isset($_GET["resetcolumns"]) && $_GET["resetcolumns"] == $l->g(396) ) {
+if( isset($_GET["resetcolumns"])) {
 	$_SESSION["currentFieldList"] = array("a.".TAG_NAME=>TAG_LBL,"h.lastdate"=>$l->g(46),"h.name"=>$l->g(23),
 	"h.userid"=>$l->g(24),"h.osname"=>$l->g(25),"h.memory"=>"Ram(MO)","h.processors"=>"CPU(MHz)");
 	
@@ -194,6 +200,24 @@ else if(isset($_GET["newcol"])) { // new column
 	else {
 		$_SESSION["currentRegistry"][] = $res[1];
 	}*/
+}
+
+//Check current field list
+if(isset( $_SESSION["currentFieldList"] ) && $loadedFromCookie ) {
+	$reqAccount = mysql_query("SHOW COLUMNS FROM accountinfo", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	while($valAccount=mysql_fetch_array($reqAccount)) {
+		$fieldsAvailable[] = strtoupper($valAccount["Field"]);		
+	}	
+	foreach( $_SESSION["currentFieldList"] as $keyCur=>$valCur ) {
+		$accField = strtolower( substr( stristr( $keyCur, "a." ), 2, strlen($keyCur) ) );
+		if( $accField ) {
+			if( ! in_array( strtoupper($accField), $fieldsAvailable ) ) {
+				unset( $_SESSION["currentFieldList"][$keyCur] );
+				setcookie( "col[$keyCur][value]", FALSE, time() - 3600 ); // deleting corresponding cookie
+				setcookie( "col[$keyCur][rang]", FALSE, time() - 3600 ); // deleting corresponding cookie	
+			}
+		}
+	}
 }
 
 $boutOver="onmouseover=\"this.style.background='#FFFFFF';\" onmouseout=\"this.style.background='#C7D9F5'\"";
@@ -397,16 +421,16 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		if($deletable)
 		{?>
 			<script language=javascript>
-				function confirme(did, typ)
+				function confirme(did, typ, nam)
 				{
-					if(confirm("<?echo $l->g(119)?>"+did+" ?"))
+					if(confirm("<?php echo $l->g(119)?> "+(nam!=""?nam:did)+" ?"))
 						if(typ == 1)
-							window.location="index.php?<?=$pref?>&c=<?=(isset($_GET["c"])?urlencode($_GET["c"]):"1")?>&a=<?=(isset($_GET["a"])?urlencode($_GET["a"]):0); ?>&page=<?=urlencode($_GET["page"])?>&suppnet="+did;
+							window.location="index.php?<?php echo $pref?>&c=<?php echo (isset($_GET["c"])?urlencode($_GET["c"]):"1")?>&a=<?php echo (isset($_GET["a"])?urlencode($_GET["a"]):0); ?>&page=<?php echo urlencode($_GET["page"])?>&suppnet="+did;
 						else
-							window.location="index.php?<?=$pref?>&c=<?=(isset($_GET["c"])?urlencode($_GET["c"]):"1")?>&a=<?=(isset($_GET["a"])?urlencode($_GET["a"]):0); ?>&page=<?=urlencode($_GET["page"])?>&supp="+did;
+							window.location="index.php?<?php echo $pref?>&c=<?php echo (isset($_GET["c"])?urlencode($_GET["c"]):"1")?>&a=<?php echo (isset($_GET["a"])?urlencode($_GET["a"]):0); ?>&page=<?php echo urlencode($_GET["page"])?>&supp="+did;
 				}
 			</script>
-		<?
+		<?php 
 
 		}
 		if( $req->countId == "h.id" ) //computer in devices
@@ -500,8 +524,31 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					
 			if( $req->countId == "h.id" ) { //computer in devices
 					$resDev = @mysql_query("SELECT * FROM devices WHERE (name<>'IPDISCOVER' || ivalue<>1) AND hardware_id = ".$item["h.id"], $_SESSION["readServer"]);
-					if( mysql_num_rows( $resDev ) > 0)
-						echo "<td align='center' valign='center'><img width='15px' src='image/red.png'></td>";
+					/*if( mysql_num_rows( $resDev ) > 0)
+						echo "<td align='center' valign='center'><img width='15px' src='image/red.png'></td>";*/
+					if( mysql_num_rows( $resDev ) > 0) {
+						// Red button tooltip
+						unset( $optTooltip );
+						while($valTooltip=mysql_fetch_array($resDev,MYSQL_ASSOC)) {
+							$optTooltip[ $valTooltip["NAME"] ][ "IVALUE" ] = $valTooltip["IVALUE"];
+							$optTooltip[ $valTooltip["NAME"] ][ "TVALUE" ] = $valTooltip["TVALUE"];
+						}
+						$ttText = "";						
+						if( isset( $optTooltip["FREQUENCY"] )) {
+							$ttText .= " - ".$l->g(494);
+							/*if( $optTooltip["FREQUENCY"]["IVALUE"]==0 ) $ttText .= $l->g(485);
+							else if( $optTooltip["FREQUENCY"]["IVALUE"]==-1 ) $ttText .= $l->g(486);
+							else $ttText .= $td3.$l->g(495)." ".$optPerso["FREQUENCY"]["IVALUE"]." ".$l->g(496);*/
+						}
+						if( isset( $optTooltip["DOWNLOAD"] )) {
+							$ttText .= " - ".$l->g(558);
+						}
+						if( isset( $optTooltip["IPDISCOVER"] )) {
+							$ttText .= " - ".$l->g(557);
+						}
+						$ttText = strtr(htmlspecialchars( $ttText ), "\"","'");
+						echo "<td align='center' valign='center'><img width='15px' title=\"$ttText\" alt=\"$ttText\" src='image/red.png'></td>";
+					}
 					else
 						echo "<td>&nbsp;</td>";
 			}			
@@ -532,11 +579,11 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				
 			}
 			
-			if( $deletable && isset($item["h.id"]) ) {
-				echo "<td align=center><a href='#' OnClick='confirme(\"".$item["h.id"]."\",0);'><img src=image/supp.png></a></td>";
+			if( $deletable && isset($item["h.id"]) ) {				
+				echo "<td align=center><a href='#' OnClick='confirme(\"".$item["h.id"]."\",0,".(isset($item[$l->g(23)])?"\"".htmlentities($item[$l->g(23)])."\"":"\"\"").");'><img src=image/supp.png></a></td>";
 			}
 			else if( $deletable && isset($item[$l->g(95)]) ) {
-				echo "<td align=center><a href='#' OnClick='confirme(\"".$item[$l->g(95)]."\",1);'><img src=image/supp.png></a></td>";
+				echo "<td align=center><a href='#' OnClick='confirme(\"".$item[$l->g(95)]."\",1,\"\");'><img src=image/supp.png></a></td>";
 			}
 			
 			if( $teledeploy ) {	
@@ -860,7 +907,7 @@ function deleteDid($id, $checkLock = true, $traceDel = true) {
 			
 			$tables=Array("accesslog","accountinfo","bios","controllers","drives",
 			"inputs","memories","modems","monitors","networks","ports","printers","registry",
-			"slots","softwares","sounds","storages","videos","devices");	
+			"slots","softwares","sounds","storages","videos","devices","download_history");	
 			
 			echo "<center><font color=red><b>$did ".$l->g(220)."</b></font></center>";
 			
@@ -925,5 +972,23 @@ function incPicker() {
 		<script language=\"javascript\" type=\"text/javascript\" src=\"js/datetimepicker.js\">
 	</script>";
 }
+
+	function loadMac() {
+		if( $file=@fopen(MAC_FILE,"r") ) {			
+			while (!feof($file)) {				 
+				$line  = fgets($file, 4096);
+				if( preg_match("/^((?:[a-fA-F0-9]{2}-){2}[a-fA-F0-9]{2})\s+\(.+\)\s+(.+)\s*$/", $line, $result ) ) {
+					$_SESSION["mac"][strtoupper(str_replace("-",":",$result[1]))] = $result[2];
+				}				
+			}
+			fclose($file);			
+		}
+	}
+	
+	function getConstructor( $mac ) {	
+		$beg = strtoupper(substr( $mac, 0, 8 ));
+		return ( ucwords(strtolower( $_SESSION["mac"][ $beg ])) );
+	}
+
 
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.9 $)
 
 $filtreSSN="
 AND b.ssn <> 'N/A'
@@ -240,8 +240,11 @@ function fusionne($afus) {
 			$reqDelAccount = "DELETE FROM accountinfo WHERE hardware_id=".$afus[$maxInd]["id"];
 			mysql_query($reqDelAccount, $_SESSION["writeServer"]) ;
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
-			$reqRecupAccount = "UPDATE accountinfo SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];
-			
+			// Keep old accountinfo
+			$reqRecupAccount = "UPDATE accountinfo SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];			
+			mysql_query($reqRecupAccount, $_SESSION["writeServer"]) ;
+			// Keep old download_history
+			$reqRecupAccount = "UPDATE download_history SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];			
 			mysql_query($reqRecupAccount, $_SESSION["writeServer"]) ;
 			//echo $reqRecupAccount;
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$minInd]["deviceid"]." ".$l->g(206)." ".$afus[$maxInd]["deviceid"]."</font></center><br>";

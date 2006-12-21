@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.8 $)
 
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);
@@ -102,14 +102,14 @@
 			if( ($_POST["chm_".$i]=="regval" || $_POST["chm_".$i]=="regname")) {
 				$leSelect["r.regvalue"] = $_POST["val_".$i];
 				$from = substr ( $from, 0 , strlen( $from)-1 );
-				$from .= " LEFT JOIN registry r ON r.hardware_id=h.id AND r.name='".$_POST["val_".$i]."'";
+				$from .= " LEFT JOIN registry r ON r.hardware_id=h.id AND r.name='".$_POST["val_".$i]."',";
 				$_SESSION["selectRegistry"]["r.regvalue"] = $_POST["val_".$i];
 			}
 			
 			$regRes = null;
 			if( ($_POST["ega_".$i]==$l->g(129)||$_POST["ega_".$i]==$l->g(410)) && $_POST["chm_".$i]=="name" ) {
 				//$fromPrelim.=" softwares s".$logIndex.",";
-				$from .= ($from!=""?",":"")." softwares s".$logIndex.",";
+				$from .= " softwares s".$logIndex.",";
 				$logIndex++;
 			}
 			
@@ -210,7 +210,9 @@
 					case "suc":
 						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
 						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
-						 "' AND d.tvalue like 'SUCCESS%' AND e.fileid=a.fileid AND e.id=d.ivalue) "; 
+						 "' AND d.tvalue like 'SUCCESS%' AND e.fileid=a.fileid AND e.id=d.ivalue UNION 
+					     SELECT dh.hardware_id FROM download_history dh, download_available da WHERE dh.pkg_id=da.fileid AND da.name='".$_POST["val_".$i].
+						 "')"; 
 					break;
 					case "nsuc":
 						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
@@ -220,7 +222,8 @@
 					case "ind":
 						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
 						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
-						 "' AND e.fileid=a.fileid AND e.id=d.ivalue) "; 
+						 "' AND e.fileid=a.fileid AND e.id=d.ivalue UNION SELECT dh.hardware_id FROM download_history dh, download_available da WHERE dh.pkg_id=da.fileid AND da.name='".$_POST["val_".$i].
+						 "')";
 					break;
 					default: //standard case
 						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
@@ -302,6 +305,7 @@
 					case "macaddr": $laRequete.="n.hardware_id=h.id AND n.macaddr";break;
 					case "useragent": $laRequete.="h.useragent";$forceEgal=true;break;
 					case "workgroup": $laRequete.="h.workgroup";$forceEgal=true;break;
+					case "userdomain": $laRequete.="h.userdomain";$forceEgal=true;break;
 					case "hname": $laRequete.="h.name";break;
 					case "description": $laRequete.="h.description";break;
 					case "lastdate": $laRequete.="h.lastdate";break;
@@ -325,8 +329,19 @@
 						default: $laRequete.=" LIKE "; $forceLike=true;break;
 					}
 				}
-				else 
-					$laRequete.=" = ";
+				else {
+					switch($_POST["ega_".$i]) {
+						case $l->g(410):	
+						case $l->g(129): $laRequete.=" = ";break;						
+						case $l->g(130): 					
+						case $l->g(346):
+						case $l->g(201): 
+						case $l->g(347):
+						case $l->g(202): 
+						case $l->g(203): 
+						default: $laRequete.=" <> ";break;		
+					}
+				}
 				
 				if( $forceEgal || !$forceLike )
 					$laRequete.="'".$_POST["val_".$i]."'";	
@@ -399,10 +414,10 @@
 
 <br>
 <table border=0 width=80% align=center><tr align=right><td width=50%>
-<form name='optionss' action='index.php?multi=1' method='post'><b><?echo $l->g(31);?>:&nbsp;&nbsp;&nbsp;</b> 
-<select name=selOpt OnChange="optionss.submit();"><?
+<form name='optionss' action='index.php?multi=1' method='post'><b><?php echo $l->g(31);?>:&nbsp;&nbsp;&nbsp;</b> 
+<select name=selOpt OnChange="optionss.submit();"><?php 
 
-$optArray = array($l->g(34), $l->g(33), $l->g(20), $l->g(26), $l->g(35),
+$optArray = array($l->g(34), $l->g(33), $l->g(557), $l->g(20), $l->g(26), $l->g(35),
 $l->g(36), $l->g(207), $l->g(25), $l->g(24), $l->g(377), $l->g(65), $l->g(284), $l->g(64), $l->g(554), 
 TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331),$l->g(209),$l->g(53),$l->g(45), $l->g(312), $l->g(429), $l->g(512),$l->g(95),$l->g(555),$l->g(556));
 
@@ -421,10 +436,10 @@ foreach( $optArray as $val) {
 ?>
 </select>
 </form></td><td align=left>
-<form method=post name=res action=index.php?multi=1><input taborder=2 type=submit name=reset value=<?echo $l->g(41);?>></form></td>
+<form method=post name=res action=index.php?multi=1><input taborder=2 type=submit name=reset value=<?php echo $l->g(41);?>></form></td>
 </td></tr></table>
 
-<?
+<?php 
 
 if($_SESSION["OPT"]!=0)
 {	
@@ -432,6 +447,7 @@ if($_SESSION["OPT"]!=0)
 	
 	$ligne[] = array( $l->g(34),"ipaddr","hardware","",2,5,"",false,true);
 	$ligne[] = array( $l->g(33),"workgroup","hardware","SELECT workgroup FROM hardware GROUP BY workgroup",1,1,"",false,true);
+	$ligne[] = array( $l->g(557),"userdomain","hardware","SELECT userdomain FROM hardware GROUP BY userdomain",1,1,"",false,true);
 	
 	foreach( $_SESSION["OPT"] as $op )
 		if( $op == $l->g(20) )

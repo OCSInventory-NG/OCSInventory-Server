@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
 
 require ('fichierConf.class.php');
 
@@ -185,7 +185,7 @@ function enregistrer()
 		<script language="javascript">
 			window.location="index.php?multi=5";
 		</script>
-	<?php
+	<?php 
 		return;
 }//fin function
 
@@ -196,12 +196,12 @@ function supprimer()
 	if ($_GET["id"])
 		{ ?>
 			<script language="javascript">
-				if(confirm ("<?echo trim($l->g(119))?><?=$_GET["id"]?> ?")) 
-					window.location="index.php?multi=5&id=<?=$_GET["id"]?>";
+				if(confirm ("<?php echo trim($l->g(119))?><?php echo $_GET["id"]?> ?")) 
+					window.location="index.php?multi=5&id=<?php echo $_GET["id"]?>";
 				else	
 					window.location="index.php?multi=5";
 			</script>
-			<?php
+			<?php 
 		}
 	else
 	{	

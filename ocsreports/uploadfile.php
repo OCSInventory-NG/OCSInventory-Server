@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.7 $)
 
 if( ! function_exists ( "zip_open" )) {
 	function zip_open($st) {
@@ -123,7 +123,7 @@ if($_GET["o"]&&$_GET["n"]&&$_GET["v"]&&$_GET["supp"]==1)
 <script language=javascript>
 				function confirme(v,o,n)
 				{
-					if(confirm("<?echo $l->g(135);?>"))
+					if(confirm("<?php echo $l->g(135);?>"))
 						window.location="index.php?multi=8&supp=1&v="+v+"&o="+o+"&n="+n;
 				}
 </script>
@@ -132,12 +132,12 @@ if($_GET["o"]&&$_GET["n"]&&$_GET["v"]&&$_GET["supp"]==1)
 <br>
 <table border=1 class= "Fenetre" WIDTH = '52%' ALIGN = 'Center' CELLPADDING='5'>
 <th height=30px class="Fenetre" colspan=2>
-	<b><?echo $l->g(134);?></b>
+	<b><?php echo $l->g(134);?></b>
 </th>
-	<tr bgcolor='#F2F2F2'><td><?echo $l->g(137);?></td>
+	<tr bgcolor='#F2F2F2'><td><?php echo $l->g(137);?></td>
 	    <td><INPUT NAME="userfile" TYPE="file"></td></tr>	
 	<tr bgcolor='white'>
-	    <td colspan=2 align=right><INPUT TYPE="submit" VALUE="<?echo $l->g(13);?>"></td>
+	    <td colspan=2 align=right><INPUT TYPE="submit" VALUE="<?php echo $l->g(13);?>"></td>
 	</tr>
 </table>
 </FORM>
@@ -145,14 +145,14 @@ if($_GET["o"]&&$_GET["n"]&&$_GET["v"]&&$_GET["supp"]==1)
 
 <table BORDER='0' WIDTH = '65%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>
 <tr>		
-		<td align=center><B><?echo $l->g(283);?></B></td>
-		<td align=center><B><?echo $l->g(19);?></B></td>
-		<td align=center><B><?echo $l->g(25);?></B></td>
-		<td align=center><B><?echo $l->g(49);?></B></td>
-		<td align=center width=20px><B><?echo $l->g(136);?></B></td>
-		<td align=center width=20px><B><?echo $l->g(122);?></B></td>
+		<td align=center><B><?php echo $l->g(283);?></B></td>
+		<td align=center><B><?php echo $l->g(19);?></B></td>
+		<td align=center><B><?php echo $l->g(25);?></B></td>
+		<td align=center><B><?php echo $l->g(49);?></B></td>
+		<td align=center width=20px><B><?php echo $l->g(136);?></B></td>
+		<td align=center width=20px><B><?php echo $l->g(122);?></B></td>
 </tr>
-<?
+<?php 
 	$queryD = "SELECT '-' as version, 'windows' as os,name FROM deploy WHERE name<>'label'";
 	if(!$resultD=mysql_query($queryD, $_SESSION["readServer"])) 
 		echo mysql_error($_SESSION["readServer"]);
@@ -178,19 +178,19 @@ if($_GET["o"]&&$_GET["n"]&&$_GET["v"]&&$_GET["supp"]==1)
 		else
 			echo "<td align=center><b><font color='green'>".$l->g(103)."</font></b></td>";
 	?>		
-		<td align=center><?=$item->version?></td>
-		<td align=center><?=$item->os?></td>
-		<td align=center><?=$item->name?></td>
-		<td align=center><a href=javascript:void(0); OnClick='window.open("download.php?dl=1&v=<?=$item->version?>&o=<?=$item->os?>&n=<?=$item->name?>","fen","location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=1,height=1")'><img src=image/Gest_admin1.png></a></FONT></td>
-		<td align=center><a href=# OnClick='confirme("<?=$item->version?>","<?=$item->os?>","<?=$item->name?>");'><img src=image/supp.png></a></FONT></td>
+		<td align=center><?php echo $item->version?></td>
+		<td align=center><?php echo $item->os?></td>
+		<td align=center><?php echo $item->name?></td>
+		<td align=center><a href=javascript:void(0); OnClick='window.open("download.php?dl=1&v=<?php echo $item->version?>&o=<?php echo $item->os?>&n=<?php echo $item->name?>","fen","location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=1,height=1")'><img src=image/Gest_admin1.png></a></FONT></td>
+		<td align=center><a href=# OnClick='confirme("<?php echo $item->version?>","<?php echo $item->os?>","<?php echo $item->name?>");'><img src=image/supp.png></a></FONT></td>
 		</tr>
-	<?}
+	<?php }
 	while($item=mysql_fetch_object($resultD));
 ?>
 <table><br>
 	
 
-<?
+<?php 
 
 function getVersionFromLinuxAgent($content)
 {

@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,13 +8,13 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.7 $)
 
 require ('fichierConf.class.php');
 printEnTete($l->g(107));
 
 $lesEdits = array("IPDISCOVER_MAX_ALIVE","DOWNLOAD_CYCLE_LATENCY","DOWNLOAD_FRAG_LATENCY","DOWNLOAD_PERIOD_LATENCY",
-"DOWNLOAD_PERIOD_LENGTH","DOWNLOAD_TIMEOUT","PROLOG_FREQ");
+"DOWNLOAD_PERIOD_LENGTH","DOWNLOAD_TIMEOUT","PROLOG_FREQ","IPDISCOVER_LATENCY","LOCAL_PORT");
 
 if( isset($_POST["FREQUENCY"] ) ) {
 	switch($_POST["FREQUENCY"]) {
@@ -33,24 +33,25 @@ if( isset($_POST["FREQUENCY"] ) ) {
 	$autoDupLvl += isset($_POST["AUTO_DUPLICATE_LVL_mac"])?$_POST["AUTO_DUPLICATE_LVL_mac"]:0;
 	setOpt("AUTO_DUPLICATE_LVL", $autoDupLvl);
 	
-	$lesOnOff = array("REGISTRY","UPDATE","DEPLOY","TRACE_DELETED","LOGLEVEL","DOWNLOAD","INVENTORY_DIFF","INVENTORY_TRANSACTION","WEB_SERVICE_ENABLED");
-
+	$lesOnOff = array("REGISTRY","UPDATE","DEPLOY","TRACE_DELETED","LOGLEVEL","DOWNLOAD","INVENTORY_DIFF","INVENTORY_TRANSACTION");
 	
 	foreach($lesOnOff as $oo) 
 		setOpt($oo, ($_POST[$oo]=="ON"?1:0));
 		
 	foreach($lesEdits as $ee)
 		setOpt($ee, $_POST[$ee."_edit"]);
+		
+	setOptTxt("LOCAL_SERVER", $_POST["LOCAL_SERVER"]);
 }
 
 ?>
 <script language='javascript'>
-	function modif(id, val) {
+	function modif(id, val, maxx) {
 		if( document.getElementById(id).disabled == true )
 			return;		
 		var curVal = parseFloat(document.getElementById(id).value);
 		curVal = curVal + parseFloat(val);
-		if( curVal < 1 || isNaN(curVal) || curVal > 99 )
+		if( curVal < 1 || isNaN(curVal) || curVal > maxx )
 			curVal = 1;			
 		document.getElementById(id).value = curVal;		
 	}
@@ -60,8 +61,8 @@ if( isset($_POST["FREQUENCY"] ) ) {
 	}
 	
 	function checkNumbers() {
-		if ( 0 <? foreach($lesEdits as $ee) echo "|| isNaN(document.getElementById('{$ee}_edit').value)"; ?> ) {
-			alert("<?echo $l->g(411);?>");
+		if ( 0 <?php foreach($lesEdits as $ee) echo "|| isNaN(document.getElementById('{$ee}_edit').value)"; ?> ) {
+			alert("<?php echo $l->g(411);?>");
 		}
 		else {
 			document.getElementById('formopt').submit();
@@ -70,15 +71,18 @@ if( isset($_POST["FREQUENCY"] ) ) {
 </script>
 <br><form name='formopt' id='formopt' action='index.php?multi=4' method='POST'><table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>
 <tr height=25px>
-<td width='27%' align='center'><b><? echo $l->g(49); ?></b></td><td  width='22%' align='center'><b><? echo $l->g(224); ?></b></td><td width='2%'>&nbsp;&nbsp;&nbsp;</td><td width='27%' align='center'><b><? echo $l->g(49); ?></b></td><td  width='22%' align='center'><b><? echo $l->g(224); ?></b></td>
-<?
+<td width='27%' align='center'><b><?php echo $l->g(49); ?></b></td><td  width='22%' align='center'><b><?php echo $l->g(224); ?></b></td><td width='2%'>&nbsp;&nbsp;&nbsp;</td><td width='27%' align='center'><b><?php echo $l->g(49); ?></b></td><td  width='22%' align='center'><b><?php echo $l->g(224); ?></b></td>
+<?php 
 //><td  width='*' align='center'><b> echo $l->g(51); </b></td>
 $nbr = 0;
 $trad = array("REGISTRY"=>412,"UPDATE"=>413,"DEPLOY"=>414,"TRACE_DELETED"=>415,"LOGLEVEL"=>416,"DOWNLOAD"=>417,"INVENTORY_DIFF"=>418,
 "IPDISCOVER_MAX_ALIVE"=>419,"DOWNLOAD_CYCLE_LATENCY"=>420,"DOWNLOAD_FRAG_LATENCY"=>421,"DOWNLOAD_PERIOD_LATENCY"=>422,
-"DOWNLOAD_PERIOD_LENGTH"=>423,"DOWNLOAD_TIMEOUT"=>424,"IPDISCOVER"=>425,"FREQUENCY"=>426,"AUTO_DUPLICATE_LVL"=>427);
+"DOWNLOAD_PERIOD_LENGTH"=>423,"DOWNLOAD_TIMEOUT"=>424,"IPDISCOVER"=>425,"FREQUENCY"=>426,"AUTO_DUPLICATE_LVL"=>427, "PROLOG_FREQ"=>564, 
+"LOCAL_SERVER"=>565, "LOCAL_PORT"=>566, "IPDISCOVER_LATENCY"=>567);
 
-$resConf = mysql_query("SELECT NAME,IVALUE FROM config WHERE NAME<>'GUI_VERSION' ORDER BY NAME", $_SESSION["readServer"]) or die(mysql_error());
+ 
+
+$resConf = mysql_query("SELECT NAME,IVALUE,TVALUE FROM config WHERE NAME<>'GUI_VERSION' ORDER BY NAME", $_SESSION["readServer"]) or die(mysql_error());
 $decal = "&nbsp;&nbsp;&nbsp;";
 $ligne = 0;
 while( $conf = mysql_fetch_array($resConf) ) {
@@ -90,7 +94,7 @@ while( $conf = mysql_fetch_array($resConf) ) {
 	
 	//case 2
 	echo "<td$title align='left' width='150px'>";
-	showOption( $conf["NAME"], $conf["IVALUE"] );
+	showOption( $conf["NAME"], $conf["IVALUE"], $conf["TVALUE"]);
 	echo "</td>";
 
 	//separator
@@ -105,7 +109,7 @@ while( $conf = mysql_fetch_array($resConf) ) {
 	
 	//case 4
 	echo "<td$title align='left' width='150px'>";
-	showOption( $conf["NAME"], $conf["IVALUE"] );
+	showOption( $conf["NAME"], $conf["IVALUE"] , $conf["TVALUE"]);
 	echo "</td>";
 	$ligne++;
 }
@@ -113,7 +117,7 @@ while( $conf = mysql_fetch_array($resConf) ) {
 echo "</tr></table>";
 echo "<p align='center'><input type='button' height='60px' value='".$l->g(103)."' OnClick='checkNumbers();'></p></form>";		
 
-function showOption($nme, $val) {
+function showOption($nme, $val, $txt) {
 	switch($nme) {
 		case "REGISTRY":
 		case "UPDATE":
@@ -123,7 +127,6 @@ function showOption($nme, $val) {
 		case "DOWNLOAD":
 		case "INVENTORY_DIFF":
 		case "INVENTORY_TRANSACTION":
-		case "WEB_SERVICE_ENABLED":
 			echo "<table><tr><td align='left'><input type='radio' name='$nme' value='ON' ".($val?"checked":"").">ON</td></tr>
 			<tr><td align='left'><input type='radio' name='$nme' value='OFF' ".($val?"":"checked").">OFF</td></tr></table>";
 			break;
@@ -142,6 +145,9 @@ function showOption($nme, $val) {
 			<tr><td><input ".($val==-1?"checked":"")." type='radio' name='$nme' value='NEVER' OnClick=\"active('{$nme}_div',0);\">NEVER</td></tr>
 			<tr><td><input ".($val>0?"checked":"")." type='radio' name='$nme' value='CUSTOM' OnClick=\"active('{$nme}_div',1);\">CUSTOM</td></tr></table>";			
 			break;
+		case "LOCAL_SERVER":
+			echo "<table><tr><td width='100%' rowspan='3'>http://<input name='$nme' size='15' maxlength='254' value='$txt'></td></tr></table>";
+			break;
 		default:
 			echo edit($nme,$val);
 			break;
@@ -158,11 +164,15 @@ function edit($nme, $val) {
 	else if( $nme == "IPDISCOVER" && $val <= 0 )
 		$enabled = false;
 		
-	return "<div id='{$nme}_div' style='display:".($enabled?"block":"none")."'><table><tr><td rowspan='2'><input type='text' size='3' maxlength='2' id='{$nme}_edit' name='{$nme}_edit' value='$valInit'></td><td align='center'>
-	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','1');\"><b><font size='3'>+</font></b></a></td></tr><td align='center'>
-	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','-1');\"><b><font size='3'>-</font></b></a></td></tr></table></div>";
+	return "<div id='{$nme}_div' style='display:".($enabled?"block":"none")."'><table><tr><td rowspan='2'><input type='text' size='3' maxlength='".($nme == "LOCAL_PORT"?"4":"3")."' id='{$nme}_edit' name='{$nme}_edit' value='$valInit'></td><td align='center'>
+	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','1',".($nme == "LOCAL_PORT"?"9999":"999").");\"><b><font size='3'>+</font></b></a></td></tr><td align='center'>
+	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','-1',".($nme == "LOCAL_PORT"?"9999":"999").");\"><b><font size='3'>-</font></b></a></td></tr></table></div>";
 }
 
 function setOpt($nme, $ivalue) {
 	mysql_query("UPDATE config SET IVALUE=$ivalue WHERE name='$nme'", $_SESSION["writeServer"]) or die(mysql_error());
+}
+
+function setOptTxt($nme, $tvalue) {
+	mysql_query("UPDATE config SET TVALUE='$tvalue' WHERE name='$nme'", $_SESSION["writeServer"]) or die(mysql_error());
 }

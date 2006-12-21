@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2005
@@ -8,26 +8,44 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.5 $)
+
+$port = "80";
+$server = "localhost";
+$conSql = "SELECT * FROM config WHERE name IN('LOCAL_SERVER', 'LOCAL_PORT')";
+$resSql = mysql_query( $conSql );
+
+while( $valSql = mysql_fetch_array( $resSql ) ) {
+	if( $valSql["NAME"] == "LOCAL_SERVER" )
+		$server = $valSql["TVALUE"];
+	if( $valSql["NAME"] == "LOCAL_PORT" )
+		$port = $valSql["IVALUE"];	
+}
 
 if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
-	$fd = fopen($_FILES['userfile']['tmp_name'], "r");
-	$contents = fread($fd, filesize ($_FILES['userfile']['tmp_name']));
-	fclose($fd);
-
-	$result = post_it($contents, "http://".LOCAL_SERVER."/ocsinventory");
 	
-	if (isset($result["errno"])) {
-		$errno = $result["errno"];
-		$errstr = $result["errstr"];
-		echo "<br><center><b><font color='red'> ".$l->g(344)." $errno / $errstr</font></b></center>";
-	}else {
-		if( ! strstr ( $result[0], "200") )
-			echo "<br><center><b><font color='red'> ".$l->g(344)." ".$result[0]."</font></b></center>";
-		else {
-			echo "<br><center><b><font color='green'>".$l->g(287)." OK</font></b></center>";
+	if( getFileExtension($_FILES['userfile']['name']) != "ocs" ) {
+		echo "<br><center><b><font color='red'> ".$l->g(559)."</font></b></center>";
+	}
+	else {
+		$fd = fopen($_FILES['userfile']['tmp_name'], "r");
+		$contents = fread($fd, filesize ($_FILES['userfile']['tmp_name']));
+		fclose($fd);
+
+		$result = post_it($contents, "http://".$server."/ocsinventory", $port);
+		
+		if (isset($result["errno"])) {
+			$errno = $result["errno"];
+			$errstr = $result["errstr"];
+			echo "<br><center><b><font color='red'> ".$l->g(344)." $errno / $errstr</font></b></center>";
+		}else {
+			if( ! strstr ( $result[0], "200") )
+				echo "<br><center><b><font color='red'> ".$l->g(344)." ".$result[0]."</font></b></center>";
+			else {
+				echo "<br><center><b><font color='green'>".$l->g(287)." OK</font></b></center>";
+			}
 		}
-	}	
+	}
 }
 ?>
 
@@ -35,18 +53,18 @@ if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
 <br>
 <table border=1 class= "Fenetre" WIDTH = '52%' ALIGN = 'Center' CELLPADDING='5'>
 <th height=30px class="Fenetre" colspan=2>
-	<b><?echo $l->g(288);?></b>
+	<b><?php echo $l->g(288)." (".$l->g(560).": http://".$server.":".$port.")"; ?></b>
 </th>
-	<tr bgcolor='#F2F2F2'><td><?echo $l->g(137);?></td>
+	<tr bgcolor='#F2F2F2'><td><?php echo $l->g(137);?></td>
 	    <td><INPUT NAME="userfile" size='80' TYPE="file"></td></tr>	
 	<tr bgcolor='white'>
-	    <td colspan=2 align=right><INPUT TYPE="submit" VALUE="<?echo $l->g(13);?>"></td>
+	    <td colspan=2 align=right><INPUT TYPE="submit" VALUE="<?php echo $l->g(13);?>"></td>
 	</tr>
 </table>
 </FORM>
-<?
+<?php 
 
-function post_it($datastream, $url) {
+function post_it($datastream, $url, $port) {
 	
 	$url = preg_replace("@^http://@i", "", $url);
 	$host = substr($url, 0, strpos($url, "/"));
@@ -60,7 +78,7 @@ function post_it($datastream, $url) {
 	"Content-Length: $contentlength\r\n\r\n".
 	"$reqbody\r\n";
 	
-	$socket = fsockopen($host, 80, $errno, $errstr);
+	$socket = @fsockopen($host, $port, $errno, $errstr);
 	
 	if (!$socket) {
 		$result["errno"] = $errno;
@@ -76,4 +94,12 @@ function post_it($datastream, $url) {
 	fclose($socket);
 	return $result;
 }
+
+function getFileExtension($str) { 
+	$i = strrpos($str,"." );
+	if (!$i) { return ""; }
+	$l = strlen($str) - $i;
+	$ext = substr($str,$i+1,$l);
+	return $ext; 
+} 
 ?>

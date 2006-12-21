@@ -116,7 +116,7 @@
 116 Új
 117 Registry
 118 Lapra ugrás
-119 Valóban törölni akarja: ID n°
+119 Valóban törölni akarja:
 120 null
 121 Számítógép törlés
 122 TÖRLÉS
@@ -540,3 +540,14 @@
 554 Monitor: serial
 555 Monitor: manufacturer
 556 Monitor: caption
+557 Customized ipdiscover
+558 Affected packages
+559 This file is not .ocs
+560 To server
+561 Unknown (deleted package)
+562 Networks having uid:
+563 Manufacturer
+564 Agent auto-launching frequency
+565 Server used for local inventories
+566 Port used for local inventories
+567 Ipdiscover latency

@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2006
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.3 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.4 $)
 
 if( isset($_POST["systemid"]) )
 	$_GET["systemid"] = $_POST["systemid"];
@@ -77,12 +77,12 @@ else {
 <form action='index.php?multi=23' method='post'>
 <table align='center' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5' width='30%'>
 	<tr bgcolor='#F2F2F2'>
-		<td><? echo $l->g(518); ?>:</td><td><select name='ipdiscover'>
-		<? foreach($lesRez as $leRez) echo "<option>$leRez</option>";
+		<td><?php echo $l->g(518); ?>:</td><td><select name='ipdiscover'>
+		<?php foreach($lesRez as $leRez) echo "<option>$leRez</option>";
 		if( $mode==3 || $mode==2) {?>
-			<option value='des'><? echo $l->g(523); ?></option>
-		<? } ?>
-		<option value='never'><? echo $l->g(524); ?></option>
+			<option value='des'><?php echo $l->g(523); ?></option>
+		<?php } ?>
+		<option value='never'><?php echo $l->g(524); ?></option>
 		</select></td>
 	</tr>
 	<tr bgcolor='#FFFFFF'>
@@ -90,16 +90,16 @@ else {
 
 		&nbsp;</td>
 		<td align='center'>
-		<? if( isset($_GET["systemid"]) ) {
+		<?php if( isset($_GET["systemid"]) ) {
 			echo "<input type='hidden' value='".$_GET["systemid"]."' name='systemid'>";
 		 } ?>
-		<input type='Submit' value='<? echo $l->g(433); ?>' name='sub'></td>
+		<input type='Submit' value='<?php echo $l->g(433); ?>' name='sub'></td>
 	</tr>
 </table>
 </form>
 </form>
 
-<?
+<?php 
 function makeIpdiscover($id, $sens, $ip=NULL) {
 
 	if( $ip != NULL )

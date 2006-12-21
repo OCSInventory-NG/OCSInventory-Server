@@ -1,4 +1,4 @@
-<?
+<?php 
 //====================================================================================
 // OCS INVENTORY REPORTS
 // Copyleft Pierre LEMMET 2006
@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-12 10:49:14 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
 
 if( isset($_POST["systemid"]) )
 	$_GET["systemid"] = $_POST["systemid"];
@@ -68,7 +68,7 @@ else
 	
 	function checkNumbers() {
 		if ( isNaN(document.getElementById('frequency_edit').value) ) {
-			alert("<? echo $l->g(411); ?>");
+			alert("<?php echo $l->g(411); ?>");
 		}
 		else {
 			document.getElementById('formopt').submit();
@@ -79,7 +79,7 @@ else
 <form action='index.php?multi=22' method='post'>
 <table align='center' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5' width='20%'>
 	<tr bgcolor='#F2F2F2'>
-		<td width='90%'><input type='radio' name='frequency' value='ALWAYS' OnClick="active('frequency_div',0);"><? echo $l->g(485); ?></td>
+		<td width='90%'><input type='radio' name='frequency' value='ALWAYS' OnClick="active('frequency_div',0);"><?php echo $l->g(485); ?></td>
 		<td rowspan='4' width='0%'>
 			<div id='frequency_div' style='display:none'>
 				<table>
@@ -96,25 +96,25 @@ else
 		</td>
 	</tr>
 	<tr bgcolor='#FFFFFF'>
-		<td><input type='radio' name='frequency' value='NEVER' OnClick="active('frequency_div',0);"><? echo $l->g(486); ?></td>
+		<td><input type='radio' name='frequency' value='NEVER' OnClick="active('frequency_div',0);"><?php echo $l->g(486); ?></td>
 	</tr>
 	<tr bgcolor='#F2F2F2'>
-		<td><input type='radio' name='frequency' value='CUSTOM' OnClick="active('frequency_div',1);"><? echo $l->g(487); ?></td>
+		<td><input type='radio' name='frequency' value='CUSTOM' OnClick="active('frequency_div',1);"><?php echo $l->g(487); ?></td>
 	</tr>
 	<tr bgcolor='#FFFFFF'>
-		<td><input checked type='radio' name='frequency' value='SERVER DEFAULT' OnClick="active('frequency_div',0);"><? echo $l->g(488); ?></td>
+		<td><input checked type='radio' name='frequency' value='SERVER DEFAULT' OnClick="active('frequency_div',0);"><?php echo $l->g(488); ?></td>
 	</tr>
 	<tr bgcolor='#FFFFFF'>
 		<td>&nbsp;</td>
-		<? if( isset($_GET["systemid"]) ) {
+		<?php if( isset($_GET["systemid"]) ) {
 			echo "<input type='hidden' value='".$_GET["systemid"]."' name='systemid'>";
 		 } ?>
-		<td><input type='Submit' value='<? echo $l->g(433); ?>'></td>
+		<td><input type='Submit' value='<?php echo $l->g(433); ?>'></td>
 	</tr>
 </table>
 </form>
 
-<?
+<?php 
 	function setFrequency( $freq ) {
 		global $_GET;
 		if( isset($_GET["systemid"])) {

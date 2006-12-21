@@ -71,7 +71,7 @@
 115 Güncelle
 116 Ekle
 117 Kayýt
-119 Silmek istediðinizden eminmisiniz ID n° 
+119 Silmek istediðinizden eminmisiniz 
 122 sil
 129 Eþitler
 130 Baþka
@@ -445,3 +445,14 @@
 551 Bu paketin ismi zaten var
 552 <i>Bilgisayar aramanýz gerekiyor, ve aktivasyon paketinin mevkisini týklayýn<br>Hem bir bilgisara hemde bir pakete etki ediyor</i>.
 553 Pencere anahtarý
+557 Customized ipdiscover
+558 Affected packages
+559 This file is not .ocs
+560 To server
+561 Unknown (deleted package)
+562 Networks having uid:
+563 Manufacturer
+564 Agent auto-launching frequency
+565 Server used for local inventories
+566 Port used for local inventories
+567 Ipdiscover latency
