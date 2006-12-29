@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2006-12-29 12:47:27 $$Author: plemmet $($Revision: 1.9 $)
 
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);
@@ -296,7 +296,7 @@
 					case "ORDERID": $laRequete.="a.orderid";break;
 					case "PRODUCTID": $laRequete.="a.productid";break;
 					case "BILLDATE": $laRequete.="a.billnbr";break;
-					case "cu": $laRequete.="a.".TAG_NAME;$forceEgal=true;break;
+					case "cu": $laRequete.="a.".TAG_NAME;break;
 					case "processors": $laRequete.="h.processors";break;
 					case "memory": $laRequete.="h.memory";break;
 					case "osname": $laRequete.="h.osname";$forceEgal=false;break;
@@ -474,16 +474,16 @@ if($_SESSION["OPT"]!=0)
 	$ligne[] = array( $l->g(555),"fmonitor","hardware","",2,1,"",false,true);
 	$ligne[] = array( $l->g(556),"lmonitor","hardware","",2,1,"",false,true);
 	$ligne[] = array( $l->g(209),"bversion","bios","",2,1,"",false,true);
+	
+	$ligne[] = array( TAG_LBL,"cu","accountinfo","",2,1);
 
 	//HARDCODED OPTIONS
 	$ligne[] = array( $l->g(312), "ipdisc");
 	$ligne[] = array( $l->g(429), "freq" );
 	$ligne[] = array( $l->g(512), "tele" );
-	//GEND
-	$ligne[] = array( TAG_LBL,"cu","accountinfo","",2,4,"",false,false);
-	//FGEND	
+	
 	foreach($_SESSION["optCol"] AS $col) {
-		if($col!="TAG"&&$col!="DEVICEID"&&$col!="HARDWARE_ID") {
+		if($col!="DEVICEID"&&$col!="TAG"&&$col!="HARDWARE_ID") {
 			$isDate = isFieldDate($col);
 			$ligne[]  =  array( $col,$col,"hardware","accountinfo",2,$isDate ? 2 : 1,"",$isDate,true);
 		}
