@@ -10,8 +10,15 @@ Ocsinventory/Server/Inventory.pm
 Ocsinventory/Server/Modperl1.pm
 Ocsinventory/Server/Modperl2.pm
 Ocsinventory/Server/System.pm
+Ocsinventory/Server/Option/Download.pm
+Ocsinventory/Server/Option/Example.pm
+Ocsinventory/Server/Option/Filter.pm
 Ocsinventory/Server/Option/Ipdiscover.pm
 Ocsinventory/Server/Option/Registry.pm
 Ocsinventory/Server/Option/Update.pm
+Ocsinventory/Interface.pm
+Ocsinventory/Map.pm
+Ocsinventory/SOAP.pm
+Ocsinventory/Interface/Internals.pm
 Ocsinventory.pm
 ocsinventory.conf

@@ -19,6 +19,7 @@ It acts as an Apache extension and require following PERL Modules.
 - 'Compress::Zlib'  => 1.33 or higher
 - 'XML::Simple'     => 2.12 or higher
 - 'Net::IP'         => 1.21 or higher
+- 'SOAP::Lite'      => 0.66 or higher, not required
 
 To setup it, just follow traditional PERL Module installation procedure.
 - perl Makefile.PL

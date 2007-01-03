@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: Makefile.PL,v 1.1 2006-03-19 15:09:38 dliroulet Exp $
+# $Id: Makefile.PL,v 1.2 2007-01-03 21:10:15 dliroulet Exp $
 #
 #-------------------------------------------------------
 
@@ -18,18 +18,26 @@
 
 use ExtUtils::MakeMaker;
 
+# See lib/ExtUtils/MakeMaker.pm for details of how to influence
+# the contents of the Makefile that is written.
+
 WriteMakefile(
     'NAME'         => 'Apache::Ocsinventory',
     'VERSION_FROM' => 'Ocsinventory.pm',
     'PREREQ_PM'    => {
-			'DBI'             => 1.40, 	# no DBI can never be any fun.
-			'Apache::DBI'     => 0.93, 	# no Apache::DBI can never be any fun.
-			'Compress::Zlib'  => 1.33, 	# no Compress:Zlib can never be any fun.
-			'DBD::mysql'      => 2.9004,# no DBD::mysql can never be any fun.
-			'XML::Simple'     => 2.12, 	# no XML::Simple can never be any fun.
-			'Net::IP'         => 1.21, 	# no Net::IP can never be any fun.
+			'DBI'             => 1.40,   # no DBI can never be any fun.
+			'Apache::DBI'     => 0.93,   # no Apache::DBI can never be any fun.
+			'Compress::Zlib'  => 1.33,   # no Compress:Zlib can never be any fun.
+			'DBD::mysql'      => 2.9004, # no DBD::mysql can never be any fun.
+			'XML::Simple'     => 2.12,   # no XML::Simple can never be any fun.
+			'Net::IP'         => 1.21,   # no Net::IP can never be any fun.
+#			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (not required).
 		      },
     'EXE_FILES'         => ['binutils/Ocsinventory_local.pl'],
+    'INSTALLSCRIPT'     => "/usr/bin",
+    'INSTALLSITESCRIPT' => "/usr/bin",
+    ($] >= 5.005 ?      ## Add these new keywords supported since 5.005
+      (AUTHOR           => 'Pascal DANEK <hunal@users.sourceforge.net>') : ()),
 );
 
 # EOF
