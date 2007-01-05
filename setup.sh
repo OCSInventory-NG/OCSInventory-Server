@@ -212,7 +212,7 @@ do
         res=0
     fi
 done
-echo "OK, Apache daemon $APACHE_BIN found ;-)"
+echo "OK, using Apache daemon $APACHE_BIN ;-)"
 echo "Using Apache daemon $APACHE_BIN" >> $SETUP_LOG
 echo
 
@@ -259,7 +259,7 @@ do
         res=0
     fi
 done
-echo "OK, Apache main configuration file $APACHE_CONFIG_FILE found ;-)"
+echo "OK, using Apache main configuration file $APACHE_CONFIG_FILE ;-)"
 echo "Using Apache main configuration file $APACHE_CONFIG_FILE" >> $SETUP_LOG
 echo
 
@@ -358,9 +358,36 @@ then
 	echo "installation aborted" >> $SETUP_LOG
 	exit 1
 else
-	echo "OK, PERL Intrepreter found at <$PERL_BIN> ;-)"
-	echo "PERL Intrepreter found at <$PERL_BIN>" >> $SETUP_LOG
+	echo "Found PERL Intrepreter at <$PERL_BIN> ;-)"
+	echo "Found PERL Intrepreter at <$PERL_BIN>" >> $SETUP_LOG
 fi
+# Ask user's confirmation 
+res=0
+while test $res -eq 0
+do
+    echo -n "Where is PERL Intrepreter binary [$PERL_BIN] ?"
+    read ligne
+    if test ! -z $ligne
+    then
+        PERL_BIN="$ligne"
+    fi
+    # Ensure file exists and is executable
+    if test -x $PERL_BIN
+    then
+        res=1
+    else
+        echo "*** ERROR: $PERL_BIN is not executable !"
+        res=0
+    fi
+    # Ensure file is not a directory
+    if test -d $PERL_BIN
+    then 
+        echo "*** ERROR: $PERL_BIN is a directory !"
+        res=0
+    fi
+done
+echo "OK, using PERL Intrepreter $PERL_BIN ;-)"
+echo "Using PERL Intrepreter $PERL_BIN" >> $SETUP_LOG
 echo
 
 
