@@ -38,8 +38,8 @@ PERL_BIN=`which perl`
 MAKE=`which make`
 # Where is located logrotate configuration directory
 LOGROTATE_CONF_DIR="/etc/logrotate.d"
-# Where is located ed simple editor
-ED_BIN=`which ed`
+# Where is located ed simple editor (not used, because now using perl to replace string in file)
+# ED_BIN=`which ed`
 # Where to store setup logs
 SETUP_LOG=`pwd`/ocs_server_setup.log
  
@@ -365,27 +365,6 @@ echo
 
 
 echo
-echo "+----------------------------------------------------------+"
-echo "| Checking for ED Editor...                                |"
-echo "+----------------------------------------------------------+"
-echo
-echo "Checking for ED Editor" >> $SETUP_LOG
-if test -z $ED_BIN
-then
-	echo "ED Editor not found !"
-	echo "ED Editor not found" >> $SETUP_LOG
-	echo "OCS Inventory NG setup is not able to work without ED Editor."
-	echo "Setup ED Editor first, or install OCS Inventory NG manually."
-	echo "Installation aborted !"
-	echo "installation aborted" >> $SETUP_LOG
-	exit 1
-else
-	echo "OK, ED Editor found at <$ED_BIN> ;-)"
-	echo "ED Editor found at <$ED_BIN>" >> $SETUP_LOG
-fi
-echo
-
-echo
 echo -n "Do you wish to setup Communication server on this computer ([y]/n)?"
 read ligne
 if (test -z $ligne) || (test $ligne = "y")
@@ -590,8 +569,7 @@ then
     #    - Compress::Zlib 1.33 or higher
     #    - XML::Simple 2.12 or higher
     #    - Net::IP 1.21 or higher
-    #    - Apache2::SOAP 0.71 or higher if mod_perl 2, not required
-    #    - SOAP::Lite 0.65 if mod_perl 1, not required.
+    #    - SOAP::Lite 0.65, not required.
     #
     echo
     echo "+----------------------------------------------------------+"
@@ -788,11 +766,15 @@ then
     echo "Configuring logrotate for Communication server."
     echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> $SETUP_LOG
     cp logrotate.ocsinventory-NG logrotate.ocsinventory-NG.local
-    $ED_BIN logrotate.ocsinventory-NG.local << EOF >> $SETUP_LOG 2>&1
-        1,$ g/^ *PATH_TO_LOG_DIRECTORY*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
-        w
-        q
-EOF
+#
+# Now using perl to replace string in file instead of ed, not available by default in Mandriva Linux
+#
+#    $ED_BIN logrotate.ocsinventory-NG.local << EOF >> $SETUP_LOG 2>&1
+#        1,$ g/^ *PATH_TO_LOG_DIRECTORY*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
+#        w
+#        q
+#EOF
+    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" logrotate.ocsinventory-NG.local
     echo "******** Begin updated logrotate.ocsinventory-NG ***********" >> $SETUP_LOG
     cat logrotate.ocsinventory-NG.local >> $SETUP_LOG
     echo "******** End updated logrotate.ocsinventory-NG ***********" >> $SETUP_LOG
@@ -817,14 +799,21 @@ EOF
     echo
     echo "Configuring Apache web server (ed ocsinventory.conf)" >> $SETUP_LOG
     cp ocsinventory.conf ocsinventory.conf.local
-    $ED_BIN ocsinventory.conf.local << EOF >> $SETUP_LOG 2>&1
-        1,$ g/^ *PerlSetEnv OCS_DB_HOST*/s#DATABASE_SERVER#$DB_SERVER_HOST#
-        1,$ g/^ *PerlSetEnv OCS_DB_PORT*/s#DATABASE_PORT#$DB_SERVER_PORT#
-        1,$ g/^ *PerlSetEnv OCS_MODPERL_VERSION*/s#VERSION_MP#$APACHE_MOD_PERL_VERSION#
-        1,$ g/^ *PerlSetEnv OCS_LOGPATH*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
-        w
-        q
-EOF
+#
+# Now using perl to replace string in file instead of ed, not available by default in Mandriva Linux
+#
+#    $ED_BIN ocsinventory.conf.local << EOF >> $SETUP_LOG 2>&1
+#        1,$ g/^ *PerlSetEnv OCS_DB_HOST*/s#DATABASE_SERVER#$DB_SERVER_HOST#
+#        1,$ g/^ *PerlSetEnv OCS_DB_PORT*/s#DATABASE_PORT#$DB_SERVER_PORT#
+#        1,$ g/^ *PerlSetEnv OCS_MODPERL_VERSION*/s#VERSION_MP#$APACHE_MOD_PERL_VERSION#
+#        1,$ g/^ *PerlSetEnv OCS_LOGPATH*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
+#        w
+#        q
+#EOF
+    $PERL_BIN -pi -e "s#DATABASE_SERVER#$DB_SERVER_HOST#g" ocsinventory.conf.local
+    $PERL_BIN -pi -e "s#DATABASE_PORT#$DB_SERVER_PORT#g" ocsinventory.conf.local
+    $PERL_BIN -pi -e "s#VERSION_MP#$APACHE_MOD_PERL_VERSION#g" ocsinventory.conf.local
+    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" ocsinventory.conf.local
     echo "******** Begin updated ocsinventory.conf ***********" >> $SETUP_LOG
     cat ocsinventory.conf.local >> $SETUP_LOG
     echo "******** End updated ocsinventory.conf ***********" >> $SETUP_LOG
@@ -1111,12 +1100,17 @@ then
     echo "Configuring IPDISCOVER-UTIL Perl script."
     echo "Configuring IPDISCOVER-UTIL Perl script (ed ipdiscover-util.pl)" >> $SETUP_LOG
     cp ipdiscover-util/ipdiscover-util.pl ipdiscover-util/ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
-    $ED_BIN ipdiscover-util/ipdiscover-util.pl.local << EOF >> $SETUP_LOG 2>&1
-        1,$ g/^ *my $dbhost*/s#localhost#$DB_SERVER_HOST#
-        1,$ g/^ *my $dbp*/s#3306#$DB_SERVER_PORT#
-        w
-        q
-EOF
+#
+# Now using perl to replace string in file instead of ed, not available by default in Mandriva Linux
+#
+#    $ED_BIN ipdiscover-util/ipdiscover-util.pl.local << EOF >> $SETUP_LOG 2>&1
+#        1,$ g/^ *my $dbhost*/s#localhost#$DB_SERVER_HOST#
+#        1,$ g/^ *my $dbp*/s#3306#$DB_SERVER_PORT#
+#        w
+#        q
+#EOF
+    $PERL_BIN -pi -e "s#localhost#$DB_SERVER_HOST#g" ipdiscover-util/ipdiscover-util.pl.local
+    $PERL_BIN -pi -e "s#3306#$DB_SERVER_PORT#g" ipdiscover-util/ipdiscover-util.pl.local
     echo "******** Begin updated ipdiscover-util.pl script ***********" >> $SETUP_LOG
     cat ipdiscover-util/ipdiscover-util.pl.local >> $SETUP_LOG
     echo "******** End updated ipdiscover-util.pl script ***********" >> $SETUP_LOG
