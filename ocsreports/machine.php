@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-01-08 14:07:19 $$Author: plemmet $($Revision: 1.11 $)
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
@@ -478,7 +478,7 @@ function print_softwares($systemid)
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;	
 		echo "<tr>";
 		echo "$td3".htmlentities(utf8_decode($item->PUBLISHER))."</td>
-			  $td3".htmlentities(utf8_decode(utf8_decode($item->NAME)))."     </td>
+			  $td3".htmlentities(utf8_decode($item->NAME))."     </td>
 		      $td3".utf8_decode($item->VERSION)."  </td>
 			  $td3".(htmlentities(utf8_decode($item->COMMENTS))?htmlentities(utf8_decode($item->COMMENTS)):"N/A")."     </td>";
 		/*      $td3".utf8_decode($item->FOLDER)."   </td>
