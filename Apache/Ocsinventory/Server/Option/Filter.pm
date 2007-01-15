@@ -30,9 +30,9 @@ use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
-	'HANDLER_PROLOG_READ' => \&prolog_filter,
+	'HANDLER_PROLOG_READ' => \&filter_prolog,
 	'HANDLER_PROLOG_RESP' => undef,
-	'HANDLER_PRE_INVENTORY' => \&inventory_filter,
+	'HANDLER_PRE_INVENTORY' => \&filter_inventory,
 	'HANDLER_POST_INVENTORY' => undef,
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
@@ -44,25 +44,62 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROLOG_FILTER_ON'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_ON'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_IP'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_INVENTORY'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_IP_CACHE_TIME'} = 0;
 
 my %autorized;
 
-sub prolog_filter{
+sub filter_prolog{
 	# ON/OFF
 	return PROLOG_CONTINUE unless $ENV{'OCS_OPT_PROLOG_FILTER_ON'};
 	
-	my $block;
-	my $current_ip = $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'};
+	my $current_context = shift;
+	my @filters = ( );
+	
+	for( @filters ){
+		if ( &$_( \$current_context ) == PROLOG_STOP ){
+			return PROLOG_STOP;
+		}
+	}
+	
+	return PROLOG_CONTINUE;
 }
 
-sub inventory_filter{
+sub filter_inventory{
 	# ON/OFF
 	return INVENTORY_CONTINUE unless $ENV{'OCS_OPT_INVENTORY_FILTER_ON'};
 	
-	my $block;
-	my $current_ip = $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'};
+	my $current_context = shift;
+	my @filters = ( \&filter_flood_ip_killer );
+	
+	for( @filters ){
+		if ( &$_( $current_context ) == INVENTORY_STOP ){
+			return INVENTORY_STOP;
+		}
+	}
+	return INVENTORY_CONTINUE;
+}
 
+sub filter_flood_ip_killer{
+	return INVENTORY_CONTINUE unless $ENV{'OCS_OPT_INVENTORY_FILTER_FLOOD_IP'};
+	my $current_context = shift;
+	my $dbh = $current_context->{DBI_HANDLE};
+# In seconds
+	my $flushEverySeconds = $ENV{OCS_OPT_INVENTORY_FILTER_FLOOD_IP_CACHE_TIME}*60;
+	
+	my $current_ip = $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'};
+	
+# Clear cache
+	$dbh->do( 'DELETE FROM conntrack WHERE (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(TIMESTAMP))>?', {}, $flushEverySeconds );
+	
+# If we cannot insert ipadress, we consider that it is in cache, then forbid transmission
+	if( !($current_context->{EXIST_FL}) && !( $dbh->do('INSERT INTO conntrack(IP,TIMESTAMP) VALUES(?,NULL)', {}, $current_ip)) ){
+		&_log(519,'filter_flood_ip_killer','new device forbidden') if $ENV{'OCS_OPT_LOGLEVEL'};
+		return INVENTORY_STOP;
+	}
+	else{
+# Everything is ok
+		return INVENTORY_CONTINUE;
+	}
 }
 1;
 

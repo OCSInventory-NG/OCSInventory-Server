@@ -138,7 +138,10 @@ sub handler{
 		}
 		
 		# Get the data
-		read(STDIN, $data, $ENV{'CONTENT_LENGTH'});
+		if( read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) == undef ){
+			&_log(512,'handler','Reading request') if sys_opt{'LOGLEVEL'};
+			return APACHE_SERVER_ERROR
+		}
 		$CURRENT_CONTEXT{'DATA'} = \$data;
 
 		# Debug level for Apache::DBI (apache/error.log)

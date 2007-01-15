@@ -160,8 +160,10 @@ sub _duplicate_replace{
 	my $device = shift;
 	
 	#Locks the device
-	return 1 if(&_lock($device));
-	
+	if( &_lock($device) ){
+		&_log( 516, 'duplicate', 'device locked');
+		return 1;
+	}
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};

@@ -78,26 +78,29 @@ sub _inventory_handler{
 		return APACHE_BAD_REQUEST;
 	}
 	
-	return APACHE_SERVER_ERROR if &_context();
-	
-	# Lock device
-	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
-		return(APACHE_FORBIDDEN);
-	}else{
-		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
-	}
-	
-	# Ref to xml in global struct 
+		
+# Ref to xml in global struct 
 	$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'} = $result;
 
-	#Inventory incoming
+#Inventory incoming
 	&_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
-	# Call to preinventory handlers
+# Call to preinventory handlers
 	if( &_pre_options() == INVENTORY_STOP ){
 		&_log(107,'inventory','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_FORBIDDEN;
 	}
+	
+	return APACHE_SERVER_ERROR if &_context();
+	
+	# Lock device
+	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
+		&_log( 516, 'inventory', 'device locked');
+		return(APACHE_FORBIDDEN);
+	}else{
+		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
+	}
+
 	# Put the inventory in the database
 	return APACHE_SERVER_ERROR if
 	# To know more about the situation (update, new machine...)
