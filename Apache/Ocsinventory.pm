@@ -139,7 +139,7 @@ sub handler{
 		
 		# Get the data
 		if( read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) == undef ){
-			&_log(512,'handler','Reading request') if sys_opt{'LOGLEVEL'};
+			&_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_SERVER_ERROR
 		}
 		$CURRENT_CONTEXT{'DATA'} = \$data;
@@ -158,7 +158,7 @@ sub handler{
 		#
 		# Inflate the data
 		unless($d = Compress::Zlib::inflateInit()){
-			&_log(506,'handler','Compress stage') if sys_opt{'LOGLEVEL'};
+			&_log(506,'handler','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}
 
