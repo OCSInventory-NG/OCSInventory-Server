@@ -1,3 +1,4 @@
+0 iso-8859-1
 2 Toutes les machines
 3 Machines ayant un logiciel
 5 Les codes unité dont je suis responsable
@@ -459,3 +460,6 @@
 565 Serveur utilisé pour les imports locaux
 566 Port utilisé pour les imports locaux
 567 Latence de l'ipdiscover
+568 RAM(MO)
+569 CPU(MHz)
+570 Aide

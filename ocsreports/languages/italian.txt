@@ -1,3 +1,4 @@
+0 iso-8859-1
 2 Tutti i computers
 3 Computers con software...
 5 Apparati di cui sono responsabile
@@ -462,3 +463,6 @@
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
+568 RAM(MO)
+569 CPU(MHz)
+570 Help

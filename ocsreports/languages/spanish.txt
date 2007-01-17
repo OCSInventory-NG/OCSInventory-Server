@@ -1,16 +1,17 @@
+0 iso-8859-1
 1 Solicitudes
 2 Todos los computadores
 3 Computadores con sotfware...
 4 Computadores sin software...
 5 Códigos de elementos bajo mi responsabilidad
-6 Máquinas sin garantía
-7 Detalles de garantía de máquinas
+6 Computadores sin garantía
+7 Detalles de garantía de computadores
 8 Seleccione su solicitud
 9 Búsqueda por varios criterios
 10 Computadores con etiquetas
 11 Computadores con etiquetas
 12 Valor de la etiqueta
-13 Enviar
+13 Aceptar
 14 Administración
 15 Etiquetas
 16 Admins
@@ -21,11 +22,11 @@
 21 primera fecha
 22 Fecha fin de garantía
 23 Computador
-24 Usuario
+24 Nombre usuario
 25 Sistema Operativo
 26 Memoria
 27 Velocidad memory (MHz)
-28 Número de máquinas
+28 Número de computadores
 29 El servidor LDAP no responde
 30 Buscar
 31 Seleccionar un parámetro
@@ -90,7 +91,7 @@
 90 Resultado
 91 Dispositivos entrada
 92 Disco(s)
-93 Controlador(s)
+93 Controlador(es)
 94 Número de ranuras
 95 Dirección MAC
 96 Sonido
@@ -104,14 +105,14 @@
 104 directamente afectados
 105 en elementos
 106 Opciones de configuración
-107 Config
+107 Configurar
 108 Solicitudes de registro
 109 Tipo de computador
 110 para
 111 Número licencia Windows
 112 Fecha garantía
 113 Cancelar
-114 register
+114 Adicionar
 115 Actualizar
 116 Adicionar
 117 Registro
@@ -230,7 +231,7 @@
 230 Entero
 231 Real
 232 Fecha
-233 Fecha actual
+233 Datos existentes:
 234 se insertó exitosamente
 235 Usuarios
 236 Cambiar contraseña
@@ -348,7 +349,7 @@
 349 Adicionar columna
 350 Tipo de CPU
 351 Número de CPU
-352 Last come
+352 Último inventario
 353 Calidad
 354 Fidelidad
 355 Entidad
@@ -366,187 +367,190 @@
 368 de red
 369 Enviado por
 370 Despliegue
-371 All components
-372 Choose the components
-373 Registered user
-374 Registered society
-375 OCS NG Agent Vesion
-376 Computer locked. Please retry in a few minutes
-377 Processor Speed (Mhz)
-380 Dictionnary
-381 Number
-382 Software name
-383 The page
-384 Move ALL
-385 to a new category
-386 OR
-387 to an existing category
-388 Category
-389 Nothing
-390 Dictionnary categories
-391 Category name
-392 Delete
-393 Search
-394 Search Category
-395 Search software EVERYWHERE
-396 Reset
-397 Go to the category
-398 Categories list
-410 EXACTLY
-411 Fields must contain only numbers !
-412 Enable/disable the registry key gathering functionality
-413 Enable/disable the automatic update functionality
-414 Enable/disable the automatic deployment functionality
-415 Enable/disable the deletion logging functionality (needed by GLPI).
-416 Enable/disable the logging functionality.
-417 Enable/disable the automatic software distribution functionality.
-418 Enable/disable the differentiate inventories functionality.
-419 Maximum number of day before an ipdiscover computer is replaced.
-420 Automatic software distribution: see documentation.
-421 Automatic software distribution: see documentation.
-422 Automatic software distribution: see documentation.
-423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
-424 Maximum number of days before a package to be downloaded on a computer become obsolete.
-425 Max number of computers per gateway retrieving IP on the network.
-426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
-427 Defines criteria that must be equals for two computers to be automatically merged.
-428 Deploy
-429 Frequency
-430 Mass processing
-431 Activate
-432 Non notified
-433 Affect
-434 Package builder
-435 New package building
-436 Can't open file
-437 Your package was successfully created in the directory
-438 New package building
-439 Protocol
-440 Priority
-441 Digest algorithm
-442 Digest encoding
-443 Action
-444 Command
-445 Path
-446 File name
-447 User notifications
-448 Warn user
-449 Text
-450 Countdown
-451 User can abort
-452 User can delay
-453 Installation completion need user action
+371 Todos los componentes
+372 Seleccione los componentes
+373 Usuario registrado
+374 Sociedad registrada
+375 Versión del Agente OCS NG
+376 Computador protegido. Por favor vuelva a intentar en unos minutos
+377 Velocidad del procesador (MHz)
+380 Diccionario
+381 Número
+382 Nombre del Programa
+383 Toda la página
+384 Mover TODOS
+385 a una categoría nueva
+386 O
+387 a un categoría existente
+388 Categoria
+389 Nada
+390 Categorías del diccionario
+391 Categoría
+392 Borrar
+393 Buscar
+394 Buscar categoría
+395 Buscar software EN TODAS PARTES
+396 Inicializar
+397 Ir a la categoría
+398 Lista de categorías
+410 EXACTAMENTE
+411 ¡Los campos deben contener únicamente números!
+412 Habilitar/Deshabilitar la funcionalidad de recolectar claves del registro
+413 Habilitar/Deshabilitar la funcionalidad de actualización automática
+414 Habilitar/Deshabilitar la funcionalidad de despliegue automático
+415 Habilitar/Deshabilitar la funcionalidad de borrado de archivos log (lo necesita GLPI).
+416 Habilitar/Deshabilitar la funcionalidad de registro de eventos.
+417 Habilitar/Deshabilitar la funcionalidad de distribución automática de software.
+418 Habilitar/Deshabilitar la funcionalidad de diferenciar inventarios.
+419 Número máximo de días antes de que se reemplace un computador identificado por ipdiscover.
+420 Distribución automática de software: ver documentación.
+421 Distribución automática de software: ver documentación.
+422 Distribución automática de software: ver documentación.
+423 Distribución automática de software: ver documentación.  (Ya no se descargarán paquetes con una prioridad igual o mayor).
+424 Número máximo de días antes que un paquete a descargar quede obsoleto.
+425 Número máximo de computadores por puerta de enlace descubriendo IPs en la red.
+426 Especifique la frecuencia (días) de inventarios. (0: inventariar al iniciar sesión. -1: no inventariar)
+427 Define criterios que deben ser iguales para los dos computadores a mezclarse automáticamente.
+428 Ejecución/Distribución
+429 Frequencia
+430 Cambiar en todos los equipos seleccionados
+431 Activar
+432 No notificar
+433 Afectar
+434 Generador de paquetes
+435 Nueva generación de paquete
+436 No puedo abrir el archivo
+437 Su paquete fue creado exitosamente en el directorio
+438 Crear un paquete nuevo
+439 Protocolo
+440 Prioridad
+441 Algoritmo digest
+442 Codificación digest
+443 Acción
+444 Comando remoto y parámetros
+445 Ruta
+446 Ejecutable y parámetros opcionales
+447 Interacción con el usuario
+448 Avisar al usuario
+449 Texto
+450 Cuenta regresiva
+451 El usuario puede abortar
+452 El usuario puede esperar
+453 Se necesita acción del usuario para terminar la instalación
 454 NO
-455 YES
-456 Execute
-457 Store
-458 Launch
-459 Countdown must be a number
-460 Unique identifier
+455 SI
+456 Ejecutar
+457 Copiar
+458 Lanzar
+459 Cuenta regresiva debe ser un número
+460 Id. único
 461 Digest
-462 Total size
-463 Fragments size (1 KB min)
-464 Fragments number
-465 Package activation
-466 WARNING: Can't find information file at
-467 WARNING: Can't find fragments files at
-468 Are you sure to want to activate this package ?
-469 Package activated, it can now be affected
-470 Https url
-471 Fragments url
-472 ERROR: Can't delete directory
-473 Timestamp must be a number
-474 Timestamp must be 10 digits long
-475 Timestamp
-476 Or activate a package manually
-477 Affect a package
-478 Computer(s)
-479 No computer selected
-480 fragments
-481 Activated packages
-482 WAITING NOTIFICATION
-483 Validate SUCCESSES
-484 Affect a custom frequency
-485 Always inventoried
-486 Never inventoried
-487 Custom
-488 Default
-489 IpDiscover behaviour
-490 NEVER IpDiscover
-491 ALWAYS IpDiscover of network
-492 ELECTED IpDiscover of network
-493 Default (can be elected)
-494 Custom inventory frequency
-495 Inventoried every 
-496 day(s)
-497 Default, uses the 'FREQUENCY' parameter.
-498 Package
-499 server
-500 Customization
-501 add package
-502 Elected
-503 Force elected
-504 Not elected
-505 Electable
-506 Not electable
-507 HAVING
-508 NOT HAVING
-509 ANY
-510 No package
-511 seconds
-512 Deployment
-513 Build
-514 Activate
-515 Activated
+462 Tamaño total
+463 Tamaño de cada parte (mín 1 KB)
+464 Número de partes
+465 Activación de paquetes
+466 AVISO: No puedo encontrar el archivo de información en
+467 WARNING: No puedo encontrar las partes del archivo en
+468 ¿Seguro que desea activar este paquete?
+469 Paquete activado, ahora lo puede afectar
+470 URL https
+471 URL partes
+472 ERROR: No se puede borrar el directorio
+473 Timestamp debe ser un número
+474 Timestamp debe tener 10 dígitos de longitud
+475 Fecha timestamp
+476 O si prefiere, activar un paquete manualmente
+477 Afectar un paquete
+478 Computador(es)
+479 No se seleccionó un computador
+480 Partes
+481 Paquetes activados
+482 ESPERANDO NOTIFICACIÓN
+483 Actualizar ESTADO
+484 Definir una frecuencia para la selección
+485 Siempre inventariado
+486 Nunca inventariado
+487 Personalizar
+488 Predeterminado
+489 Comportamiento de IpDiscover
+490 Nunca IpDiscover
+491 Siempre IpDiscover de red:
+492 IpDiscover ELEGIDO de red:
+493 Predeterminado (puede ser elegido)
+494 Frecuencia de inventarios personalizada
+495 Siempre inventariado
+496 día(s)
+497 Predeterminado, utiliza el parámetro 'FREQUENCY'.
+498 Paquete
+499 servidor
+500 Personalizar
+501 Adicionar paquete
+502 Elegido
+503 Forzar elegido
+504 Sin elegir
+505 Elegibles
+506 No elegibles
+507 TENIENDO
+508 SIN TENER
+509 CUALQUIERA
+510 Sin paquetes
+511 segundos
+512 Paquetes
+513 Crear
+514 Por activar
+515 Activados
 516 KB
-517 This option can only be affected to one computer at a time.
-518 Force IpDiscover
-519 Computer already elected for network
-520 Computer already FORCED ipdiscover for network
-521 Computer already FORCED unelectable
-522 Standard computer
-523 Revert back to standard state
-524 NEVER affect again
-525 ARE YOU SURE ?
-526 NO COMPUTER AFFECTED
-527 January
-528 February
-529 March
-530 April
-531 May
-532 June
-533 July
-534 August
-535 September
-536 October
-537 November
-538 December
-539 Sunday
-540 Monday
-541 Tuesday
-542 Wednesday
-543 Thursday
-544 Friday
-545 Saturday
-546 in state
-547 all
-548 All but SUCCESS
-549 File (deployed on client computers)
-550 File (not mandatory, may be used by "execute" commmand)
-551 This package name already exists
-552 <i>You must make a computer search, and then click 'deploy' to affect these activated packages<br>You may also affect a package to a single computer by using the 'customization' tab of any computer details</i>.
-553 Windows key
+517 Esta opción solamente se puede afectar a la vez a un computador.
+518 Forzar IpDiscover
+519 El computador ya está elegido para la red
+520 El computador ya FORZÓ ipdiscover para la red
+521 El computer ya está en estado inelegible FORZADO
+522 Computador estándar
+523 Revertir a estado estándar
+524 NUNCA volver a afectar
+525 ¿ESTÁ USTED COMPLETAMENTE SEGURO(A)?
+526 NINGÚN COMPUTADOR AFECTADO
+527 Enero
+528 Febrero
+529 Marzo
+530 Abril
+531 Mayo
+532 Junio
+533 Julio
+534 Agosto
+535 Septiembre
+536 Octubre
+537 Noviembre
+538 Diciembre
+539 Domingo
+540 Lunes
+541 Martes
+542 Miércoles
+543 Jueves
+544 Viernes
+545 Sábado
+546 en estado
+547 todos
+548 Casi ÉXITO
+549 Archivo a copiar/ejecutar en computadores clientes
+550 Archivo (opcional, puede ser utilizado por la orden "ejecutar")
+551 Este nombre de paquete ya existe
+552 <i>Haga una búsqueda de los computadores deseados y luego haga clic en 'instalar' para afectar los paquetes activados.<br>También puede afectar un paquete a un computador utilizando la opción 'personalizar' de la página de detalles del computador deseado</i>.
+553 Clave Windows
 554 Monitor: serial
-555 Monitor: manufacturer
-556 Monitor: caption
-557 Customized ipdiscover
-558 Affected packages
-559 This file is not .ocs
-560 To server
-561 Unknown (deleted package)
-562 Networks having uid:
-563 Manufacturer
-564 Agent auto-launching frequency
-565 Server used for local inventories
-566 Port used for local inventories
-567 Ipdiscover latency
+555 Monitor: fabricante
+556 Monitor: identificador
+557 Ipdiscover personalizado
+558 Paquetes afectados
+559 Este archivo no es .ocs
+560 Al servidor
+561 Desconocido (paquete borrado)
+562 Redes que tienen uid:
+563 Fabricante
+564 Frecuencia de auto-ejecución del agente
+565 Servidor usado para inventarios locales
+566 Puerto usado para inventarios locales
+567 Latencia de Ipdiscover
+568 RAM(MO)
+569 CPU(MHz)
+570 Help
