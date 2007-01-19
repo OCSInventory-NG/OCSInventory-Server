@@ -40,6 +40,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROXY_REVALIDATE_DELAY'} = 3600;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_DIFF'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_TRANSACTION'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 60;
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
