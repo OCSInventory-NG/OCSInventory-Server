@@ -12,7 +12,7 @@
 24 Utente
 25 Sistema Operativo
 26 Memoria
-27 Velocita memory (MHz)
+27 Velocita memoria (MHz)
 28 Numero di macchine
 30 Ricerca
 31 Scegli un parametro
@@ -24,7 +24,7 @@
 41 Reset
 42 Non ci sono risultati
 43 Menù principale
-45 Free space
+45 Spazio libero
 46 Ultimo inventario
 48 Dettagli Computer
 49 Nome
@@ -41,7 +41,7 @@
 65 Modello
 66 Tipo
 67 Capacità disco
-69 Editor
+69 Programma di scrittura
 70 Utilizzo
 79 Stampanti
 80 Didascalia
@@ -57,7 +57,7 @@
 91 Dispositivi di input
 92 Dischi
 93 Controllore
-94 Slot number
+94 Numero slot
 95 MAC address
 96 Suono
 97 Monitor(s)
@@ -109,7 +109,7 @@
 197 Solo numero di serie
 198 Solo Mac address
 199 Duplicazione
-200 Corresponding relay decremented
+200 diminuzione interruttore corrispondente
 201 MINORE DI
 202 MAGGIORE DI
 203 TRA
@@ -117,7 +117,7 @@
 205 Abilitato
 206 Salvato da
 207 Gateway
-208 mask
+208 maschera
 209 Versione BIOS
 210 Data BIOS
 211 Registro
@@ -159,7 +159,7 @@
 247 MySql Utente
 248 MySql password
 249 Impossibile connettersi a MySql. Inserire un utente e una password validi.
-250 MySql NomeServer
+250 NomeServer MySql
 251 Uscita
 252 Nome (scelto)        	
 253 Contenitore registro	
@@ -170,7 +170,7 @@
 258 Valore chiave registro
 259 Errore, il dato non può essere inserito (i caratteri speciali non sono ammessi)
 260 La descrizione del file è stata modificata con successo
-261 La descizione del file è stata cancellata con successo
+261 La descrizione del file è stata cancellata con successo
 262 Tipo nell'etichetta
 263 Configurazione del file delle etichette
 264 Non esiste nessun file delle etichette
@@ -196,14 +196,14 @@
 284 Costruttore BIOS
 285 Selezionare un parametro da modificare
 286 Service pack
-287 Local import
-288 Local Importation
+287 Importato Localmente
+288 Importazione Locale
 289 Informazione di rete
 290 Ricerca indirizzi Ip
 291 Modalità esportazione
 292 Aggiungi / Cancella un'unità di rete
 293 Tipi di unità di rete
-294 Nomi subnets di rete
+294 Nomi sottoreti
 295 Localizzazione
 296 Uid
 297 Non è possibile scrivere nella cartella
@@ -212,20 +212,20 @@
 300 Maschera errata: deve essere: x.x.x.x or xx (xx<32)
 301 La rete è stata inserita
 302 La rete è stata cancellata
-303 Aggiungi una subnet
+303 Aggiungi una sottorete
 304 Nome rete
 305 Uid
-306 Elenco Subnet
+306 Elenco sotterete
 307 Aggiungi un tipo
 308 Nome tipo
 309 Tipi apparati di rete
 310 IpDiscover minore di
 311 Apparati
-312 IpDiscover
+312 Ricerca Ip
 313 Gateway computers
-314 IpDiscover gateway computers
+314 coputer gateway per ricerca IP
 315 Computers non inventariati
-316 Subnet
+316 Sottorete
 317 ANALIZZA
 318 Nome DNS
 319 Risultati dell'analisi di rete
@@ -279,190 +279,190 @@
 368 di rete
 369 Eseguito da
 370 Distibuito
-371 All components
-372 Choose the components
-373 Registered user
-374 Registered society
-375 OCS NG Agent Vesion
-376 Computer locked. Please retry in a few minutes
-377 Processor Speed (Mhz)
-380 Dictionnary
-381 Number
-382 Software name
-383 The page
-384 Move ALL
-385 to a new category
-386 OR
-387 to an existing category
-388 Category
-389 Nothing
-390 Dictionnary categories
-391 Category name
-392 Delete
-393 Search
-394 Search Category
-395 Search software EVERYWHERE
+371 Tutti i componenti
+372 Scegli il componente
+373 Utente registrato
+374 Azienda registrata
+375 OCS NG Versione Agente
+376 Computer Bloccato. Riprovare tra qualche minuto
+377 Velocità Processore(Mhz)
+380 Dizionario
+381 Numero
+382 Nome Software
+383 La pagina
+384 Sposta Tutto
+385 in una nuova categoria
+386 O
+387 in una categoria esistente
+388 Categoria
+389 Niente
+390 Categorie del Dizionario
+391 Nome Categoria
+392 Cancella
+393 Cerca
+394 Cerca Categoria
+395 Cerca software OVUNQUE
 396 Reset
-397 Go to the category
-398 Categories list
-410 EXACTLY
-411 Fields must contain only numbers !
-412 Enable/disable the registry key gathering functionality
-413 Enable/disable the automatic update functionality
-414 Enable/disable the automatic deployment functionality
-415 Enable/disable the deletion logging functionality (needed by GLPI).
-416 Enable/disable the logging functionality.
-417 Enable/disable the automatic software distribution functionality.
-418 Enable/disable the differentiate inventories functionality.
-419 Maximum number of day before an ipdiscover computer is replaced.
-420 Automatic software distribution: see documentation.
-421 Automatic software distribution: see documentation.
-422 Automatic software distribution: see documentation.
-423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
-424 Maximum number of days before a package to be downloaded on a computer become obsolete.
-425 Max number of computers per gateway retrieving IP on the network.
-426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
-427 Defines criteria that must be equals for two computers to be automatically merged.
-428 Deploy
-429 Frequency
-430 Mass processing
-431 Activate
-432 Non notified
-433 Affect
-434 Package builder
-435 New package building
-436 Can't open file
-437 Your package was successfully created in the directory
-438 New package building
-439 Protocol
-440 Priority
-441 Digest algorithm
-442 Digest encoding
-443 Action
-444 Command
-445 Path
-446 File name
-447 User notifications
-448 Warn user
-449 Text
-450 Countdown
-451 User can abort
-452 User can delay
-453 Installation completion need user action
+397 Vai alla categoria
+398 Elenco Categorie
+410 ESATTAMENTE
+411 I campi devono contenere solo numeri !
+412 Abilita/Disabilita funzionalità acquisizione delle chiavi di registro
+413 Abilita/Disabilita funzionalità salvataggio automatico
+414 Abilita/Disabilita funzionalità distibuzione automatica
+415 Abilita/Disabilita funzionalità cancellazione logs distribuzione (necessaria a GLPI).
+416 Abilita/Disabilita funzionalità logs.
+417 Abilita/Disabilita funzionalità distribuzione automatica dei software.
+418 Abilita/Disabilita funzionalità inventari differenziati.
+419 Numero massimo di giorni prima che un computer ricercato con IP sia sostituito.
+420 Distribuzione automatica del programma: consultare la documentazione.
+421 Distribuzione automatica del programma: consultare la documentazione.
+422 Distribuzione automatica del programma: consultare la documentazione.
+423 Distribuzione automatica del programma: consultare la documentazione. (I componenti con una priorità uguale o maggiore non devono essere scaricati ulteriormente).
+424 Numero massimo di giorni prima che un componente scaricato su un computer diventi obsoleto.
+425 Numero massimo di computers per gateway trovati sulla rete.
+426 Specificare la frequenza (giorni) di inventario. (0: inventario ad ogni accesso. -1: nessun inventario)
+427 Definisce ii criterio secondo il quale due computers devono essere uniti automaticamente.
+428 Distribuzione
+429 Frequenza
+430 Elaborazione di massa.
+431 Attivato
+432 Non notificato
+433 Riguarda
+434 Generatore pacchetti
+435 Nuovo pacchetto generato
+436 Non è possibile aprire il file
+437 Il pacchetto è stato generato con successo nella cartella
+438 Generazione nuovo pacchetto
+439 Protocollo
+440 Priorità
+441 Algoritmo di raccolta
+442 Codifica di raccolta
+443 Azione
+444 Comando
+445 Percorso
+446 Nome file
+447 Notificazione utente
+448 Avviso utente
+449 Testo
+450 Conto alla rovescia
+451 L'utente può cancellare
+452 L'utente puo ritardare
+453 Il termine dell'operazione necessita dell'intervento dell'utente
 454 NO
-455 YES
-456 Execute
-457 Store
-458 Launch
-459 Countdown must be a number
-460 Unique identifier
-461 Digest
-462 Total size
-463 Fragments size (1 KB min)
-464 Fragments number
-465 Package activation
-466 WARNING: Can't find information file at
-467 WARNING: Can't find fragments files at
-468 Are you sure to want to activate this package ?
-469 Package activated, it can now be affected
-470 Https url
-471 Fragments url
-472 ERROR: Can't delete directory
-473 Timestamp must be a number
-474 Timestamp must be 10 digits long
-475 Timestamp
-476 Or activate a package manually
-477 Affect a package
+455 SI
+456 Esegui
+457 Magazzino
+458 Lancia
+459 Il conto alla rovescia deve essere un numero
+460 Identificatore unico
+461 Raccolta
+462 Dimensione totale
+463 Dimensione dei frammenti (1 KB min)
+464 Numero Frammenti
+465 Attivazione pacchetto
+466 AVVISO: non è stato trovato il file delle informazioni in
+467 AVVISO: non è stato trovato il file dei frammenti in
+468 Sei sicuro di voler attivare questo pacchetto ?
+469 pacchetto attivato, ora può essere ricercato
+470 indirizzo Https
+471 indirizzo dei frammenti
+472 ERRORE: la cartella non può essere cancellata
+473 Il contatore deve essere un numero
+474 Il contatore deve essere lungo 10 digits
+475 Contatore
+476 O attivare un pacchetto manualmente
+477 Riguarda il pacchetto
 478 Computer(s)
-479 No computer selected
-480 fragments
-481 Activated packages
-482 WAITING NOTIFICATION
-483 Validate SUCCESSES
-484 Affect a custom frequency
-485 Always inventoried
-486 Never inventoried
-487 Custom
+479 Nessun computer selezionato
+480 frammenti
+481 Pacchetti attivati
+482 ATTESA NOTIFICA
+483 Validazione riuscita
+484 Riguarda una frequenza personalizzata
+485 Sempre inventariato
+486 Mai inventariato
+487 Personalizzato
 488 Default
-489 IpDiscover behaviour
-490 NEVER IpDiscover
-491 ALWAYS IpDiscover of network
-492 ELECTED IpDiscover of network
-493 Default (can be elected)
-494 Custom inventory frequency
-495 Inventoried every 
-496 day(s)
-497 Default, uses the 'FREQUENCY' parameter.
-498 Package
+489 Funzionamento in ricerca IP
+490 Non ricercare mai IP
+491 Ricerca sempre indirizzi IP della rete
+492 ELETTO ricercatore IP della rete
+493 Default (può essere eletto)
+494 Frequenza di inventario personalizzata
+495 Inventariato ogni
+496 giorno(i)
+497 Default, usa il parametro FREQUENZA'.
+498 Pacchetto
 499 server
-500 Customization
-501 add package
-502 Elected
-503 Force elected
-504 Not elected
-505 Electable
-506 Not electable
-507 HAVING
-508 NOT HAVING
-509 ANY
-510 No package
-511 seconds
-512 Deployment
-513 Build
-514 Activate
-515 Activated
+500 Personalizzazione
+501 aggiungi pacchetto
+502 Scelta
+503 Scelta forzata
+504 Non prescelto
+505 Nominato
+506 Non nominabile
+507 HA
+508 NON HA
+509 TUTTI
+510 Nessun pacchetto
+511 secondi
+512 Distribuire
+513 Costruire
+514 Attivare
+515 Attivato
 516 KB
-517 This option can only be affected to one computer at a time.
-518 Force IpDiscover
-519 Computer already elected for network
-520 Computer already FORCED ipdiscover for network
-521 Computer already FORCED unelectable
-522 Standard computer
-523 Revert back to standard state
-524 NEVER affect again
-525 ARE YOU SURE ?
-526 NO COMPUTER AFFECTED
-527 January
-528 February
-529 March
-530 April
-531 May
-532 June
-533 July
-534 August
-535 September
-536 October
-537 November
-538 December
-539 Sunday
-540 Monday
-541 Tuesday
-542 Wednesday
-543 Thursday
-544 Friday
-545 Saturday
-546 in state
-547 all
-548 All but SUCCESS
-549 File (deployed on client computers)
-550 File (not mandatory, may be used by "execute" commmand)
-551 This package name already exists
-552 <i>You must make a computer search, and then click 'deploy' to affect these activated packages<br>You may also affect a package to a single computer by using the 'customization' tab of any computer details</i>.
-553 Windows key
-554 Monitor: serial
-555 Monitor: manufacturer
-556 Monitor: caption
-557 Customized ipdiscover
-558 Affected packages
-559 This file is not .ocs
-560 To server
-561 Unknown (deleted package)
-562 Networks having uid:
-563 Manufacturer
-564 Agent auto-launching frequency
-565 Server used for local inventories
-566 Port used for local inventories
-567 Ipdiscover latency
-568 RAM(MO)
-569 CPU(MHz)
-570 Help
+517 Questa operazione può essere eseguita su un computer per volta.
+518 Forza Ricerca Ip
+519 Computer già prescelto per la rete
+520 Computer già obbligato a ricercare indirizzi IP della rete
+521 Computer Già obbligato a non essere prescelto
+522 Computer standard
+523 Ritorna allo stato originario
+524 NON interessa più
+525 SEI SICURO ?
+526 NESSUN COMPUTER SOGGETTO
+527 Gennaio
+528 Febbraio
+529 Marzo
+530 Aprile
+531 Maggio
+532 Giugno
+533 Luglio
+534 Agosto
+535 Settembre
+536 Ottobre
+537 Novembre
+538 Dicembre
+539 Domenica
+540 Lunedi
+541 Martedi
+542 Mercoledi
+543 Giovedi
+544 Venerdi
+545 Sabato
+546 in posizione
+547 tutti
+548 tutti ma RIUSCITI
+549 File (distribuito sul computer locale)
+550 File (non vincolante, può essere usato dal comando "esegui")
+551 Il nome del pacchetto esiste già
+552 <i>Devi eseguire una ricerca computer, e quindi cliccare 'distribuire' perchè venga distribuito il pacchetto<br>Puoi anche distribuire un pacchetto su un singolo computer usando la linguetta 'personalizzazione'</i>.
+553 Chiave windows
+554 Monitor: numero di serie
+555 Monitor: produttore
+556 Monitor: legenda
+557 Ricercatore  IP personalizzato
+558 Pacchetto influenzato
+559 Questo file non è .ocs
+560 Al server
+561 Sconosciuto (pacchetto cancellato)
+562 Rete con uid:
+563 Produttore
+564 Frequenza di lancio automatico dell'agente
+565 Server usato per l'inventario locale
+566 Porta usata per gli inventari locali
+567 Latenza del ricercatore IP
+568 MEMORIA(MO)
+569 PROCESSORE(MHz)
+570 Aiuto
