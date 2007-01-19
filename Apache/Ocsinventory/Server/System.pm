@@ -151,9 +151,17 @@ sub _check_deviceid{
 
 sub _lock{
  	my $device = shift;
-	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
+ 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	
+	if($dbh->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
 		return(0);
 	}else{
+		if( $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ){
+			if( $dbh->do( 'SELECT * FROM locks WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ) != '0E0' ) {
+				&_log(516,'lock', 'reuse lock') if $ENV{'OCS_OPT_LOGLEVEL'};
+				return 0;
+			}
+		}
 		return(1);
 	}
 }
