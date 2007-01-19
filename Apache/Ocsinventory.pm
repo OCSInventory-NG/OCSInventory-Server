@@ -19,7 +19,7 @@ BEGIN{
 		require Apache::Ocsinventory::Server::Modperl2;
 		Apache::Ocsinventory::Server::Modperl2->import();
 	}else{
-		if(defined($ENV{'OCS_MODPERL_VERSION'})){
+		if(!defined($ENV{'OCS_MODPERL_VERSION'})){
 			die("OCS_MODPERL_VERSION not defined. Abort\n");
 		}else{
 			die("OCS_MODPERL_VERSION set to, a bad parameter. Must be '1' or '2'. Abort\n");
