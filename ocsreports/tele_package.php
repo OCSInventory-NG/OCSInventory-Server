@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.8 $)
 ?>
 <script language='javascript'>
 
@@ -38,9 +38,9 @@
 <?php 
 	set_time_limit(0);
 	printEnTete($l->g(434));
-
-	if( isset($_POST["nom"]) ) {
 	
+	if( isset($_POST["nom"]) ) {
+
 		$verifN = "SELECT fileid FROM download_available WHERE name='".$_POST["nom"]."'";
 		$resN = mysql_query( $verifN, $_SESSION["readServer"] ) or die(mysql_error());
 		

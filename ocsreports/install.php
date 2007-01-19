@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.11 $)
 
 set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
@@ -190,7 +190,7 @@ fclose($ch);
 
 echo "<br><center><font color=green><b>MySql config file successfully written</b></font></center>";
 
-$db_file = "ocsbase.sql";
+$db_file = "files/ocsbase.sql";
 if($dbf_handle = @fopen($db_file, "r")) {
 	echo "<br><center><font color=black><b>Please wait, database update may take up to 30 minutes...";
 	flush();

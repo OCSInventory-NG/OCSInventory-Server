@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-08 14:07:19 $$Author: plemmet $($Revision: 1.11 $)
+//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.12 $)
+include_once('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-29 12:47:27 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.10 $)
 
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);
@@ -313,40 +313,55 @@
 					case "fmonitor": $laRequete.="m.hardware_id=h.id AND m.manufacturer";break;
 					case "lmonitor": $laRequete.="m.hardware_id=h.id AND m.caption";break;
 					default: $laRequete.="a.".$_POST["chm_".$i]; break;
-				}		
+				}
 				
-				if( ! $forceEgal ) {
-					switch($_POST["ega_".$i]) {
-						case $l->g(410): $laRequete.=" = ";$forceEgal=true; break;	
-						case $l->g(129): $laRequete.=" LIKE ";$forceLike=true; break;						
-						case $l->g(130): $laRequete.=" NOT LIKE ";$forceLike=true; break;					
-						case $l->g(346):
-						case $l->g(201): $laRequete.="<"; $forceEgal=true; break;
-						case $l->g(347):
-						case $l->g(202): $laRequete.=">"; $forceEgal=true; break;
-						case $l->g(203): $laRequete.="<'".$_POST["val2_".$i]."' AND $tblIneq.".$_POST["chm_".$i].">"; $forceEgal=true; break;
-						//case $l->g(204): $laRequete.=">'".$_POST["val2_".$i]."' OR h.".$_POST["chm_".$i]."<";break;
-						default: $laRequete.=" LIKE "; $forceLike=true;break;
-					}
+				if( $_POST["val_".$i] == "" ) {
+						switch($_POST["ega_".$i]) {
+							case $l->g(410):	
+							case $l->g(129): $laRequete.=" IS NULL "; break;						
+							case $l->g(130): 					
+							case $l->g(346):
+							case $l->g(201): 
+							case $l->g(347):
+							case $l->g(202): 
+							case $l->g(203): 
+							default: $laRequete .=" IS NOT NULL "; break;		
+						}
 				}
 				else {
-					switch($_POST["ega_".$i]) {
-						case $l->g(410):	
-						case $l->g(129): $laRequete.=" = ";break;						
-						case $l->g(130): 					
-						case $l->g(346):
-						case $l->g(201): 
-						case $l->g(347):
-						case $l->g(202): 
-						case $l->g(203): 
-						default: $laRequete.=" <> ";break;		
+					if( ! $forceEgal ) {
+						switch($_POST["ega_".$i]) {
+							case $l->g(410): $laRequete.=" = ";$forceEgal=true; break;	
+							case $l->g(129): $laRequete.=" LIKE ";$forceLike=true; break;						
+							case $l->g(130): $laRequete.=" NOT LIKE ";$forceLike=true; break;					
+							case $l->g(346):
+							case $l->g(201): $laRequete.="<"; $forceEgal=true; break;
+							case $l->g(347):
+							case $l->g(202): $laRequete.=">"; $forceEgal=true; break;
+							case $l->g(203): $laRequete.="<'".$_POST["val2_".$i]."' AND $tblIneq.".$_POST["chm_".$i].">"; $forceEgal=true; break;
+							//case $l->g(204): $laRequete.=">'".$_POST["val2_".$i]."' OR h.".$_POST["chm_".$i]."<";break;
+							default: $laRequete.=" LIKE "; $forceLike=true;break;
+						}
 					}
+					else {
+						switch($_POST["ega_".$i]) {
+							case $l->g(410):	
+							case $l->g(129): $laRequete.=" = ";break;						
+							case $l->g(130): 					
+							case $l->g(346):
+							case $l->g(201): 
+							case $l->g(347):
+							case $l->g(202): 
+							case $l->g(203): 
+							default: $laRequete.=" <> ";break;		
+						}
+					}
+					
+					if( $forceEgal || !$forceLike )
+						$laRequete.="'".$_POST["val_".$i]."'";	
+					else
+						$laRequete.="'%".$_POST["val_".$i]."%'";
 				}
-				
-				if( $forceEgal || !$forceLike )
-					$laRequete.="'".$_POST["val_".$i]."'";	
-				else
-					$laRequete.="'%".$_POST["val_".$i]."%'";				
 			}			
 		}
 		
@@ -543,7 +558,7 @@ function afficheLigne($ligne)
 	
 	if( $type == 7) {// un soft
 		echo"<tr bgcolor=$color><td>
-			<input type=checkbox id='act$suff' name='act$suff'".($_SESSION["softs"][$indLigneSoft][0]=="on"?" checked":"").">&nbsp;".$l->g(205)."</input>
+			<input type=checkbox id='act$suff' name='act$suff'".($_SESSION["softs"][$indLigneSoft][0]=="on"||$_POST["selOpt"]==$label?" checked":"").">&nbsp;".$l->g(205)."</input>
 			<input type=hidden name='chm$suff' value=$champ>
 			<input type=hidden name='lbl$suff' value='".urlencode($label)."'>
 		</td><td>$label</td><td>";
@@ -561,7 +576,7 @@ function afficheLigne($ligne)
 	echo"		
 	<tr bgcolor=$color>
 		<td>
-			<input type=checkbox id='act$suff' name='act$suff'".($_SESSION["reqs"][$label][0]=="on"?" checked":"").">&nbsp;".$l->g(205)."</input>
+			<input type=checkbox id='act$suff' name='act$suff'".($_SESSION["reqs"][$label][0]=="on"||$_POST["selOpt"]==$label?" checked":"").">&nbsp;".$l->g(205)."</input>
 			<input type=hidden name='chm$suff' value=$champ>
 			<input type=hidden name='lbl$suff' value='".urlencode($label)."'>
 		</td>
@@ -650,13 +665,13 @@ function afficheLigne($ligne)
 	{
 		echo "<select OnClick='act$suff.checked=true' name='val$suff'>";	
 		$res=mysql_query($laRequete, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
-		
-		$linSel = "Linux"== $_SESSION["reqs"][$label][3] ?" selected":"";
-		$winSel = "Windows"== $_SESSION["reqs"][$label][3] ?" selected":"";
+		echo $_SESSION["reqs"][$label][3];
+		$linSel = "LINUX"   == $_SESSION["reqs"][$label][3] ?" selected":"";
+		$winSel = "WINDOWS" == $_SESSION["reqs"][$label][3] ?" selected":"";
 		
 		if( $champ=="osname")
-			echo "<option value='Linux' $linSel>LINUX (".$l->g(547).")</option>
-				  <option value='Windows' $winSel>WINDOWS (".$l->g(547).")</option>";
+			echo "<option value='LINUX' $linSel>LINUX (".$l->g(547).")</option>
+				  <option value='WINDOWS' $winSel>WINDOWS (".$l->g(547).")</option>";
 		
 		while($row=mysql_fetch_array($res))
 		{

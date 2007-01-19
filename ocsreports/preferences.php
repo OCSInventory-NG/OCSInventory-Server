@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.18 $)
+//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.19 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -33,6 +33,7 @@ if( isset($_GET["uid"]) ) {
 }
 
 if(isset($_GET["lang"])) {
+	unset( $_SESSION["fichLang"]  );
 	$_SESSION["langueFich"] = "languages/".$_GET["lang"].".txt";
 	unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"]);
 	setcookie( "lang", $_GET["lang"], time() + 3600 * 24 * 365 ); //expires in 365 days	
@@ -47,7 +48,7 @@ if(isset($_GET["lang"])) {
 }
 
 define("GUI_VER", "4100");
-define("MAC_FILE", "oui.txt");
+define("MAC_FILE", "files/oui.txt");
 define("SADMIN", 1);
 define("LADMIN", 2);   
 define("ADMIN", 3);
@@ -65,10 +66,15 @@ define("DB_NAME", "ocsweb");
 
 define("TAG_LBL", "Tag");
 define("DEFAULT_LANGUAGE", "" );
-if( isset($_COOKIE["lang"]) )
-	$l = new FichierConf($_COOKIE["lang"]);
-else
-	$l = new FichierConf(DEFAULT_LANGUAGE?DEFAULT_LANGUAGE:getBrowserLang());
+
+if( ! isset( $_SESSION["fichLang"] ) ) {
+	if( isset($_COOKIE["lang"]) )
+		$_SESSION["fichLang"] = new FichierConf($_COOKIE["lang"]);
+	else 
+		$_SESSION["fichLang"] = new FichierConf(DEFAULT_LANGUAGE?DEFAULT_LANGUAGE:getBrowserLang());
+}
+$l = $_SESSION["fichLang"];
+
 dbconnect();
 if(!isset($_SESSION["rangCookie"])) $_SESSION["rangCookie"] = 0;
 
@@ -77,7 +83,7 @@ if( ! isset($_SESSION["availFieldList"]) ) {
 	$_SESSION["availFieldList"] = array();
 	
 	$translateFields = array ( "a.".TAG_NAME=>TAG_LBL, "h.lastdate"=>$l->g(46), "h.name"=>$l->g(23), 
-	"h.userid"=>$l->g(24), 	"h.osname"=>$l->g(25), "h.memory"=>"Ram(MO)", "h.processors"=>"CPU(MHz)",
+	"h.userid"=>$l->g(24), 	"h.osname"=>$l->g(25), "h.memory"=>$l->g(568), "h.processors"=>$l->g(569),
 	"h.workgroup"=>$l->g(33), "h.osversion"=>$l->g(275), "h.oscomments"=>$l->g(286), "h.processort"=>$l->g(350), "h.processorn"=>$l->g(351),
 	"h.swap"=>"Swap", "lastcome"=>$l->g(352), "h.quality"=>$l->g(353), "h.fidelity"=>$l->g(354),"h.description"=>$l->g(53), 
 	"h.wincompany"=>$l->g(355), "h.winowner"=>$l->g(356), "h.useragent"=>$l->g(357), "b.smanufacturer"=>$l->g(64),
@@ -139,7 +145,7 @@ if(!isset($_SESSION["currentFieldList"])) {// gui just launched
 	}
 	else {// load default values
 		$_SESSION["currentFieldList"] = array("a.".TAG_NAME=>TAG_LBL,"h.lastdate"=>$l->g(46),"h.name"=>$l->g(23),
-		"h.userid"=>$l->g(24),"h.osname"=>$l->g(25),"h.memory"=>"Ram(MO)","h.processors"=>"CPU(MHz)");
+		"h.userid"=>$l->g(24),"h.osname"=>$l->g(25),"h.memory"=>$l->g(568),"h.processors"=>$l->g(569));
 		$_SESSION["rangCookie"] = 0;
 		foreach( $_SESSION["currentFieldList"] as $key=>$val ) {				
 			setcookie( "col[$key][value]", $val, time() + 3600 * 24 * 365 ); //expires in 365 days
@@ -170,7 +176,7 @@ if(isset($_GET["suppCol"])) { // a column must be removed
 }
 if( isset($_GET["resetcolumns"])) {
 	$_SESSION["currentFieldList"] = array("a.".TAG_NAME=>TAG_LBL,"h.lastdate"=>$l->g(46),"h.name"=>$l->g(23),
-	"h.userid"=>$l->g(24),"h.osname"=>$l->g(25),"h.memory"=>"Ram(MO)","h.processors"=>"CPU(MHz)");
+	"h.userid"=>$l->g(24),"h.osname"=>$l->g(25),"h.memory"=>$l->g(568),"h.processors"=>$l->g(569));
 	
 	foreach( $_SESSION["availFieldList"] as $key=>$val ) {
 		setcookie( "col[$key][value]", FALSE, time() - 3600 ); // deleting corresponding cookie

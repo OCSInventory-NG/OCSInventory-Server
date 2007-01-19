@@ -8,8 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.9 $)
-
+//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.10 $)
+include("fichierConf.class.php");
 error_reporting(E_ALL & ~E_NOTICE);
 include_once('req.class.php');
 @session_start();
@@ -173,9 +173,10 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		
 		tab($l->g(225), 9);
 		tab($l->g(175), 6);
-		tab("Label", 12);
+		tab($l->g(263), 12);
 		tab($l->g(235), 10);
 		tab($l->g(287), 13);
+		tab($l->g(570), 28);
 	}	
 }	
 
@@ -261,7 +262,10 @@ function tab( $label, $multi, $lien=null ) {
  		case 8:	$img = "agent";	break;
  		case 9:	$img = "administration"; break;
 		case 13: $img = "local";	break;		
-		case 12: $img = "label";	break;	
+		case 12: $img = "label";	break;
+		case 28: $img = "aide";		
+				$llink = "files/guide.pdf' target='_BLANK";
+		        break;			
 		default: if( $label==$l->g(15) )
 					$img = "utilisateurs";
 				else if( $label==$l->g(16) )
