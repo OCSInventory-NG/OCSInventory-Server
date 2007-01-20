@@ -381,7 +381,7 @@
 384 Mover tudo
 385 para uma nova categoria
 386 OU
-387 para uma categora exstente
+387 para uma categoria existente
 388 Categoria
 389 Nada
 390 Categorias de dicionário
@@ -516,7 +516,7 @@
 530 Abril
 531 Maio
 532 Junho
-533 Julio
+533 Julho
 534 Augosto
 535 Setembro
 536 Outubro
@@ -535,7 +535,7 @@
 549 Arquivo (distribuído nos computadores clientes)
 550 Arquivo (não obrigatório, pode ser usado pelo comando 'executa')
 551 Já existe um pacote com este nome
-552 <i>Você deve fazer uma busca por computadores, e então clicar em 'configurar' para afetar estes pacotes ativos<br> Você pode também afetar um pacote em um único computador usando a aba 'customização' nos detablhes de qualquer computador</i>.
+552 <i>Você deve fazer uma busca por computadores, e então clicar em 'configurar' para afetar estes pacotes ativos<br> Você pode também afetar um pacote em um único computador usando a aba 'customização' nos detalhes de qualquer computador</i>.
 553 Chave do windows
 554 Monitor: Serial
 555 Monitor: Fabricante
@@ -553,4 +553,4 @@
 567 Latência da descoberta de IPs
 568 RAM(MO)
 569 CPU(MHz)
-570 Help
+570 Ajuda
