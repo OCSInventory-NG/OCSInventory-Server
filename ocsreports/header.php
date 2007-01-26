@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.9 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 set_time_limit(0);
@@ -69,6 +69,11 @@ if( isset($_GET["first"] )) {
 	function wait( sens ) {	
 		var mstyle = document.getElementById('wait').style.display	= (sens!=0?"block" :"none");	
 	}
+	
+	function ruSure( pageDest ) {
+		if( confirm("<? echo $l->g(525); ?>") )
+			window.location = pageDest;
+	}
 
 </script>
 </head> 
@@ -89,9 +94,9 @@ if( !isset($_GET["popup"] )) {
 	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
 	<b>Ver. <?php echo GUI_VER?>&nbsp&nbsp&nbsp;</b>	
 <?php 
-	}
+}
 
-	if(isset($_POST["subLogin"])) {				
+	if(isset($_POST["login"])) {				
 		$req="SELECT id, accesslvl, passwd FROM operators WHERE id='".$_POST["login"]."'";
 		
 		$res=mysql_query($req,$_SESSION["readServer"]) or die(mysql_error());
@@ -118,6 +123,7 @@ if( !isset($_GET["popup"] )) {
 	}	
 	
 	if ( !isset($_SESSION["loggeduser"]) && $dir = @opendir("languages")) {
+		echo "<br><br>";
 		while($filename = readdir($dir)) {
 			if( strstr ( $filename, ".txt") === false)
 				continue;
@@ -127,21 +133,28 @@ if( !isset($_GET["popup"] )) {
 		closedir($dir);
 	}
 	
+	if(isset($_SESSION["loggeduser"])&&!isset($_GET["popup"] )) {
+		echo "<br><br><a href=?logout>";
+		echo "<img src='image/deconnexion.png' title='".$l->g(251)."' alt='".$l->g(251)."'>";
+		echo "</a>&nbsp;&nbsp;&nbsp;<a href=index.php?multi=11>";
+		echo "<img src='image/pass";
+		if( $_GET["multi"] == 11 )
+			echo "_a";
+		echo ".png' title='".$l->g(236)."' alt='".$l->g(236)."' width=40px>";
+		echo "</a>";
+	}
+	echo "</td></tr></table>";
+	
 	if( isset($err) )
 		echo $err;
-	
-	if(isset($_SESSION["loggeduser"]) && !isset($_GET["popup"]))
-		echo "</td></tr><tr align=center><td align='center' colspan='3'>&nbsp;&nbsp;&nbsp;<a href=?logout><font color=black><u>".$l->g(251)."</u></font></a>&nbsp;&nbsp;&nbsp;<a href=index.php?multi=11><font color=black><u>".$l->g(236)."</u></font></a></td>";
-
-	echo "</tr></table>";
-
+		
 	if(!isset($_SESSION["loggeduser"]))
 	{			
-		echo "<br><form name=log action=index.php method=post>
-		<table BORDER='0' WIDTH = '35%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
+		echo "<br><form name='log' id='log' action='index.php' method='post'>
+		<table BORDER='0' WIDTH = 250px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
 			<tr>
 				<td><b>".$l->g(24).":</b></td>
-				<td><input name=login type=input size=15></td>
+				<td width='1%'><input name=login type=input size=15></td>
 			</tr>
 			<tr>
 				<td><b>".$l->g(217).":</b></td>
@@ -156,8 +169,8 @@ if( !isset($_GET["popup"] )) {
 		";
 		include ("footer.php");
 		die();
-	}
-	
+	}	
+
 	$limitedAccess = array(2,3,4,5,6,7,8,9,14,13,22,23,24,27,20,21,26);
 	if( in_array($_GET["multi"],$limitedAccess) && $_SESSION["lvluser"]!=1) {
 		echo "<br><br><center><b><font color=red>ACCESS DENIED</font></b></center><br>";

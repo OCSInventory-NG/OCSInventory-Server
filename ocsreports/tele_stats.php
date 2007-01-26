@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.5 $)
+include_once('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
@@ -24,9 +25,16 @@ else
 
 require ('preferences.php');
 
-if( isset($_GET["delsucc"]) ) {	
-	
+if( isset($_GET["delsucc"]) ) {		
 	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%' AND 
+	ivalue = (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+}
+else if( isset($_GET["deltout"]) ) {		
+	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NOT NULL
+	ivalue = (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+}
+else if( isset($_GET["delnotif"]) ) {		
+	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NULL AND 
 	ivalue = (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
 }
 
@@ -77,7 +85,12 @@ else {
 	$valStats = mysql_fetch_array( $resStats );
 	
 	echo "<br><img src='tele_stats.php?generatePic=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>";
-	echo "<center><b>".$l->g(28).": ".$valStats["nb"]."</b><br><br><a href='tele_stats.php?delsucc=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(483)."</a>";	
+	echo "<center><b>".$l->g(28).": ".$valStats["nb"]."</b><br><br>";
+	echo "<table width='100%'><tr>";
+	echo "<td width='33%' align='center'><a href='tele_stats.php?delsucc=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(483)."</a></td>";	
+	echo "<td width='33%' align='center'><a href='tele_stats.php?deltout=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(571)."</a></td>";	
+	echo "<td width='33%' align='center'><a href='tele_stats.php?delnotif=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(575)."</a></td>";
+	echo "</tr></table>";
 	?>
 	</BODY>
 	</HTML>
@@ -89,7 +102,7 @@ else {
       $size=3; /* taille de la police, largeur du caractère */
       $ifw=imagefontwidth($size);                            
        
-      $w=800; /* largeur de l'image */
+      $w=850; /* largeur de l'image */
       $h=500; /* hauteur de l'image */
       $a=200; /* grand axe du camembert */
       $b=$a/2; /* 60 : petit axe du camembert */

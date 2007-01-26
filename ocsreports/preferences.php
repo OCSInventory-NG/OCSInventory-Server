@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.19 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.20 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -65,7 +65,7 @@ define("DB_NAME", "ocsweb");
 //////////
 
 define("TAG_LBL", "Tag");
-define("DEFAULT_LANGUAGE", "" );
+define("DEFAULT_LANGUAGE", "english" );
 
 if( ! isset( $_SESSION["fichLang"] ) ) {
 	if( isset($_COOKIE["lang"]) )
@@ -366,13 +366,14 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		}		
 
 		if( !$modeCu && $count > 0) {
-			echo "<br><center><table width='60%' border='0'><tr><td align='center'><b>".$count." ".$l->g(90)."</b>";		
+			$largeur = $columneditable ? 33 : 50;
+			echo "<br><center><table width='72%' border='0'><tr><td align='center' width='$largeur%'><b>".$count." ".$l->g(90)."</b>";		
 					
 			echo "<br>&nbsp;&nbsp;<a href=ipcsv.php target=_blank>(".$l->g(183).")</a></td>";
 				
-			$machNmb = array(5,10,15,20,50,100);
+			$machNmb = array(5,10,15,20,50,100);			
 			
-			echo "<td align='center'><form name='pcp' method='GET' action='index.php'>$hiddens".$l->g(340).
+			echo "<td align='center' align='center' width='$largeur%'><form name='pcp' method='GET' action='index.php'>$hiddens".$l->g(340).
 			":&nbsp;<select name='pcparpage' OnChange='pcp.submit();'>";
 			
 			foreach( $machNmb as $nbm ) {
@@ -383,7 +384,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			echo "</select></form></font></td>";
 			
 			if( $columneditable) {
-				echo "<td align='center'><form name='addCol' method='GET' action='index.php'>";
+				echo "<td align='center' align='center' width='$largeur%'><form name='addCol' method='GET' action='index.php'>";
 				echo $hiddens;							
 				echo "<select name='newcol' OnChange='addCol.submit();'>";			
 				echo "<option>".$l->g(349)."</option>";
@@ -403,7 +404,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				echo "</select><input type='submit' name='resetcolumns' value='".$l->g(396)."'></form></td>";
 			}
 			
-			echo "</tr></table></center><br>";
+			echo "</tr></table></center>";
 		}
 		
 		if($modeRedon) {
@@ -506,10 +507,16 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			echo "<td>&nbsp;</td>";
 		}
 		if( $teledeploy ) {
-			echo "<td>&nbsp;</td><td align='center'><b>".$l->g(431)."</b></td><td align='center'><b>Stats</b></td>";	
+			echo "<td align='center' width='50px'><b>".$l->g(432)."</b></td>
+			<td width='50px' align='center'><b>".$l->g(572)."</b></td>
+			<td width='50px' align='center'><b>".$l->g(573)."</b></td>
+			<td align='center'><b>".$l->g(574)."</b></td>
+			<td align='center'><b>".$l->g(431)."</b></td>
+			<td>&nbsp;</td>";	
 		}
 		else if( $affect ) {
-			echo "<td><b>".$l->g(122)."</b></td><td><b>".$l->g(432)."</b></td>";
+			if( $affect == 2 )
+				echo "<td><b>".$l->g(122)."</b></td>";
 			if( $affect != 2 )
 				echo "<td align='center'><b>".$l->g(433)."</b></td>";
 		}
@@ -592,19 +599,38 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				echo "<td align=center><a href='#' OnClick='confirme(\"".$item[$l->g(95)]."\",1,\"\");'><img src=image/supp.png></a></td>";
 			}
 			
-			if( $teledeploy ) {	
-				echo "<td align='center'><a href='index.php?multi=21&suppack=".$item[0]."'><img src=image/supp.png></a></td>
-				<td align='center'><a href='index.php?multi=21&actpack=".$item[0]."'><img src='image/Gest_admin1.png'></a></td>
-<td align='center'>
-<a OnClick='window.open(\"tele_stats.php?sessid=".session_id()."&stat=".$item[0]."\",\"fenstat".$item[0]."\",\"location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=820,height=600\")' 
- href='javascript:void(0);'><img src='image/cal.gif'></a></td>";	
+			if( $teledeploy ) {
+				$resNot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+ AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue IS NULL", $_SESSION["readServer"]);
+				$resSucc = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+ AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%'", $_SESSION["readServer"]);
+				$resErr = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+ AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'ERROR%'", $_SESSION["readServer"]);
+				$resTot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+ AND e.id=d.ivalue AND name='DOWNLOAD'", $_SESSION["readServer"]);
+ 
+				$valNot = mysql_fetch_array( $resNot );
+				$valSucc = mysql_fetch_array( $resSucc );
+				$valErr = mysql_fetch_array( $resErr );
+				$valTot = mysql_fetch_array( $resTot );
+				
+				echo "<td align='center'>".$valNot["nb"]."</td><td align='center'><font color='green'>".$valSucc["nb"]."</font></td><td align='center'><font color='red'>".$valErr["nb"]."</font></td>";
+				echo "<td align='center'>";
+				if( $valTot["nb"] > 0 )
+					echo "<a OnClick='window.open(\"tele_stats.php?sessid=".session_id()."&stat=".$item[0]."\",\"fenstat".$item[0]."\",\"location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=850,height=600\")' 
+ href='javascript:void(0);'><img src='image/cal.gif'></a>";
+				else
+					echo "<b>-</b>";
+					
+				echo "</td><td align='center'><a href='index.php?multi=21&actpack=".$item[0]."'><img src='image/Gest_admin1.png'></a></td><td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?multi=21&suppack=".$item[0]."\")'><img src=image/supp.png></a></td>";	
 			}
 			else if( $affect ) {
-				echo "<td align='center'><a href='index.php?multi=".($affect==2?26:24)."&suppack=".$item[0]."'><img src=image/supp.png></a></td>";
-				echo "<td align='center'><a href='index.php?multi=".($affect==2?26:24)."&suppack=".$item[0]."&nonnot=1'><img src=image/suppv.png></a></td>";
-				
+				if( $affect == 2 ) {
+					echo "<td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?multi=".($affect==2?26:24)."&suppack=".$item[0]."\")'><img src=image/supp.png></a></td>";
+					//echo "<td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?multi=".($affect==2?26:24)."&suppack=".$item[0]."&nonnot=1\")'><img src=image/suppv.png></a></td>";
+				}
 				if( $affect != 2)
-					echo "<td align='center'><a href='index.php?".($affect==3?"systemid=".$_GET["systemid"]."&":"")."multi=24&affpack=".$item[0]."'><img src='image/Gest_admin1.png'></a></td>";	
+					echo "<td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?".($affect==3?"systemid=".$_GET["systemid"]."&":"")."multi=24&affpack=".$item[0]."\")'><img src='image/Gest_admin1.png'></a></td>";	
 			}
 						
 			if( $registrable &&  isset($item["mac"]) )

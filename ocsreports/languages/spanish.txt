@@ -450,7 +450,7 @@
 464 Número de partes
 465 Activación de paquetes
 466 AVISO: No puedo encontrar el archivo de información en
-467 WARNING: No puedo encontrar las partes del archivo en
+467 AVISO: No puedo encontrar las partes del archivo en
 468 ¿Seguro que desea activar este paquete?
 469 Paquete activado, ahora lo puede afectar
 470 URL https
@@ -551,6 +551,11 @@
 565 Servidor usado para inventarios locales
 566 Puerto usado para inventarios locales
 567 Latencia de Ipdiscover
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
-570 Help
+570 Ayuda
+571 Validate all
+572 Success
+573 Errors
+574 Stats
+575 Unaffect not notified

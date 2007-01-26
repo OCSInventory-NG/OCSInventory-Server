@@ -8,8 +8,9 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.5 $)
 
+printEntete($l->g(236));	
 ?>
 <br><form name=pass action=# method=post>
 <table BORDER='0' WIDTH = '35%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>

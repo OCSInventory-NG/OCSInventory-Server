@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.10 $)
 
 $filtreSSN="
 AND b.ssn <> 'N/A'
@@ -227,7 +227,7 @@ function fusionne($afus) {
 		
 		if( $okLock ) {
 			//TRACE_DELETED
-			if(mysql_num_rows(mysql_query("SELECT * FROM config WHERE IVALUE>0 AND NAME='TRACE_DELETED'", $_SESSION["writeServer"]))){
+			if(mysql_num_rows(mysql_query("SELECT * FROM config WHERE IVALUE>0 AND NAME='TRACE_DELETED'", $_SESSION["readServer"]))){
 				foreach($afus as $a) {	
 					if($afus[$maxInd]["deviceid"]==$a["deviceid"]){continue;}
 					mysql_query("insert into deleted_equiv(DELETED,EQUIVALENT) values('".$a["deviceid"]."','".$afus[$maxInd]["deviceid"]."')", $_SESSION["writeServer"]) ;

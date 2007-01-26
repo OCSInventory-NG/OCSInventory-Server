@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.6 $)
 
 if( isset($_GET["frompref"]) && $_GET["frompref"] == 1 ) {
 	unset( $_SESSION["saveId"] );
@@ -37,7 +37,8 @@ if( $_GET["retour"] == 1 || (isset($_GET["affpack"]) && $ok) ) {
 }
 
 if( isset($_GET["suppack"])) {
-	@mysql_query("DELETE FROM download_enable WHERE ID=".$_GET["suppack"], $_SESSION["writeServer"]) or die(mysql_error());	
+	if( !isset($_GET["nonnot"]) )
+		@mysql_query("DELETE FROM download_enable WHERE ID=".$_GET["suppack"], $_SESSION["writeServer"]) or die(mysql_error());	
 	
 	$reqSupp = "DELETE FROM devices WHERE name='DOWNLOAD' AND ivalue=".$_GET["suppack"];
 	if( isset($_GET["nonnot"]) )
@@ -65,14 +66,14 @@ if( isset($_GET["systemid"]))
 	$canAc = 3; //preferences.php must set systemid in query string
 	
 $lbl = "pack";	
-$sql = "d.fileid = e.fileid";
-$whereId = "d.FILEID=e.FILEID AND d.FILEID";
-$linkId = "d.FILEID";
-$select = array("ID"=>$l->g(460), "d.FILEID"=>$l->g(475), "NAME"=>$l->g(49), 
+$sql = "";
+$whereId = "e.FILEID";
+$linkId = "e.FILEID";
+$select = array("ID"=>$l->g(460), "e.FILEID"=>$l->g(475), "NAME"=>$l->g(49), 
 "PRIORITY"=>$l->g(440),"INFO_LOC"=>$l->g(470), "PACK_LOC"=>$l->g(471), 
 "FRAGMENTS"=>$l->g(480), "SIZE"=>$l->g(462), "OSNAME"=>$l->g(25));	
-$selectPrelim = array("d.FILEID"=>"d.FILEID");	
-$from = "download_available d, download_enable e";
+$selectPrelim = array("e.FILEID"=>"e.FILEID", "d.name"=>"Nom");	
+$from = "download_enable e LEFT JOIN download_available d ON d.fileid = e.fileid";
 $fromPrelim = "";
 $group = "";
 $order = "";

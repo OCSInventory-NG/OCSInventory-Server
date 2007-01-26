@@ -466,3 +466,8 @@
 568 MEMORIA(MO)
 569 PROCESSORE(MHz)
 570 Aiuto
+571 Validate all
+572 Success
+573 Errors
+574 Stats
+575 Unaffect not notified

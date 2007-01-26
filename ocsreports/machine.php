@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.12 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.13 $)
 include_once('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -286,9 +286,11 @@ switch ($opt) :
 	endswitch;					
 
 echo "<br><table align='center'> <tr><td width =50%>";
-echo "<a style=\"text-decoration:underline\" onClick=print()>".$l->g(214)."</a></td>";
+echo "<a style=\"text-decoration:underline\" onClick=print()><img src='image/imprimer.png' title='".$l->g(214)."'></a></td>";
+
+
 if(!isset($_GET["tout"]))
-		echo"<td width=50%><a style=\"text-decoration:underline\" href=\"machine.php?sessid=".session_id()."&systemid=".urlencode(stripslashes($systemid))."&tout=1\">".$l->g(215)."</a></td>";
+		echo"<td width=50%><a style=\"text-decoration:underline\" href=\"machine.php?sessid=".session_id()."&systemid=".urlencode(stripslashes($systemid))."&tout=1\"><img width='60px' src='image/ttaff.png' title='".$l->g(215)."'></a></td>";
 		
 echo "</tr></table></body>";
 echo "</html>";
@@ -341,8 +343,8 @@ function print_perso($systemid) {
 	echo "</tr>";
 	
 	//TELEDEPLOY
-	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc  FROM devices d, download_available a, download_enable e 
-	WHERE d.name='DOWNLOAD' AND e.fileid=a.fileid AND e.id=d.ivalue AND d.hardware_id=$systemid"); 
+	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc  FROM devices d, download_enable e LEFT JOIN download_available a 
+	ON e.fileid=a.fileid WHERE d.name='DOWNLOAD' AND e.id=d.ivalue AND d.hardware_id=$systemid"); 
 	 
 	if( mysql_num_rows( $resDeploy )>0 ) {
 			

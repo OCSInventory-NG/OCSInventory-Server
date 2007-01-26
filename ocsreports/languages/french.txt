@@ -444,7 +444,7 @@
 549 Fichier (deployé sur les ordinateurs client)
 550 Fichier (facultatif, peut être utiliser par "exécuter")
 551 Ce nom de paquet est déja utilisé
-552 <i>Vous devez faire une recherche multicritères puis cliquer sur 'Télédéployer' pour affected un de ces paquets activés à des machines<br>Vous pouvez aussi affecter un paquet à une machine unique en utilisant l'onglet 'Traitements personnalisés' dans les détails d'une machine</i>.
+552 <i>Vous devez faire une recherche multicritères puis cliquer sur 'Télédéployer' pour affecter un de ces paquets activés à des machines<br>Vous pouvez aussi affecter un paquet à une machine unique en utilisant l'onglet 'Traitements personnalisés' dans les détails d'une machine</i>.
 553 Clé Windows
 554 Ecran: numéro de série
 555 Ecran: fabricant
@@ -463,3 +463,8 @@
 568 RAM(MO)
 569 CPU(MHz)
 570 Aide
+571 Tout valider
+572 Succès
+573 Erreurs
+574 Stats
+575 Désaffecter non notifiés

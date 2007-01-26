@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.6 $)
 
 PrintEnTete($l->g(465));
 
@@ -64,6 +64,18 @@ if( isset( $_POST["actpack"] )) {
 	<?php 
 	}
 	else {	
+		//checking if corresponding available exists
+		$reqVerif = "SELECT * FROM download_available WHERE fileid=".$_POST["actpack"];
+		if( ! mysql_num_rows( mysql_query( $reqVerif, $_SESSION["readServer"]) )) {
+			
+			$infoTab = loadInfo( $_POST["https"], $_POST["actpack"] );
+			
+			$req1 = "INSERT INTO download_available(FILEID, NAME, PRIORITY, FRAGMENTS, OSNAME ) VALUES
+			( '".$_POST["actpack"]."', 'Manual_".$_POST["actpack"]."',".$infoTab["PRI"].",".$infoTab["FRAGS"].", 'N/A' )";
+			
+			mysql_query( $req1, $_SESSION["writeServer"]);
+		}
+		
 		$req = "INSERT INTO download_enable(FILEID, INFO_LOC, PACK_LOC, CERT_FILE, CERT_PATH ) VALUES
 		( '".$_POST["actpack"]."', '".$_POST["https"]."', '".$_POST["frag"]."', 'INSTALL_PATH/cacert.pem','INSTALL_PATH')";
 	
@@ -92,9 +104,20 @@ else if( isset( $_GET["actpack"] )) {?>
 	</table>
 	</form>	
 <?php }
-else if( isset( $_GET["suppack"] )) {
-	@mysql_query("DELETE FROM download_available WHERE FILEID='".$_GET["suppack"]."'", $_SESSION["writeServer"]) or die(mysql_error());	
-	if( ! recursive_remove_directory( $_SERVER["DOCUMENT_ROOT"]."/download/".$_GET["suppack"] ))  {
+else if( isset( $_GET["suppack"] )) {	
+	$reqEnable = "SELECT id FROM download_enable WHERE FILEID='".$_GET["suppack"]."'";
+	$resEnable = @mysql_query($reqEnable, $_SESSION["writeServer"]) or die(mysql_error());
+	
+	while($valEnable = mysql_fetch_array( $resEnable ) ) {
+		$reqDelDevices = "DELETE FROM devices WHERE name='DOWNLOAD' AND ivalue=".$valEnable["id"];
+		@mysql_query($reqDelDevices, $_SESSION["writeServer"]) or die(mysql_error());
+	}
+	$reqDelEnable = "DELETE FROM download_enable WHERE FILEID='".$_GET["suppack"]."'";
+	@mysql_query($reqDelEnable, $_SESSION["writeServer"]) or die(mysql_error());
+	$reqDelAvailable = "DELETE FROM download_available WHERE FILEID='".$_GET["suppack"]."'";
+	@mysql_query($reqDelAvailable, $_SESSION["writeServer"]) or die(mysql_error());
+	
+	if( ! @recursive_remove_directory( $_SERVER["DOCUMENT_ROOT"]."/download/".$_GET["suppack"] ))  {
 		echo "<br><center><b><font color='red'>".$l->g(472)." ".$_SERVER["DOCUMENT_ROOT"]."/download/".$_GET["suppack"]."</font></b></center>";
 	}
 }
@@ -104,7 +127,7 @@ $sql = "";
 $whereId = "d.FILEID";
 $linkId = "d.FILEID";
 $select = array( "d.FILEID"=>"Timestamp", "NAME"=>$l->g(49), "PRIORITY"=>$l->g(440), "FRAGMENTS"=>$l->g(464), "SIZE"=>$l->g(462), "OSNAME"=>$l->g(25));	
-$selectPrelim = array("d.FILEID"=>"d.FILEID");	
+$selectPrelim = array("d.FILEID"=>"d.FILEID","d.NAME"=>"Nom");	
 $from = "download_available d";
 $fromPrelim = "";
 $group = "";
@@ -139,6 +162,23 @@ function recursive_remove_directory($directory, $empty=FALSE) {
          }
      }
      return TRUE;
+}
+
+function loadInfo( $serv, $tstamp ) {
+	
+	$fname = "https://".$serv."/".$tstamp."/info";
+	$info = file_get_contents( $fname );
+	if( ! $info )
+		return false;
+		
+	@preg_match_all( "/((?:\d|\w)+)=\"((?:\d|\w)+)\"/", $info, $resul );
+	if( ! $resul )
+		return false;
+	$noms = array_flip( $resul[1] );
+	foreach( $noms as $nom=>$int ) {
+		$noms[ $nom ] = $resul[2][$int];
+	}
+	return( $noms );
 }
 
 ?>
