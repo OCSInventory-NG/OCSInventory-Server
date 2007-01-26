@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-01-26 17:20:04 $$Author: plemmet $($Revision: 1.6 $)
 include_once('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -99,7 +99,7 @@ else {
 
    function camembert($arr)
    {    
-      $size=3; /* taille de la police, largeur du caractère */
+      $size=2; /* taille de la police, largeur du caractère */
       $ifw=imagefontwidth($size);                            
        
       $w=850; /* largeur de l'image */
