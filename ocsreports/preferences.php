@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.20 $)
+//Modified on $Date: 2007-01-28 15:16:51 $$Author: plemmet $($Revision: 1.21 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -65,13 +65,12 @@ define("DB_NAME", "ocsweb");
 //////////
 
 define("TAG_LBL", "Tag");
-define("DEFAULT_LANGUAGE", "english" );
 
 if( ! isset( $_SESSION["fichLang"] ) ) {
 	if( isset($_COOKIE["lang"]) )
 		$_SESSION["fichLang"] = new FichierConf($_COOKIE["lang"]);
 	else 
-		$_SESSION["fichLang"] = new FichierConf(DEFAULT_LANGUAGE?DEFAULT_LANGUAGE:getBrowserLang());
+		$_SESSION["fichLang"] = new FichierConf(getBrowserLang());
 }
 $l = $_SESSION["fichLang"];
 

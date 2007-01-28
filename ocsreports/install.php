@@ -8,22 +8,10 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-27 21:50:26 $$Author: hunal $($Revision: 1.12 $)
+//Modified on $Date: 2007-01-28 15:18:06 $$Author: plemmet $($Revision: 1.13 $)
 
 set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
-
-unset( $_SESSION["fichLang"]  );
-unset($_SESSION["availFieldList"], $_SESSION["currentFieldList"]);
-
-if( isset( $_COOKIE["col"] ) ) {		
-	foreach( $_COOKIE["col"] as $key=>$val ) {
-		setcookie( "col[$key][value]", FALSE, time() - 3600 ); // deleting corresponding cookie
-		setcookie( "col[$key][rang]", FALSE, time() - 3600 ); // deleting corresponding cookie			
-	}
-	unset( $_COOKIE["col"] );
-}
-
 ?>
 <html>
 <head>
