@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.8 $)
 require('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -23,7 +23,7 @@ if( isset($_GET["sessid"])){
 else
 	die("FORBIDDEN");
 
-require ('preferences.php');
+require_once("preferences.php");
 
 if( isset($_GET["delsucc"]) ) {		
 	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%' AND 

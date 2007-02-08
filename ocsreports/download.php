@@ -9,7 +9,7 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on 10/24/2006
-require("preferences.php");
+require_once("preferences.php");
 
 if($_GET["o"]&&$_GET["v"]&&$_GET["n"]&&$_GET["dl"])
 {

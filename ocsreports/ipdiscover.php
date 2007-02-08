@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.10 $)
 
 @set_time_limit(0);
 $nbpop=0;
@@ -570,7 +570,7 @@ END;
 	
 }
 else  if( $_GET["mode"] == 7 ) {
-	require('preferences.php');
+	require_once("preferences.php");
 	if( ! isset($_GET["modepopup"] ) ) {
 		printEnTete($l->g(290));
 		echo "<br><center><a href=index.php?multi=3><= ".$l->g(188)."</a></center>";

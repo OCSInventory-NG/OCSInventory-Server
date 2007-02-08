@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.14 $)
+//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.15 $)
 require('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -24,7 +24,7 @@ else
 	die("FORBIDDEN");
 
 $_GET["multi"] = 24; // To avoid storing systemid in querystring
-require ('preferences.php');
+require_once("preferences.php");
 
 if (isset($_GET['systemid'])) {
 	$systemid = $_GET['systemid'];

@@ -8,14 +8,14 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.7 $)
 
 require ('fichierConf.class.php');
 
 if( ! $_GET["multi"] )
 {
 	require('req.class.php');
-	require('preferences.php');	
+	require_once("preferences.php");	
 }
 
 switch ($_GET["typeDemande"]) :
