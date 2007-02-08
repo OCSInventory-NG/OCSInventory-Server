@@ -8,14 +8,14 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.10 $)
-include("fichierConf.class.php");
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.11 $)
+require("fichierConf.class.php");
 error_reporting(E_ALL & ~E_NOTICE);
-include_once('req.class.php');
+require_once('req.class.php');
 @session_start();
 // First installation checking
 if( (!$fconf=@fopen("dbconfig.inc.php","r")) || (!function_exists('session_start')) || (!function_exists('mysql_connect'))) {
-	include('install.php');
+	require('install.php');
 	die();
 }
 else
@@ -35,8 +35,8 @@ if( isset($_GET["pcparpage"]) ) {
 	setcookie( "PcParPage", $_GET["pcparpage"], time() + 3600 * 24 * 15 );
 }
 
-include ('header.php');
-include ('donnees.php');
+require ('header.php');
+require ('donnees.php');
 
 $pcparpage = $_SESSION["pcparpage"];
 
@@ -216,32 +216,32 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		unset( $_SESSION["forcedRequest"] );
 		
 	switch($_GET["multi"]) {
-		case 1: include ('multicritere.php');	break;
-		case 3: include ('ipdiscover.php');	break;
-		case 4:	include ('confiGale.php');	break;
-		case 5:	include ('reqRegistre.php');	break;
-		case 6:	include ('doublons.php');	break;
-		case 8:	include ('uploadfile.php');	break;
-		case 9:	include ('donAdmini.php');	break;
-		case 10: include ('users.php');	break;
-		case 11: include ('pass.php');	break;
-		case 12: include ('label.php');	break;
-		case 13: include ('local.php');	break;
-		case 14: include ('dico.php');	break;
-		case 15: include ('composants.php'); break;
-		case 20: include ('tele_package.php'); break; 
-		case 21: include ('tele_activate.php'); break; 
-		case 22: include ('opt_frequency.php'); break; 
-		case 23: include ('opt_ipdiscover.php'); break; 
-		case 24: include ('tele_affect.php'); break; 
-		case 25: include ('tele_stats.php'); break;
-		case 26: include ('tele_actives.php'); break;
-		case 27: include ('opt_suppr.php'); break; 
- 		default: include ('resultats.php');		
+		case 1: require ('multicritere.php');	break;
+		case 3: require ('ipdiscover.php');	break;
+		case 4:	require ('confiGale.php');	break;
+		case 5:	require ('reqRegistre.php');	break;
+		case 6:	require ('doublons.php');	break;
+		case 8:	require ('uploadfile.php');	break;
+		case 9:	require ('donAdmini.php');	break;
+		case 10: require ('users.php');	break;
+		case 11: require ('pass.php');	break;
+		case 12: require ('label.php');	break;
+		case 13: require ('local.php');	break;
+		case 14: require ('dico.php');	break;
+		case 15: require ('composants.php'); break;
+		case 20: require ('tele_package.php'); break; 
+		case 21: require ('tele_activate.php'); break; 
+		case 22: require ('opt_frequency.php'); break; 
+		case 23: require ('opt_ipdiscover.php'); break; 
+		case 24: require ('tele_affect.php'); break; 
+		case 25: require ('tele_stats.php'); break;
+		case 26: require ('tele_actives.php'); break;
+		case 27: require ('opt_suppr.php'); break; 
+ 		default: require ('resultats.php');		
  	}
 
 if( !isset($_GET["popup"] ))
-	include ('footer.php');
+	require ('footer.php');
 	
 echo "<script language='javascript'>wait(0);</script>";
 	

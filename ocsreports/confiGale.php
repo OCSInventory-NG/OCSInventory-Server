@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.8 $)
 
 require ('fichierConf.class.php');
 printEnTete($l->g(107));
@@ -164,9 +164,18 @@ function edit($nme, $val) {
 	else if( $nme == "IPDISCOVER" && $val <= 0 )
 		$enabled = false;
 		
-	return "<div id='{$nme}_div' style='display:".($enabled?"block":"none")."'><table><tr><td rowspan='2'><input type='text' size='3' maxlength='".($nme == "LOCAL_PORT"?"4":"3")."' id='{$nme}_edit' name='{$nme}_edit' value='$valInit'></td><td align='center'>
-	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','1',".($nme == "LOCAL_PORT"?"9999":"999").");\"><b><font size='3'>+</font></b></a></td></tr><td align='center'>
-	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','-1',".($nme == "LOCAL_PORT"?"9999":"999").");\"><b><font size='3'>-</font></b></a></td></tr></table></div>";
+	if( in_array($nme, array("LOCAL_PORT","IPDISCOVER_LATENCY","DOWNLOAD_FRAG_LATENCY","DOWNLOAD_CYCLE_LATENCY","DOWNLOAD_PERIOD_LATENCY") ) ) {
+		$maxx = 9999;
+		$sizee = 4;
+	}
+	else {
+		$maxx = 999;
+		$sizee = 3;
+	}
+
+	return "<div id='{$nme}_div' style='display:".($enabled?"block":"none")."'><table><tr><td rowspan='2'><input type='text' size='3' maxlength='$sizee' id='{$nme}_edit' name='{$nme}_edit' value='$valInit'></td><td align='center'>
+	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','1',$maxx);\"><b><font size='3'>+</font></b></a></td></tr><td align='center'>
+	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','-1',$maxx);\"><b><font size='3'>-</font></b></a></td></tr></table></div>";
 }
 
 function setOpt($nme, $ivalue) {

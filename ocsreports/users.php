@@ -8,11 +8,11 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.6 $)
 
-include ('fichierConf.class.php');
+require ('fichierConf.class.php');
 
-include('req.class.php');
+require('req.class.php');
 if($_GET["suppAcc"]) {
 	dbconnect();
 	@mysql_query("DELETE FROM operators WHERE id='".$_GET["suppAcc"]."'");	

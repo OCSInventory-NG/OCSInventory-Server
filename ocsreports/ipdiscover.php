@@ -8,9 +8,9 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.9 $)
 
-set_time_limit(0);
+@set_time_limit(0);
 $nbpop=0;
 $fipdisc = "ipdiscover-util.pl" ;
 if( $scriptPresent = @stat($fipdisc) ) {
@@ -547,7 +547,7 @@ END;
 	}
 		
 	$ret = getXmlFromBuffer($buf, "HOST" , $tabBalises);
-	$ret[0] = Array($l->g(232),$l->g(34),$l->g(95),$l->g(318)."/NetBIOS");
+	$ret[0] = Array($l->g(34),$l->g(95),$l->g(318)."/NetBIOS",$l->g(232),$l->g(563));
 	
 	if( isset($_SESSION["mac"]) ) {
 		$ret[0][5] = $ret[0][4];
@@ -570,7 +570,7 @@ END;
 	
 }
 else  if( $_GET["mode"] == 7 ) {
-	include_once('preferences.php');
+	require('preferences.php');
 	if( ! isset($_GET["modepopup"] ) ) {
 		printEnTete($l->g(290));
 		echo "<br><center><a href=index.php?multi=3><= ".$l->g(188)."</a></center>";

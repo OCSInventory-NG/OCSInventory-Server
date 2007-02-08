@@ -79,7 +79,7 @@
 135 Be careful, you're about to delete this file definitively !
 136 Скачать
 137 Файл
-168 Неверный формат файла (должен быть zip, pl или двоичный файл unix)
+168 Неверный формат файла (должен быть zip, ocsagent.exe, ocspackage.exe, pl или двоичный файл unix)
 170 Такой файл уже существует !
 171 Файл удален
 172 Возникла ошибка, файл

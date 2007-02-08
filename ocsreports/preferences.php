@@ -8,10 +8,28 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-28 15:16:51 $$Author: plemmet $($Revision: 1.21 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.22 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
+
+define("UTF8_DEGREE", 1 );				// 0 For non utf8 database, 1 for utf8
+define("GUI_VER", "4100");				// Version of the GUI
+define("MAC_FILE", "files/oui.txt");	// File containing MAC database
+define("TAG_LBL", "Tag");				// Name of the tag information
+define("DB_NAME", "ocsweb");
+define("SADMIN", 1);
+define("LADMIN", 2);   
+define("ADMIN", 3);
+define("PC_PAR_PAGE", 15); 				// default computer / page value
+define("TAG_NAME", "TAG"); 				// do NOT change
+define("LOCAL_SERVER", $_SESSION["SERVEUR_SQL"]); // adress of the server handler used for local import
+$_SESSION["SERVER_READ"] = $_SESSION["SERVEUR_SQL"];
+//DO NOT COMMIT
+$_SESSION["SERVER_WRITE"] =  $_SESSION["SERVEUR_SQL"];
+unset( $_SESSION["debug"] );
+$_SESSION["debug"]  = false ;
+//FIN DO NOT COMMIT
 
 if( ! function_exists ( "utf8_decode" )) {
 	function utf8_decode($st) {
@@ -26,7 +44,7 @@ if( !in_array( $_GET["multi"], array(20,21,26,22,24,27)) ) {
 }
 
 require('dbconfig.inc.php');
-include("fichierConf.class.php");
+require("fichierConf.class.php");
 
 if( isset($_GET["uid"]) ) {
 	setcookie( "DefNetwork", $_GET["uid"], time() + 3600 * 24 * 15 );
@@ -46,25 +64,6 @@ if(isset($_GET["lang"])) {
 		unset( $_COOKIE["col"] );
 	}
 }
-
-define("GUI_VER", "4100");
-define("MAC_FILE", "files/oui.txt");
-define("SADMIN", 1);
-define("LADMIN", 2);   
-define("ADMIN", 3);
-define("PC_PAR_PAGE", 15); // default computer / page value
-define("TAG_NAME", "TAG"); // do NOT change
-define("LOCAL_SERVER", $_SESSION["SERVEUR_SQL"]); // adress of the server handler used for local import
-$_SESSION["SERVER_READ"] = $_SESSION["SERVEUR_SQL"];
-$_SESSION["SERVER_WRITE"] = $_SESSION["SERVEUR_SQL"];
-unset( $_SESSION["debug"] );
-$_SESSION["debug"]  = false ;
-
-// DB NAME 
-define("DB_NAME", "ocsweb");
-//////////
-
-define("TAG_LBL", "Tag");
 
 if( ! isset( $_SESSION["fichLang"] ) ) {
 	if( isset($_COOKIE["lang"]) )
@@ -236,7 +235,7 @@ function dbconnect() {
 		die();
 	}
 	if( ! @mysql_select_db($db,$link)) {
-		include('install.php');
+		require('install.php');
 		die();
 	}
 		
@@ -247,7 +246,7 @@ function dbconnect() {
 	}
 
 	if( ! @mysql_select_db($db,$link2)) {
-		include('install.php');
+		require('install.php');
 		die();
 	}
 	
@@ -599,13 +598,13 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			}
 			
 			if( $teledeploy ) {
-				$resNot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+				$resNot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue IS NULL", $_SESSION["readServer"]);
-				$resSucc = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+				$resSucc = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%'", $_SESSION["readServer"]);
-				$resErr = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+				$resErr = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'ERROR%'", $_SESSION["readServer"]);
-				$resTot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item[$l->g(475)]."'
+				$resTot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD'", $_SESSION["readServer"]);
  
 				$valNot = mysql_fetch_array( $resNot );
@@ -1019,6 +1018,13 @@ function incPicker() {
 	function getConstructor( $mac ) {	
 		$beg = strtoupper(substr( $mac, 0, 8 ));
 		return ( ucwords(strtolower( $_SESSION["mac"][ $beg ])) );
+	}
+	
+	function textDecode( $txt ) {
+		for( $i=0; $i<UTF8_DEGREE; $i++ ) {
+			$txt = utf8_decode( $txt );
+		}
+		return $txt;
 	}
 
 

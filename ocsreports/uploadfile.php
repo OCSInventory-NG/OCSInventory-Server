@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.8 $)
 
 if( ! function_exists ( "zip_open" )) {
 	function zip_open($st) {
@@ -17,11 +17,11 @@ if( ! function_exists ( "zip_open" )) {
 	}
 }
 
-if(is_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name']))
+if(is_uploaded_file($_FILES['userfile']['tmp_name']))
 {	
-	$nomFich=$HTTP_POST_FILES['userfile']['name'];
+	$nomFich=$_FILES['userfile']['name'];
 	
-	ereg( "(.*)\.(.*)$" , $HTTP_POST_FILES['userfile']['name'] , $results );
+	ereg( "(.*)\.(.*)$" , $_FILES['userfile']['name'] , $results );
 
 	$ext = $results[2];
 	$cp = $results[1];
@@ -54,7 +54,7 @@ if(is_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name']))
 	
 	if($ok)
 	{
-		$filename = $HTTP_POST_FILES['userfile']['tmp_name'];
+		$filename = $_FILES['userfile']['tmp_name'];
 		$fd = fopen($filename, "r");
 
 		$contents = fread($fd, filesize ($filename));
@@ -87,7 +87,7 @@ if(is_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name']))
 			$query = "INSERT INTO $table VALUES$val;";
 			if(mysql_query($query, $_SESSION["writeServer"]))
 			{
-				echo "<br><b><center><font color='green'>".$l->g(137)." ".$HTTP_POST_FILES['userfile']['name']." ".$l->g(234)."</font></center></b><br>";
+				echo "<br><b><center><font color='green'>".$l->g(137)." ".$_FILES['userfile']['name']." ".$l->g(234)."</font></center></b><br>";
 			}
 			else if(mysql_errno()==1062)
 			{
@@ -95,7 +95,7 @@ if(is_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name']))
 			}
 			else
 			{
-				echo "<br><b><center><font color=red>".$l->g(172)." ".$HTTP_POST_FILES['userfile']['name']." ".$l->g(173)."<br>";
+				echo "<br><b><center><font color=red>".$l->g(172)." ".$_FILES['userfile']['name']." ".$l->g(173)."<br>";
 				echo mysql_error($_SESSION["writeServer"])."</font></center></b>";
 			}
 			sleep(2);

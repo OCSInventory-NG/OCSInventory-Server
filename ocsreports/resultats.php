@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.6 $)
 
 	global $query;		 	
 	$okReq=0;
@@ -22,7 +22,7 @@
 	}    	
 	
 	if($okReq==0) {
-		include("footer.php");
+		require("footer.php");
 		die();
 	}
 	

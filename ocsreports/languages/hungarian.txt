@@ -166,7 +166,7 @@
 165 You have to enter a name or a difusion list to search !
 166 You have to choose an element from the list !
 167 See the details
-168 This format file is invalid (it must be zip, pl or unix binary)
+168 This format file is invalid (it must be zip, ocsagent.exe, ocspackage.exe, pl or unix binary)
 169 hozzádás
 170 Ez az állomány már létezik !
 171 Állomány törölve

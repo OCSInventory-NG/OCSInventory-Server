@@ -8,10 +8,10 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.8 $)
 
-include("req.class.php");
-include("preferences.php");
+require("req.class.php");
+require("preferences.php");
 
 if( isset($_SESSION["forcedRequest"] )) {
 	$lareq = $_SESSION["forcedRequest"];
@@ -59,9 +59,8 @@ echo $toBeWritten;
 function writeTab ($fich,$tab,$rgn=-1) {	
 	global $toBeWritten;
 	$colnb = 0;
-	foreach($tab as $t) {
-			$toBeWritten .= $t;
-
+	foreach($tab as $t) {		
+		$toBeWritten .= str_replace ( ",", ".", $t);
 		$toBeWritten .= ",";
 		$colnb++;
 	}

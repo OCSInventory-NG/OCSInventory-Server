@@ -80,7 +80,7 @@
 135 Ostro¿nie, ten plik zostanie usuniêty definitywnie !
 136 Pobierz
 137 Plik
-168 Ten format pliku jest nieodpowiedni (to musi byæ zip, pl albo unixowa binarka)
+168 Ten format pliku jest nieodpowiedni (to musi byæ zip, ocsagent.exe, ocspackage.exe, pl albo unixowa binarka)
 170 Taki sam plik ju¿ istnieje !
 171 Plik usuniêty
 172 An error is appeared, the file

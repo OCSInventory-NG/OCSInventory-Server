@@ -8,8 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.13 $)
-include_once('fichierConf.class.php');
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.14 $)
+require('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
 if( isset($_GET["sessid"])){
@@ -92,12 +92,12 @@ $tdhf = ":</b></td>";
 echo "<table width='100%' border='0' bgcolor='#C7D9F5' style='border: solid thin; border-color:#A1B1F9'><tr><td width='50%'>";
 
 echo "<table width='80%' align='center' border='0' bgcolor='#C7D9F5'>";
-echo "<tr>".$tdhd.$l->g(49).$tdhf.$tdhdpb.utf8_decode($item->NAME).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(33).$tdhf.$tdhdpb.utf8_decode($item->WORKGROUP).$tdhfpb."</tr>";
-if( $item->USERDOMAIN ) echo "<tr>".$tdhd.$l->g(557).$tdhf.$tdhdpb.utf8_decode($item->USERDOMAIN).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(46).$tdhf.$tdhdpb.dateTimeFromMysql(utf8_decode($item->LASTDATE)).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(34).$tdhf.$tdhdpb.utf8_decode($item->IPADDR).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(24).$tdhf.$tdhdpb.utf8_decode($item->USERID).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(49).$tdhf.$tdhdpb.textDecode($item->NAME).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(33).$tdhf.$tdhdpb.textDecode($item->WORKGROUP).$tdhfpb."</tr>";
+if( $item->USERDOMAIN ) echo "<tr>".$tdhd.$l->g(557).$tdhf.$tdhdpb.textDecode($item->USERDOMAIN).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(46).$tdhf.$tdhdpb.dateTimeFromMysql(textDecode($item->LASTDATE)).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(34).$tdhf.$tdhdpb.textDecode($item->IPADDR).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(24).$tdhf.$tdhdpb.textDecode($item->USERID).$tdhfpb."</tr>";
 
 $sqlMem = "SELECT SUM(capacity) AS 'capa' FROM memories WHERE hardware_id=$systemid";
 $resMem = mysql_query($sqlMem, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
@@ -109,21 +109,21 @@ else
 	$memory = $item->MEMORY;
 
 echo "<tr>".$tdhd.$l->g(26).$tdhf.$tdhdpb.$memory.$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(50).$tdhf.$tdhdpb.utf8_decode($item->SWAP).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(50).$tdhf.$tdhdpb.textDecode($item->SWAP).$tdhfpb."</tr>";
 
 echo getNetName($systemid);
 
 echo "</table></td><td>";
 
 echo "<table width='90%' align='center' border='0' bgcolor='#C7D9F5'>";
-echo "<tr>".$tdhd.$l->g(274).$tdhf.$tdhdpb.utf8_decode($item->OSNAME).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(275).$tdhf.$tdhdpb.utf8_decode($item->OSVERSION).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(286).$tdhf.$tdhdpb.utf8_decode($item->OSCOMMENTS).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(51).$tdhf.$tdhdpb.utf8_decode($item->WINCOMPANY).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(348).$tdhf.$tdhdpb.utf8_decode($item->WINOWNER).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(111).$tdhf.$tdhdpb.utf8_decode($item->WINPRODID).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(553).$tdhf.$tdhdpb.utf8_decode($item->WINPRODKEY).$tdhfpb."</tr>";
-echo "<tr>".$tdhd.$l->g(357).$tdhf.$tdhdpb.utf8_decode($item->USERAGENT).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(274).$tdhf.$tdhdpb.textDecode($item->OSNAME).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(275).$tdhf.$tdhdpb.textDecode($item->OSVERSION).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(286).$tdhf.$tdhdpb.textDecode($item->OSCOMMENTS).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(51).$tdhf.$tdhdpb.textDecode($item->WINCOMPANY).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(348).$tdhf.$tdhdpb.textDecode($item->WINOWNER).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(111).$tdhf.$tdhdpb.textDecode($item->WINPRODID).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(553).$tdhf.$tdhdpb.textDecode($item->WINPRODKEY).$tdhfpb."</tr>";
+echo "<tr>".$tdhd.$l->g(357).$tdhf.$tdhdpb.textDecode($item->USERAGENT).$tdhfpb."</tr>";
 
 echo "</table></td></tr></table>";
 //*/// END COMPUTER SUMMARY
@@ -131,12 +131,12 @@ echo "</table></td></tr></table>";
 echo "<br><table width='100%' border='1' bgcolor='#C7D9F5' cellpadding='4' style='border: solid thin; border-color:#A1B1F9'>";
 echo "<tr>";
 echo "<td  align='right' width='15%'><b>Description:</td>";
-echo "<td  width='85%'>".utf8_decode($item->DESCRIPTION)."</td>";
+echo "<td  width='85%'>".textDecode($item->DESCRIPTION)."</td>";
 echo "</tr>";
 echo "</table>";
 
 if( isset($_GET["action"]) || isset($_POST["action_form"]) ) {
-	include("ajout_maj.php");
+	require("ajout_maj.php");
 	die();
 }
 
@@ -376,9 +376,9 @@ function print_proc($systemid)
 	echo "<tr>";
 	echo "$td1 ".$l->g(66)." </td> $td1 ".$l->g(377)." </td> $td1 ".$l->g(55)."</td></tr>";
 	echo "<tr>";
-	echo "$td3".utf8_decode($item->PROCESSORT)."</td>
-	      $td3".utf8_decode($item->PROCESSORS)."</td>
-	      $td3".utf8_decode($item->PROCESSORN)."</td>";
+	echo "$td3".textDecode($item->PROCESSORT)."</td>
+	      $td3".textDecode($item->PROCESSORS)."</td>
+	      $td3".textDecode($item->PROCESSORN)."</td>";
 	echo "</tr>";
 	echo "</table>";
 }
@@ -399,10 +399,10 @@ function print_videos($systemid)
 	{
 		$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-		     $td3".utf8_decode($item->NAME)."      </td>
-			 $td3".utf8_decode($item->CHIPSET)."   </td>
-			 $td3".utf8_decode($item->MEMORY)."    </td>
-			 $td3".utf8_decode($item->RESOLUTION)."</td>
+		     $td3".textDecode($item->NAME)."      </td>
+			 $td3".textDecode($item->CHIPSET)."   </td>
+			 $td3".textDecode($item->MEMORY)."    </td>
+			 $td3".textDecode($item->RESOLUTION)."</td>
 			 </tr>";
 	}
 	echo "</table><br>";		
@@ -427,12 +427,12 @@ function print_storages($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>";
-		echo "$td3".utf8_decode($item->NAME)."</td>
-                    $td3".utf8_decode($item->MANUFACTURER)."</td>
-			  $td3".utf8_decode($item->MODEL)."       </td>
-	          $td3".utf8_decode($item->DESCRIPTION)." </td>
-     		  $td3".utf8_decode($item->TYPE)."        </td>
- 		      $td3".utf8_decode($item->DISKSIZE)."    </td>	";
+		echo "$td3".textDecode($item->NAME)."</td>
+                    $td3".textDecode($item->MANUFACTURER)."</td>
+			  $td3".textDecode($item->MODEL)."       </td>
+	          $td3".textDecode($item->DESCRIPTION)." </td>
+     		  $td3".textDecode($item->TYPE)."        </td>
+ 		      $td3".textDecode($item->DISKSIZE)."    </td>	";
 		echo "</tr>";
 	}
 	echo "</table><br>";		
@@ -454,9 +454,9 @@ function print_sounds($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>";
-		echo "$td3".utf8_decode($item->MANUFACTURER)."</td>
-	          $td3".utf8_decode($item->NAME)."        </td>
-		      $td3".utf8_decode($item->DESCRIPTION)." </td>";
+		echo "$td3".textDecode($item->MANUFACTURER)."</td>
+	          $td3".textDecode($item->NAME)."        </td>
+		      $td3".textDecode($item->DESCRIPTION)." </td>";
 		echo "</tr>";
 	}
 	echo "</table><br>";		
@@ -480,12 +480,12 @@ function print_softwares($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;	
 		echo "<tr>";
-		echo "$td3".htmlentities(utf8_decode($item->PUBLISHER))."</td>
-			  $td3".htmlentities(utf8_decode($item->NAME))."     </td>
-		      $td3".utf8_decode($item->VERSION)."  </td>
-			  $td3".(htmlentities(utf8_decode($item->COMMENTS))?htmlentities(utf8_decode($item->COMMENTS)):"N/A")."     </td>";
-		/*      $td3".utf8_decode($item->FOLDER)."   </td>
-		      $td3".utf8_decode($item->COMMENTS)." </td>";*/
+		echo "$td3".htmlentities(textDecode($item->PUBLISHER))."</td>
+			  $td3".htmlentities(textDecode($item->NAME))."     </td>
+		      $td3".textDecode($item->VERSION)."  </td>
+			  $td3".(htmlentities(textDecode($item->COMMENTS))?htmlentities(textDecode($item->COMMENTS)):"N/A")."     </td>";
+		/*      $td3".textDecode($item->FOLDER)."   </td>
+		      $td3".textDecode($item->COMMENTS)." </td>";*/
 		echo "</tr>";
 	}
 	echo "</table><br>";		
@@ -509,9 +509,9 @@ function print_packets($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;	
 		echo "<tr>";
-		echo "$td3".htmlentities(utf8_decode($item->pkg_id))."</td>";
+		echo "$td3".htmlentities(textDecode($item->pkg_id))."</td>";
 		if( $item->name ) 
-			echo "$td3".htmlentities(utf8_decode($item->name))."</td>";
+			echo "$td3".htmlentities(textDecode($item->name))."</td>";
 		else
 			echo "$td3<font color='red'>".$l->g(561)."</font></td>";
 		echo "</tr>";
@@ -537,9 +537,9 @@ function print_slots($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>";
-		echo "$td3".utf8_decode($item->NAME)."       </td>
-		      $td3".utf8_decode($item->DESCRIPTION)."</td>
-		      $td3".utf8_decode($item->DESIGNATION)."</td>";	
+		echo "$td3".textDecode($item->NAME)."       </td>
+		      $td3".textDecode($item->DESCRIPTION)."</td>
+		      $td3".textDecode($item->DESIGNATION)."</td>";	
 		echo "</tr>";
 	}
 	echo "</table><br>";		
@@ -560,9 +560,9 @@ function print_printers($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-			  $td3".utf8_decode($item->NAME)."   </td>
-  		      $td3".utf8_decode($item->DRIVER)." </td>
-		      $td3".utf8_decode($item->PORT)."   </td>
+			  $td3".textDecode($item->NAME)."   </td>
+  		      $td3".textDecode($item->DRIVER)." </td>
+		      $td3".textDecode($item->PORT)."   </td>
 			 </tr>";
 	}
 		echo "</table><br>";		
@@ -585,8 +585,8 @@ function print_registry($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>";
-		echo "$td3 ".utf8_decode($item->NAME)."</td>
-		$td3 ".utf8_decode($item->REGVALUE)."</td>
+		echo "$td3 ".textDecode($item->NAME)."</td>
+		$td3 ".textDecode($item->REGVALUE)."</td>
 		";
 		echo "</tr>";
 	}
@@ -610,10 +610,10 @@ function print_ports($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-		      $td3".utf8_decode($item->TYPE)."        </td>
- 		      $td3".utf8_decode($item->NAME)."        </td>
-		      $td3".utf8_decode($item->CAPTION)."     </td>
-		      $td3".utf8_decode($item->DESCRIPTION)." </td>
+		      $td3".textDecode($item->TYPE)."        </td>
+ 		      $td3".textDecode($item->NAME)."        </td>
+		      $td3".textDecode($item->CAPTION)."     </td>
+		      $td3".textDecode($item->DESCRIPTION)." </td>
 			  </tr>";
 	}
 	echo "</table><br>";		
@@ -638,16 +638,16 @@ function print_networks($systemid)
 		$ii++; $td3 = $ii%2==0?$td2:$td4;
 		$const = getConstructor($item->MACADDR);
 		echo "<tr>
-		<td width='20%' align='center' bgcolor='".($ii%2?"#F0F0F0":"white")."'><FONT FACE='tahoma'>".utf8_decode($item->DESCRIPTION)."</td>
-		$td3".utf8_decode($item->TYPE)."       </td>
-		$td3".utf8_decode($item->SPEED)."      </td>
-		$td3".utf8_decode($item->MACADDR).($const?"<br>($const)":"")."    </td>
-		$td3".utf8_decode($item->STATUS)."     </td>
-		$td3".utf8_decode($item->IPADDRESS)."  </td>
-		$td3".utf8_decode($item->IPMASK)."     </td>
-		$td3".utf8_decode($item->IPGATEWAY)."  </td>
-		$td3".utf8_decode($item->IPSUBNET)."   </td>
-		$td3".utf8_decode($item->IPDHCP)."     </td></tr>";
+		<td width='20%' align='center' bgcolor='".($ii%2?"#F0F0F0":"white")."'><FONT FACE='tahoma'>".textDecode($item->DESCRIPTION)."</td>
+		$td3".textDecode($item->TYPE)."       </td>
+		$td3".textDecode($item->SPEED)."      </td>
+		$td3".textDecode($item->MACADDR).($const?"<br>($const)":"")."    </td>
+		$td3".textDecode($item->STATUS)."     </td>
+		$td3".textDecode($item->IPADDRESS)."  </td>
+		$td3".textDecode($item->IPMASK)."     </td>
+		$td3".textDecode($item->IPGATEWAY)."  </td>
+		$td3".textDecode($item->IPSUBNET)."   </td>
+		$td3".textDecode($item->IPDHCP)."     </td></tr>";
 	}
 	echo "</table><br>";	
 }
@@ -669,11 +669,11 @@ function print_monitors($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-			$td3".utf8_decode($item->MANUFACTURER)." </td>
-			$td3".utf8_decode($item->CAPTION)."      </td>
-			$td3".utf8_decode($item->DESCRIPTION)."  </td>
-			$td3".utf8_decode($item->TYPE)."         </td>
-			$td3".utf8_decode($item->SERIAL)."         </td>
+			$td3".textDecode($item->MANUFACTURER)." </td>
+			$td3".textDecode($item->CAPTION)."      </td>
+			$td3".textDecode($item->DESCRIPTION)."  </td>
+			$td3".textDecode($item->TYPE)."         </td>
+			$td3".textDecode($item->SERIAL)."         </td>
 		</tr>";
 	}
 	echo "</table><br>";		
@@ -696,10 +696,10 @@ function print_modems($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-			  $td3".utf8_decode($item->NAME)."        </td>
- 		      $td3".utf8_decode($item->MODEL)."       </td>
-		      $td3".utf8_decode($item->DESCRIPTION)." </td>
-		      $td3".utf8_decode($item->TYPE).        "</td>
+			  $td3".textDecode($item->NAME)."        </td>
+ 		      $td3".textDecode($item->MODEL)."       </td>
+		      $td3".textDecode($item->DESCRIPTION)." </td>
+		      $td3".textDecode($item->TYPE).        "</td>
 		      </tr>";
 	}
 	echo "</table><br>";		
@@ -724,13 +724,13 @@ function print_memories($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-			  $td3 ".utf8_decode($item->CAPTION)."     </td>
-		      $td3 ".utf8_decode($item->DESCRIPTION)." </td>
-		      $td3 ".utf8_decode($item->CAPACITY)."    </td>
-		      $td3 ".utf8_decode($item->PURPOSE)."     </td>
-		      $td3 ".utf8_decode($item->TYPE)."        </td>
-		      $td3 ".utf8_decode($item->SPEED)."       </td>
-		      $td3 ".utf8_decode($item->NUMSLOTS)."    </td>
+			  $td3 ".textDecode($item->CAPTION)."     </td>
+		      $td3 ".textDecode($item->DESCRIPTION)." </td>
+		      $td3 ".textDecode($item->CAPACITY)."    </td>
+		      $td3 ".textDecode($item->PURPOSE)."     </td>
+		      $td3 ".textDecode($item->TYPE)."        </td>
+		      $td3 ".textDecode($item->SPEED)."       </td>
+		      $td3 ".textDecode($item->NUMSLOTS)."    </td>
 		      </tr>";
 	}
 	echo "</table><br>";		
@@ -755,11 +755,11 @@ function print_inputs($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-			  $td3 ".utf8_decode($item->TYPE)."        </td>
-		      $td3 ".utf8_decode($item->MANUFACTURER)."</td>
-		      $td3 ".utf8_decode($item->CAPTION)."     </td>
-		      $td3 ".utf8_decode($item->DESCRIPTION)." </td>
-		      $td3 ".utf8_decode($item->INTERFACE)."   </td>
+			  $td3 ".textDecode($item->TYPE)."        </td>
+		      $td3 ".textDecode($item->MANUFACTURER)."</td>
+		      $td3 ".textDecode($item->CAPTION)."     </td>
+		      $td3 ".textDecode($item->DESCRIPTION)." </td>
+		      $td3 ".textDecode($item->INTERFACE)."   </td>
 		     </tr>";
 	}
 	echo "</table><br>";		
@@ -784,12 +784,12 @@ function print_drives($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-		      $td3 ".utf8_decode($item->LETTER)."     </td>
-		      $td3 ".utf8_decode($item->TYPE)."       </td>
-		      $td3 ".utf8_decode($item->FILESYSTEM)." </td>
-		      $td3 ".utf8_decode($item->TOTAL)."      </td>
-		      $td3 ".utf8_decode($item->FREE)."       </td>
-		      $td3 ".utf8_decode($item->VOLUMN)."       </td>
+		      $td3 ".textDecode($item->LETTER)."     </td>
+		      $td3 ".textDecode($item->TYPE)."       </td>
+		      $td3 ".textDecode($item->FILESYSTEM)." </td>
+		      $td3 ".textDecode($item->TOTAL)."      </td>
+		      $td3 ".textDecode($item->FREE)."       </td>
+		      $td3 ".textDecode($item->VOLUMN)."       </td>
 			  </tr>";
 	}
 	echo "</table><br>";		
@@ -812,12 +812,12 @@ function print_bios($systemid)
 		  
 	$item = mysql_fetch_object($resultDetails);	
 	echo "<tr>";
-	echo "$td3".utf8_decode($item->SSN)." </td>
-	$td3".utf8_decode($item->SMANUFACTURER)." </td>
-	      $td3".utf8_decode($item->SMODEL)."        </td>
-		  $td3".utf8_decode($item->BMANUFACTURER)." </td>
-		  $td3".utf8_decode($item->BVERSION)."      </td>
-		  $td3".utf8_decode($item->BDATE)."         </td>";
+	echo "$td3".textDecode($item->SSN)." </td>
+	$td3".textDecode($item->SMANUFACTURER)." </td>
+	      $td3".textDecode($item->SMODEL)."        </td>
+		  $td3".textDecode($item->BMANUFACTURER)." </td>
+		  $td3".textDecode($item->BVERSION)."      </td>
+		  $td3".textDecode($item->BDATE)."         </td>";
 	echo "</tr>";
 	echo "</table><br>";
 }
@@ -840,7 +840,7 @@ function print_comments($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>";
-		echo "$td3".utf8_decode($item->COMMENTS)."</td>";
+		echo "$td3".textDecode($item->COMMENTS)."</td>";
 		echo "</tr>";
 	}
 	echo "</table><br>";
@@ -862,9 +862,9 @@ function print_controllers($systemid)
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
 		echo "<tr>
-				$td3 ".utf8_decode($item->MANUFACTURER)."</td>
-		      	$td3 ".utf8_decode($item->NAME)."        </td>
-		      	$td3 ".utf8_decode($item->TYPE)."        </td>
+				$td3 ".textDecode($item->MANUFACTURER)."</td>
+		      	$td3 ".textDecode($item->NAME)."        </td>
+		      	$td3 ".textDecode($item->TYPE)."        </td>
 			</tr>";
 	}
 	echo "</table><br>";	

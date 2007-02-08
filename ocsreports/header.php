@@ -8,20 +8,20 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.10 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
-set_time_limit(0);
+@set_time_limit(0);
 @session_start();
 
-include("preferences.php");
+require("preferences.php");
 
 // update checking
 $resUpd = @mysql_query("SELECT tvalue FROM config WHERE name='GUI_VERSION'", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 $valUpd = @mysql_fetch_array($resUpd);
 if( !$valUpd || $valUpd["tvalue"]<GUI_VER ) {
 	$fromAuto = true;
-	include('install.php');
+	require('install.php');
 	die();
 }
 
@@ -167,7 +167,7 @@ if( !isset($_GET["popup"] )) {
 		</table>
 		</form>		
 		";
-		include ("footer.php");
+		require ("footer.php");
 		die();
 	}	
 

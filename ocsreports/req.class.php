@@ -8,7 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.6 $)
+require("fichierConf.class.php");
 
 if(!class_exists("Req"))
 { 
@@ -140,7 +141,7 @@ class Req
 							  if(isset($_POST[$varr]))
 							  {
 							  	$vall=$_POST[$varr];
-							  	$html.="<option selected>".utf8_decode($vall)."</option>\n";
+							  	$html.="<option selected>".textDecode($vall)."</option>\n";
 								$select="";
 							  }
 						  	  else

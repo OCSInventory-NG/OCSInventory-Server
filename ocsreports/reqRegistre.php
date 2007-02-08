@@ -8,14 +8,14 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.6 $)
 
 require ('fichierConf.class.php');
 
 if( ! $_GET["multi"] )
 {
-	include('req.class.php');
-	include('preferences.php');	
+	require('req.class.php');
+	require('preferences.php');	
 }
 
 switch ($_GET["typeDemande"]) :
@@ -36,8 +36,8 @@ switch ($_GET["typeDemande"]) :
 			mysql_query("delete from regconfig where id='".$_GET["id"]."'", $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 			
 		echo "&nbsp;";
-		$lbl=$l->g(2);		//Nom de la requete	
-	
+		
+	$lbl=$l->g(108);		//Nom de la requete	
 	$sql = "";
 	$whereId = "id";
 	$linkId = "id";
@@ -51,7 +51,7 @@ switch ($_GET["typeDemande"]) :
 	
 	$req=new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId);
 	
-	printEnTete($requete->label);
+	printEnTete($l->g(108));
 	ShowResults($req,true);
 		
 		echo "<br><br><table align='right'><tr><td>";
@@ -196,7 +196,7 @@ function supprimer()
 	if ($_GET["id"])
 		{ ?>
 			<script language="javascript">
-				if(confirm ("<?php echo trim($l->g(119))?><?php echo $_GET["id"]?> ?")) 
+				if(confirm ("<?php echo trim($l->g(525))?><?php echo $_GET["id"]?> ?")) 
 					window.location="index.php?multi=5&id=<?php echo $_GET["id"]?>";
 				else	
 					window.location="index.php?multi=5";

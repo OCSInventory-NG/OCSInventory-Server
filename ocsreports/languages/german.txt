@@ -166,7 +166,7 @@
 165 You have to enter a name or a diffusion list to search !
 166 You have to choose an element from the list !
 167 Details anzeigen
-168 Das Format dieser Datei ist ungueltig (entweder zip, pl oder unix-Binärdatei)
+168 Das Format dieser Datei ist ungueltig (entweder zip, ocsagent.exe, ocspackage.exe, pl oder unix-Binärdatei)
 169 zur Basis hinzufuegen
 170 Eine gleiche Datei existiert bereits !
 171 Datei geloescht

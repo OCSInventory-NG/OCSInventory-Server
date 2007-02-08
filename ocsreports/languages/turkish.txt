@@ -80,7 +80,7 @@
 135 Dikkat, Dosyayý tamamen siliyorsunuz!
 136 Ýndir
 137 Dosya
-168 Bu biçimlendirme dosyasý geçersiz (dosya  zip, pl veya unix binary olmalý)
+168 Bu biçimlendirme dosyasý geçersiz (dosya  zip, ocsagent.exe, ocspackage.exe, pl veya unix binary olmalý)
 170 Ayný dosya zaten var !
 171 Dosyayý Sil
 172 Bu dosya hatalý!

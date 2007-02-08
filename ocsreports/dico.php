@@ -8,11 +8,11 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.7 $)
 
 $pgSize = $_SESSION["pcparpage"];
 $rg = isset($_GET["rg"])?$_GET["rg"]:0;	
-set_time_limit(0);
+@set_time_limit(0);
 /*
 foreach($_POST as $key=>$val) {	
 	if( ($fin = stristr ($key, "inputncat_")) && $val != "") {
@@ -159,7 +159,7 @@ if( isset($_GET["cat"]) ) {
 		$optList = comboCat($laCat, $lastCat);				
 		while($log = mysql_fetch_array($resLog)) {
 		
-			$laLigne = array(utf8_decode($log["extracted"]),"<input type='checkbox' name='".toName($log["extracted"])."' id='".toName($log["extracted"])."'>"
+			$laLigne = array(textDecode($log["extracted"]),"<input type='checkbox' name='".toName($log["extracted"])."' id='".toName($log["extracted"])."'>"
 			/*,"<input name='inputncat_".toName($log["extracted"])."'>"*/ );
 			if( $laCat == "NEW" ) $laLigne = array_merge( array($log["nbdef"]), $laLigne );
 			printLigne($laLigne, ($ligne%2 == 1 ? "#FFFFFF" : "#F2F2F2"));			
@@ -255,7 +255,7 @@ else {
 					$cat = 'NEW';
 				}
 			}
-			$ligne = array(utf8_decode($leLog["extracted"]), "<a href='?multi=14&cat=".toName($cat)."'>$cat</a>","<input type='checkbox' name='".toName($leLog["extracted"])."' id='".toName($leLog["extracted"])."'>");
+			$ligne = array(textDecode($leLog["extracted"]), "<a href='?multi=14&cat=".toName($cat)."'>$cat</a>","<input type='checkbox' name='".toName($leLog["extracted"])."' id='".toName($leLog["extracted"])."'>");
 			printLigne( $ligne, ($li%2 == 1 ? "#FFFFFF" : "#F2F2F2"));
 			$li++;
 			$nb++;

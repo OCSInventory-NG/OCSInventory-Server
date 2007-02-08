@@ -78,7 +78,7 @@
 135 Attention, vous allez supprimer ce fichier définitivement !
 136 Télécharger
 137 Fichier
-168 Ce format de fichier n'est pas utilisable (il doit être: ocsagent.exe, zip, pl ou binaire unix)
+168 Ce format de fichier n'est pas utilisable (il doit être: zip, ocsagent.exe, ocspackage.exe, pl ou binaire unix)
 170 Un fichier correspondant existe déjà !
 171 Fichier supprimé
 172 Une erreur est survenue, le fichier

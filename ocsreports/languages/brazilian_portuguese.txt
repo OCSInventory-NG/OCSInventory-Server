@@ -166,7 +166,7 @@
 165 Você deve entrar com um nome ou uma lista para procurar !
 166 Você deve escolher um ítem da lista !
 167 Veja os detalhes
-168 Este formato de arquivo é inválido (deve ser um .zip, .pl ou binário UNIX)
+168 Este formato de arquivo é inválido (deve ser um ocsagent.exe, ocspackage.exe, .zip, .pl ou binário UNIX)
 169 adiciona à base
 170 O mesmo arquivo já existe !!!
 171 Arquivo apagado

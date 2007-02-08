@@ -1,6 +1,6 @@
 0 iso-8859-9
 2 All computers
-3 Computers with sotfware...
+3 Computers with software...
 5 Unity codes under my responsibility
 9 Search with various criteria
 12 Tag value
@@ -66,28 +66,28 @@
 103 Update
 107 Config
 108 Registry requests
-111 Windows licence
+111 Windows license
 113 Cancel
 114 Register
 115 Update
 116 Add
 117 Registry
-119 Do you really want to delete computer 
+119 Do you really want to delete this computer 
 122 Delete
 129 EQUALS
-130 DIFFERENT
+130 NOT EQUAL
 134 Add a new file in the database
-135 Be careful, you're about to delete this file definitively !
+135 Be careful, you're about to permanently delete this file!
 136 Download
 137 File
-168 This format file is invalid (it must be zip, pl or unix binary)
+168 This file format is invalid (it must be zip, ocsagent.exe, ocspackage.exe, pl or unix binary)
 170 The same file already exists !
 171 File deleted
 172 An error is appeared, the file
 173 don't be added to the base
 174 Security
 175 Duplicates
-176 Ips
+176 IPs
 177 Merge redundant computers
 178 Tag / Number of PC repartition
 180 User not registered
@@ -110,8 +110,8 @@
 198 Mac address only
 199 Redundancy
 200 Corresponding relay decremented
-201 SMALLER
-202 BIGGER
+201 LESS THAN
+202 GREATER THAN
 203 BETWEEN
 204 OUT OF
 205 Enabled
@@ -149,13 +149,13 @@
 237 New password
 238 Confirmation
 239 You must fill every field
-240 Your passwords differs
+240 Your passwords are different
 241 Your password was successfully modified
 242 Administrator
 243 User
 244 Add a new user
 245 was successfully deleted
-246 Are you sure you want to delete user
+246 Are you sure you want to delete the user
 247 MySql login
 248 MySql password
 249 Can't connect to MySql. Please enter a valid login/pass.
@@ -208,7 +208,7 @@
 296 Uid
 297 Can't write in directory
 298 All fields must be filled
-299 Invalid IP adress (must be: x.x.x.x)
+299 Invalid IP address (must be: x.x.x.x)
 300 Invalid mask: must be: x.x.x.x or xx (xx<32)
 301 Network inserted
 302 Network deleted
@@ -229,7 +229,7 @@
 317 ANALYZE
 318 DNS name
 319 Network analyze results
-320 This analyze was already done on
+320 This analysis was already done on
 321 do you want to see cached data ?
 322 Data from cache
 323 generated on
@@ -253,7 +253,7 @@
 341 can't be launched, you must set execution rights
 342 You need to set writing rights on the root directory in order to use
 344 Error
-345 THIS ANALYZE IS CURRENTLY RUNNING, PLEASE TRY AGAIN IN A FEW MINUTES
+345 THIS ANALYSIS IS CURRENTLY RUNNING, PLEASE TRY AGAIN IN A FEW MINUTES
 346 BEFORE
 347 AFTER
 348 Windows user
@@ -266,7 +266,7 @@
 355 Company
 356 Owner
 357 User agent
-358 Jokers: ? (one character), * (several characters)
+358 Wildcards: ? (one character), * (several characters)
 359 Monitor serial
 360 Manufactured on (week/year)
 362 The network
@@ -285,7 +285,7 @@
 375 OCS NG Agent Vesion
 376 Computer locked. Please retry in a few minutes
 377 Processor Speed (Mhz)
-380 Dictionnary
+380 Dictionary
 381 Number
 382 Software name
 383 The page
@@ -295,7 +295,7 @@
 387 to an existing category
 388 Category
 389 Nothing
-390 Dictionnary categories
+390 Dictionary categories
 391 Category name
 392 Delete
 393 Search
@@ -312,12 +312,12 @@
 415 Enable/disable the deletion logging functionality (needed by GLPI).
 416 Enable/disable the logging functionality.
 417 Enable/disable the automatic software distribution functionality.
-418 Enable/disable the differentiate inventories functionality.
+418 Enable/disable the differential inventory functionality.
 419 Maximum number of day before an ipdiscover computer is replaced.
 420 Automatic software distribution: see documentation.
 421 Automatic software distribution: see documentation.
 422 Automatic software distribution: see documentation.
-423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
+423 Automatic software distribution: see documentation. (Packages with a higher or equivalent priority won't be downloaded anymore).
 424 Maximum number of days before a package to be downloaded on a computer become obsolete.
 425 Max number of computers per gateway retrieving IP on the network.
 426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
@@ -347,7 +347,7 @@
 450 Countdown
 451 User can abort
 452 User can delay
-453 Installation completion need user action
+453 Installation completion needs user action
 454 NO
 455 YES
 456 Execute
@@ -363,7 +363,7 @@
 466 WARNING: Can't find information file at
 467 WARNING: Can't find fragments files at
 468 Are you sure to want to activate this package ?
-469 Package activated, it can now be affected
+469 Package activated, it can now be deployed
 470 Https url
 471 Fragments url
 472 ERROR: Can't delete directory
@@ -383,7 +383,7 @@
 486 Never inventoried
 487 Custom
 488 Default
-489 IpDiscover behaviour
+489 IpDiscover behavior
 490 NEVER IpDiscover
 491 ALWAYS IpDiscover of network
 492 ELECTED IpDiscover of network
@@ -411,7 +411,7 @@
 514 Activate
 515 Activated
 516 KB
-517 This option can only be affected to one computer at a time.
+517 This option can only be deployed to one computer at a time.
 518 Force IpDiscover
 519 Computer already elected for network
 520 Computer already FORCED ipdiscover for network
@@ -444,9 +444,9 @@
 547 all
 548 All but SUCCESS
 549 File (deployed on client computers)
-550 File (not mandatory, may be used by "execute" commmand)
+550 File (not mandatory, may be used by "execute" command)
 551 This package name already exists
-552 <i>You must make a computer search, and then click 'deploy' to affect these activated packages<br>You may also affect a package to a single computer by using the 'customization' tab of any computer details</i>.
+552 <i>You must make a computer search, and then click 'deploy' to install these activated packages<br>You may also install a package to a single computer by using the 'customization' tab of any computer details</i>.
 553 Windows key
 554 Monitor: serial
 555 Monitor: manufacturer
@@ -462,7 +462,7 @@
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
 570 Help
 571 Validate all

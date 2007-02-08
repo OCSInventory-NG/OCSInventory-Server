@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-19 17:26:37 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.11 $)
 
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);
@@ -28,7 +28,7 @@
 		}
 	}	
 	
-	include("req.class.php");
+	require("req.class.php");
 	$indLigne=0;
 	$softPresent = false;
 	$cuPresent = -1;
@@ -665,7 +665,7 @@ function afficheLigne($ligne)
 	{
 		echo "<select OnClick='act$suff.checked=true' name='val$suff'>";	
 		$res=mysql_query($laRequete, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
-		echo $_SESSION["reqs"][$label][3];
+		
 		$linSel = "LINUX"   == $_SESSION["reqs"][$label][3] ?" selected":"";
 		$winSel = "WINDOWS" == $_SESSION["reqs"][$label][3] ?" selected":"";
 		

@@ -8,9 +8,9 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-28 15:18:06 $$Author: plemmet $($Revision: 1.13 $)
+//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.14 $)
 
-set_time_limit(0); 
+@set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
 ?>
 <html>
@@ -29,7 +29,7 @@ echo "<center><br><font color='green'><b>Current installed version ".$valUpd["tv
 if(!isset($_POST["name"])) {
 	if( $hnd = @fopen("dbconfig.inc.php", "r") ) {
 		fclose($hnd);
-		include("dbconfig.inc.php");
+		require("dbconfig.inc.php");
 		$_POST["name"] = $_SESSION["COMPTE_BASE"];
 		$_POST["pass"] = $_SESSION["PSWD_BASE"];
 		$_POST["host"] = $_SESSION["SERVEUR_SQL"];
@@ -82,7 +82,7 @@ else
 echo "<br><center><font color=orange><b>WARNING: You will not be able to build any auto deployment package with size 
 greater than $MaxAvail.<br>You must raise both post_max_size and upload_max_filesize in your php.ini to correct this.</b></font></center>";
 
-include ('fichierConf.class.php');
+require ('fichierConf.class.php');
 
 $l = new FichierConf("english"); // on crée l'instance pour avoir les mots dans la langue choisie
 if( isset($_POST["name"])) {
@@ -98,7 +98,7 @@ if( ! $instOk ) {
 
 	if( $hnd = @fopen("dbconfig.inc.php", "r") ) {
 			fclose($hnd);
-			include("dbconfig.inc.php");
+			require("dbconfig.inc.php");
 			$valNme = $_SESSION["COMPTE_BASE"];
 			$valPass = $_SESSION["PSWD_BASE"];
 			$valServ = $_SESSION["SERVEUR_SQL"];
@@ -268,17 +268,19 @@ foreach( $tableEngines as $tbl=>$eng ) {
 		$erralter = true;
 	}
 }
-$oneFailed = false;
+$oneInnoFailed = false;
+$oneHeapFailed = false;
 foreach( $tableEngines as $tbl=>$eng ) {
 	if( $res = mysql_query("show table status like '$tbl'") ) {
 		$val = mysql_fetch_array( $res );
-		if( (strcasecmp($val["Engine"],$eng) != 0) && (strcasecmp($eng,"InnoDB") == 0) && $oneFailed == false ) {
+		if( (strcasecmp($val["Engine"],$eng) != 0) && (strcasecmp($eng,"InnoDB") == 0) && $oneInnoFailed == false ) {
 			echo "<br><br><center><font color=red><b>ERROR: InnoDB conversion failed, install InnoDB  mysql engine support on your server<br>or you will experience severe performance issues.<br>
 			(Try to uncomment \"#skip-innodb\" in your mysql config file.)<br>Reinstall when corrected.</b></font><br>";
-			$oneFailed = true;
+			$oneInnoFailed = true;
 		}
-		if ( (strcasecmp($val["Engine"],$eng)!=0) && (strcasecmp($eng,"HEAP")) && (strcasecmp($val["Engine"],"MEMORY")!=0)  ) {
+		if ( (strcasecmp($val["Engine"],$eng)!=0) && (strcasecmp($eng,"HEAP")) && (strcasecmp($val["Engine"],"MEMORY")!=0) && $oneHeapFailed == false  ) {
 			echo "<br><br><center><font color=red><b>ERROR: HEAP conversion failed, install HEAP mysql engine support on your server<br>or you will experience severe performance issues.</b></font><br>";
+			$oneHeapFailed = true;
 		}
 	}
 	else {

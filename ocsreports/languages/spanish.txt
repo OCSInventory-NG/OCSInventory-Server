@@ -166,7 +166,7 @@
 165 ¡Tiene que entrar un nombre o un lista de {difusion} para buscar!
 166 ¡Tiene que selecionar un elemento de la lista!
 167 Mirar los detalles
-168 Este formato de archivo no es válido (debe ser zip, pl o binario unix)
+168 Este formato de archivo no es válido (debe ser zip, ocsagent.exe, ocspackage.exe, pl o binario unix)
 169 adicionar a la base
 170 ¡Ya existe el mismo archivo!
 171 Archivo borrado
