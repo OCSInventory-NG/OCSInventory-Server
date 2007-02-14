@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-02-14 15:40:18 $$Author: plemmet $($Revision: 1.8 $)
 
 $pgSize = $_SESSION["pcparpage"];
 $rg = isset($_GET["rg"])?$_GET["rg"]:0;	
@@ -442,8 +442,8 @@ function alterChecksum($ext, $form=false) {
 }
 
 function computeChecksums() {
-	echo "COMPUTING: ".sizeof($_SESSION["toBeMod"])."<br>";
-	flush();
+	//echo "COMPUTING: ".sizeof($_SESSION["toBeMod"])."<br>";
+	//flush();
 	
 	$softMod = "65536";
 	$reqCheck = "UPDATE hardware SET checksum=checksum|$softMod WHERE id IN (SELECT DISTINCT(hardware_id) FROM softwares WHERE name IN(";

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2007-02-14 15:40:19 $$Author: plemmet $($Revision: 1.7 $)
 
 if( isset($_GET["frompref"]) && $_GET["frompref"] == 1 ) {
 	unset( $_SESSION["saveId"] );
@@ -67,16 +67,16 @@ if( isset($_GET["systemid"]))
 	
 $lbl = "pack";	
 $sql = "";
-$whereId = "e.FILEID";
-$linkId = "e.FILEID";
+$whereId = "e.ID";
+$linkId = "e.ID";
 $select = array("ID"=>$l->g(460), "e.FILEID"=>$l->g(475), "NAME"=>$l->g(49), 
 "PRIORITY"=>$l->g(440),"INFO_LOC"=>$l->g(470), "PACK_LOC"=>$l->g(471), 
 "FRAGMENTS"=>$l->g(480), "SIZE"=>$l->g(462), "OSNAME"=>$l->g(25));	
-$selectPrelim = array("e.FILEID"=>"e.FILEID", "d.name"=>"Nom");	
+$selectPrelim = array("e.ID"=>"e.ID");	
 $from = "download_enable e LEFT JOIN download_available d ON d.fileid = e.fileid";
 $fromPrelim = "";
 $group = "";
-$order = "";
+$order = "e.FILEID DESC";
 $countId = "e.ID";
 
 $requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,true);

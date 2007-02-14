@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.22 $)
+//Modified on $Date: 2007-02-14 15:40:19 $$Author: plemmet $($Revision: 1.23 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -450,9 +450,9 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				$isDateTime[$colname->name] =($colname->type == "datetime" || $colname->type == "timestamp" ? 1 : 0);
 
 				if($sortable) {	
-					if( $_SESSION["storedRequest"]->countId == "h.id" && ($_SESSION["storedRequest"]->group == "" || ! in_array($_SESSION["storedRequest"]->group, array("h.id","s.name","a.tag") ) )) { // NO group by clause
+					if( ! in_array($colname->name, array($l->g(28)) ) ) {// Not grouping requests
+						$vraiNomChamp = array_search( $colname->name, $_SESSION["storedRequest"]->select );
 						
-						$vraiNomChamp = array_search( $colname->name, $_SESSION["currentFieldList"] );
 						
 						/*if( ! $vraiNomChamp ) {
 							$ind = array_search( $colname->name, $_SESSION["currentRegistry"] );
@@ -460,7 +460,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 						}*/
 								
 						if( ! $vraiNomChamp )
-							$vraiNomChamp = array_search( $colname->name, $_SESSION["storedRequest"]->select );							
+							$vraiNomChamp = array_search( $colname->name, $_SESSION["currentFieldList"] );							
 						}
 					else					
 						$vraiNomChamp = "\"".$colname->name."\"";

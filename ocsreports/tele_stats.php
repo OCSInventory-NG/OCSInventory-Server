@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2007-02-14 15:40:19 $$Author: plemmet $($Revision: 1.9 $)
 require('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -27,19 +27,19 @@ require_once("preferences.php");
 
 if( isset($_GET["delsucc"]) ) {		
 	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%' AND 
-	ivalue = (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
 }
 else if( isset($_GET["deltout"]) ) {		
 	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NOT NULL
-	ivalue = (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
 }
 else if( isset($_GET["delnotif"]) ) {		
 	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NULL AND 
-	ivalue = (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
 }
 
 $resStats = mysql_query("SELECT COUNT(id) as 'nb', tvalue as 'txt' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
- AND e.id=d.ivalue AND name='DOWNLOAD' GROUP BY tvalue", $_SESSION["readServer"]);
+ AND e.id=d.ivalue AND name='DOWNLOAD' GROUP BY tvalue ORDER BY nb DESC", $_SESSION["readServer"]);
 
 if( @mysql_num_rows( $resStats ) == 0 ) {
 	echo "<center>".$l->g(526)."</center>";
@@ -64,7 +64,23 @@ else if( isset($_GET["generatePic"]) ) {
 		if( $i > sizeof( $coul ) )
 			$i=0;
 	}
-	camembert($quartiers);
+
+	$sort = array();
+	$index = 0;
+	for( $count=0; $count < (sizeof( $quartiers )); $count++ ) {
+		if( $count%2==0) {
+			$sort[ $count ] = $quartiers[ $index ];
+			//echo "sort[ $count ] = quartiers[ $index ];<br>";
+			$index++;
+		}
+		else {
+			$sort[ $count ] = $quartiers[ sizeof( $quartiers ) - $index ];
+			//echo "sort[ ".($count)." ] = quartiers[ ".(sizeof($quartiers)-$index)."  ];<br>";
+			
+		}		
+	}
+	
+	camembert($sort);
 }
 else {
 	?>
