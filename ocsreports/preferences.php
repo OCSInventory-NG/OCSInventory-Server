@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-14 15:40:19 $$Author: plemmet $($Revision: 1.23 $)
+//Modified on $Date: 2007-02-14 16:40:51 $$Author: plemmet $($Revision: 1.24 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -25,11 +25,9 @@ define("PC_PAR_PAGE", 15); 				// default computer / page value
 define("TAG_NAME", "TAG"); 				// do NOT change
 define("LOCAL_SERVER", $_SESSION["SERVEUR_SQL"]); // adress of the server handler used for local import
 $_SESSION["SERVER_READ"] = $_SESSION["SERVEUR_SQL"];
-//DO NOT COMMIT
 $_SESSION["SERVER_WRITE"] =  $_SESSION["SERVEUR_SQL"];
 unset( $_SESSION["debug"] );
 $_SESSION["debug"]  = false ;
-//FIN DO NOT COMMIT
 
 if( ! function_exists ( "utf8_decode" )) {
 	function utf8_decode($st) {
