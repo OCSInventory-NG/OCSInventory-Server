@@ -12,7 +12,6 @@ package Apache::Ocsinventory::Interface;
 use Apache::Ocsinventory::Interface::Internals;
 
 use strict;
-
 sub get_computers_V1{
 	my $class = shift;
 # Xml request

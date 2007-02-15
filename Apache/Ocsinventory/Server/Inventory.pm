@@ -32,6 +32,8 @@ use Apache::Ocsinventory::Server::System qw /:server _modules_get_pre_inventory_
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Duplicate;
 
+push @Apache::Ocsinventory::XMLParseOptForceArray, ('INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO');
+
 
 my $DeviceID;
 my @accountkeys;
@@ -71,14 +73,9 @@ sub _inventory_handler{
 	$dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	$data = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'};
 	undef @accountkeys;
+
+	$result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 	
-	# XML to Perl
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
-		&_log(507,'inventory','Xml error') if $ENV{'OCS_OPT_LOGLEVEL'};
-		return APACHE_BAD_REQUEST;
-	}
-	
-		
 # Ref to xml in global struct 
 	$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'} = $result;
 

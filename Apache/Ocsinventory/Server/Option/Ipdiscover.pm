@@ -41,6 +41,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'TYPE' => OPTION_TYPE_SYNC
 };
 
+push @Apache::Ocsinventory::XMLParseOptForceArray, ('H', 'NETWORKS');
+
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} = 100;
@@ -109,7 +111,6 @@ sub _ipdiscover_main{
 	my $row;
 	my $subnet;
 	my $remove;
-	my $result;
 	my $ivalue;
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
@@ -118,11 +119,8 @@ sub _ipdiscover_main{
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $data = $current_context->{'DATA'};
+	my $result = $current_context->{'XML_ENTRY'};
 	
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
-		return 1;
-	}
-
 	# Is the device already have the ipdiscover function ?
 	$request=$dbh->prepare('SELECT IVALUE, TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');
 	$request->execute($DeviceID);

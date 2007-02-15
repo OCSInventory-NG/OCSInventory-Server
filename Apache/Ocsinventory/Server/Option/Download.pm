@@ -37,6 +37,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'TYPE' => OPTION_TYPE_ASYNC
 };
 
+push @Apache::Ocsinventory::XMLParseOptForceArray, 'PACKAGE';
+
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_CYCLE_LATENCY'} = 60;
@@ -107,11 +109,8 @@ sub download_pre_inventory{
 	my $data = $current_context->{'DATA'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $computerId = $current_context->{'DATABASE_ID'};
-	my $result;
+	my $result = $current_context->{'XML_ENTRY'};
 	
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['PACKAGE'] )){
-		return 1;
-	}
 	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $computerId);
 	# Reference to the module part
 

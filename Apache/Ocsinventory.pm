@@ -42,6 +42,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_DIFF'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_TRANSACTION'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 3600;
 
+
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler/;
@@ -53,6 +54,7 @@ use Compress::Zlib;
 
 # Globale structure
 our %CURRENT_CONTEXT;
+our @XMLParseOptForceArray;
 
 sub handler{
 
@@ -170,7 +172,7 @@ sub handler{
 		}
 		##########################
 		# Parse the XML request
-		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1 )){
+		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1, ForceArray => \@XMLParseOptForceArray )){
 			&_log(507,'handler','Xml stage');
 			return APACHE_BAD_REQUEST;
 		}

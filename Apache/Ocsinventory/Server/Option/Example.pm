@@ -44,6 +44,9 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'TYPE' => OPTION_TYPE_SYNC # or OPTION_TYPE_ASYNC ASYNC=>with pr without inventory, SYNC=>only when inventory is required
 };
 
+# To tell to ocs what xml tags to always consider as array
+push @Apache::Ocsinventory::XMLParseOptForceArray, ( 'An_xml_tag'  );
+
 # Default options of your module
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_FOO'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_BAR'} = 1;

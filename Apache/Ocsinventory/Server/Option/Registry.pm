@@ -37,6 +37,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'TYPE' => OPTION_TYPE_SYNC
 };
 
+push @Apache::Ocsinventory::XMLParseOptForceArray, ('REGISTRY');
+
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
 
@@ -50,10 +52,7 @@ sub _registry_main{
 	my $update = $current_context->{'EXIST_FL'};
 	my $data = $current_context->{'DATA'};
 	
-	my $result;
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
-		return 1;
-	}
+	my $result = $current_context->{'XML_ENTRY'};
 
 	if($update){
 		if(!$dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $DeviceID)){
