@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-14 16:40:51 $$Author: plemmet $($Revision: 1.24 $)
+//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.25 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -67,7 +67,7 @@ if( ! isset( $_SESSION["fichLang"] ) ) {
 	if( isset($_COOKIE["lang"]) )
 		$_SESSION["fichLang"] = new FichierConf($_COOKIE["lang"]);
 	else 
-		$_SESSION["fichLang"] = new FichierConf(getBrowserLang());
+		$_SESSION["fichLang"] = new FichierConf(DEFAULT_LANGUAGE?DEFAULT_LANGUAGE:getBrowserLang());
 }
 $l = $_SESSION["fichLang"];
 
@@ -410,8 +410,9 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				
 		$cpt=1;
 		printNavigation( $prefG, $numPages);	
-		echo "<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
-		<tr BGCOLOR='#C7D9F5'>";		
+
+		echo "<table class='Main' BORDER='1' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='3' BORDERCOLOR='#9894B5'>
+		<tr BGCOLOR='#C7D9F5' height='30px'>";		
 		if($modeRedon)
 			echo "<td>&nbsp;</td>";
 		
@@ -553,7 +554,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 							$ttText .= " - ".$l->g(558);
 						}
 						if( isset( $optTooltip["IPDISCOVER"] )) {
-							$ttText .= " - ".$l->g(557);
+							$ttText .= " - ".$l->g(576);
 						}
 						$ttText = strtr(htmlspecialchars( $ttText ), "\"","'");
 						echo "<td align='center' valign='center'><img width='15px' title=\"$ttText\" alt=\"$ttText\" src='image/red.png'></td>";
@@ -613,8 +614,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				echo "<td align='center'>".$valNot["nb"]."</td><td align='center'><font color='green'>".$valSucc["nb"]."</font></td><td align='center'><font color='red'>".$valErr["nb"]."</font></td>";
 				echo "<td align='center'>";
 				if( $valTot["nb"] > 0 )
-					echo "<a OnClick='window.open(\"tele_stats.php?sessid=".session_id()."&stat=".$item[0]."\",\"fenstat".$item[0]."\",\"location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=850,height=600\")' 
- href='javascript:void(0);'><img src='image/cal.gif'></a>";
+					echo "<a href=\"tele_stats.php?sessid=".session_id()."&stat=".$item[0]."\" target=_blank><img src='image/cal.gif'></a>";
 				else
 					echo "<b>-</b>";
 					

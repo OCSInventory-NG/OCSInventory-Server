@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.15 $)
+//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.16 $)
 require('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -1007,7 +1007,6 @@ function isAvail($lbl) {
 		case $l->g(512) : $tble = "download_history";
 							break;					
 		case $l->g(54):	return true;
-		default: echo "bug";
 							break;
 	}
 	$resAv = mysql_query("SELECT hardware_id FROM $tble WHERE hardware_id=$systemid", $_SESSION["readServer"] );

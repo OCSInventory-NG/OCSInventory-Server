@@ -449,7 +449,7 @@
 554 Ecran: numéro de série
 555 Ecran: fabricant
 556 Ecran: description
-557 Ipdiscover personnalisé
+557 Userdomain
 558 Paquets affectés
 559 Ce fichier n'est pas un .ocs
 560 Vers serveur
@@ -468,3 +468,4 @@
 573 Erreurs
 574 Stats
 575 Désaffecter non notifiés
+576 Ipdiscover personnalisé

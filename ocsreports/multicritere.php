@@ -8,8 +8,23 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.11 $)
-
+//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.12 $)
+	
+	if( isset( $_GET["nme"] ) && isset( $_GET["stat"] ) ) {
+		$_POST["act_0"] = "on";		
+		$_POST["chm_0"] = "tele";
+		$_POST["lbl_0"] = $l->g(512);
+		$_POST["ega_0"] = "ayant";
+		$_POST["val_0"] = urldecode( $_GET["nme"] );
+		$_POST["val2_0"] = urldecode( $_GET["stat"] );
+		$_POST["sub"] = $l->g(30);
+		$_POST["max"] = 1;
+		if( $_POST["val2_0"] == $l->g(482) ) {
+			$_POST["val2_0"] = "stats";
+		}
+		$_SESSION["OPT"][] = $l->g(512);		
+	}
+	
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);
 		unset($_SESSION["selectRegistry"]);
@@ -224,6 +239,11 @@
 						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
 						 "' AND e.fileid=a.fileid AND e.id=d.ivalue UNION SELECT dh.hardware_id FROM download_history dh, download_available da WHERE dh.pkg_id=da.fileid AND da.name='".$_POST["val_".$i].
 						 "')";
+					break;
+					case "stats":
+						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
+						 WHERE d.name='DOWNLOAD' AND a.name='".$_POST["val_".$i].
+						 "' AND e.fileid=a.fileid AND e.id=d.ivalue AND d.tvalue IS NULL ) ";  
 					break;
 					default: //standard case
 						$laRequete.= "(SELECT d.hardware_id FROM devices d, download_available a, download_enable e
@@ -621,7 +641,8 @@ function afficheLigne($ligne)
 			echo "</select> ".$l->g(546).": <select OnClick='act$suff.checked=true' name='val2$suff'>
 			<option ".($_SESSION["reqs"][$label][4]=="ind"?" selected":"")." value='ind'>".$l->g(509)."</option>
 			<option ".($_SESSION["reqs"][$label][4]=="nsuc"?" selected":"")." value='nsuc'>".$l->g(548)."</option>
-			<option ".($_SESSION["reqs"][$label][4]=="suc"?" selected":"")." value='suc'>SUCCESS</option>";
+			<option ".($_SESSION["reqs"][$label][4]=="suc"?" selected":"")." value='suc'>SUCCESS</option>
+			<option ".($_SESSION["reqs"][$label][4]=="stats"?" selected":"")." value='stats'>".$l->g(482)."</option>";
 			
 			$resState = @mysql_query("SELECT distinct(tvalue) FROM devices WHERE name='DOWNLOAD' AND tvalue<>'SUCCESS' AND tvalue IS NOT NULL", $_SESSION["readServer"]);
 			while( $valState = @mysql_fetch_array( $resState )) {

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-14 15:40:19 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.8 $)
 
 if( isset($_GET["frompref"]) && $_GET["frompref"] == 1 ) {
 	unset( $_SESSION["saveId"] );
@@ -34,17 +34,6 @@ if( $_GET["retour"] == 1 || (isset($_GET["affpack"]) && $ok) ) {
 	else
 		echo "<script language='javascript'>window.location='machine.php?systemid=".$_SESSION["saveId"]."&sessid=".session_id()."&option=".$l->g(500)."';</script>";
 	die();
-}
-
-if( isset($_GET["suppack"])) {
-	if( !isset($_GET["nonnot"]) )
-		@mysql_query("DELETE FROM download_enable WHERE ID=".$_GET["suppack"], $_SESSION["writeServer"]) or die(mysql_error());	
-	
-	$reqSupp = "DELETE FROM devices WHERE name='DOWNLOAD' AND ivalue=".$_GET["suppack"];
-	if( isset($_GET["nonnot"]) )
-		$reqSupp .= " AND tvalue IS NULL";
-	
-	@mysql_query($reqSupp, $_SESSION["writeServer"]) or die(mysql_error());	
 }
 	
 if( isset($_GET["systemid"]))

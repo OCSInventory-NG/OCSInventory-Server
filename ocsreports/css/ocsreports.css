@@ -115,7 +115,7 @@ text-align:center;
 font-weight:bold;
 }
 	
-table.Fenetre 
+table.Fenetre, table.Main
 {
 	background-color: white;
 	border-color: #A1B1F9;
@@ -123,8 +123,18 @@ table.Fenetre
 	border-style: solid;
 	border-width: 2px;
 	border-collapse: collapse;
+}
+
+table.Fenetre 
+{	
 	width:62%;
 }
+
+table.Main 
+{	
+	width:95%;
+}
+
 
 table.headfoot 
 {
@@ -140,7 +150,7 @@ table.headfoot
 select.ge {
 	background-color: #C7D9F5;
 	height: 246px;
-	width: 250px;
+	width: 350px;
 }
 
 .boutonP {

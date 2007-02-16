@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-14 15:40:19 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.10 $)
 require('fichierConf.class.php');
 
 $_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
@@ -40,26 +40,18 @@ else if( isset($_GET["delnotif"]) ) {
 
 $resStats = mysql_query("SELECT COUNT(id) as 'nb', tvalue as 'txt' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD' GROUP BY tvalue ORDER BY nb DESC", $_SESSION["readServer"]);
-
-if( @mysql_num_rows( $resStats ) == 0 ) {
-	echo "<center>".$l->g(526)."</center>";
-	die();	
-}
-
-if( ! function_exists( "imagefontwidth") ) {
-	echo "<br><center><font color=red><b>ERROR: GD for PHP is not properly installed.<br>Try uncommenting \";extension=php_gd2.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-gd package.</b></font></center>";
-	die();
-}
-else if( isset($_GET["generatePic"]) ) {
+ 
 	$tot = 0;
 	$quartiers = array();
 	$coul = array( 0x0091C3, 0xFFCB03  ,0x33CCCC, 0xFF9900,  0x969696,  0x339966, 0xFF99CC, 0x99CC00);
+	$coulHtml = array( "0091C3", "FFCB03"  ,"33CCCC", "FF9900",  "969696",  "339966", "FF99CC", "99CC00");
 	$i = 0;
 	while( $valStats = mysql_fetch_array( $resStats ) ) {
 		$tot += $valStats["nb"];
 		if( $valStats["txt"] =="" )
 			$valStats["txt"] = $l->g(482);
-		$quartiers[] = array( $valStats["nb"], $coul[ $i ], $valStats["txt"]." (".$valStats["nb"].")" );	
+		$quartiers[] = array( $valStats["nb"], $coul[ $i ], $valStats["txt"]." (".$valStats["nb"].")" );
+		$legende[] = array( "color"=>$coulHtml[ $i ], "name"=>$valStats["txt"], "count"=>$valStats["nb"] );
 		$i++;
 		if( $i > sizeof( $coul ) )
 			$i=0;
@@ -75,11 +67,21 @@ else if( isset($_GET["generatePic"]) ) {
 		}
 		else {
 			$sort[ $count ] = $quartiers[ sizeof( $quartiers ) - $index ];
-			//echo "sort[ ".($count)." ] = quartiers[ ".(sizeof($quartiers)-$index)."  ];<br>";
+			//echo "sort[ ".($count)." ] = quartiers[ ".(sizeof($quartiers)-$index)."  ];<br>";http://localhost/ocsreports_net/tele_stats.php?generatePic=1&sessid=f3b3227907d7c12e0c2f0b1af979f863&stat=1169468001
 			
 		}		
 	}
-	
+
+if( @mysql_num_rows( $resStats ) == 0 ) {
+	echo "<center>".$l->g(526)."</center>";
+	die();	
+}
+
+if( ! function_exists( "imagefontwidth") ) {
+	echo "<br><center><font color=red><b>ERROR: GD for PHP is not properly installed.<br>Try uncommenting \";extension=php_gd2.dll\" (windows) by removing the semicolon in file php.ini, or try installing the php4-gd package.</b></font></center>";
+	die();
+}
+else if( isset($_GET["generatePic"]) ) {	
 	camembert($sort);
 }
 else {
@@ -91,22 +93,35 @@ else {
 	<META HTTP-EQUIV="Expires" CONTENT="-1">
 	<LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
 	</HEAD>
-	<BODY>
-
 	<?php 
 	
 	$resStats = mysql_query("SELECT COUNT(DISTINCT HARDWARE_ID) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
 	AND e.id=d.ivalue AND name='DOWNLOAD'", $_SESSION["readServer"]);
+	
+	$resName = mysql_query("SELECT name FROM download_available WHERE fileid='".$_GET["stat"]."'", $_SESSION["readServer"]);
+	$valName = mysql_fetch_array( $resName );
 
 	$valStats = mysql_fetch_array( $resStats );
 	
-	echo "<br><img src='tele_stats.php?generatePic=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>";
-	echo "<center><b>".$l->g(28).": ".$valStats["nb"]."</b><br><br>";
-	echo "<table width='100%'><tr>";
-	echo "<td width='33%' align='center'><a href='tele_stats.php?delsucc=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(483)."</a></td>";	
-	echo "<td width='33%' align='center'><a href='tele_stats.php?deltout=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(571)."</a></td>";	
-	echo "<td width='33%' align='center'><a href='tele_stats.php?delnotif=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'>".$l->g(575)."</a></td>";
-	echo "</tr></table>";
+	echo "<body OnLoad='document.title=\"".urlencode($valName["name"])."\"'>";
+	printEnTete( $l->g(498)." <b>".$valName["name"]."</b> (".$l->g(296).": ".$_GET["stat"]." )");
+	
+	echo "<br><center><img src='tele_stats.php?generatePic=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'></center>";
+	
+	echo "<table class='Fenetre' align='center' border='1' cellpadding='5' width='50%'><tr BGCOLOR='#C7D9F5'>";
+	echo "<td width='33%' align='center'><a href='tele_stats.php?delsucc=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'><b>".$l->g(483)."</b></a></td>";	
+	echo "<td width='33%' align='center'><a href='tele_stats.php?deltout=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'><b>".$l->g(571)."</b></a></td>";	
+	echo "<td width='33%' align='center'><a href='tele_stats.php?delnotif=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'><b>".$l->g(575)."</b></a></td>";
+	echo "</tr></table><br><br>";
+	
+	echo "<table class='Fenetre' align='center' border='1' cellpadding='5' width='50%'>
+	<tr BGCOLOR='#C7D9F5'><td width='30px'>&nbsp;</td><td align='center'><b>".$l->g(81)."</b></td><td align='center'><b>".$l->g(55)."</b></td></tr>";
+	foreach( $legende as $leg ) {
+		echo "<tr><td bgcolor='#".$leg["color"]."'>&nbsp;</td><td>".$leg["name"]."</td><td><a href='index.php?multi=1&nme=".urlencode($valName["name"])."&stat=".urlencode($leg["name"])."'>".$leg["count"]."</a></td></tr>";
+	}
+	echo "<tr bgcolor='#C7D9F5'><td bgcolor='white'>&nbsp;</td><td><b>".$l->g(87)."</b></td><td><b>".$valStats["nb"]."</b></td></tr>";
+	echo "</table><br><br>";
+	
 	?>
 	</BODY>
 	</HTML>
@@ -119,7 +134,7 @@ else {
       $ifw=imagefontwidth($size);                            
        
       $w=850; /* largeur de l'image */
-      $h=500; /* hauteur de l'image */
+      $h=400; /* hauteur de l'image */
       $a=200; /* grand axe du camembert */
       $b=$a/2; /* 60 : petit axe du camembert */
       $d=$a/2; /* 60 : "épaisseur" du camembert */

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.7 $)
 
 PrintEnTete($l->g(465));
 
@@ -127,7 +127,7 @@ $sql = "";
 $whereId = "d.FILEID";
 $linkId = "d.FILEID";
 $select = array( "d.FILEID"=>"Timestamp", "NAME"=>$l->g(49), "PRIORITY"=>$l->g(440), "FRAGMENTS"=>$l->g(464), "SIZE"=>$l->g(462), "OSNAME"=>$l->g(25));	
-$selectPrelim = array("d.FILEID"=>"d.FILEID","d.NAME"=>"Nom");	
+$selectPrelim = array("d.FILEID"=>"d.FILEID");	
 $from = "download_available d";
 $fromPrelim = "";
 $group = "";

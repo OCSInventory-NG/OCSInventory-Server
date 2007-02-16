@@ -452,7 +452,7 @@
 554 Monitor: numero di serie
 555 Monitor: produttore
 556 Monitor: legenda
-557 Ricercatore  IP personalizzato
+557 Userdomain
 558 Pacchetto influenzato
 559 Questo file non è .ocs
 560 Al server
@@ -471,3 +471,4 @@
 573 Errors
 574 Stats
 575 Unaffect not notified
+576 Ricercatore IP personalizzato

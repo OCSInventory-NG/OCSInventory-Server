@@ -540,7 +540,7 @@
 554 Monitor: serial
 555 Monitor: fabricante
 556 Monitor: identificador
-557 Ipdiscover personalizado
+557 Userdomain
 558 Paquetes afectados
 559 Este archivo no es .ocs
 560 Al servidor
@@ -559,3 +559,4 @@
 573 Errors
 574 Stats
 575 Unaffect not notified
+576 Ipdiscover personalizado

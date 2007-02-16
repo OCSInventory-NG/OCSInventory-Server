@@ -540,7 +540,7 @@
 554 Monitor: Serial
 555 Monitor: Fabricante
 556 Monitor: Resolução
-557 Descoberta de IPs customizada
+557 Userdomain
 558 Pacotes afetados
 559 Arquivo não é um .ocs
 560 Ao servidor
@@ -559,3 +559,4 @@
 573 Errors
 574 Stats
 575 Unaffect not notified
+576 Descoberta de IPs customizada

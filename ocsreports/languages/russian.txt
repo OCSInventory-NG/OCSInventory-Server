@@ -450,7 +450,7 @@
 554 Monitor: serial
 555 Monitor: manufacturer
 556 Monitor: caption
-557 Customized ipdiscover
+557 Userdomain
 558 Affected packages
 559 This file is not .ocs
 560 To server
@@ -469,3 +469,4 @@
 573 Errors
 574 Stats
 575 Unaffect not notified
+576 Customized ipdiscover
