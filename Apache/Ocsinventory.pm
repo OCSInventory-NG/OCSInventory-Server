@@ -41,6 +41,8 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_DIFF'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_TRANSACTION'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 3600;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_ENABLE_GROUPS'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} = 3600;
 
 
 # Ocs modules
@@ -48,13 +50,13 @@ use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler/;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Inventory;
+use Apache::Ocsinventory::Server::Groups;
 
 # To compress the tx and read the rx
 use Compress::Zlib;
 
 # Globale structure
 our %CURRENT_CONTEXT;
-our @XMLParseOptForceArray;
 
 sub handler{
 
@@ -75,14 +77,15 @@ sub handler{
 		'XML_ENTRY' => undef,
 		'XML_INVENTORY' => undef,
 		'LOCK_FL' => 0,
-		'EXIST_FL' => 0
+		'EXIST_FL' => 0,
+		'MEMBER_OF' => undef
 	);
 
 	#LOG FILE
 	##########
 	#
 	# All events will be stored in this file in the csv format(See the errors code in the documentation)
-	open LOG, '>>'.LOGPATH.'/ocsinventory-NG.log' or die "Failed to open log file : $!\n";
+	open LOG, '>>'.$ENV{'OCS_LOGPATH'}.'/ocsinventory-NG.log' or die "Failed to open log file : $!\n";
 	# We don't want buffer, so we allways flush the handles
 	select(LOG);
 	$|=1;
@@ -172,7 +175,7 @@ sub handler{
 		}
 		##########################
 		# Parse the XML request
-		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1, ForceArray => \@XMLParseOptForceArray )){
+		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1 )){
 			&_log(507,'handler','Xml stage');
 			return APACHE_BAD_REQUEST;
 		}
@@ -234,6 +237,14 @@ sub _init{
 	unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
 		return(APACHE_SERVER_ERROR);
 	}
+        
+        # Computing groups list 
+        if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
+          $CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups( $CURRENT_CONTEXT{'DATABASE_ID'} ) ];
+        }
+        else{
+          $CURRENT_CONTEXT{'MEMBER_OF'} = [];
+        }
 	
 	if($request->rows){
 		my $row = $request->fetchrow_hashref;
@@ -245,7 +256,7 @@ sub _init{
 			'LDATE' => $row->{'LDATE'},
 			'QUALITY' => $row->{'QUALITY'},
 			'FIDELITY' => $row->{'FIDELITY'},
-		}
+                };
 	}else{
 		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
 	}
@@ -254,4 +265,16 @@ sub _init{
 	return(undef);
 }
 1;
+
+
+
+
+
+
+
+
+
+
+
+
 

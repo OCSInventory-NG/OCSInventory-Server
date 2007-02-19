@@ -39,9 +39,6 @@ use constant PROLOG_RESP_SEND => 2;
 use constant OPTION_TYPE_SYNC => 0;
 use constant OPTION_TYPE_ASYNC => 1;
 
-# Path to log file directory
-use constant LOGPATH => $ENV{'OCS_LOGPATH'};
-
 # Max size of the inventory diff value (17 bits for the moment)
 use constant CHECKSUM_MAX_VALUE => 131071;
 

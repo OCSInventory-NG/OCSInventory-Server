@@ -99,9 +99,9 @@ sub _prolog{
 		$lastdate = $info->{'LDATE'};
 
 		# Maybe there are computer's special frequency
-		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="FREQUENCY"');
-		$request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'});
-		if($row=$request->fetchrow_hashref()){
+		$request=$dbh->prepare('SELECT IVALUE FROM devices WHERE HARDWARE_ID IN ('.($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}.(@{$Apache::Ocsinventory::CURRENT_CONTEXT{'MEMBER_OF'}}?',':''). join(',',@{$Apache::Ocsinventory::CURRENT_CONTEXT{'MEMBER_OF'}})).') AND NAME="FREQUENCY" ORDER BY IVALUE DESC');
+		$request->execute();
+		while($row=$request->fetchrow_hashref()){
 			$frequency=$row->{'IVALUE'};
 		}
 		$request->finish;

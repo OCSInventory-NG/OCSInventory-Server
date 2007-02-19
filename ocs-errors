@@ -42,8 +42,11 @@ MANAGEMENT
 300--Device replaced
 301--Device can be duplicated
 302--File transmitted (deploy)
-304--deploy off
+304--Deploy off
 305--Files transmitted
+306--Group out-of-date
+307--Revalidate group cache
+308--group is locked by another process
 
 IPDISCOVER
 ----------

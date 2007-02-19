@@ -131,7 +131,7 @@ sub _database_connect{
 	}
 
 	# Connection...
-	return DBI->connect("DBI:mysql:database=$Database;host=$Host;port=$Port", $DBuser, $DBpassword, { 'AutoCommit' => 0 });
+	return DBI->connect("DBI:mysql:database=$Database;host=$Host;port=$Port", $DBuser, $DBpassword, { 'AutoCommit' => 0, PrintError => $ENV{'OCS_OPT_DBI_PRINT_ERROR'} });
 }
 
 sub _check_deviceid{

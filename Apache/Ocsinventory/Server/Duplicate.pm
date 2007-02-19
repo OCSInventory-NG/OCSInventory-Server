@@ -216,6 +216,19 @@ sub _duplicate_replace{
 	}
 	$dbh->do("DELETE FROM hardware WHERE ID=?", {}, $device) or return(1);
 	
+        # Groups cache management
+        $request = $dbh->prepare('SELECT GROUP_ID,STATIC FROM groups_cache WHERE HARDWARE_ID=?');
+        $request->execute($device);
+        $dbh->do('DELETE FROM groups_cache WHERE HARDWARE_ID=?', {}, $device);
+        if($request->rows){
+          while( $row = $request->fetchrow_hashref() ){
+            # We lock the current group. We don't retrieve old values if the group has been deleted
+            next if $dbh->do('SELECT HARDWARE_ID FROM groups WHERE HARDWARE_ID=? FOR UPDATE', {}, $row->{'GROUP_ID'}) == 0E0;
+            $dbh->do('INSERT INTO groups_cache(HARDWARE_ID,GROUP_ID,STATIC) VALUES(?,?,?)', {}, $DeviceID, $row->{'GROUP_ID'},$row->{'STATIC'});
+          }
+        }
+
+	
 	#Trace duplicate
 	if($ENV{'OCS_OPT_TRACE_DELETED'}){
 		unless(	$dbh->do('INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NULL,?,?)', {} , $device,$DeviceID)){

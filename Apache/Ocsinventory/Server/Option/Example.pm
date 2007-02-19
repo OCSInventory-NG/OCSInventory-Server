@@ -44,9 +44,6 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'TYPE' => OPTION_TYPE_SYNC # or OPTION_TYPE_ASYNC ASYNC=>with pr without inventory, SYNC=>only when inventory is required
 };
 
-# To tell to ocs what xml tags to always consider as array
-push @Apache::Ocsinventory::XMLParseOptForceArray, ( 'An_xml_tag'  );
-
 # Default options of your module
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_FOO'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_BAR'} = 1;
@@ -71,6 +68,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_TOTO'} = 'titi';
 #	'XML_INVENTORY' => ref, gives you a pointer to the data structure generated when parsing xml inventory -- Filled for inventory post handlers
 #	'LOCK_FL' => 1(true) or 0(false), shows if the computer is locked -- Always filled
 #	'EXIST_FL' => 1(true) or 0(false) shows if the computer whether exists in the database or not (update) -- Always filled
+#        'MEMBER_OF' => array ref, gives you the groups that computer is member of
 #);
 
 sub example_prolog_read{
