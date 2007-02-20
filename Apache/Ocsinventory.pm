@@ -47,7 +47,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} = 3600;
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
-use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler/;
+use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler /;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Inventory;
 use Apache::Ocsinventory::Server::Groups;
@@ -64,6 +64,8 @@ sub handler{
 	my $status;
 	my $r;
 	my $data;
+	my $raw_data;
+	my $inflated;
 	my $query;
 
 	# current context
@@ -144,12 +146,12 @@ sub handler{
 		}
 		
 		# Get the data
-		if( read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) == undef ){
+		if( !defined( read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ) ){
 			&_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_SERVER_ERROR
 		}
-		$CURRENT_CONTEXT{'DATA'} = \$data;
-
+# Copying buffer because inflate() modify it
+		$raw_data = $data;
 		# Debug level for Apache::DBI (apache/error.log)
 		# $Apache::DBI::DEBUG=2;
 	
@@ -167,15 +169,18 @@ sub handler{
 			&_log(506,'handler','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return APACHE_BAD_REQUEST;
 		}
-
-		($data, $status) = $d->inflate($data);
+		($inflated, $status) = $d->inflate($data);
 		unless( $status == Z_OK or $status == Z_STREAM_END){
-			&_log(506,'handler','Compress stage');
-			return APACHE_SERVER_ERROR;
+			&_inflate(\$raw_data, \$inflated);
+			if(!$inflated){
+				&_log(506,'handler','Compress stage');
+				return APACHE_SERVER_ERROR;
+			}
 		}
+		$CURRENT_CONTEXT{'DATA'} = \$inflated;
 		##########################
 		# Parse the XML request
-		unless($query = XML::Simple::XMLin( $data, SuppressEmpty => 1 )){
+		unless($query = XML::Simple::XMLin( $inflated, SuppressEmpty => 1 )){
 			&_log(507,'handler','Xml stage');
 			return APACHE_BAD_REQUEST;
 		}

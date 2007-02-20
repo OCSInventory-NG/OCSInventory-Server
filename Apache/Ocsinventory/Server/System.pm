@@ -43,6 +43,7 @@ our %EXPORT_TAGS = (
 		_lock
 		_unlock
 		_send_file
+		_inflate
 		/
 	]
 );
@@ -97,6 +98,21 @@ sub _get_sys_options{
 	}
 	$request->finish;
 	0;
+}
+
+# Try other compress algorythm
+sub _inflate{
+	my @inflate_subs = (
+		# gzip file content
+		sub { my $data_ref = shift; return Compress::Zlib::memGunzip( ${$data_ref} ) }
+	);
+	my $data_ref = shift;
+	my $inflated_ref = shift;
+	
+	for( @inflate_subs ){
+		last if( $$inflated_ref = &{$_}($data_ref) );
+	};
+	1;
 }
 
 # Database connection
@@ -180,7 +196,7 @@ sub _log{
 	my $code = shift;
 	my $phase = shift;
 	my $comment = shift;
-	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
+	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}||'NA';
 	my $fh = \*Apache::Ocsinventory::LOG;
 	
 	print $fh localtime().";$code;$DeviceID;".(($ENV{'HTTP_X_FORWARDED_FOR'})?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'}).";".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
