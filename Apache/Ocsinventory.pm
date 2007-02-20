@@ -57,9 +57,10 @@ use Compress::Zlib;
 
 # Globale structure
 our %CURRENT_CONTEXT;
+our @XMLParseOptForceArray;# Obsolete, for 1.01 modules only
+my %XML_PARSER_OPT; 
 
 sub handler{
-
 	my $d;
 	my $status;
 	my $r;
@@ -180,7 +181,9 @@ sub handler{
 		$CURRENT_CONTEXT{'DATA'} = \$inflated;
 		##########################
 		# Parse the XML request
-		unless($query = XML::Simple::XMLin( $inflated, SuppressEmpty => 1 )){
+		# Retrieving xml parsing options if needed
+		&_get_xml_parser_opt( \%XML_PARSER_OPT ) unless %XML_PARSER_OPT;
+		unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
 			&_log(507,'handler','Xml stage');
 			return APACHE_BAD_REQUEST;
 		}

@@ -31,6 +31,7 @@ use constant IPD_MAN => 2;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'NAME' => 'IPDISCOVER',
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
 	'HANDLER_PRE_INVENTORY' => undef,
@@ -38,7 +39,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
 	'HANDLER_DUPLICATE' => undef,
-	'TYPE' => OPTION_TYPE_SYNC
+	'TYPE' => OPTION_TYPE_SYNC,
+	'XML_PARSER_OPT' => {
+			'ForceArray' => ['H', 'NETWORKS']
+	}
 };
 
 # Default
@@ -109,7 +113,6 @@ sub _ipdiscover_main{
 	my $row;
 	my $subnet;
 	my $remove;
-	my $result;
 	my $ivalue;
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
@@ -118,10 +121,7 @@ sub _ipdiscover_main{
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $data = $current_context->{'DATA'};
-	
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['H', 'NETWORKS'] )){
-		return 1;
-	}
+	my $result = $current_context->{'XML_ENTRY'};
 
 	# Is the device already have the ipdiscover function ?
 	$request=$dbh->prepare('SELECT IVALUE, TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');

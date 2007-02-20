@@ -43,6 +43,7 @@ use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'NAME' => 'UPDATE',
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => undef,
 	'HANDLER_PRE_INVENTORY' => undef,
@@ -50,7 +51,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'REQUEST_NAME' => 'UPDATE',
 	'HANDLER_REQUEST' => \&_update_handler,
 	'HANDLER_DUPLICATE' => undef,
-	'TYPE' =>undef
+	'TYPE' => undef,
+	'XML_PARSER_OPT' => {
+		'ForceArray' => []
+	}
 };
 
 # Default
@@ -61,6 +65,7 @@ sub _update_handler{
 	my $current_context = shift;
 	my $data = $current_context->{'DATA'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
+	my $query = $current_context->{'XML_ENTRY'};
 
 	my %resp;
 	my @agent;
@@ -78,20 +83,11 @@ sub _update_handler{
 	my $Aversion;
 	my $request;
 	my $row;
-	my $query;
 
 	#Looking for option status
 	unless($ENV{'OCS_OPT_UPDATE'}){
 		&_send_response({'RESPONSE',['NO_UPDATE']});
 		return APACHE_OK;
-	}
-
-	# Parse the request
-	##########################
-	# Parse the XML request
-	unless($query = XML::Simple::XMLin( $$data, SuppressEmpty => 1 )){
-		&_log(507,'update','Xml stage');
-		return APACHE_SERVER_ERROR;
 	}
 
 	# OS type

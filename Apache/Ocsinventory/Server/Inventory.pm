@@ -61,6 +61,10 @@ our %mask = (
 	'softwares'	=> 65536
 );
 
+our %XML_PARSER_OPT = (
+	'ForceArray' => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO']
+);
+
 #Proceed with inventory
 #######################
 #
@@ -71,14 +75,8 @@ sub _inventory_handler{
 	$dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	$data = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'};
 	undef @accountkeys;
-	
-	# XML to Perl
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO'] )){
-		&_log(507,'inventory','Xml error') if $ENV{'OCS_OPT_LOGLEVEL'};
-		return APACHE_BAD_REQUEST;
-	}
-	
-		
+			
+	$result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 # Ref to xml in global struct 
 	$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'} = $result;
 

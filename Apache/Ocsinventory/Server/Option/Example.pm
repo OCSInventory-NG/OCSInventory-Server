@@ -34,6 +34,7 @@ use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'NAME' => 'EXAMPLE',
 	'HANDLER_PROLOG_READ' => \&example_prolog_read, #or undef # Called before reading the prolog
 	'HANDLER_PROLOG_RESP' => \&example_prolog_resp, #or undef # Called after the prolog response building
 	'HANDLER_PRE_INVENTORY' => \&example_pre_inventory, #or undef # Called before reading inventory
@@ -41,7 +42,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'REQUEST_NAME' => 'EXAMPLE',  #or undef # Value of <QUERY/> xml tag
 	'HANDLER_REQUEST' => \&example_handler, #or undef # function that handle the request with the <QUERY>'REQUEST NAME'</QUERY>
 	'HANDLER_DUPLICATE' => \&example_duplicate,#or undef # Called when a computer is handle as a duplicate
-	'TYPE' => OPTION_TYPE_SYNC # or OPTION_TYPE_ASYNC ASYNC=>with pr without inventory, SYNC=>only when inventory is required
+	'TYPE' => OPTION_TYPE_SYNC, # or OPTION_TYPE_ASYNC ASYNC=>with pr without inventory, SYNC=>only when inventory is required
+	'XML_PARSER_OPT' => {
+			'ForceArray' => ['xml_tag']
+	}
 };
 
 # Default options of your module

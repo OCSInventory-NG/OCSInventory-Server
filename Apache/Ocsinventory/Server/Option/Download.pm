@@ -27,6 +27,7 @@ use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'NAME' => 'DOWNLOAD',
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&download_prolog_resp,
 	'HANDLER_PRE_INVENTORY' => \&download_pre_inventory,
@@ -34,7 +35,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'REQUEST_NAME' => 'DOWNLOAD',
 	'HANDLER_REQUEST' => \&download_handler,
 	'HANDLER_DUPLICATE' => \&download_duplicate,
-	'TYPE' => OPTION_TYPE_ASYNC
+	'TYPE' => OPTION_TYPE_ASYNC,
+	'XML_PARSER_OPT' => {
+			'ForceArray' => ['PACKAGE']
+	}
 };
 
 # Default
@@ -107,11 +111,8 @@ sub download_pre_inventory{
 	my $data = $current_context->{'DATA'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $computerId = $current_context->{'DATABASE_ID'};
-	my $result;
-	
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['PACKAGE'] )){
-		return 1;
-	}
+	my $result = $current_context->{'XML_ENTRY'};
+		
 	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $computerId);
 	# Reference to the module part
 

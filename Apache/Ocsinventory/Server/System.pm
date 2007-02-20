@@ -35,6 +35,7 @@ our @EXPORT = qw /
 our %EXPORT_TAGS = (
 	'server' => [ 
 		qw/
+		_get_xml_parser_opt
 		_get_sys_options
 		_database_connect
 		_end
@@ -303,6 +304,26 @@ sub _modules_search{
 	}else{
 		return(0);
 	}
+}
+
+sub _get_xml_parser_opt{
+	my $hash_ref = shift; 
+	$hash_ref->{'SuppressEmpty'} = 1;
+	$hash_ref->{'ForceArray'} = [];
+	@{$hash_ref->{'ForceArray'}} = &_get_xml_parser_opt_force_array();
+}
+
+sub _get_xml_parser_opt_force_array{
+	my @ret;
+# Core
+	push @ret, @{$Apache::Ocsinventory::Server::Inventory::XML_PARSER_OPT{'ForceArray'}};
+	
+# Options
+	push @ret, @Apache::Ocsinventory::XMLParseOptForceArray;
+	for my $module (@{$Apache::Ocsinventory::OPTIONS_STRUCTURE}){
+		push @ret, @{$module->{'XML_PARSER_OPT'}->{'ForceArray'}} if $module->{'XML_PARSER_OPT'}->{'ForceArray'}=~/ARRAY/;
+	}
+	return @ret;
 }
 
 #

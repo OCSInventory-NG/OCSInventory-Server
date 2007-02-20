@@ -27,6 +27,7 @@ use Apache::Ocsinventory::Server::Constants;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
+	'NAME' => 'REGISTRY',
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&_registry_prolog_resp,
 	'HANDLER_PRE_INVENTORY' => undef,
@@ -34,7 +35,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
 	'HANDLER_DUPLICATE' => \&_registry_duplicate,
-	'TYPE' => OPTION_TYPE_SYNC
+	'TYPE' => OPTION_TYPE_SYNC,
+	'XML_PARSER_OPT' => {
+			'ForceArray' => ['REGISTRY']
+	}
 };
 
 # Default
@@ -49,11 +53,7 @@ sub _registry_main{
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $update = $current_context->{'EXIST_FL'};
 	my $data = $current_context->{'DATA'};
-	
-	my $result;
-	unless($result = XML::Simple::XMLin( $$data, SuppressEmpty => 1, ForceArray => ['REGISTRY'] )){
-		return 1;
-	}
+	my $result = $current_context->{'XML_ENTRY'};
 
 	if($update){
 		if(!$dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $DeviceID)){
