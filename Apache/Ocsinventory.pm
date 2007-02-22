@@ -27,7 +27,7 @@ BEGIN{
 	}
 }
 
-$Apache::Ocsinventory::VERSION = '0.80';
+$Apache::Ocsinventory::VERSION = '1.02';
 
 # Defaults
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_FREQUENCY'} = 3;
