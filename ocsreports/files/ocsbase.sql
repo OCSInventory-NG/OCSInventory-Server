@@ -395,6 +395,19 @@ CREATE TABLE conntrack(
 	PRIMARY KEY(IP)
 ) ENGINE = HEAP;
 
+CREATE TABLE groups(
+	HARDWARE_ID integer default NULL,
+	REQUEST longtext,
+	CREATE_TIME timestamp,
+	PRIMARY KEY(HARDWARE_ID)
+) ENGINE=InnoDB;
+
+CREATE TABLE groups_cache(
+	HARDWARE_ID integer NOT NULL default 0,
+	GROUP_ID integer NOT NULL default 0,
+	STATIC integer default 0,
+	PRIMARY KEY(HARDWARE_ID,GROUP_ID)
+) ENGINE=InnoDB;
 
 ALTER TABLE devices ADD INDEX IVALUE (IVALUE);
 ALTER TABLE devices ADD INDEX NAME (NAME);
@@ -606,7 +619,7 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4100', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4101', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
