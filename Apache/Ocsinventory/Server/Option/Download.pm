@@ -62,7 +62,7 @@ sub download_prolog_resp{
 	my($pack_sql, $hist_sql);
 	my($pack_req, $hist_req);
 	my($hist_row, $pack_row);
-	my(@packages, @history);
+	my(@packages, @history, @dont_repeat);
 	my $blacklist;
 	
 	push @packages,{
@@ -109,9 +109,10 @@ sub download_prolog_resp{
 				$pack_req->execute( $_ );
 				while( $pack_row = $pack_req->fetchrow_hashref ){
 					my $fileid = $pack_row->{'FILEID'};
-					if( grep /^$fileid$/, @history ){
+					if( grep /^$fileid$/, @history or grep /^$fileid$/, @dont_repeat){
 						next;
 					}
+
 					if( $ENV{'OCS_OPT_DOWNLOAD_GROUPS_TRACE_EVENTS'} ){
 						# We verify if the package is already traced and not already in history
 						if( $dbh->do($verif_affected ,{}, $hardware_id, $pack_row->{'IVALUE'})==0E0 ){
@@ -128,6 +129,7 @@ sub download_prolog_resp{
 							'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
 						};
 					}
+					push @dont_repeat, $fileid;
 				}
 			}
 		}
@@ -148,6 +150,9 @@ sub download_prolog_resp{
 		
 		while($pack_row = $pack_req->fetchrow_hashref){
 			my $fileid = $pack_row->{'FILEID'};
+			if( grep /^$fileid$/, @history or grep /^$fileid$/, @dont_repeat){
+				next;
+			}
 			push @packages,{
 				'TYPE'		=> 'PACK',
 				'ID'		=> $pack_row->{'FILEID'},
@@ -156,6 +161,7 @@ sub download_prolog_resp{
 				'CERT_PATH'	=> $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
 				'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
 			};
+			push @dont_repeat, $fileid;
 		}
 		$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
 		,{}, $current_context->{'DATABASE_ID'}) if $pack_req->rows;
