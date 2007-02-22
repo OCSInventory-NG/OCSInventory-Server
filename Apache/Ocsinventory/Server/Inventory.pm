@@ -95,8 +95,6 @@ sub _inventory_handler{
 	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
 		&_log( 516, 'inventory', 'device locked');
 		return(APACHE_FORBIDDEN);
-	}else{
-		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
 	}
 
 	# Put the inventory in the database

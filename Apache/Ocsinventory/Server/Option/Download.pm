@@ -48,15 +48,22 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'} = 10;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} = 10;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_TIMEOUT'} = 31;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_GROUPS_TRACE_EVENTS'} = 0;
 
 sub download_prolog_resp{
 	
 	my $current_context = shift;
 	my $resp = shift;
+	
 	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $request;
-	my $row;
-	my @packages;
+	my $groups = $current_context->{'MEMBER_OF'};
+	my $hardware_id = $current_context->{'DATABASE_ID'};
+	
+	my($pack_sql, $hist_sql);
+	my($pack_req, $hist_req);
+	my($hist_row, $pack_row);
+	my(@packages, @history);
+	my $blacklist;
 	
 	push @packages,{
 		'TYPE' 			=> 'CONF',
@@ -69,57 +76,115 @@ sub download_prolog_resp{
 	};
 	
 	if($ENV{'OCS_OPT_DOWNLOAD'}){
-		$request = $dbh->prepare( q {SELECT FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE
-		FROM devices,download_enable 
-		WHERE HARDWARE_ID=? 
-		AND devices.IVALUE=download_enable.ID 
-		AND devices.NAME='DOWNLOAD'
-		AND (TVALUE IS NULL OR TVALUE='NOTIFIED')} );
+	
+# If this option is set, we send only the needed package to the agent
+# Can be a performance issue
+# Agents prior to 4.0.3.0 do not send history data
+		$hist_sql = q {
+			SELECT PKG_ID,ID
+			FROM download_history
+			WHERE HARDWARE_ID=?
+		};
+		$hist_req = $dbh->prepare( $hist_sql );
+		$hist_req->execute( $hardware_id );
 		
+		while( $hist_row = $hist_req->fetchrow_hashref ){
+			push @history, $hist_row->{'PKG_ID'};
+		}
+		
+		if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && @$groups ){
+			$pack_sql =  q {
+				SELECT IVALUE,FILEID,INFO_LOC,PACK_LOC,CERT_PATH,CERT_FILE
+				FROM devices,download_enable
+				WHERE HARDWARE_ID=? 
+				AND devices.NAME='DOWNLOAD'
+				AND download_enable.ID=devices.IVALUE
+			};
+			
+			my $verif_affected = 'SELECT HARDWARE_ID FROM devices WHERE HARDWARE_ID=? AND IVALUE=? AND NAME="DOWNLOAD"';
+			my $trace_event = 'INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES(?,"DOWNLOAD",?,NULL)';
+			$pack_req = $dbh->prepare( $pack_sql );
+						
+			for( @$groups ){
+				$pack_req->execute( $_ );
+				while( $pack_row = $pack_req->fetchrow_hashref ){
+					my $fileid = $pack_row->{'FILEID'};
+					if( grep /^$fileid$/, @history ){
+						next;
+					}
+					if( $ENV{'OCS_OPT_DOWNLOAD_GROUPS_TRACE_EVENTS'} ){
+						# We verify if the package is already traced and not already in history
+						if( $dbh->do($verif_affected ,{}, $hardware_id, $pack_row->{'IVALUE'})==0E0 ){
+							$dbh->do($trace_event, {}, $hardware_id, $pack_row->{'IVALUE'})
+						}
+					}
+					else{
+						push @packages,{
+							'TYPE'		=> 'PACK',
+							'ID'		=> $pack_row->{'FILEID'},
+							'INFO_LOC'	=> $pack_row->{'INFO_LOC'},
+							'PACK_LOC'	=> $pack_row->{'PACK_LOC'},
+							'CERT_PATH'	=> $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
+							'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
+						};
+					}
+				}
+			}
+		}
+	
+		$pack_sql =  q {
+			SELECT FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE
+			FROM devices,download_enable 
+			WHERE HARDWARE_ID=? 
+			AND devices.IVALUE=download_enable.ID 
+			AND devices.NAME='DOWNLOAD'
+			AND (TVALUE IS NULL OR TVALUE='NOTIFIED')
+		};
+			
+		$pack_req = $dbh->prepare( $pack_sql );
 		# Retrieving packages associated to the current device
-		$request->execute( $current_context->{'DATABASE_ID'});
+		$pack_req->execute( $hardware_id );
 		
 		
-		while($row = $request->fetchrow_hashref){
+		while($pack_row = $pack_req->fetchrow_hashref){
+			my $fileid = $pack_row->{'FILEID'};
 			push @packages,{
-				'TYPE' 	=> 'PACK',
-				'ID' 	=> $row->{'FILEID'},
-				'INFO_LOC' 	=> $row->{'INFO_LOC'},
-				'PACK_LOC' 	=> $row->{'PACK_LOC'},
-				'CERT_PATH' 	=> $row->{'CERT_PATH'}?$row->{'CERT_PATH'}:'INSTALL_PATH',
-				'CERT_FILE' 	=> $row->{'CERT_FILE'}?$row->{'CERT_FILE'}:'INSTALL_PATH'
+				'TYPE'		=> 'PACK',
+				'ID'		=> $pack_row->{'FILEID'},
+				'INFO_LOC'	=> $pack_row->{'INFO_LOC'},
+				'PACK_LOC'	=> $pack_row->{'PACK_LOC'},
+				'CERT_PATH'	=> $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
+				'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
 			};
 		}
 		$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
-	,{}, $current_context->{'DATABASE_ID'}) if $request->rows;
+		,{}, $current_context->{'DATABASE_ID'}) if $pack_req->rows;
 	}
+
 	push @{ $resp->{'OPTION'} },{
 		'NAME' 	=> ['DOWNLOAD'],
 		'PARAM' => \@packages
 	};
-# 	if($resp->{'RESPONSE'}[0] eq 'STOP'){
-# 		$resp->{'RESPONSE'} = ['OTHER'];
-# 	}
-	
+		
 	return 0;
 }
 
 sub download_pre_inventory{
-	#return unless $ENV{'OCS_OPT_DOWNLOAD'};
+	return unless $ENV{'OCS_OPT_DOWNLOAD'};
 
 	my $current_context = shift;
 	my $data = $current_context->{'DATA'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $computerId = $current_context->{'DATABASE_ID'};
+	my $hardware_id = $current_context->{'DATABASE_ID'};
 	my $result = $current_context->{'XML_ENTRY'};
 		
-	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $computerId);
+	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $hardware_id);
 	# Reference to the module part
 
 	my $base = $result->{'CONTENT'}->{'DOWNLOAD'}->{'HISTORY'}->{'PACKAGE'};
 	my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
 	for( @{ $base }) {
-		$sth->execute( $computerId, $_->{'ID'});
+		$sth->execute( $hardware_id, $_->{'ID'});
 	}
 	0;
 }
@@ -127,23 +192,26 @@ sub download_pre_inventory{
 sub download_handler{
 	# Initialize data
 	my $current_context = shift;
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $result = $current_context->{'XML_ENTRY'};
-	my $r = $current_context->{'APACHE_OBJECT'};
+	
+	my $dbh		= $current_context->{'DBI_HANDLE'};
+	my $result	= $current_context->{'XML_ENTRY'};
+	my $r 		= $current_context->{'APACHE_OBJECT'};
+	my $hardware_id = $current_context->{'DATABASE_ID'};
+
 	my $request;
 	
 	$request = $dbh->prepare('
 		SELECT ID FROM download_enable 
 		WHERE FILEID=? 
 		AND ID IN (SELECT IVALUE FROM devices WHERE NAME="download" AND HARDWARE_ID=?)');
-	$request->execute( $result->{'ID'}, $current_context->{'DATABASE_ID'});
+	$request->execute( $result->{'ID'}, $hardware_id);
 	
 	if(my $row = $request->fetchrow_hashref()){
 		$dbh->do('UPDATE devices SET TVALUE=? 
 		WHERE NAME="DOWNLOAD" 
 		AND HARDWARE_ID=? 
 		AND IVALUE=?',
-		{}, $result->{'ERR'}, $current_context->{'DATABASE_ID'}, $row->{'ID'} ) 
+		{}, $result->{'ERR'}?$result->{'ERR'}:'UNKNOWN_CODE', $hardware_id, $row->{'ID'} ) 
 			or return(APACHE_SERVER_ERROR);
 		&_set_http_header('content-length', 0, $r);
 		&_send_http_headers($r);
@@ -161,7 +229,6 @@ sub download_duplicate {
 	my $device = shift;
 	
 	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DATABASE_ID'};
 
 	# If we encounter problems, it aborts whole replacement
 	return $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $device);

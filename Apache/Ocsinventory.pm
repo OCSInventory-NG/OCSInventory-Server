@@ -41,7 +41,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_DIFF'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_TRANSACTION'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 3600;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_ENABLE_GROUPS'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_ENABLE_GROUPS'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} = 3600;
 
 
@@ -102,13 +102,13 @@ sub handler{
 	#Connect to database
 	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect())){
 		&_log(505,'handler','Database connection');
-		return APACHE_SERVER_ERROR;
+		return &_end(APACHE_SERVER_ERROR);
 	}
 
 	#Retrieve server options
 	if(&_get_sys_options()){
 		&_log(503,'handler', 'System options');
-		return APACHE_SERVER_ERROR;
+		return &_end(APACHE_SERVER_ERROR);
 	}
 	
 	# First, we determine the http method
@@ -119,21 +119,23 @@ sub handler{
 		# The uri must be '/ocsinventory/deploy/[filename]'
 		if($r->uri()=~/deploy\/(.+)\/?$/){
 			if($ENV{'OCS_OPT_DEPLOY'}){
+				&_end(0);
 				return(&_send_file('deploy',$1));
 			}else{
-				return APACHE_FORBIDDEN;
+				return &_end(APACHE_FORBIDDEN);
 			}
 		}elsif($r->uri()=~/update\/(.+)\/(.+)\/(\d+)\/?/){
 		# We use the GET method for the update to use the proxies
 		# The URL is built like that : [OCSFSERVER]/ocsinventory/[os]/[name]/[version]
 			if($ENV{'OCS_OPT_UPDATE'}){
+				&_end(0);
 				return(&_send_file('update',$1,$2,$3));
 			}else{
-				return APACHE_FORBIDDEN;
+				return &_end(APACHE_FORBIDDEN);
 			}
 		}else{
 		# If the url is invalid
-			return APACHE_BAD_REQUEST;
+			return &_end(APACHE_BAD_REQUEST);
 		}
 
 	# Here is the post method management
@@ -142,14 +144,14 @@ sub handler{
 		unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
 		# Our discussion is compressed stream, nothing else
 			&_log(510,'handler', 'Bad content type') if $ENV{'OCS_OPT_LOGLEVEL'};
-			return APACHE_FORBIDDEN;
+			return &_end(APACHE_FORBIDDEN);
 
 		}
 		
 		# Get the data
-		if( !defined( read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ) ){
+		if( !read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ){
 			&_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
-			return APACHE_SERVER_ERROR
+			return &_end(APACHE_SERVER_ERROR);
 		}
 # Copying buffer because inflate() modify it
 		$raw_data = $data;
@@ -168,14 +170,14 @@ sub handler{
 		# Inflate the data
 		unless($d = Compress::Zlib::inflateInit()){
 			&_log(506,'handler','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
-			return APACHE_BAD_REQUEST;
+			return &_end(APACHE_BAD_REQUEST);
 		}
 		($inflated, $status) = $d->inflate($data);
 		unless( $status == Z_OK or $status == Z_STREAM_END){
 			&_inflate(\$raw_data, \$inflated);
 			if(!$inflated){
 				&_log(506,'handler','Compress stage');
-				return APACHE_SERVER_ERROR;
+				return &_end(APACHE_SERVER_ERROR);
 			}
 		}
 		$CURRENT_CONTEXT{'DATA'} = \$inflated;
@@ -185,7 +187,7 @@ sub handler{
 		&_get_xml_parser_opt( \%XML_PARSER_OPT ) unless %XML_PARSER_OPT;
 		unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
 			&_log(507,'handler','Xml stage');
-			return APACHE_BAD_REQUEST;
+			return &_end(APACHE_BAD_REQUEST);
 		}
 		$CURRENT_CONTEXT{'XML_ENTRY'} = $query;
 
@@ -196,19 +198,19 @@ sub handler{
 		unless($request eq 'UPDATE'){
 			if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
 				&_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
-				return(APACHE_BAD_REQUEST);
+				return &_end(APACHE_BAD_REQUEST);
 			}
 		}
 		
 		 # Must be filled
 		unless($request){
 			&_log(500,'handler','Request not defined');
-			return APACHE_BAD_REQUEST;
+			return &_end(APACHE_BAD_REQUEST);
 		}
 
 		# Init global structure
 		my $err = &_init();
-		return($err) if $err;
+		return &_end($err) if $err;
 		
 		# The three above are hardcoded
 		if($request eq 'PROLOG'){
@@ -245,15 +247,7 @@ sub _init{
 	unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
 		return(APACHE_SERVER_ERROR);
 	}
-        
-        # Computing groups list 
-        if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
-          $CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups( $CURRENT_CONTEXT{'DATABASE_ID'} ) ];
-        }
-        else{
-          $CURRENT_CONTEXT{'MEMBER_OF'} = [];
-        }
-	
+        	
 	if($request->rows){
 		my $row = $request->fetchrow_hashref;
 		
@@ -264,13 +258,21 @@ sub _init{
 			'LDATE' => $row->{'LDATE'},
 			'QUALITY' => $row->{'QUALITY'},
 			'FIDELITY' => $row->{'FIDELITY'},
-                };
+		};
+		
+		# Computing groups list 
+		if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
+			$CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups( $CURRENT_CONTEXT{'DATABASE_ID'} ) ];
+		}
+		else{
+			$CURRENT_CONTEXT{'MEMBER_OF'} = [];
+		}
 	}else{
 		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
 	}
 	
 	$request->finish;
-	return(undef);
+	return;
 }
 1;
 

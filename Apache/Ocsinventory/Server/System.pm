@@ -171,11 +171,13 @@ sub _lock{
  	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	
 	if($dbh->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
+		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
 		return(0);
 	}else{
 		if( $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ){
 			if( $dbh->do( 'SELECT * FROM locks WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ) != '0E0' ) {
 				&_log(516,'lock', 'reuse lock') if $ENV{'OCS_OPT_LOGLEVEL'};
+				$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
 				return 0;
 			}
 		}
@@ -187,6 +189,7 @@ sub _lock{
 sub _unlock{
 	my $device = shift;
 	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=?', {}, $device)){
+		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 0;
 		return(0);
 	}else{
 		return(1);
@@ -213,7 +216,7 @@ sub _end{
 	#Non-transactionnal table
 	&_unlock($DeviceID) if $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'};
 	
-	if($ret == APACHE_SERVER_ERROR){
+	if( ($ret==APACHE_SERVER_ERROR) || ($ret==APACHE_BAD_REQUEST) ){
 		&_log(515,'end', 'Processing error') if $ENV{'OCS_OPT_LOGLEVEL'};
 		$dbh->rollback;
 	}else{
