@@ -49,6 +49,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} = 100;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_USE_GROUPS'} = 0;
 
 sub _ipdiscover_prolog_resp{
 
@@ -66,7 +67,7 @@ sub _ipdiscover_prolog_resp{
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	# To handle the agent versions
 	my ($ua, $os, $v);
-		
+
 	################################
 	#IPDISCOVER
 	###########
@@ -76,6 +77,17 @@ sub _ipdiscover_prolog_resp{
 	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER" AND (IVALUE=? OR IVALUE=?)');
 	$request->execute($DeviceID, IPD_ON, IPD_MAN);
 	if($request->rows){
+		# We can use groups to prevent some computers to be elected
+		if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
+			my $groups = $current_context->{'MEMBER_OF'};
+			for(@$groups){
+				if( $dbh->do('SELECT IVALUE FROM devices WHERE NAME="IPDISCOVER" AND IVALUE=? AND HARDWARE_ID=?',{},IPD_NEVER,$_)!=0E0 ){
+					$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID);
+					return;
+				}
+			}
+		}
+
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 		$row = $request->fetchrow_hashref();
 	# Agents newer than 13(linux) ans newer than 4027(Win32) receive new xml formatting (including ipdisc_lat)
@@ -122,6 +134,16 @@ sub _ipdiscover_main{
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $data = $current_context->{'DATA'};
 	my $result = $current_context->{'XML_ENTRY'};
+	
+	# We can use groups to prevent some computers to be elected
+	if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
+		my $groups = $current_context->{'MEMBER_OF'};
+		for(@$groups){
+			if( $dbh->do('SELECT IVALUE FROM devices WHERE NAME="IPDISCOVER" AND IVALUE=? AND HARDWARE_ID=?',{},IPD_NEVER,$_)!=0E0 ){
+				return;
+			}
+		}
+	}
 
 	# Is the device already have the ipdiscover function ?
 	$request=$dbh->prepare('SELECT IVALUE, TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');
@@ -278,6 +300,7 @@ sub _ipdiscover_evaluate{
 	my @worth;
 
 	my $base = $result->{CONTENT}->{NETWORKS};
+	
 	for(@$base){
 		if(defined($_->{IPSUBNET}) and $_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ ){
 
