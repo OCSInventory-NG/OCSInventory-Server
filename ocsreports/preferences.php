@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.25 $)
+//Modified on $Date: 2007-02-26 15:01:05 $$Author: plemmet $($Revision: 1.26 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -342,7 +342,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		//les GET a rajouter
 		$pref="";
 		foreach ($_GET as $gk=>$gv) {
-			if($gk=="page" || $gk=="rev" || $gk == "logout" || $gk=="c"|| $gk=="direct"|| $gk=="supp" || $gk=="a"|| $gk=="suppCol" || $gk=="newcol" || $gk=="resetcolumns") continue;
+			if($gk=="page" || $gk=="rev" || $gk == "logout" || $gk=="c"|| $gk=="direct"|| $gk=="supp" || $gk=="a"|| $gk=="suppCol" || $gk=="newcol" || $gk=="resetcolumns" || $gk=="nme" || $gk=="stat" ) continue;
 			$pref .= "&{$gk}=".urlencode($gv);
 		}
 		
@@ -351,7 +351,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		$hiddens ="";
 		foreach ($_GET as $gk=>$gv){
 		
-			if( $gk=="rev"|| $gk=="suppCol"|| $gk=="supp" || $gk == "logout" || $gk=="newcol" || $gk=="page" || $gk=="resetcolumns") continue;
+			if( $gk=="rev"|| $gk=="suppCol"|| $gk=="supp" || $gk == "logout" || $gk=="newcol" || $gk=="page" || $gk=="resetcolumns" || $gk=="nme" || $gk=="stat" ) continue;
 			
 			if( $gk =="page" && ($gv==-1 || $gv==-2)) {
 				$gv = $_SESSION["pageCur"];
@@ -602,7 +602,8 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				$resSucc = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%'", $_SESSION["readServer"]);
 				$resErr = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
- AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'ERROR%'", $_SESSION["readServer"]);
+ AND e.id=d.ivalue AND name='DOWNLOAD' AND tvalue LIKE 'ERR_%'", $_SESSION["readServer"]);
+ 
 				$resTot = mysql_query("SELECT COUNT(id) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$item["Timestamp"]."'
  AND e.id=d.ivalue AND name='DOWNLOAD'", $_SESSION["readServer"]);
  
