@@ -27,7 +27,7 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / _get_groups /;
+our @EXPORT = qw / _get_groups / ;
 
 sub _get_groups{
   my($request, @groups);
@@ -49,7 +49,7 @@ sub _validate_groups_cache{
   my $request = $dbh->prepare('SELECT g.HARDWARE_ID FROM groups g LEFT OUTER JOIN locks l ON g.HARDWARE_ID=l.HARDWARE_ID WHERE UNIX_TIMESTAMP()-UNIX_TIMESTAMP(CREATE_TIME) > ? AND l.HARDWARE_ID IS NULL FOR UPDATE');
   while(1){
     # Updating cache when needed
-    $request->execute( $ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} );
+    return unless $request->execute( $ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} );
     if($request->rows){
       my $row = $request->fetchrow_hashref();
       if( !&_lock($row->{'HARDWARE_ID'}) ){
@@ -66,6 +66,7 @@ sub _validate_groups_cache{
       }
       else{
         sleep(1);
+	$request->finish();
         next;
       } 
 # The group is already locked. 
