@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.12 $)
+//Modified on $Date: 2007-02-28 08:08:16 $$Author: plemmet $($Revision: 1.13 $)
 	
 	if( isset( $_GET["nme"] ) && isset( $_GET["stat"] ) ) {
 		$_POST["act_0"] = "on";		
@@ -405,15 +405,17 @@
 			}
 						
 			for($ii=0;$ii<sizeof($softsDi);$ii++) {
+				$softsDi[$ii][0] = strtr($softsDi[$ii][0], "?*", "_%");
 				$reqInterm = "";
 				if( !$first ) $laRequeteF .=" AND";
 				$first = false;				
-				$laRequeteF .= " h.id NOT IN(SELECT DISTINCT(ss.hardware_id) FROM softwares ss WHERE ss.name like '%".$softsDi[$ii][0]."%')";
+				$laRequeteF .= " h.id NOT IN(SELECT DISTINCT(ss.hardware_id) FROM softwares ss WHERE ss.name LIKE '%".$softsDi[$ii][0]."%')";
 			}
 			
 			if(sizeof($regDiff)>=1) {
 				if($regDiff[1]!=$l->g(265)) {
-					$valRegR = "AND rr.regvalue = '".$regDiff[1]."'";
+					$regDiff[1] = strtr($regDiff[1], "?*", "_%");
+					$valRegR = "AND rr.regvalue LIKE '%".$regDiff[1]."%'";
 				}
 				
 				if( !$first ) $laRequeteF .= " AND";
