@@ -124,6 +124,7 @@ sub _database_connect{
 	my $Host;
 	my $DBuser;
 	my $DBpassword;
+	my %DBparams;
 
 	# Get the variables declared in httpd.conf
 	# Login
@@ -146,9 +147,14 @@ sub _database_connect{
 	}else{
 	    $Database = $ENV{'OCS_DB_NAME'};
 	}
+	
+	$DBparams{'AutoCommit'} = 0;
+	$DBparams{'PrintError'} = $ENV{'OCS_OPT_DBI_PRINT_ERROR'};
+	# Optionnaly a mysql socket different than the client's built in
+	$DBparams{'mysql_socket'} = $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'} if $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'};
 
 	# Connection...
-	return DBI->connect("DBI:mysql:database=$Database;host=$Host;port=$Port", $DBuser, $DBpassword, { 'AutoCommit' => 0, PrintError => $ENV{'OCS_OPT_DBI_PRINT_ERROR'} });
+	return DBI->connect("DBI:mysql:database=$Database;host=$Host;port=$Port", $DBuser, $DBpassword, \%DBparams);
 }
 
 sub _check_deviceid{
