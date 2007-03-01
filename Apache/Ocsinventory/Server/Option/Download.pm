@@ -92,7 +92,7 @@ sub download_prolog_resp{
 			push @history, $hist_row->{'PKG_ID'};
 		}
 		
-		if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && @$groups ){
+		if( $current_context->{'EXIST_FL'} && $ENV{'OCS_OPT_ENABLE_GROUPS'} && @$groups ){
 			$pack_sql =  q {
 				SELECT IVALUE,FILEID,INFO_LOC,PACK_LOC,CERT_PATH,CERT_FILE
 				FROM devices,download_enable

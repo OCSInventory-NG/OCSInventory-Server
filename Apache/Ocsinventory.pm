@@ -44,7 +44,6 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 3600;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_ENABLE_GROUPS'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} = 3600;
 
-
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler /;
@@ -269,6 +268,7 @@ sub _init{
 		}
 	}else{
 		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
+		$CURRENT_CONTEXT{'MEMBER_OF'} = [];
 	}
 	
 	$request->finish;
