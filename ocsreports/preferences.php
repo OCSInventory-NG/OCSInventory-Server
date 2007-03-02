@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-26 15:01:05 $$Author: plemmet $($Revision: 1.26 $)
+//Modified on $Date: 2007-03-02 08:29:57 $$Author: plemmet $($Revision: 1.27 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -67,7 +67,7 @@ if( ! isset( $_SESSION["fichLang"] ) ) {
 	if( isset($_COOKIE["lang"]) )
 		$_SESSION["fichLang"] = new FichierConf($_COOKIE["lang"]);
 	else 
-		$_SESSION["fichLang"] = new FichierConf(DEFAULT_LANGUAGE?DEFAULT_LANGUAGE:getBrowserLang());
+		$_SESSION["fichLang"] = new FichierConf( defined("DEFAULT_LANGUAGE") ?DEFAULT_LANGUAGE:getBrowserLang());
 }
 $l = $_SESSION["fichLang"];
 
