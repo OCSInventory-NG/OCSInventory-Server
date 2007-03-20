@@ -143,7 +143,7 @@ sub _prolog{
 
 sub _send_response{
 
-	my( $xml, $message, $d, $status );
+	my( $xml, $message, $d, $status, $inflated );
 	my $r = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'};
 
 	# Generate the response
@@ -151,16 +151,16 @@ sub _send_response{
 	$message = XML::Simple::XMLout( $_[0], RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='ISO-8859-1'?>",
 	                 NoSort => 1, SuppressEmpty => undef);
 	# send
-	unless($message = Compress::Zlib::compress( $message )){
+	unless($inflated = &{$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'}}( $message )){
 		&_log(506,'send_response','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
-		return APACHE_BAD_REQUEST;
+		#TODO: clean exit
 	}
-	
-	&_set_http_header('content-length', length($message),$r);
+
+	&_set_http_header('content-length', length($inflated),$r);
 	&_set_http_header('Cache-control', 'no-cache',$r);
 	&_set_http_content_type('application/x-compressed',$r);
 	&_send_http_headers($r);
-	$r->print($message);
+	$r->print($inflated);
 	return 0;
 }
 

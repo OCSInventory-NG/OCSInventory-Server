@@ -80,7 +80,8 @@ sub handler{
 		'XML_INVENTORY' => undef,
 		'LOCK_FL' => 0,
 		'EXIST_FL' => 0,
-		'MEMBER_OF' => undef
+		'MEMBER_OF' => undef,
+		'DEFLATE_SUB' => \&{Compress::Zlib::compress}
 	);
 
 	#LOG FILE
