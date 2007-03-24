@@ -72,16 +72,17 @@ sub handler{
 	# Will be used to handle all globales
 	%CURRENT_CONTEXT = (
 		'APACHE_OBJECT' => undef,
-		#'DBI_HANDLE' => undef,
-		'DEVICEID' => undef,
-		'DATABASE_ID' => undef,
-		'DATA' => undef,
-		'XML_ENTRY' => undef,
+		'RAW_DATA'	=> undef,
+		#'DBI_HANDLE' 	=> undef,
+		'DEVICEID' 	=> undef,
+		'DATABASE_ID' 	=> undef,
+		'DATA' 		=> undef,
+		'XML_ENTRY' 	=> undef,
 		'XML_INVENTORY' => undef,
-		'LOCK_FL' => 0,
-		'EXIST_FL' => 0,
-		'MEMBER_OF' => undef,
-		'DEFLATE_SUB' => \&{Compress::Zlib::compress}
+		'LOCK_FL' 	=> 0,
+		'EXIST_FL' 	=> 0,
+		'MEMBER_OF' 	=> undef,
+		'DEFLATE_SUB' 	=> \&{Compress::Zlib::compress},
 	);
 
 	#LOG FILE
@@ -153,8 +154,9 @@ sub handler{
 			&_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
 			return &_end(APACHE_SERVER_ERROR);
 		}
-# Copying buffer because inflate() modify it
+		# Copying buffer because inflate() modify it
 		$raw_data = $data;
+		$CURRENT_CONTEXT{'RAW_DATA'} = \$raw_data;
 		# Debug level for Apache::DBI (apache/error.log)
 		# $Apache::DBI::DEBUG=2;
 	

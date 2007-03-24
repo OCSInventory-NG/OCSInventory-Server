@@ -52,7 +52,6 @@ sub _registry_main{
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $update = $current_context->{'EXIST_FL'};
-	my $data = $current_context->{'DATA'};
 	my $result = $current_context->{'XML_ENTRY'};
 
 	if($update){

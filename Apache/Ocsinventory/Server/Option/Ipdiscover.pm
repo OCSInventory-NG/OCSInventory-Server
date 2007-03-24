@@ -132,7 +132,6 @@ sub _ipdiscover_main{
 	my $current_context = shift;
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $data = $current_context->{'DATA'};
 	my $result = $current_context->{'XML_ENTRY'};
 	
 	# We can use groups to prevent some computers to be elected

@@ -63,7 +63,6 @@ $Apache::Ocsinventory::{OPTIONS}{'OCS_OPT_UPDATE'} = 0;
 # To manage the update request
 sub _update_handler{
 	my $current_context = shift;
-	my $data = $current_context->{'DATA'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $query = $current_context->{'XML_ENTRY'};
 

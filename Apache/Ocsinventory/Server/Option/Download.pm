@@ -179,7 +179,6 @@ sub download_pre_inventory{
 	return unless $ENV{'OCS_OPT_DOWNLOAD'};
 
 	my $current_context = shift;
-	my $data = $current_context->{'DATA'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $hardware_id = $current_context->{'DATABASE_ID'};
 	my $result = $current_context->{'XML_ENTRY'};

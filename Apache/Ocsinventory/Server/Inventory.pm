@@ -37,7 +37,6 @@ my $DeviceID;
 my @accountkeys;
 my $update;
 my $result;
-my $data;
 my $dbh;
 
 #To apply to $checksum with an OR
@@ -73,7 +72,6 @@ sub _inventory_handler{
 
 	# Initialize data
 	$dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
-	$data = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'};
 	undef @accountkeys;
 			
 	$result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
@@ -608,6 +606,8 @@ sub _post_inventory{
 	my $accountkey;
 	my %elements;
 
+	&_generate_ocs_file();	
+	
 	$red = &_duplicate_main();
 	# We verify accountinfo diff if the machine was already in the database
 	if($update or $red){
@@ -668,6 +668,36 @@ sub _post_inventory{
 		return;
 	}
 	0;
+}
+
+####################
+# Generate .ocs file 
+# Helpful to merge few servers
+#
+sub _generate_ocs_file{
+	return if !$ENV{'OCS_OPT_GENERATE_OCS_FILES'};
+	my $ocs_path = $ENV{'OCS_OPT_OCS_FILES_PATH'};
+	my $ocs_file_name = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
+	my $ocs_file = $ocs_path.'/'.$ocs_file_name.'.ocs';
+	my $format;
+	$format = 'ocs' unless $format = $ENV{'OCS_OPT_OCS_FILES_FORMAT'};
+	
+	if( !open FILE, ">$ocs_file" ){
+		&_log(520,'postinventory',"$ocs_file: $!") if $ENV{'OCS_OPT_LOGLEVEL'};
+	}
+	else{
+		if($format=~/^ocs$/i){
+			print FILE ${$Apache::Ocsinventory::CURRENT_CONTEXT{'RAW_DATA'}};
+		}
+		elsif($format=~/^xml$/i){
+			print FILE ${$Apache::Ocsinventory::CURRENT_CONTEXT{'DATA'}};
+		}
+		else{
+			&_log(521,'postinventory','wrong file format') if $ENV{'OCS_OPT_LOGLEVEL'};
+		}
+		close(FILE);
+	}
+	return;
 }
 
 sub _pre_options{
