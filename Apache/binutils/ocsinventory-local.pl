@@ -9,7 +9,7 @@
 ##code is always made freely available.
 ##Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-#Last modification : $Id: Ocsinventory_local.pl,v 1.3 2007-03-29 09:30:05 hunal Exp $
+#Last modification : $Id: ocsinventory-local.pl,v 1.1 2007-03-29 09:30:05 hunal Exp $
 #Local insertion script
 use Fcntl qw/:flock/;
 use LWP::UserAgent;
