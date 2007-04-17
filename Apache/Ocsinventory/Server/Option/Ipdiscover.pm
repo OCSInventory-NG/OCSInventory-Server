@@ -172,7 +172,7 @@ sub _ipdiscover_main{
 		$request->execute($DeviceID);
 
 		if($row = $request->fetchrow_hashref){
-	  		if($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} != 0){
+			if( ($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} != 0) || $ENV{'OCS_OPT_IPDISCOVER_NO_POSTPONE'} ){
 				$subnet = &_ipdiscover_find_iface($result, $current_context->{'DBI_HANDLE'});
 				if(!$subnet){
 					return &_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID);
