@@ -8,48 +8,19 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-01-26 17:05:42 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-04-18 17:44:22 $$Author: hunal $($Revision: 1.11 $)
 
-$filtreSSN="
-AND b.ssn <> 'N/A'
-AND b.ssn <> '(null string)'
-AND b.ssn <> ''
-AND b.ssn <> 'INVALID'
-AND b.ssn <> 'SYS-1234567890'
-AND b.ssn <> 'SYS-9876543210'
-AND b.ssn <> 'SN-12345'
-AND b.ssn <> 'SN-1234567890'
-AND b.ssn <> '1111111111'
-AND b.ssn <> '1111111'
-AND b.ssn <> '1'
-AND b.ssn <> '0123456789'
-AND b.ssn <> '12345'
-AND b.ssn <> '123456'
-AND b.ssn <> '1234567'
-AND b.ssn <> '12345678'
-AND b.ssn <> '123456789'
-AND b.ssn <> '1234567890'
-AND b.ssn <> '123456789000'
-AND b.ssn <> '12345678901234567'
-AND b.ssn <> '0000000000'
-AND b.ssn <> '000000000'
-AND b.ssn <> '00000000'
-AND b.ssn <> '0000000'
-AND b.ssn <> '000000'
-AND b.ssn <> 'NNNNNNN'
-AND b.ssn <> 'xxxxxxxxxxx' 
-AND b.ssn <> 'EVAL'
-AND b.ssn <> 'IATPASS'
-AND b.ssn <> 'none'
-AND b.ssn <> 'To Be Filled By O.E.M.'
-AND b.ssn <> 'Tulip Computers'
-AND b.ssn <> 'Serial Number xxxxxx'
-AND b.ssn <> 'SN-123456fvgv3i0b8o5n6n7k'";
+$mysql_result = mysql_query("SELECT SERIAL FROM blacklist_serials", $_SESSION["readServer"]);
+while ($ligne = mysql_fetch_array($mysql_result))
+{
+	$filtreSSN .= " AND b.ssn <> '".$ligne["SERIAL"]."'";
+}
 
-$filtreMAC="
-AND n1.macaddr <> '44:45:53:54:00:00'
-AND n1.macaddr <> '44:45:53:54:00:01'
-AND n1.macaddr <> '00:00:00:00:00:00'";
+$mysql_result = mysql_query("SELECT MACADDRESS FROM blacklist_macaddresses", $_SESSION["readServer"]);
+while ($ligne = mysql_fetch_array($mysql_result))
+{
+	$filtreMAC .= " AND n1.macaddr <> '".$ligne["MACADDRESS"]."'";
+}
 
 $fromBase="hardware h LEFT JOIN accountinfo a ON a.hardware_id = h.id LEFT JOIN bios b ON b.hardware_id = h.id LEFT OUTER JOIN networks n1 on b.hardware_id=n1.hardware_id";
 $whereBase="n1.hardware_id = h.id ";
