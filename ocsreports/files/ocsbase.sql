@@ -424,6 +424,17 @@ CREATE TABLE blacklist_serials(
 	INDEX ID(ID)
 ) ENGINE = MYISAM;
 
+CREATE TABLE registry_regvalue_cache(
+	ID INTEGER auto_increment,
+	REGVALUE VARCHAR(255) UNIQUE,
+	PRIMARY KEY(ID)
+) ENGINE = MYISAM;
+
+CREATE TABLE softwares_name_cache(
+        ID INTEGER auto_increment,
+        NAME VARCHAR(255) UNIQUE,
+        PRIMARY KEY(ID)
+) ENGINE = MYISAM;
 
 ALTER TABLE devices ADD INDEX IVALUE (IVALUE);
 ALTER TABLE devices ADD INDEX NAME (NAME);
