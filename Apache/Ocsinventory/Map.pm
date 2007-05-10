@@ -48,6 +48,7 @@ our %data_map= (
 											CHECKSUM
 											QUALITY
 											FIDELITY
+											SSTATE
 										/]
 									},
 										
