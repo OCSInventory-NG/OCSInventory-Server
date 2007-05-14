@@ -29,6 +29,7 @@ our @EXPORT = qw / _duplicate_main /;
 
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw /:server _modules_get_duplicate_handlers/;
+use Apache::Ocsinventory::Map;
 
 # Subroutine called at the end of database inventory insertions
 sub _duplicate_main{
@@ -119,12 +120,12 @@ sub _duplicate_detect{
 	# Retrieve generic mac addresses
 	$request = $dbh->prepare('SELECT MACADDRESS FROM blacklist_macaddresses');
 	$request->execute();
-	push @bad_mac, $row->{MACADDRESS} while($row = $request->fetchrow_hashref();
+	push @bad_mac, $row->{MACADDRESS} while($row = $request->fetchrow_hashref());
 	
 	# Retrieve generic serials
 	$request = $dbh->prepare('SELECT SERIAL FROM blacklist_serials');
 	$request->execute();
-	push @bad_serial, $row->{SERIAL} while($row = $request->fetchrow_hashref();
+	push @bad_serial, $row->{SERIAL} while($row = $request->fetchrow_hashref());
 	
 	# Have we already got the hostname
 	$request = $dbh->prepare('SELECT ID, NAME FROM hardware WHERE NAME=? AND ID<>?');
@@ -160,11 +161,6 @@ sub _duplicate_detect{
 
 
 sub _duplicate_replace{
-
-	my @tables=qw/  accesslog bios memories slots
-			controllers monitors ports storages drives inputs
-			modems networks printers sounds videos softwares /;
-
 	my $device = shift;
 	
 	#Locks the device
@@ -210,33 +206,23 @@ sub _duplicate_replace{
 		$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $DeviceID)
 		and
 		$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
+		and
+		$dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
 	){
 		&_unlock($device);
 		return(1);
 	}
 	
 	# Drop old computer
-	for (@tables){
+	for (keys(%DATA_MAP)){
+		next unless $DATA_MAP{$_}->{delOnReplace};
 		unless($dbh->do("DELETE FROM $_ WHERE HARDWARE_ID=?", {}, $device)){
 			&_unlock($device);
 			return(1);
 		}
 	}
 	$dbh->do("DELETE FROM hardware WHERE ID=?", {}, $device) or return(1);
-	
-        # Groups cache management
-        $request = $dbh->prepare('SELECT GROUP_ID,STATIC FROM groups_cache WHERE HARDWARE_ID=?');
-        $request->execute($device);
-        $dbh->do('DELETE FROM groups_cache WHERE HARDWARE_ID=?', {}, $device);
-        if($request->rows){
-          while( $row = $request->fetchrow_hashref() ){
-            # We lock the current group. We don't retrieve old values if the group has been deleted
-            next if $dbh->do('SELECT HARDWARE_ID FROM groups WHERE HARDWARE_ID=? FOR UPDATE', {}, $row->{'GROUP_ID'}) == 0E0;
-            $dbh->do('INSERT INTO groups_cache(HARDWARE_ID,GROUP_ID,STATIC) VALUES(?,?,?)', {}, $DeviceID, $row->{'GROUP_ID'},$row->{'STATIC'});
-          }
-        }
 
-	
 	#Trace duplicate
 	if($ENV{'OCS_OPT_TRACE_DELETED'}){
 		unless(	$dbh->do('INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NULL,?,?)', {} , $device,$DeviceID)){
