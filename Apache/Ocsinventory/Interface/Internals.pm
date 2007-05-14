@@ -104,8 +104,8 @@ sub build_xml_inventory {
 # Whole inventory by default
 	$checksum = CHECKSUM_MAX_VALUE unless $checksum=~/\d+/;
 # Build each section using ...standard_section
-	for( keys(%data_map) ){
-		if( ($checksum & $data_map{$_}->{mask} ) ){
+	for( keys(%DATA_MAP) ){
+		if( ($checksum & $DATA_MAP{$_}->{mask} ) ){
 			&build_xml_standard_section($computer, \%xml, $_) or die;
 		}
 	}
@@ -155,9 +155,11 @@ sub build_xml_standard_section{
 # Request database
 	my $deviceid = get_table_pk($section);
 	my $sth = get_sth("SELECT * FROM $section WHERE $deviceid=?", $id);
+	
 # Build data structure...
 	while ( my $row = $sth->fetchrow_hashref() ){		
-		for( @{ $data_map{ $section }->{fields} } ){
+		for( keys($DATA_MAP{ $section }->{fields}) ){
+			next if $_->{noSql};
 			$element{$_} = [ $row->{ $_ } ];
 		}
 		

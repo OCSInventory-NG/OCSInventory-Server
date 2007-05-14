@@ -82,7 +82,7 @@ sub handler{
 		'LOCK_FL' 	=> 0,
 		'EXIST_FL' 	=> 0,
 		'MEMBER_OF' 	=> undef,
-		'DEFLATE_SUB' 	=> \&{Compress::Zlib::compress},
+		'DEFLATE_SUB' 	=> \&Compress::Zlib::compress,
 	);
 
 	#LOG FILE

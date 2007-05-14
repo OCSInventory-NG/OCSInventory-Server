@@ -17,238 +17,359 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / %data_map /;
+our @EXPORT = qw / %DATA_MAP /;
 
-our %data_map= (
+# Field's attributes : cache, filter, noXml, noSql
+
+our %DATA_MAP= (
 	hardware		=> {
 									mask => 1,
 									
-									fields => [qw /
-											ID
-											NAME	
-											WORKGROUP	
-											USERDOMAIN
-											OSNAME 
-											OSVERSION 
-											OSCOMMENTS 
-											PROCESSORT 
-											PROCESSORS 
-											PROCESSORN 
-											MEMORY 
-											SWAP 
-											IPADDR 
-											USERID 
-											TYPE 
-											DESCRIPTION 
-											WINCOMPANY 
-											WINOWNER 
-											WINPRODID
-											LASTDATE
-											LASTCOME
-											CHECKSUM
-											QUALITY
-											FIDELITY
-											SSTATE
-										/]
-									},
+									multi => 0,
+									
+									auto => 0,
+									
+									delOnReplace => 0,
+									
+									fields => {
+											ID 						=> { noXml => 1 },
+											NAME 					=> {},
+											WORKGROUP 		=> {},
+											USERDOMAIN 		=> {},
+											OSNAME 				=> {},
+											OSVERSION 		=> {},
+											OSCOMMENTS 		=> {},
+											PROCESSORT 		=> {},
+											PROCESSORS 		=> {},
+											PROCESSORN 		=> {},
+											MEMORY 				=> {},
+											SWAP 					=> {},
+											IPADDR 				=> {},
+											USERID 				=> { filter => 1 },
+											TYPE 					=> {},
+											DESCRIPTION 	=> {},
+											WINCOMPANY 		=> {},
+											WINOWNER 			=> {},
+											WINPRODID 		=> {},
+											WINPRODKEY 		=> {},
+											LASTDATE 			=> {},
+											LASTCOME 			=> {},
+											CHECKSUM 			=> {},
+											QUALITY 			=> {},
+											FIDELITY 			=> {},
+											SSTATE 				=> { noXml => 1 },
+											USERAGENT 		=> { noXml => 1 }
+										},
+	},
+	
+	accountinfo	=>	{
+									mask => 0,
+									
+									multi => 1,
+									
+									auto => 0,
+									
+									delOnReplace => 0,
+									
+									fields => {
+											TAG => {}
+									}
+	},
 										
 	bios				=>  {
 									mask => 2,
 									
-									fields => [qw /		
-											SMANUFACTURER
-											SMODEL
-											SSN
-											BMANUFACTURER
-											BVERSION
-											BDATE
-										/]
-									},
+									multi => 0,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields => {
+											SMANUFACTURER 	=> {},
+											SMODEL 					=> {},
+											SSN 						=> {},
+											BMANUFACTURER 	=> {},
+											BVERSION 				=> {},
+											BDATE 					=> {}
+									}
+	},
 										
 	memories		=> {
 									mask => 4,
 									
-									fields =>  [qw /		
-											CAPACITY
-											SPEED
-											CAPTION
-											DESCRIPTION
-											NUMSLOTS
-											TYPE
-											PURPOSE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {	
+											CAPACITY 			=> {},
+											SPEED 				=> {},
+											CAPTION 			=> {},
+											DESCRIPTION 	=> {},
+											NUMSLOTS 			=> {},
+											TYPE 					=> {},
+											PURPOSE 			=> {},
+									}
+	},
 	
 	slots				=> {
 									mask => 8,
 									
-									fields =>  [qw /
-											NAME
-											DESCRIPTION
-											DESIGNATION
-											PURPOSE
-											STATUS
-											PSHARE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 					=> {},
+											DESCRIPTION 	=> {},
+											DESIGNATION 	=> {},
+											PURPOSE 			=> {},
+											STATUS 				=> {},
+											PSHARE 				=> {},
+									}
+	},
 	
 	registry		=> {
 									mask => 16,
 									
-									fields =>  [qw /
-											NAME
-											REGVALUE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 			=> {},
+											REGVALUE 	=> { cache => 1 }
+									}
+	},
 	
 	controllers	=> {
 									mask => 32,
 									
-									fields =>  [qw /
-											MANUFACTURER
-											NAME
-											CAPTION
-											DESCRIPTION
-											VERSION
-											TYPE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											MANUFACTURER 	=> {},
+											NAME 					=> {},
+											CAPTION 			=> {},
+											DESCRIPTION 	=> {},
+											VERSION 			=> {},
+											TYPE 					=> {}
+									}
+	},
 	
 	monitors		=> {
 									mask => 64,
 									
-									fields =>  [qw /
-											MANUFACTURER
-											CAPTION
-											DESCRIPTION
-											TYPE
-											SERIAL
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											MANUFACTURER 	=> {},
+											CAPTION 			=> {},
+											DESCRIPTION 	=> {},
+											TYPE 					=> {},
+											SERIAL 				=> {}
+									}
+	},
 	
 	ports				=> {
 									mask => 128,
 									
-									fields =>  [qw /
-											NAME
-											CAPTION
-											DESCRIPTION
-											TYPE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 				=> {},
+											CAPTION 		=> {},
+											DESCRIPTION => {},
+											TYPE 				=> {}
+									}
+	},
 		
 	storages		=> {
 									mask => 256,
 									
-									fields =>  [qw /
-											MANUFACTURER
-											NAME
-											MODEL
-											DESCRIPTION
-											TYPE
-											DISKSIZE
-										/]
-								},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											MANUFACTURER 	=> {},
+											NAME 					=> {},
+											MODEL 				=> {},
+											DESCRIPTION 	=> {},
+											TYPE 					=> {},
+											DISKSIZE 			=> {}
+									}
+	},
 	
 	drives			=> {
 									mask => 512,
 									
-									fields =>  [qw /
-											LETTER
-											TYPE
-											FILESYSTEM
-											TOTAL
-											FREE
-											VOLUMN
-											NUMFILES
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											LETTER 			=> {},
+											TYPE 				=> {},
+											FILESYSTEM 	=> {},
+											TOTAL 			=> {},
+											FREE 				=> {},
+											VOLUMN 			=> {},
+											NUMFILES 		=> {}
+									}
+	},
 	
 	inputs			=> {
 									mask => 1024,
 									
-									fields =>  [qw /
-											TYPE
-											MANUFACTURER
-											CAPTION
-											DESCRIPTION
-											INTERFACE
-											POINTTYPE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											TYPE 					=> {},
+											MANUFACTURER 	=> {},
+											CAPTION 			=> {},
+											DESCRIPTION 	=> {},
+											INTERFACE 		=> {},
+											POINTTYPE 		=> {}
+									}
+	},
 	
 	modems			=> {
 									mask => 2048,
 									
-									fields =>  [qw /
-											NAME
-											MODEL
-											DESCRIPTION
-											TYPE
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 				=> {},
+											MODEL 			=> {},
+											DESCRIPTION => {},
+											TYPE 				=> {}
+									}
+	},
 	
 	networks		=> {
 									mask => 4096,
 									
-									fields =>  [qw /
-											IPADDRESS
-											IPMASK
-											IPADDRESS
-											IPSUBNET
-											DESCRIPTION
-											TYPE
-											TYPEMIB
-											MACADDR
-											STATUS
-											IPGATEWAY
-											IPDHCP
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											IPADDRESS 	=> {},
+											IPMASK 			=> {},
+											IPADDRESS 	=> {},
+											IPSUBNET 		=> {},
+											DESCRIPTION => {},
+											TYPE 				=> {},
+											TYPEMIB 		=> {},
+											MACADDR 		=> {},
+											STATUS 			=> {},
+											IPGATEWAY 	=> {},
+											IPDHCP 			=> {}
+									}
+	},
 	
 	printers		=> {
 									mask => 8192,
 									
-									fields =>  [qw /
-											NAME
-											DRIVER
-											PORT
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 		=> {},
+											DRIVER 	=> {},
+											PORT 		=> {}
+									}
+	},
 
 	sounds			=> {
 									mask => 16384,
 									
-									fields =>  [qw /
-											NAME
-											MANUFACTURER
-											DESCRIPTION
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 					=> {},
+											MANUFACTURER 	=> {},
+											DESCRIPTION 	=> {}
+									}
+	},
 	
 	videos			=> {
 									mask => 32768,
 									
-									fields =>  [qw /
-											NAME
-											CHIPSET
-											MEMORY
-											RESOLUTION
-										/]
-									},
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											NAME 				=> {},
+											CHIPSET 		=> {},
+											MEMORY 			=> {},
+											RESOLUTION 	=> {}
+									}
+	},
 	
 	softwares		=> {
 									mask => 65536,
 									
-									fields =>  [qw /
-											PUBLISHER
-											NAME
-											VERSION
-											FOLDER
-											COMMENTS
-											FILENAME
-											FILESIZE
-											SOURCE
-										/]
+									multi => 1,
+									
+									auto => 1,
+									
+									delOnReplace => 1,
+									
+									fields =>  {
+											PUBLISHER => {},
+											NAME 			=> { cache => 1 },
+											VERSION 	=> {},
+											FOLDER 		=> {},
+											COMMENTS 	=> {},
+											FILENAME 	=> {},
+											FILESIZE 	=> {},
+											SOURCE 		=> {}
 									},
+	},
 ); 
+1;

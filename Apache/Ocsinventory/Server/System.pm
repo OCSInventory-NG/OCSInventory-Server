@@ -106,7 +106,7 @@ sub _inflate{
 	my @inflate_subs = (
 		# gzip file content
 		sub {	my $data_ref = shift; 
-			$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = \&{Compress::Zlib::memGzip};
+			$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = \&Compress::Zlib::memGzip;
 			return Compress::Zlib::memGunzip( ${$data_ref} ); 
 		}
 	);
@@ -198,7 +198,7 @@ sub _lock{
 sub _unlock{
 	my $device = shift;
 	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=?', {}, $device)){
-		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 0;
+		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 0 if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
 		return(0);
 	}else{
 		return(1);

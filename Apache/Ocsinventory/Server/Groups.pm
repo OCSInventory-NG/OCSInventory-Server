@@ -68,7 +68,7 @@ sub _validate_groups_cache{
         sleep(1);
 	$request->finish();
         next;
-      } 
+      }
 # The group is already locked. 
       $request->finish();
     }

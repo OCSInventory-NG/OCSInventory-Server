@@ -81,7 +81,7 @@ sub download_prolog_resp{
 # Can be a performance issue
 # Agents prior to 4.0.3.0 do not send history data
 		$hist_sql = q {
-			SELECT PKG_ID,ID
+			SELECT PKG_ID
 			FROM download_history
 			WHERE HARDWARE_ID=?
 		};
@@ -176,9 +176,10 @@ sub download_prolog_resp{
 }
 
 sub download_pre_inventory{
-	return unless $ENV{'OCS_OPT_DOWNLOAD'};
-
 	my $current_context = shift;
+	
+	return if !$ENV{'OCS_OPT_DOWNLOAD'} or !$current_context->{'EXIST_FL'};
+	
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $hardware_id = $current_context->{'DATABASE_ID'};
 	my $result = $current_context->{'XML_ENTRY'};

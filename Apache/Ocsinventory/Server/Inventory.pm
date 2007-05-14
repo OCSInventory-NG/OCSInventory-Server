@@ -28,41 +28,84 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw /_inventory_handler/;
 
 use Apache::Ocsinventory::Server::Constants;
-use Apache::Ocsinventory::Server::System qw /:server _modules_get_pre_inventory_options _modules_get_post_inventory_options/;
+use Apache::Ocsinventory::Server::System qw /
+	:server 
+	_modules_get_pre_inventory_options 
+	_modules_get_post_inventory_options
+/;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Duplicate;
-
+use Apache::Ocsinventory::Map;
 
 my $DeviceID;
 my @accountkeys;
 my $update;
 my $result;
 my $dbh;
+my @multiSections;
+my $initCache=0;
 
-#To apply to $checksum with an OR
-our %mask = (
-	'hardware' 	=> 1,
-	'bios'		=> 2,
-	'memories'	=> 4,
-	'slots'		=> 8,
-	'registry'	=> 16,
-	'controllers'	=> 32,
-	'monitors'	=> 64,
-	'ports'		=> 128,
-	'storages'	=> 256,
-	'drives'	=> 512,
-	'inputs'	=> 1024,
-	'modems'	=> 2048,
-	'networks'	=> 4096,
-	'printers'	=> 8192,
-	'sounds'	=> 16384,
-	'videos'	=> 32768,
-	'softwares'	=> 65536
-);
+# Loading the section's hash
+my %SECTIONS;
+# To avoid many "keys"
+my @SECTIONS;
+
+&_init_map;
 
 our %XML_PARSER_OPT = (
-	'ForceArray' => ['INPUTS', 'CONTROLLERS', 'MEMORIES', 'MONITORS', 'PORTS','SOFTWARES', 'STORAGES', 'DRIVES', 'INPUTS', 'MODEMS', 'NETWORKS', 'PRINTERS', 'SLOTS', 'SOUNDS', 'VIDEOS', 'PROCESSES', 'ACCOUNTINFO']
+	'ForceArray' => [ @multiSections ]
 );
+
+sub _init_map{
+
+	my $section;
+	my @bind_num;
+	my $field;
+	my $fields_string;
+
+# Parse every section
+	for $section (keys(%DATA_MAP)){
+# Field array (from data_map field hash keys), filtered fields and cached fields
+		$SECTIONS{$section}->{field_arrayref} = [];
+		$SECTIONS{$section}->{field_filtered} = [];
+		$SECTIONS{$section}->{field_cached} = [];
+##############################################
+		
+# Feed the multilines section array in order to parse xml correctly
+		push @multiSections, uc $section if $DATA_MAP{$section}->{multi};
+# Don't process the non-auto-generated sections
+		next if !$DATA_MAP{$section}->{auto};
+# Parse fields of the current section
+		for $field ( keys(%{$DATA_MAP{$section}->{fields}} ) ){
+			if(!$DATA_MAP{$section}->{fields}->{$field}->{noSql}){
+				push @{$SECTIONS{$section}->{field_arrayref}}, $field;
+				$SECTIONS{$section}->{noSql} = 1 unless $SECTIONS{$section}->{noSql};
+			}
+			if($DATA_MAP{$section}->{fields}->{$field}->{filter}){
+				next unless $ENV{OCS_OPT_INVENTORY_FILTER};
+				push @{$SECTIONS{$section}->{field_filtered}}, $field;
+				$SECTIONS{$section}->{filterl} = 1 unless $SECTIONS{$section}->{filter};
+			}
+			if($DATA_MAP{$section}->{fields}->{$field}->{cache}){
+				next unless $ENV{OCS_OPT_INVENTORY_CACHE};
+				push @{$SECTIONS{$section}->{field_cached}}, $field;
+				$SECTIONS{$section}->{cache} = 1 unless $SECTIONS{$section}->{cache};
+			}
+		}	
+# Build the "DBI->prepare" sql string 
+		$fields_string = join ',', ('HARDWARE_ID', @{$SECTIONS{$section}->{field_arrayref}});
+		$SECTIONS{$section}->{sql_string} = "INSERT INTO $section($fields_string) VALUES(";
+		for(0..@{$SECTIONS{$section}->{field_arrayref}}){
+			push @bind_num, '?';
+		}
+		$SECTIONS{$section}->{sql_string}.= (join ',', @bind_num).')';
+		@bind_num = ();
+# To avoid calling keys every times
+		push @SECTIONS, $section;
+######################################
+	}
+
+}
 
 #Proceed with inventory
 #######################
@@ -70,9 +113,10 @@ our %XML_PARSER_OPT = (
 # Subroutine called for an incoming inventory
 sub _inventory_handler{
 
-	# Initialize data
+# Initialize data
 	$dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	undef @accountkeys;
+	&_init_inventory_cache() if !$initCache && $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
 			
 	$result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 # Ref to xml in global struct 
@@ -85,48 +129,29 @@ sub _inventory_handler{
 	if( &_pre_options() == INVENTORY_STOP ){
 		&_log(107,'inventory','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_FORBIDDEN;
-	}
+}
 	
 	return APACHE_SERVER_ERROR if &_context();
 	
-	# Lock device
+# Lock device
 	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
 		&_log( 516, 'inventory', 'device locked');
 		return(APACHE_FORBIDDEN);
 	}
 
-	# Put the inventory in the database
-	return APACHE_SERVER_ERROR if
-	# To know more about the situation (update, new machine...)
-	&_hardware()
-	or &_accountinfo()
-	or &_accesslog()
-	or &_bios()
-	or &_memories()
-	or &_slots()
-	or &_controllers()
-	or &_monitors()
-	or &_ports()
-	or &_storages()
-	or &_drives()
-	or &_inputs()
-	or &_modems()
-	or &_networks()
-	or &_printers()
-	or &_sounds()
-	or &_videos()
-	or &_softwares();
+# Put the inventory in the database
+	return APACHE_SERVER_ERROR if &_update_inventory();
 
-	#Committing inventory
+#Committing inventory
 	$dbh->commit;
-	#Call to post inventory handlers
+#Call to post inventory handlers
 	&_post_options();
 
-	#############
-	# Manage several questions, including duplicates
+#############
+# Manage several questions, including duplicates
 	&_post_inventory();
 	
-	# That's all
+# That's all
 	&_log(101,'inventory','Transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
 	return APACHE_OK;
 }
@@ -138,19 +163,164 @@ sub _context{
 		$update = 1;
 	}else{
 		$dbh->do('INSERT INTO hardware(DEVICEID) VALUES(?)', {}, $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}) or return(1);
-		#unless($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
+#unless($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $dbh->last_insert_id(undef,undef,'hardware', 'ID')){
 			my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
 			unless($request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
 				&_log(518,'inventory','ID error') if $ENV{'OCS_OPT_LOGLEVEL'};
 				return(1);
-			}
+	}
 			my $row = $request->fetchrow_hashref;
 			$Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
 			$DeviceID = $row->{'ID'};
-		#}
+#}
 		$update=0;
 	}
 	return(0);
+}
+
+sub _update_inventory{
+my $section;
+
+# Call special sections update
+	if(&_hardware() or &_accountinfo){
+		return 1;
+	}
+# Call the _update_inventory_section for each section
+	for $section (@SECTIONS){
+		if(_update_inventory_section($section)){
+			return 1;
+		}
+	}
+}
+
+sub _update_inventory_section{
+	my $section = shift;
+	my @bind_values;
+	
+# The computer exists. 
+# We check if this section has changed since the last inventory (only if activated)
+# We delete the previous entries
+	if($update){
+		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
+			return(0) unless _has_changed($section);
+		}
+		if($DATA_MAP{$section}->{delOnReplace}){
+			if(!$dbh->do("DELETE FROM $section WHERE HARDWARE_ID=?", {}, $DeviceID)){
+				return(1);
+			}
+		}
+	}
+# Call the filter
+# &_inventory_filter($section);
+# Call the cache if needed
+	&_inventory_cache($section) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
+
+# Processing values	
+	my $sth = $dbh->prepare( $SECTIONS{$section}->{sql_string} );
+# Multi lines (forceArray)
+	my $ref = $result->{CONTENT}->{uc $section};
+	if($DATA_MAP{$section}->{multi}){
+		for my $line (@$ref){
+			&_get_bind_values($section, $line, \@bind_values);
+			if(!$sth->execute($DeviceID, @bind_values)){
+				return(1);
+			}
+			@bind_values = ();
+		}
+	}
+# One line (hash)
+	else{
+		&_get_bind_values($section, $ref, \@bind_values);
+		if( !$sth->execute($DeviceID, @bind_values) ){
+				return(1);
+		}
+	}
+	
+	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
+	0;
+}
+
+sub _get_bind_values{
+	my ($section, $ref, $arrayref) = @_;
+	for ( @{ $SECTIONS{$section}->{field_arrayref} } ) {
+		if(defined($ref->{$_})){
+			push @$arrayref, $ref->{$_};
+		}
+		else{
+				push @$arrayref, '';
+		}
+	}
+}
+
+# Called for each section
+# Filter value for each field "filter" activated
+#TODO:Apache::Ocsinventory::Server::DataFilter.pm 
+#sub _inventory_filter{
+#	my $section = shift;
+#	return unless $SECTIONS{$section}->{filter};
+#There is at least one field to filter
+#	my $fields_array = $SECTIONS{$section}->{field_filtered};
+#}
+
+
+sub _init_inventory_cache{
+	for my $section (keys(%DATA_MAP)){
+		_inventory_cache($section, 1);
+	}
+	$initCache = 1;
+	&_log(108,'inventory','Cache') if $ENV{'OCS_OPT_LOGLEVEL'};
+}
+
+# Called for each section
+# Feed the "cache" table for each field "cache" activated
+sub _inventory_cache{
+	my ($section, $init) = @_;
+	return unless $SECTIONS{$section}->{cache};
+	
+	my $base = $result->{CONTENT}->{uc $section};
+	my $fields_array = $SECTIONS{$section}->{field_cached};
+# There is some cache to generate
+	for my $field (@$fields_array){
+		my $table = $section.'_'.lc $field.'_cache';
+		if($init){
+			my $src_table = uc $section;
+			my $to_clean = $dbh->do("SELECT FROM $table c LEFT JOIN $src_table src WHERE src.$field IS NULL FOR UPDATE");
+			$to_clean->execute();
+			while(my $row = $to_clean->fetchrow_hashref){
+				$dbh->do("DELETE FROM $table WHERE $field=?", {}, $row->{$field});
+			}
+			$dbh->do('UNLOCK TABLES');
+			next;
+		}
+# Prepare queries
+		my $select = $dbh->prepare("SELECT $field FROM $table WHERE $field=? FOR UPDATE");
+		my $insert = $dbh->prepare("INSERT INTO $table($field) VALUES(?)");
+# hash ref or array ref ?
+		if($DATA_MAP{$section}->{multi}){
+			for(@$base){
+				$select->execute($_->{$field});
+# Value is already in the cache
+				if($select->rows){
+					$select->finish;
+					$dbh->do('UNLOCK TABLES');
+					next;
+				}
+# We have to insert the value
+				$insert->execute($_->{$field});
+				$dbh->do('UNLOCK TABLES');
+			}
+		}
+		else{
+			$select->execute($base->{$field});
+			if($select->rows){
+					$select->finish;
+					$dbh->do('UNLOCK TABLES');
+					next;
+			}
+			$insert->execute($_->{$field});
+			$dbh->do('UNLOCK TABLES');
+		}
+	}
 }
 
 # Inserting values of <HARDWARE> in hardware table
@@ -192,57 +362,23 @@ or return(1);
 	0;
 }
 
-
-# Inserting values of <ACCESSLOG> in accesslog table
-sub _accesslog{
-	if($update){
-		if(!$dbh->do('DELETE FROM accesslog WHERE HARDWARE_ID=?', {},$DeviceID)){
-			return(1);
-		}
-	}
-	if(!$dbh->do('INSERT INTO accesslog(HARDWARE_ID, USERID, LOGDATE, PROCESSES) VALUES (?, ?, ?, ?)', {}, $DeviceID, $result->{CONTENT}->{ACCESSLOG}->{USERID}, $result->{CONTENT}->{ACCESSLOG}->{LOGDATE}, $result->{CONTENT}->{ACCESSLOG}->{PROCESSES})){
-		return(1);
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-
-}
-# Inserting values of <BIOS> in bios table
-sub _bios{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('bios');
-		}
-		if(!$dbh->do('DELETE FROM bios WHERE HARDWARE_ID=?', {},$DeviceID)){
-			return(1);
-		}
-	}
-	
-	if(!$dbh->do('INSERT INTO bios(HARDWARE_ID, SMANUFACTURER, SMODEL, SSN, TYPE, BMANUFACTURER, BVERSION, BDATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {}, $DeviceID, $result->{CONTENT}->{BIOS}->{SMANUFACTURER}, $result->{CONTENT}->{BIOS}->{SMODEL}, $result->{CONTENT}->{BIOS}->{SSN}, $result->{CONTENT}->{BIOS}->{TYPE}, $result->{CONTENT}->{BIOS}->{BMANUFACTURER}, $result->{CONTENT}->{BIOS}->{BVERSION}, $result->{CONTENT}->{BIOS}->{BDATE})){
-		return(1);
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
 # Inserting values of <ACCOUNTINFO> in accountinfo table
 sub _accountinfo{
 	my $lost=shift;
-	# We have to look for the field's names because this table has a dynamic structure
+# We have to look for the field's names because this table has a dynamic structure
 	my ($row, $request, $accountkey);
-	# Fields names
-        $request=$dbh->prepare('SHOW COLUMNS FROM accountinfo');
-        $request->execute;
-        while($row=$request->fetchrow_hashref){
-                push @accountkeys, $row->{'Field'} if($row->{'Field'} ne 'HARDWARE_ID');
-        }
+# Fields names
+	$request=$dbh->prepare('SHOW COLUMNS FROM accountinfo');
+	$request->execute;
+	while($row=$request->fetchrow_hashref){
+					push @accountkeys, $row->{'Field'} if($row->{'Field'} ne 'HARDWARE_ID');
+	}
+	
 	if(!$update or $lost){
-		# writing (if new id, but duplicate, it will be erased at the end of the execution)
+# writing (if new id, but duplicate, it will be erased at the end of the execution)
 		$dbh->do('INSERT INTO accountinfo(HARDWARE_ID) VALUES(?)', {}, $DeviceID);
-		# Now, we know what are the account info name fields
-		# We can insert the client's data. This data will be kept only one time, in the first inventory
+# Now, we know what are the account info name fields
+# We can insert the client's data. This data will be kept only one time, in the first inventory
 		for $accountkey (@accountkeys){
 			my $array = $result->{CONTENT}->{ACCOUNTINFO};
 			for(@$array){
@@ -264,341 +400,6 @@ sub _accountinfo{
 	0;
 }
 
-# Inserting values of <MEMORIES> in memories table
-sub _memories{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('memories');
-		}		
-		if(!$dbh->do('DELETE FROM memories WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO memories(HARDWARE_ID, CAPTION, DESCRIPTION, CAPACITY, PURPOSE, TYPE, SPEED, NUMSLOTS) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{MEMORIES};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{CAPTION}, $_->{DESCRIPTION}, $_->{CAPACITY}, $_->{PURPOSE}, $_->{TYPE}, $_->{SPEED}, $_->{NUMSLOTS})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <SLOTS> in slots table
-sub _slots{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('slots');
-		}
-		if(!$dbh->do('DELETE FROM slots WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO slots(HARDWARE_ID, NAME, DESCRIPTION, DESIGNATION, PURPOSE, STATUS, PSHARE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{SLOTS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{NAME}, $_->{DESCRIPTION}, $_->{DESIGNATION}, $_->{PURPOSE}, $_->{STATUS}, $_->{SHARED})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <CONTROLLERS> in controllers table
-sub _controllers{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('controllers');
-		}
-		if(!$dbh->do('DELETE FROM controllers WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO controllers(HARDWARE_ID, MANUFACTURER, NAME, CAPTION, DESCRIPTION, VERSION, TYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{CONTROLLERS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{MANUFACTURER}, $_->{NAME}, $_->{CAPTION}, $_->{DESCRIPTION},  $_->{VERSION}, $_->{TYPE})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <MONITORS> in monitors table
-sub _monitors{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('monitors');
-		}
-		if(!$dbh->do('DELETE FROM monitors WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO monitors(HARDWARE_ID, MANUFACTURER, CAPTION, DESCRIPTION, TYPE, SERIAL) VALUES(?, ?, ?, ?, ?, ?)');	
-	my $array = $result->{CONTENT}->{MONITORS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{MANUFACTURER}, $_->{CAPTION}, $_->{DESCRIPTION}, $_->{TYPE}, $_->{SERIAL})){
-			return(1);
-		}	
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <PORTS> in ports table
-sub _ports{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('ports');
-		}
-		if(!$dbh->do('DELETE FROM ports WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO ports(HARDWARE_ID, TYPE, NAME, CAPTION, DESCRIPTION) VALUES(?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{PORTS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{TYPE}, $_->{NAME}, $_->{CAPTION}, $_->{DESCRIPTION})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <STORAGES> in storages table
-sub _storages{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('storages');
-		}
-		if(!$dbh->do('DELETE FROM storages WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO storages(HARDWARE_ID, MANUFACTURER, NAME, MODEL, DESCRIPTION, TYPE, DISKSIZE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{STORAGES};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{MANUFACTURER}, $_->{NAME}, $_->{MODEL}, $_->{DESCRIPTION}, $_->{TYPE}, $_->{DISKSIZE})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <DRIVES> in drives table
-sub _drives{
-	if($update){
-# 		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-# 			return(0) unless _has_changed('drives');
-# 		}
-		if(!$dbh->do('DELETE FROM drives WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO drives(HARDWARE_ID, LETTER, TYPE, FILESYSTEM, TOTAL, FREE, NUMFILES, VOLUMN) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{DRIVES};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{LETTER}, $_->{TYPE}, $_->{FILESYSTEM}, $_->{TOTAL}, $_->{FREE}, $_->{NUMFILES}, $_->{VOLUMN})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <INPUTS> in inputs table
-sub _inputs{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('inputs');
-		}
-		if(!$dbh->do('DELETE FROM inputs WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO inputs(HARDWARE_ID, TYPE, MANUFACTURER, CAPTION, DESCRIPTION, INTERFACE, POINTTYPE) VALUES(?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{INPUTS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{TYPE}, $_->{MANUFACTURER}, $_->{CAPTION}, $_->{DESCRIPTION}, $_->{INTERFACE}, $_->{POINTTYPE})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <MODEMS> in modems table
-sub _modems{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('modems');
-		}
-		if(!$dbh->do('DELETE FROM modems WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO modems(HARDWARE_ID, NAME, MODEL, DESCRIPTION, TYPE) VALUES(?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{MODEMS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{NAME}, $_->{MODEL}, $_->{DESCRIPTION}, $_->{TYPE})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <NETWORKS> in networks table
-sub _networks{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('networks');
-		}
-		if(!$dbh->do('DELETE FROM networks WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO networks(HARDWARE_ID, DESCRIPTION, TYPE, TYPEMIB, SPEED, MACADDR, STATUS, IPADDRESS, IPMASK, IPGATEWAY, IPSUBNET, IPDHCP) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{NETWORKS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{DESCRIPTION}, $_->{TYPE}, $_->{TYPEMIB}, $_->{SPEED}, $_->{MACADDR}, $_->{STATUS}, $_->{IPADDRESS}, $_->{IPMASK}, $_->{IPGATEWAY}, $_->{IPSUBNET}, $_->{IPDHCP})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <PRINTERS> in printers table
-sub _printers{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('printers');
-		}
-		if(!$dbh->do('DELETE FROM printers WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO printers(HARDWARE_ID, NAME, DRIVER, PORT) VALUES(?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{PRINTERS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{NAME}, $_->{DRIVER}, $_->{PORT})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <SOUNDS> in sounds table
-sub _sounds{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('sounds');
-		}
-		if(!$dbh->do('DELETE FROM sounds WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO sounds(HARDWARE_ID, MANUFACTURER, NAME, DESCRIPTION) VALUES(?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{SOUNDS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{MANUFACTURER}, $_->{NAME}, $_->{DESCRIPTION})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
-# Inserting values of <VIDEOS> in videos table
-sub _videos{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('videos');
-		}
-		if(!$dbh->do('DELETE FROM videos WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO videos(HARDWARE_ID, NAME, CHIPSET, MEMORY, RESOLUTION) VALUES(?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{VIDEOS};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{NAME}, $_->{CHIPSET}, $_->{MEMORY}, $_->{RESOLUTION})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-# Inserting values of <SOFTWARES> in softwares table
-sub _softwares{
-	if($update){
-		if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-			return(0) unless _has_changed('softwares');
-		}
-		if(!$dbh->do('DELETE FROM softwares WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return(1);
-		}
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO softwares(HARDWARE_ID, PUBLISHER, NAME, VERSION, FOLDER, COMMENTS, FILENAME, FILESIZE, SOURCE) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)');
-	my $array = $result->{CONTENT}->{SOFTWARES};
-	
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{PUBLISHER}, $_->{NAME}, $_->{VERSION}, $_->{FOLDER}, $_->{COMMENTS}, $_->{FILENAME}, $_->{FILESIZE}, $_->{SOURCE})){
-			return(1);
-		}
-	}
-	
-	$dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
-	0;
-}
-
 sub _post_inventory{
 	my $request;
 	my $row;
@@ -606,7 +407,7 @@ sub _post_inventory{
 	my $accountkey;
 	my %elements;
 
-	&_generate_ocs_file();	
+	&_generate_ocs_file();
 	
 	$red = &_duplicate_main();
 	# We verify accountinfo diff if the machine was already in the database
@@ -649,7 +450,7 @@ sub _post_inventory{
 			&_log(509,'postinventory','No account infos') if $ENV{'OCS_OPT_LOGLEVEL'};
 			$request->finish;
 			$elements{'RESPONSE'} = [ 'ACCOUNT_UPDATE' ];
-                        for(@{$result->{CONTENT}->{ACCOUNTINFO}}){
+			for(@{$result->{CONTENT}->{ACCOUNTINFO}}){
 				if($_->{KEYNAME} eq 'TAG'){
 			  		push @{$elements{'ACCOUNTINFO'}}, { 'KEYNAME' => [$_->{KEYNAME}], 'KEYVALUE' => [ 'LOST' ] };
 				}else{
@@ -721,7 +522,7 @@ sub _has_changed{
 	
 	# Check checksum to know if section has changed
 	if( defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM}) ){
-		return($mask{$section} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM});
+		return($DATA_MAP{$section}->{mask} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM});
 	}else{
 		return(1);
 	}
