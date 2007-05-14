@@ -54,7 +54,7 @@ sub _validate_groups_cache{
       my $row = $request->fetchrow_hashref();
       if( !&_lock($row->{'HARDWARE_ID'}) ){
       # Release groups locks
-        $dbh->commit;
+        $dbh->do('UNLOCK TABLES');
       # We lock it like a computer
         &_log(306,'groups','cache out-of-date('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
       # We build the new cache
