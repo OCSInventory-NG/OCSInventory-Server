@@ -295,6 +295,7 @@ our %DATA_MAP= (
 											DESCRIPTION => {},
 											TYPE 				=> {},
 											TYPEMIB 		=> {},
+											SPEED				=> {},
 											MACADDR 		=> {},
 											STATUS 			=> {},
 											IPGATEWAY 	=> {},
