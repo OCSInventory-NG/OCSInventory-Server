@@ -81,6 +81,7 @@ sub _validate_groups_cache{
 sub _build_group_cache{
   my $group_id = shift;
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+  my $offset = int rand($ENV{OCS_OPT_GROUPS_CACHE_OFFSET});
   
 # Retrieving the group request. It must be a SELECT statement on ID(hardware)
   my $get_request = $dbh->prepare('SELECT REQUEST FROM groups WHERE HARDWARE_ID=?');
@@ -97,7 +98,7 @@ sub _build_group_cache{
     $build_cache->execute($group_id, $cache->{'ID'});
   }
 # Updating cache time
-  $dbh->do('UPDATE groups SET CREATE_TIME=NULL WHERE HARDWARE_ID=?', {}, $group_id);
+  $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(NOW())+$offset WHERE HARDWARE_ID=?", {}, $group_id);
   &_log(307,'groups', "revalidate cache($group_id)") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 1;

@@ -82,12 +82,12 @@ sub _init_map{
 				$SECTIONS{$section}->{noSql} = 1 unless $SECTIONS{$section}->{noSql};
 			}
 			if($DATA_MAP{$section}->{fields}->{$field}->{filter}){
-				next unless $ENV{OCS_OPT_INVENTORY_FILTER};
+				next unless $ENV{OCS_OPT_INVENTORY_FILTER_ENABLED};
 				push @{$SECTIONS{$section}->{field_filtered}}, $field;
-				$SECTIONS{$section}->{filterl} = 1 unless $SECTIONS{$section}->{filter};
+				$SECTIONS{$section}->{filter} = 1 unless $SECTIONS{$section}->{filter};
 			}
 			if($DATA_MAP{$section}->{fields}->{$field}->{cache}){
-				next unless $ENV{OCS_OPT_INVENTORY_CACHE};
+				next unless $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
 				push @{$SECTIONS{$section}->{field_cached}}, $field;
 				$SECTIONS{$section}->{cache} = 1 unless $SECTIONS{$section}->{cache};
 			}
@@ -213,7 +213,7 @@ sub _update_inventory_section{
 # Call the filter
 # &_inventory_filter($section);
 # Call the cache if needed
-	&_inventory_cache($section) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
+	&_inventory_cache($section,0) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
 
 # Processing values	
 	my $sth = $dbh->prepare( $SECTIONS{$section}->{sql_string} );
@@ -264,11 +264,23 @@ sub _get_bind_values{
 
 
 sub _init_inventory_cache{
+	my $check_cache = $dbh->prepare('SELECT UNIX_TIMESTAMP(NOW())-TVALUE AS TVALUE FROM config WHERE NAME="_EP_INVENTORY_CACHE_CLEAN_DATE"');
+	$check_cache->execute();
+	if($check_cache->rows()){
+		my $row = $check_cache->fetchrow_hashref();
+		if($row->{TVALUE}<($ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}?$ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}:3600)){
+			$initCache = 1;
+			return;
+		}
+	}
+	
 	for my $section (keys(%DATA_MAP)){
 		_inventory_cache($section, 1);
 	}
-	$initCache = 1;
 	&_log(108,'inventory','Cache') if $ENV{'OCS_OPT_LOGLEVEL'};
+	$dbh->do('INSERT INTO config(NAME,TVALUE) VALUES("_EP_INVENTORY_CACHE_CLEAN_DATE", UNIX_TIMESTAMP(NOW()))')
+		if($dbh->do('UPDATE config SET TVALUE=UNIX_TIMESTAMP(NOW()) WHERE NAME="_EP_INVENTORY_CACHE_CLEAN_DATE"')==0E0);
+	$initCache = 1;
 }
 
 # Called for each section
@@ -283,10 +295,16 @@ sub _inventory_cache{
 	for my $field (@$fields_array){
 		my $table = $section.'_'.lc $field.'_cache';
 		if($init){
-			my $src_table = uc $section;
-			my $to_clean = $dbh->do("SELECT FROM $table c LEFT JOIN $src_table src WHERE src.$field IS NULL FOR UPDATE");
+			my $src_table = lc $section;
+			my $to_clean = $dbh->prepare(qq{
+				SELECT c.$field AS $field
+				FROM $table c
+				LEFT JOIN $src_table src
+				ON c.$field=src.$field
+				WHERE src.$field IS NULL FOR UPDATE
+			});
 			$to_clean->execute();
-			while(my $row = $to_clean->fetchrow_hashref){
+			while(my $row = $to_clean->fetchrow_hashref()){
 				$dbh->do("DELETE FROM $table WHERE $field=?", {}, $row->{$field});
 			}
 			$dbh->do('UNLOCK TABLES');

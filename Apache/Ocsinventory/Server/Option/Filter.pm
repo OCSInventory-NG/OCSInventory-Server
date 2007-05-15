@@ -37,7 +37,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
 	'HANDLER_DUPLICATE' => undef,
-	'TYPE' => OPTION_TYPE_SYNC
+	'TYPE' => OPTION_TYPE_SYNC,
+	'XML_PARSER_OPT' => {
+			'ForceArray' => []
+	}
 };
 
 # Default
