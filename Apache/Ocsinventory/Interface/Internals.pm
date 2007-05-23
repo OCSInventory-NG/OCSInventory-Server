@@ -158,8 +158,8 @@ sub build_xml_standard_section{
 	
 # Build data structure...
 	while ( my $row = $sth->fetchrow_hashref() ){		
-		for( keys($DATA_MAP{ $section }->{fields}) ){
-			next if $_->{noSql};
+		for( keys(%{$DATA_MAP{ $section }->{fields}}) ){
+			next if $DATA_MAP{ $section }->{fields}->{$_}->{noSql};
 			$element{$_} = [ $row->{ $_ } ];
 		}
 		
