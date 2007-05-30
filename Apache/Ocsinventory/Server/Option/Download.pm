@@ -118,6 +118,7 @@ sub download_prolog_resp{
 						if( $dbh->do($verif_affected ,{}, $hardware_id, $pack_row->{'IVALUE'})==0E0 ){
 							$dbh->do($trace_event, {}, $hardware_id, $pack_row->{'IVALUE'})
 						}
+					}
 					
 					push @packages,{
 						'TYPE'		=> 'PACK',
