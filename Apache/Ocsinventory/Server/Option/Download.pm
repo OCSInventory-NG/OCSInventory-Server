@@ -118,17 +118,15 @@ sub download_prolog_resp{
 						if( $dbh->do($verif_affected ,{}, $hardware_id, $pack_row->{'IVALUE'})==0E0 ){
 							$dbh->do($trace_event, {}, $hardware_id, $pack_row->{'IVALUE'})
 						}
-					}
-					else{
-						push @packages,{
-							'TYPE'		=> 'PACK',
-							'ID'		=> $pack_row->{'FILEID'},
-							'INFO_LOC'	=> $pack_row->{'INFO_LOC'},
-							'PACK_LOC'	=> $pack_row->{'PACK_LOC'},
-							'CERT_PATH'	=> $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
-							'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
-						};
-					}
+					
+					push @packages,{
+						'TYPE'		=> 'PACK',
+						'ID'		=> $pack_row->{'FILEID'},
+						'INFO_LOC'	=> $pack_row->{'INFO_LOC'},
+						'PACK_LOC'	=> $pack_row->{'PACK_LOC'},
+						'CERT_PATH'	=> $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
+						'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
+					};
 					push @dont_repeat, $fileid;
 				}
 			}
