@@ -46,7 +46,7 @@ sub _validate_groups_cache{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   
 # Test cache validity
-  my $request = $dbh->prepare('SELECT g.HARDWARE_ID FROM groups g LEFT OUTER JOIN locks l ON g.HARDWARE_ID=l.HARDWARE_ID WHERE UNIX_TIMESTAMP()-UNIX_TIMESTAMP(CREATE_TIME) > ? AND l.HARDWARE_ID IS NULL FOR UPDATE');
+  my $request = $dbh->prepare('SELECT g.HARDWARE_ID FROM groups g LEFT OUTER JOIN locks l ON g.HARDWARE_ID=l.HARDWARE_ID WHERE UNIX_TIMESTAMP()-CREATE_TIME > ? AND l.HARDWARE_ID IS NULL FOR UPDATE');
   while(1){
     # Updating cache when needed
     return unless $request->execute( $ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} );
@@ -98,7 +98,7 @@ sub _build_group_cache{
     $build_cache->execute($group_id, $cache->{'ID'});
   }
 # Updating cache time
-  $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(NOW())+$offset WHERE HARDWARE_ID=?", {}, $group_id);
+  $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(NOW())+? WHERE HARDWARE_ID=?", {}, $group_id, $offset);
   &_log(307,'groups', "revalidate cache($group_id)") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 1;
