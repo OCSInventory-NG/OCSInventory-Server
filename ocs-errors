@@ -47,6 +47,7 @@ MANAGEMENT
 306--Group out-of-date
 307--Revalidate group cache
 308--group is locked by another process
+309--group cache update problem
 
 IPDISCOVER
 ----------
