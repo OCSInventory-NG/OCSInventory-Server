@@ -437,8 +437,8 @@ CREATE TABLE registry_regvalue_cache(
 	REGVALUE VARCHAR(255) UNIQUE,
 	PRIMARY KEY(ID)
 ) ENGINE = MYISAM;
-TRUNCATE TABLE softwares_name_cache;
-INSERT INTO softwares_name_cache(name) SELECT DISTINCT name FROM softwares;
+TRUNCATE TABLE registry_regvalue_cache;
+INSERT INTO registry_regvalue_cache(regvalue) SELECT DISTINCT regvalue FROM registry;
 
 CREATE TABLE hardware_osname_cache(
         ID INTEGER auto_increment,
