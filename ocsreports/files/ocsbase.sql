@@ -399,7 +399,7 @@ CREATE TABLE conntrack(
 CREATE TABLE groups(
 	HARDWARE_ID integer default NULL,
 	REQUEST longtext,
-	CREATE_TIME timestamp,
+	CREATE_TIME INT,
 	PRIMARY KEY(HARDWARE_ID)
 ) ENGINE=InnoDB;
 
@@ -424,17 +424,54 @@ CREATE TABLE blacklist_serials(
 	INDEX ID(ID)
 ) ENGINE = MYISAM;
 
+CREATE TABLE registry_name_cache(
+        ID INTEGER auto_increment,
+        NAME VARCHAR(255) UNIQUE,
+        PRIMARY KEY(ID)
+) ENGINE = MYISAM;
+TRUNCATE TABLE registry_name_cache;
+INSERT INTO registry_name_cache(name) SELECT DISTINCT name FROM registry;
+
 CREATE TABLE registry_regvalue_cache(
 	ID INTEGER auto_increment,
 	REGVALUE VARCHAR(255) UNIQUE,
 	PRIMARY KEY(ID)
 ) ENGINE = MYISAM;
+TRUNCATE TABLE softwares_name_cache;
+INSERT INTO softwares_name_cache(name) SELECT DISTINCT name FROM softwares;
+
+CREATE TABLE hardware_osname_cache(
+        ID INTEGER auto_increment,
+        OSNAME VARCHAR(255) UNIQUE,
+        PRIMARY KEY(ID)
+) ENGINE = MYISAM;
+TRUNCATE TABLE hardware_osname_cache;
+INSERT INTO hardware_osname_cache(osname) SELECT DISTINCT osname FROM hardware;
+
+CREATE TABLE download_available_name_cache(
+        ID INTEGER auto_increment,
+        NAME VARCHAR(255) UNIQUE,
+        PRIMARY KEY(ID)
+) ENGINE = MYISAM;
+TRUNCATE TABLE download_available_name_cache;
+INSERT INTO download_available_name_cache(name) SELECT DISTINCT name FROM download_available;
+
+CREATE TABLE devices_tvalue_cache(
+        ID INTEGER auto_increment,
+        TVALUE VARCHAR(255) UNIQUE,
+        PRIMARY KEY(ID)
+) ENGINE = MYISAM;
+TRUNCATE TABLE devices_tvalue_cache;
+INSERT INTO devices_tvalue_cache(tvalue) SELECT DISTINCT tvalue FROM devices WHERE name='DOWNLOAD';
 
 CREATE TABLE softwares_name_cache(
         ID INTEGER auto_increment,
         NAME VARCHAR(255) UNIQUE,
         PRIMARY KEY(ID)
 ) ENGINE = MYISAM;
+TRUNCATE TABLE softwares_name_cache;
+INSERT INTO softwares_name_cache(name) SELECT DISTINCT name FROM softwares;
+
 
 ALTER TABLE devices ADD INDEX IVALUE (IVALUE);
 ALTER TABLE devices ADD INDEX NAME (NAME);
@@ -647,7 +684,7 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4101', 'Version of the installed GUI and database');
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4200', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
