@@ -9,7 +9,7 @@
 ##code is always made freely available.
 ##Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-#Last modification : $Id: ocsinventory-local.pl,v 1.1 2007-03-29 09:30:05 hunal Exp $
+#Last modification : $Id: ocsinventory-local.pl,v 1.2 2007-06-15 13:53:13 hunal Exp $
 #Local insertion script
 use Fcntl qw/:flock/;
 use LWP::UserAgent;
@@ -29,7 +29,7 @@ my $stdin;
 
 
 sub loadfile {
-    my $file = shift;
+    $file = shift;
 
     unless ( -r $file ) {
         print STDERR "Can't read $file\n";
@@ -92,9 +92,9 @@ sub sendContent {
 	      if ($remove && (!unlink $file));
     }else{
     	if($verbose){
-	  print "ERROR: ";
-	  print $res->status_line(), "\n";
-	}
+	 		 print "ERROR: ";
+	 		 print $res->status_line(), "\n";
+			}
     }
 }
 
