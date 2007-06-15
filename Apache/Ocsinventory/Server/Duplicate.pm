@@ -128,7 +128,7 @@ sub _duplicate_detect{
 	push @bad_serial, $row->{SERIAL} while($row = $request->fetchrow_hashref());
 	
 	# Have we already got the hostname
-	$request = $dbh->prepare('SELECT ID, NAME FROM hardware WHERE NAME=? AND ID<>?');
+	$request = $dbh->prepare('SELECT ID, NAME FROM hardware WHERE NAME=? AND ID<>? ORDER BY LASTDATE');
 	$request->execute($result->{CONTENT}->{HARDWARE}->{NAME}, $DeviceID);
 	while($row = $request->fetchrow_hashref()){
 		if(!($row->{'NAME'} eq '')){
