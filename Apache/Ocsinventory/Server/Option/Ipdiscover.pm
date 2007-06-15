@@ -50,6 +50,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} = 100;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_USE_GROUPS'} = 0;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_BETTER_THRESHOLD'} = 1;
 
 sub _ipdiscover_prolog_resp{
 
@@ -328,7 +329,7 @@ sub _ipdiscover_evaluate{
 			# If not over, we compare our quality with the one of the worth on this subnet.
 			# If it is better more than one, we replace it
 			if(@worth){
-				if(($quality < $worth[1] and ($worth[1]-$quality>1)) or $over){
+				if(($quality < $worth[1] and (($worth[1]-$quality)>$ENV{'OCS_OPT_IPDISCOVER_BETTER_THRESHOLD'})) or $over){
 					# Compare to the current and replace it if needed
 					if(!$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID, $worth[0])){
 						return 1;
