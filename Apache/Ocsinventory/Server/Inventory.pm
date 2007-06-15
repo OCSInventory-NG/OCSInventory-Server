@@ -499,7 +499,15 @@ sub _generate_ocs_file{
 	my $ocs_file_name = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
 	my $ocs_file = $ocs_path.'/'.$ocs_file_name.'.ocs';
 	my $format;
+	my $v=1;
 	$format = 'ocs' unless $format = $ENV{'OCS_OPT_OCS_FILES_FORMAT'};
+	
+	if(!$ENV{'OCS_OPT_OCS_FILES_OVERWRITE'}){
+		while(-e $ocs_file){
+			$ocs_file=~s/(.+-\d{4}(-\d{2}){5})(?:-\d+)?\.ocs/$1-$v.ocs/;
+			$v++;
+		}
+	}
 	
 	if( !open FILE, ">$ocs_file" ){
 		&_log(520,'postinventory',"$ocs_file: $!") if $ENV{'OCS_OPT_LOGLEVEL'};
