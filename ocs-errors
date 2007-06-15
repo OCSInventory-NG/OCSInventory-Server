@@ -48,6 +48,7 @@ MANAGEMENT
 307--Revalidate group cache
 308--group is locked by another process
 309--group cache update problem
+310--trusted computer
 
 IPDISCOVER
 ----------

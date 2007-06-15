@@ -58,6 +58,7 @@ use Compress::Zlib;
 our %CURRENT_CONTEXT;
 our @XMLParseOptForceArray;# Obsolete, for 1.01 modules only
 my %XML_PARSER_OPT; 
+our @TRUSTED_IP;
 
 sub handler{
 	my $d;
@@ -83,6 +84,8 @@ sub handler{
 		'EXIST_FL' 	=> 0,
 		'MEMBER_OF' 	=> undef,
 		'DEFLATE_SUB' 	=> \&Compress::Zlib::compress,
+		'IS_TRUSTED'	=> 0,
+		'IPADDRESS'	=> $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'}
 	);
 
 	#LOG FILE
@@ -99,6 +102,8 @@ sub handler{
 	# Get the data and the apache object
 	$r=shift;
 	$CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
+	
+	@TRUSTED_IP = $r->dir_config->get('OCS_OPT_TRUSTED_IP');
 
 	#Connect to database
 	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect())){
@@ -248,6 +253,13 @@ sub _init{
 	$request = $CURRENT_CONTEXT{'DBI_HANDLE'}->prepare('SELECT DEVICEID,ID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY FROM hardware WHERE DEVICEID=?');
 	unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
 		return(APACHE_SERVER_ERROR);
+	}
+	
+	for my $ipreg (@TRUSTED_IP){
+			if($CURRENT_CONTEXT{'IPADDRESS'}=~/^$ipreg$/){
+				&_log(310,'handler','Trusted computer');
+				$CURRENT_CONTEXT{'IS_TRUSTED'} = 1;
+			}
 	}
         	
 	if($request->rows){
