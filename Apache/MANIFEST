@@ -10,6 +10,7 @@ Ocsinventory/Server/Inventory.pm
 Ocsinventory/Server/Modperl1.pm
 Ocsinventory/Server/Modperl2.pm
 Ocsinventory/Server/System.pm
+Ocsinventory/Server/Groups.pm
 Ocsinventory/Server/Option/Download.pm
 Ocsinventory/Server/Option/Example.pm
 Ocsinventory/Server/Option/Filter.pm
