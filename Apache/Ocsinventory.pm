@@ -43,6 +43,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_TRANSACTION'} = 0;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 3600;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_ENABLE_GROUPS'} = 1;
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} = 3600;
+$Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_OFFSET'} = 3600;
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
