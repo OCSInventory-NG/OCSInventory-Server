@@ -1,7 +1,6 @@
 CREATE DATABASE ocsweb;
 USE ocsweb;
 
-
 CREATE TABLE hardware (
   ID INTEGER NOT NULL auto_increment,
   DEVICEID VARCHAR(255) not NULL,
