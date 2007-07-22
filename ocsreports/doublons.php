@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-04-18 17:44:22 $$Author: hunal $($Revision: 1.11 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.12 $)
 
 $mysql_result = mysql_query("SELECT SERIAL FROM blacklist_serials", $_SESSION["readServer"]);
 while ($ligne = mysql_fetch_array($mysql_result))
@@ -211,13 +211,14 @@ function fusionne($afus) {
 			$reqDelAccount = "DELETE FROM accountinfo WHERE hardware_id=".$afus[$maxInd]["id"];
 			mysql_query($reqDelAccount, $_SESSION["writeServer"]) ;
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$maxInd]["deviceid"]." ".$l->g(191)."</font></center>";
-			// Keep old accountinfo
-			$reqRecupAccount = "UPDATE accountinfo SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];			
-			mysql_query($reqRecupAccount, $_SESSION["writeServer"]) ;
-			// Keep old download_history
-			$reqRecupAccount = "UPDATE download_history SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];			
-			mysql_query($reqRecupAccount, $_SESSION["writeServer"]) ;
-			//echo $reqRecupAccount;
+			
+			$keep = array( "accountinfo", "download_history", "devices", "groups_cache" );
+			foreach( $keep as $tableToBeKept ) {
+				$reqRecupAccount = "UPDATE ".$tableToBeKept." SET hardware_id=".$afus[$maxInd]["id"]." WHERE hardware_id=".$afus[$minInd]["id"];			
+				//echo $reqRecupAccount;
+				mysql_query($reqRecupAccount, $_SESSION["writeServer"]) ;
+			}						
+			
 			echo "<center><font color=green>".$l->g(190)." ".$afus[$minInd]["deviceid"]." ".$l->g(206)." ".$afus[$maxInd]["deviceid"]."</font></center><br>";
 			$i=0;
 			foreach($afus as $a) {

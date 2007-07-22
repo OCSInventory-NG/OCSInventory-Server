@@ -8,8 +8,11 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.4 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.5 $)
 
+if( $_SESSION["lvluser"] != SADMIN )
+	die("FORBIDDEN");
+	
 if( isset($_POST["systemid"]) )
 	$_GET["systemid"] = $_POST["systemid"];
 

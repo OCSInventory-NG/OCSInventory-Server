@@ -8,7 +8,13 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 16:05:52 $$Author: plemmet $($Revision: 1.13 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.14 $)
+
+function getmicrotime(){
+    list($usec, $sec) = explode(" ",microtime());
+    return ((float)$usec + (float)$sec);
+}
+$debut = getmicrotime();
 error_reporting(E_ALL & ~E_NOTICE);
 
 require("fichierConf.class.php");
@@ -24,7 +30,7 @@ if( (!$fconf=@fopen("dbconfig.inc.php","r")) || (!function_exists('session_start
 else
 	fclose($fconf);
 //
-
+	
 $showingReq = false;
 foreach( $_GET as $key=>$val) {
 	$_GET["key"] = urldecode($val);
@@ -179,8 +185,9 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		tab($l->g(263), 12);
 		tab($l->g(235), 10);
 		tab($l->g(287), 13);
-		tab($l->g(570), 28);
 	}	
+		tab($l->g(570), 28);
+		
 }	
 
 	echo "</tr></table>";
@@ -200,26 +207,47 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 			// When changing password, always use MD5 encrypted password
 			mysql_query("UPDATE operators SET passwd='".md5( $_POST["pass1"])."' WHERE ID='".$_SESSION["loggeduser"]."'",$_SESSION["writeServer"]);
 		}
-	}
-	
-	if( $_POST["lareq"] == $l->g(9) && !$_GET["multi"])
-		$_GET["multi"] = 1;
-	
-	if($_POST["lareq"] == $l->g(371) && !$_GET["multi"])
-		$_GET["multi"] = 15;
-		
-	echo "<center><span id='wait'><h3><font color=red>".$l->g(332)."</font></h3></span></center>";
+	}	
+echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</font></span></center><br>";
 	flush();
-	
+
 	if( ! isset( $_SESSION["mac"] ) ) {
 		loadMac();
 	}
 	
 	if( $_GET["multi"] != 3 )
 		unset( $_SESSION["forcedRequest"] );
+
+	//GROUP CREATION
+	if( $_SESSION["lvluser"] == SADMIN ) {
+		// New classic group
+		if( ! empty( $_POST["cg"] ) ) {
+			if( createGroup( $_POST["cg"], $_POST["desc"] ) ) {
+				unset( $_POST );
+			}
+		}
+		//New static group, with checked computers in cache
+		else if( ! empty( $_POST["cgs"] ) ) {
+			if( createGroup( $_POST["cgs"], $_POST["desc"], true ) ) {
+				addComputersToGroup( $_POST["cgs"], $_POST );
+				unset( $_POST );
+			}
+		}
+		// Overwrite a classic group
+		else if( isset( $_POST["eg"] ) && $_POST["eg"] != "_nothing_" ) {
+			createGroup( $_POST["eg"], $_POST["desc"], false, true );
+			unset( $_POST );
+		}
+		// Add checked computers to existing group
+		else if( isset( $_POST["asg"] ) && $_POST["asg"] != "_nothing_" ) {
+			addComputersToGroup( $_POST["asg"], $_POST );
+			unset( $_POST );
+		}		
+	}		
 		
 	switch($_GET["multi"]) {
 		case 1: require ('multicritere.php');	break;
+		
 		case 3: require ('ipdiscover.php');	break;
 		case 4:	require ('confiGale.php');	break;
 		case 5:	require ('reqRegistre.php');	break;
@@ -240,6 +268,9 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		case 25: require ('tele_stats.php'); break;
 		case 26: require ('tele_actives.php'); break;
 		case 27: require ('opt_suppr.php'); break; 
+		case 29: require ('group_show.php'); break;
+		case 30: require ('tele_massaffect.php'); break; 
+		case 31: require ('admin_attrib.php'); break; 
  		default: require ('resultats.php');		
  	}
 

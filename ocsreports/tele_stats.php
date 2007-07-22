@@ -8,40 +8,26 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-07-22 18:05:41 $$Author: plemmet $($Revision: 1.11 $)
 require('fichierConf.class.php');
-
-$_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
-if( isset($_GET["sessid"])){
-	session_id($_GET["sessid"]);
-	session_start();
-	
-	if( !isset($_SESSION["loggeduser"]) ) {
-		die("FORBIDDEN");
-	}
-}
-else
-	die("FORBIDDEN");
-
 require_once("preferences.php");
 
 if( isset($_GET["delsucc"]) ) {		
-	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%' AND 
-	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%' AND
+	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."') AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_')", $_SESSION["writeServer"]);
 }
 else if( isset($_GET["deltout"]) ) {		
-	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NOT NULL
-	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NOT NULL AND  
+	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."') AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_')", $_SESSION["writeServer"]);
 }
 else if( isset($_GET["delnotif"]) ) {		
 	$resSupp = mysql_query("DELETE FROM devices WHERE name='DOWNLOAD' AND tvalue IS NULL AND 
-	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."')", $_SESSION["writeServer"]);
+	ivalue IN (SELECT id FROM download_enable WHERE fileid='".$_GET["stat"]."') AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_')", $_SESSION["writeServer"]);
 }
 
 $resStats = mysql_query("SELECT COUNT(id) as 'nb', tvalue as 'txt' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
- AND e.id=d.ivalue AND name='DOWNLOAD' GROUP BY tvalue ORDER BY nb DESC", $_SESSION["readServer"]);
- 
-	$tot = 0;
+ AND e.id=d.ivalue AND name='DOWNLOAD' AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_') GROUP BY tvalue ORDER BY nb DESC", $_SESSION["readServer"]);
+ 	$tot = 0;
 	$quartiers = array();
 	$coul = array( 0x0091C3, 0xFFCB03  ,0x33CCCC, 0xFF9900,  0x969696,  0x339966, 0xFF99CC, 0x99CC00);
 	$coulHtml = array( "0091C3", "FFCB03"  ,"33CCCC", "FF9900",  "969696",  "339966", "FF99CC", "99CC00");
@@ -66,9 +52,7 @@ $resStats = mysql_query("SELECT COUNT(id) as 'nb', tvalue as 'txt' FROM devices 
 			$index++;
 		}
 		else {
-			$sort[ $count ] = $quartiers[ sizeof( $quartiers ) - $index ];
-			//echo "sort[ ".($count)." ] = quartiers[ ".(sizeof($quartiers)-$index)."  ];<br>";http://localhost/ocsreports_net/tele_stats.php?generatePic=1&sessid=f3b3227907d7c12e0c2f0b1af979f863&stat=1169468001
-			
+			$sort[ $count ] = $quartiers[ sizeof( $quartiers ) - $index ];			
 		}		
 	}
 
@@ -96,7 +80,7 @@ else {
 	<?php 
 	
 	$resStats = mysql_query("SELECT COUNT(DISTINCT HARDWARE_ID) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
-	AND e.id=d.ivalue AND name='DOWNLOAD'", $_SESSION["readServer"]);
+	AND e.id=d.ivalue AND name='DOWNLOAD' AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_')", $_SESSION["readServer"]);
 	
 	$resName = mysql_query("SELECT name FROM download_available WHERE fileid='".$_GET["stat"]."'", $_SESSION["readServer"]);
 	$valName = mysql_fetch_array( $resName );
@@ -106,12 +90,12 @@ else {
 	echo "<body OnLoad='document.title=\"".urlencode($valName["name"])."\"'>";
 	printEnTete( $l->g(498)." <b>".$valName["name"]."</b> (".$l->g(296).": ".$_GET["stat"]." )");
 	
-	echo "<br><center><img src='tele_stats.php?generatePic=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'></center>";
+	echo "<br><center><img src='tele_stats.php?generatePic=1&stat=".$_GET["stat"]."'></center>";
 	
 	echo "<table class='Fenetre' align='center' border='1' cellpadding='5' width='50%'><tr BGCOLOR='#C7D9F5'>";
-	echo "<td width='33%' align='center'><a href='tele_stats.php?delsucc=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'><b>".$l->g(483)."</b></a></td>";	
-	echo "<td width='33%' align='center'><a href='tele_stats.php?deltout=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'><b>".$l->g(571)."</b></a></td>";	
-	echo "<td width='33%' align='center'><a href='tele_stats.php?delnotif=1&sessid=".$_GET["sessid"]."&stat=".$_GET["stat"]."'><b>".$l->g(575)."</b></a></td>";
+	echo "<td width='33%' align='center'><a href='tele_stats.php?delsucc=1&stat=".$_GET["stat"]."'><b>".$l->g(483)."</b></a></td>";	
+	echo "<td width='33%' align='center'><a href='tele_stats.php?deltout=1&stat=".$_GET["stat"]."'><b>".$l->g(571)."</b></a></td>";	
+	echo "<td width='33%' align='center'><a href='tele_stats.php?delnotif=1&stat=".$_GET["stat"]."'><b>".$l->g(575)."</b></a></td>";
 	echo "</tr></table><br><br>";
 	
 	echo "<table class='Fenetre' align='center' border='1' cellpadding='5' width='50%'>

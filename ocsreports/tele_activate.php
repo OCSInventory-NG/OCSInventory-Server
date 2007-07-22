@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.7 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.8 $)
 
 PrintEnTete($l->g(465));
 
@@ -131,7 +131,7 @@ $selectPrelim = array("d.FILEID"=>"d.FILEID");
 $from = "download_available d";
 $fromPrelim = "";
 $group = "";
-$order = "";
+$order = "d.FILEID DESC";
 $countId = "d.FILEID";
 
 $requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,true);

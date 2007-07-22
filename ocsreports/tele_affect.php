@@ -8,8 +8,14 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2007-07-22 18:05:41 $$Author: plemmet $($Revision: 1.9 $)
 
+if( $_SESSION["lvluser"] != SADMIN )
+	die("FORBIDDEN");
+	
+if( isset( $_GET["isgroup"] ) )
+	$_SESSION["isgroup"] = $_GET["isgroup"];
+	
 if( isset($_GET["frompref"]) && $_GET["frompref"] == 1 ) {
 	unset( $_SESSION["saveId"] );
 }
@@ -31,19 +37,35 @@ if( $_GET["retour"] == 1 || (isset($_GET["affpack"]) && $ok) ) {
 	unset( $_SESSION["saveRequest"] );
 	if( ! isset( $_SESSION["saveId"] ) )
 		echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
+		//TODO MARCHE PÄS
+	else if( isset( $_SESSION["isgroup"] ) && $_SESSION["isgroup"]== "1" )
+		echo "<script language='javascript'>window.location='index.php?multi=29&popup=1&systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
 	else
-		echo "<script language='javascript'>window.location='machine.php?systemid=".$_SESSION["saveId"]."&sessid=".session_id()."&option=".$l->g(500)."';</script>";
+		echo "<script language='javascript'>window.location='machine.php?systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
 	die();
 }
-	
+
+$nbMach = 0;
 if( isset($_GET["systemid"]))
 	$nbMach = 1;
-else
+else if( isset( $_POST["maxcheck"] ) ) {
+	foreach( $_POST as $key=>$val ) {
+		if( strpos ( $key, "checkmass" ) !== false ) {
+			$tbd[] = $val;
+			$nbMach++;
+		}		
+	}	
+}
+
+if( empty( $tbd ) )
 	$nbMach = getCount($_SESSION["saveRequest"]);
 
 if( $nbMach > 0 ) {
 	$canAc = 1;
-	PrintEnTete( $l->g(477)." <font class='warn'>($nbMach ".$l->g(478).")</font>");
+	$strHead = $l->g(477);
+	if( ! isset($_SESSION["isgroup"]) || $_SESSION["isgroup"] == 0 ) 
+		$strHead .= " <font class='warn'>( $nbMach ".$l->g(478).")</font>";
+	PrintEnTete( $strHead );
 }
 else {
 	die($l->g(478));	
@@ -71,7 +93,7 @@ $countId = "e.ID";
 $requete = new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,true);
 ShowResults($requete,true,false,false,false,false,false,$canAc);
 
-	function setPack( $packid ) {
+	function setPack( $packid ) {		
 		global $_GET;
 		if( isset($_GET["systemid"])) {
 			$val["h.id"] = $_GET["systemid"];
@@ -80,6 +102,16 @@ ShowResults($requete,true,false,false,false,false,false,$canAc);
 				return false;
 			}
 			$_SESSION["justAdded"] = true;
+		}
+		else if( isset( $_GET["compAffect1"] ) ) {		
+			foreach( $_GET as $key=>$val ) {
+				if( strpos ( $key, "compAffect" ) !== false ) {
+					if( ! @mysql_query( "INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES('".$val."', 'DOWNLOAD', $packid)", $_SESSION["writeServer"] )) {
+						echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
+						return false;
+					}
+				}
+			}
 		}
 		else {
 			$lareq = getPrelim( $_SESSION["saveRequest"] );
@@ -96,13 +128,22 @@ ShowResults($requete,true,false,false,false,false,false,$canAc);
 	}
 	
 	function resetPack( $packid ) {
-		
 		global $_GET;
 		if( isset($_GET["systemid"])) {
 			$val["h.id"] = $_GET["systemid"];
 			if( ! @mysql_query( "DELETE FROM devices WHERE name='DOWNLOAD' AND IVALUE=$packid AND hardware_id='".$val["h.id"]."'", $_SESSION["writeServer"] )) {
 				echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
 				return false;
+			}
+		}
+		else if( isset( $_GET["compAffect1"] ) ) {		
+			foreach( $_GET as $key=>$val ) {
+				if( strpos ( $key, "compAffect" ) !== false ) {
+					if( ! @mysql_query( "DELETE FROM devices WHERE name='DOWNLOAD' AND IVALUE=$packid AND hardware_id='".$val."'", $_SESSION["writeServer"] )) {
+						echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
+						return false;
+					}
+				}
 			}
 		}
 		else {
@@ -119,6 +160,6 @@ ShowResults($requete,true,false,false,false,false,false,$canAc);
 		}
 
 		return true;		
-		//TODO: comprends pas: echo "DELETE FROM devices WHERE name='FREQUENCY' AND hardware_id IN ($lareq)";flush();		
+		// comprends pas: echo "DELETE FROM devices WHERE name='FREQUENCY' AND hardware_id IN ($lareq)";flush();		
 	}
 ?>

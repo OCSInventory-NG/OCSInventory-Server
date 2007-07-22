@@ -8,13 +8,17 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.9 $)
 
 require ('fichierConf.class.php');
 printEnTete($l->g(107));
 
 $lesEdits = array("IPDISCOVER_MAX_ALIVE","DOWNLOAD_CYCLE_LATENCY","DOWNLOAD_FRAG_LATENCY","DOWNLOAD_PERIOD_LATENCY",
 "DOWNLOAD_PERIOD_LENGTH","DOWNLOAD_TIMEOUT","PROLOG_FREQ","IPDISCOVER_LATENCY","LOCAL_PORT");
+
+$lesOnOff = array("REGISTRY","UPDATE","DEPLOY","TRACE_DELETED","LOGLEVEL","DOWNLOAD","INVENTORY_DIFF","INVENTORY_TRANSACTION","ENABLE_GROUPS");
+	
+$lesAutres = array("AUTO_DUPLICATE_LVL","IPDISCOVER","FREQUENCY","LOCAL_SERVER");
 
 if( isset($_POST["FREQUENCY"] ) ) {
 	switch($_POST["FREQUENCY"]) {
@@ -32,8 +36,6 @@ if( isset($_POST["FREQUENCY"] ) ) {
 	$autoDupLvl += isset($_POST["AUTO_DUPLICATE_LVL_host"])?$_POST["AUTO_DUPLICATE_LVL_host"]:0;
 	$autoDupLvl += isset($_POST["AUTO_DUPLICATE_LVL_mac"])?$_POST["AUTO_DUPLICATE_LVL_mac"]:0;
 	setOpt("AUTO_DUPLICATE_LVL", $autoDupLvl);
-	
-	$lesOnOff = array("REGISTRY","UPDATE","DEPLOY","TRACE_DELETED","LOGLEVEL","DOWNLOAD","INVENTORY_DIFF","INVENTORY_TRANSACTION");
 	
 	foreach($lesOnOff as $oo) 
 		setOpt($oo, ($_POST[$oo]=="ON"?1:0));
@@ -80,9 +82,13 @@ $trad = array("REGISTRY"=>412,"UPDATE"=>413,"DEPLOY"=>414,"TRACE_DELETED"=>415,"
 "DOWNLOAD_PERIOD_LENGTH"=>423,"DOWNLOAD_TIMEOUT"=>424,"IPDISCOVER"=>425,"FREQUENCY"=>426,"AUTO_DUPLICATE_LVL"=>427, "PROLOG_FREQ"=>564, 
 "LOCAL_SERVER"=>565, "LOCAL_PORT"=>566, "IPDISCOVER_LATENCY"=>567);
 
- 
+$cond= "";
+if( !isset($_SESSION["debug"]) || !$_SESSION["debug"] ) {
+	$allConf = implode( "','", array_merge($lesEdits, $lesOnOff, $lesAutres) );
+	$cond = "WHERE NAME IN ('$allConf')";
+}
 
-$resConf = mysql_query("SELECT NAME,IVALUE,TVALUE FROM config WHERE NAME<>'GUI_VERSION' ORDER BY NAME", $_SESSION["readServer"]) or die(mysql_error());
+$resConf = mysql_query("SELECT NAME,IVALUE,TVALUE FROM config $cond ORDER BY NAME", $_SESSION["readServer"]) or die(mysql_error());
 $decal = "&nbsp;&nbsp;&nbsp;";
 $ligne = 0;
 while( $conf = mysql_fetch_array($resConf) ) {
@@ -118,18 +124,15 @@ echo "</tr></table>";
 echo "<p align='center'><input type='button' height='60px' value='".$l->g(103)."' OnClick='checkNumbers();'></p></form>";		
 
 function showOption($nme, $val, $txt) {
-	switch($nme) {
-		case "REGISTRY":
-		case "UPDATE":
-		case "DEPLOY":
-		case "TRACE_DELETED":
-		case "LOGLEVEL":
-		case "DOWNLOAD":
-		case "INVENTORY_DIFF":
-		case "INVENTORY_TRANSACTION":
-			echo "<table><tr><td align='left'><input type='radio' name='$nme' value='ON' ".($val?"checked":"").">ON</td></tr>
+	global $lesEdits,$lesOnOff;
+	if( @in_array($nme, $lesOnOff ) )  {
+		echo "<table><tr><td align='left'><input type='radio' name='$nme' value='ON' ".($val?"checked":"").">ON</td></tr>
 			<tr><td align='left'><input type='radio' name='$nme' value='OFF' ".($val?"":"checked").">OFF</td></tr></table>";
-			break;
+	}
+	else if( @in_array($nme, $lesEdits ) )  {
+		echo edit($nme,$val);
+	}	
+	else switch($nme) {
 		case "AUTO_DUPLICATE_LVL":
 			echo "<table><tr><td align='left'><input type='checkbox' name='{$nme}_serial' value='2' ".(in_array($val,array(2,3,6,7))?"checked":"").">Serial</td></tr>
 			<tr><td align='left'><input type='checkbox' name='{$nme}_host' value='1' ".(in_array($val,array(1,3,5,7))?"checked":"").">hostname</td></tr>
@@ -149,7 +152,9 @@ function showOption($nme, $val, $txt) {
 			echo "<table><tr><td width='100%' rowspan='3'>http://<input name='$nme' size='15' maxlength='254' value='$txt'></td></tr></table>";
 			break;
 		default:
-			echo edit($nme,$val);
+			if( $val == "" || ! isset($val) )
+				$val = $txt;
+			echo "&nbsp;&nbsp;<b>$val</b>";
 			break;
 	}
 }

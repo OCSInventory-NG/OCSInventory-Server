@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.11 $)
 
 @set_time_limit(0);
 $nbpop=0;
@@ -324,7 +324,7 @@ else if( $_GET["mode"] == 1 ) {
 			$t[ $cptL ][] = "";
 			$t[ $cptL ][] = "<a href=index.php?multi=3&mode=11&ipa=".$arrGateway["nbrez"].">-> ".$l->g(295)." <-</a>";
 			$t[ $cptL ][] = "";
-			$t[ $cptL ][] = "0";
+			$t[ $cptL ][] = "-";
 		}
 		
 		$t[ $cptL ][] = "";
@@ -334,7 +334,8 @@ else if( $_GET["mode"] == 1 ) {
 		$t[ $cptL ][] = $arrGateway["nbc"];
 		
 		$reqNonInv = "SELECT COUNT(*) AS nbnoninv FROM netmap WHERE NETID='".$arrGateway["nbrez"]."' 
-		AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks) AND mac NOT IN (SELECT DISTINCT(macaddr) FROM network_devices)";
+		AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL) AND mac NOT IN (SELECT DISTINCT(macaddr) FROM network_devices)";
+		
 		$resNonInv = mysql_query($reqNonInv, $_SESSION["readServer"]) or die(mysql_error());
 		
 		if( $valNonInv = mysql_fetch_array( $resNonInv ) ) {	

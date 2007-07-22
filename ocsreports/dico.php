@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-14 15:40:18 $$Author: plemmet $($Revision: 1.8 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.9 $)
 
 $pgSize = $_SESSION["pcparpage"];
 $rg = isset($_GET["rg"])?$_GET["rg"]:0;	
@@ -21,8 +21,6 @@ foreach($_POST as $key=>$val) {
 	}}
 	
 */
-
-$_GET["cat"] = isset($_GET["cat"]) ? $_GET["cat"] : (isset($_POST["alleracat"]) ? $_POST["alleracat"] : null ) ;
 
 if( isset($_GET["cat"]) ) {
 	
@@ -41,6 +39,7 @@ if( isset($_GET["cat"]) ) {
 	
 	if($laCat == "NEW") {		
 		if(! isset($_GET["order"])) $sens = "DESC";
+		//TODO: optimiser
 		$reqLog = "SELECT COUNT(hardware_id) as 'nbdef',name as 'extracted' FROM softwares WHERE{$condG} name NOT IN 
 		(SELECT DISTINCT(extracted) FROM dico_soft) AND name NOT IN 
 		(SELECT DISTINCT(extracted) FROM dico_ignored) GROUP BY name ORDER BY $order $sens";
@@ -60,8 +59,6 @@ if( isset($_GET["cat"]) ) {
 		$reqLog = "SELECT s.extracted FROM dico_soft s WHERE{$condO} s.formatted='$laCat' ORDER BY $order $sens";	
 		$reqCount = "SELECT COUNT(s.extracted) as 'nb' FROM dico_soft s WHERE{$condO} s.formatted='$laCat'";	
 	}
-	//echo $reqLog;
-
 }
 else if( isset($_GET["all"]) && $_GET["search"]!="" ) {
 	$reqLog = "SELECT distinct(name) as 'extracted' FROM softwares WHERE name LIKE '%".$_GET["search"]."%' order by name asc";
@@ -124,6 +121,8 @@ foreach ($_GET as $gk=>$gv) {
 	}	
 	$hiddens .= "<input type='hidden' name='$gk' value='$gv'>\n";
 }
+
+$_GET["cat"] = isset($_GET["cat"]) ? $_GET["cat"] : (isset($_POST["alleracat"]) ? $_POST["alleracat"] : null ) ;
 
 $machNmb = array(5,10,15,20,50,100);
 $pcParPageHtml = "<form name='pcp' method='GET' action='index.php'>$hiddens".$l->g(340).": 
@@ -327,7 +326,7 @@ else {
 	echo "</tr></table>";
 }
 
-if( isset( $_SESSION["toBeMod"] ) ) {
+if( isset( $_SESSION["toBeMod"]) && UPDATE_CHECKSUM==1 ) {
 	//var_dump( $_SESSION["toBeMod"]);
 	computeChecksums();
 	unset( 	$_SESSION["toBeMod"] );
@@ -427,9 +426,8 @@ function delCat($cat) {
 function alterChecksum($ext, $form=false) {
 
 	if($ext) {
+		//Storing soft name for checksum computation
 		$_SESSION["toBeMod"][]=$ext;
-		//$reqCheck = "UPDATE hardware SET checksum=checksum|$softMod WHERE id IN( SELECT hardware_id FROM softwares WHERE name='$ext')";
-		//mysql_query($reqCheck, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 	}
 	else {		
 		$reqSofts = "SELECT DISTINCT(extracted) FROM dico_soft WHERE formatted='$form'";
@@ -446,16 +444,22 @@ function computeChecksums() {
 	//flush();
 	
 	$softMod = "65536";
-	$reqCheck = "UPDATE hardware SET checksum=checksum|$softMod WHERE id IN (SELECT DISTINCT(hardware_id) FROM softwares WHERE name IN(";
+	$reqCheck = "UPDATE hardware SET checksum=checksum|$softMod WHERE id IN ('";	
+
+	$innerRequest = "SELECT DISTINCT(hardware_id) FROM softwares WHERE name IN(";
 	$first = true;
 	foreach( $_SESSION["toBeMod"] as $soft ) {
 		if( !$first )
-			$reqCheck .= ",";
-		$reqCheck .= "'$soft'";
+			$innerRequest .= ",";
+		$innerRequest .= "'$soft'";
 		if( $first ) $first = false;	
 	}
-	$reqCheck .= "));";
-	//echo $reqCheck;
+	
+	$innerRequest .= ")";
+	
+	$reqCheck .= getGluedIds( $innerRequest );
+	$reqCheck .= "');";	
+
 	mysql_query($reqCheck, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 }
 

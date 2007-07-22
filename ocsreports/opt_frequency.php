@@ -8,7 +8,10 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:47 $$Author: plemmet $($Revision: 1.5 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.6 $)
+
+if( $_SESSION["lvluser"] != SADMIN )
+	die("FORBIDDEN");
 
 if( isset($_POST["systemid"]) )
 	$_GET["systemid"] = $_POST["systemid"];
@@ -39,9 +42,18 @@ if( isset($_POST["frequency"]) ) {
 	}
 }
 
+$nbMach = 0;
 if( isset($_GET["systemid"]))
 	$nbMach = 1;
-else
+else if( isset( $_POST["maxcheck"] ) ) {
+	foreach( $_POST as $key=>$val ) {
+		if( strpos ( $key, "checkmass" ) !== false ) {
+			$tbd[] = $val;
+			$nbMach++;
+		}		
+	}	
+}
+if( empty( $tbd ) )
 	$nbMach = getCount($_SESSION["storedRequest"]);
 
 PrintEnTete( $l->g(484)." <font class='warn'>($nbMach ".$l->g(478).")</font>");
@@ -106,9 +118,21 @@ else
 	</tr>
 	<tr bgcolor='#FFFFFF'>
 		<td>&nbsp;</td>
-		<?php if( isset($_GET["systemid"]) ) {
+		<?php 
+		
+		if( isset($_GET["systemid"]) ) {
 			echo "<input type='hidden' value='".$_GET["systemid"]."' name='systemid'>";
-		 } ?>
+		}
+		else if( isset( $tbd ) ) {
+			$indexSys = 1;
+			//reposting computerS for confirm
+			foreach( $tbd as $sys ) {
+				echo "<input type='hidden' value='".$sys."' name='sysfreq$indexSys'>";
+				$indexSys++;
+			}
+		}
+		
+		 ?>
 		<td><input type='Submit' value='<?php echo $l->g(433); ?>'></td>
 	</tr>
 </table>
@@ -116,12 +140,22 @@ else
 
 <?php 
 	function setFrequency( $freq ) {
-		global $_GET;
+		global $_GET, $_POST;
 		if( isset($_GET["systemid"])) {
 			$val["h.id"] = $_GET["systemid"];
 			if( ! @mysql_query( "INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES('".$val["h.id"]."', 'FREQUENCY', $freq)", $_SESSION["writeServer"] )) {
 				echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
 				return false;
+			}
+		}
+		else if( isset( $_POST["sysfreq1"] ) ) {		
+			foreach( $_POST as $key=>$val ) {
+				if( strpos ( $key, "sysfreq" ) !== false ) {
+					if( ! @mysql_query( "INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES('".$val."', 'FREQUENCY', $freq)", $_SESSION["writeServer"] )) {
+						echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
+						return false;
+					}
+				}
 			}
 		}
 		else {
@@ -148,6 +182,16 @@ else
 				return false;
 			}
 		}
+		else if( isset( $_POST["sysfreq1"] ) ) {		
+			foreach( $_POST as $key=>$val ) {
+				if( strpos ( $key, "sysfreq" ) !== false ) {
+					if( ! @mysql_query( "DELETE FROM devices WHERE name='FREQUENCY' AND hardware_id='".$val."'", $_SESSION["writeServer"] )) {
+						echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
+						return false;
+					}
+				}
+			}
+		}
 		else {
 			$lareq = getPrelim( $_SESSION["storedRequest"] );
 			if( ! $res = @mysql_query( $lareq, $_SESSION["readServer"] ))
@@ -162,7 +206,7 @@ else
 		}
 
 		return true;		
-		//TODO: comprends pas: echo "DELETE FROM devices WHERE name='FREQUENCY' AND hardware_id IN ($lareq)";flush();		
+		//comprends pas: echo "DELETE FROM devices WHERE name='FREQUENCY' AND hardware_id IN ($lareq)";flush();		
 	}
 ?>
 

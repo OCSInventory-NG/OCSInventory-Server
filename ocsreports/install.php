@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.14 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.15 $)
 
 @set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
@@ -235,6 +235,7 @@ if($dejaLance>0)
 	
 echo "<br><center><font color=black><b>Database engine checking...";
 flush();
+//TODO: dernieres tables
 $tableEngines = array("hardware"=>"InnoDB","accesslog"=>"InnoDB","bios"=>"InnoDB","memories"=>"InnoDB","slots"=>"InnoDB",
 "registry"=>"InnoDB","monitors"=>"InnoDB","ports"=>"InnoDB","storages"=>"InnoDB","drives"=>"InnoDB","inputs"=>"InnoDB",
 "modems"=>"InnoDB","networks"=>"InnoDB","printers"=>"InnoDB","sounds"=>"InnoDB","videos"=>"InnoDB","softwares"=>"InnoDB",
@@ -479,6 +480,7 @@ echo "<br><center><font color=green><b>Netmap netid was computed=> $sucNet succe
 //ORPH	
 echo "<br><center><font color=green><b>Cleaning orphans...";
 flush();
+//TODO: orphelins dans nouvelle tables
 $tables=Array("accountinfo","bios","controllers","drives",
 	"inputs","memories","modems","monitors","networks","ports","printers","registry",
 	"slots","softwares","sounds","storages","videos","devices");
@@ -517,8 +519,17 @@ else {
 
 echo "</b></font></center><br><center><font color=green><b>$cleanedNbr netmap lines deleted</b></font></center>";
 flush();
+/*
+echo "<br><center><font color=green><b>Building software cache. Please wait...</b></font></center>";
+flush();
+mysql_query("TRUNCATE TABLE softwares_name_cache") or die(mysql_error());
+mysql_query("INSERT INTO softwares_name_cache(name) SELECT DISTINCT name FROM softwares") or die(mysql_error());
 
-
+echo "<br><center><font color=green><b>Building registry cache. Please wait...</b></font></center>";
+flush();
+mysql_query("TRUNCATE TABLE registry_regvalue_cache") or die(mysql_error());
+mysql_query("INSERT INTO registry_regvalue_cache(regvalue) SELECT DISTINCT regvalue FROM registry") or die(mysql_error());
+*/
 function printEnTeteInstall($ent) {
 	echo "<br><table border=1 class= \"Fenetre\" WIDTH = '62%' ALIGN = 'Center' CELLPADDING='5'>
 	<th height=40px class=\"Fenetre\" colspan=2><b>".$ent."</b></th></table>";

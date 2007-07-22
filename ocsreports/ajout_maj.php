@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2006-12-21 18:13:46 $$Author: plemmet $($Revision: 1.6 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.7 $)
 	
 if (isset($_GET['action'])) {
 	$action = $_GET['action'];
@@ -60,7 +60,7 @@ if ($action_form == 'modifier')
 	$systemid = $_POST["systemid"];
 	MAJ_Inventory($systemid);	
 	echo "<script language='javascript'>\n";
-	echo "\twindow.open(\"./machine.php?sessid=".session_id()."&systemid=$systemid&state='MAJ'\", \"_self\");\n";
+	echo "\twindow.open(\"./machine.php?systemid=$systemid&state='MAJ'\", \"_self\");\n";
 	echo "</script>\n";
 }
 
@@ -101,8 +101,7 @@ echo "</table><br>\n";
 echo "<table class='Items' width='100%' border='0' cellpadding='4'>";
 echo "<tr><td align='center' colspan='2'>\n";
 echo "<input onmouseover=\"this.style.background='#FFFFFF';\" onmouseout=\"this.style.background='#C7D9F5'\" class='bouton' type='submit' value='".$l->g(114)."' $event_mouse>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
-echo "<input onmouseover=\"this.style.background='#FFFFFF';\" onmouseout=\"this.style.background='#C7D9F5'\" class='bouton' type='button' value='   ".$l->g(113)."   ' onClick='window.open(\"./machine.php?sessid=".session_id()."&systemid=$systemid\", \"_self\");' $event_mouse>\n";
-echo "<input type='hidden' name='sessid' value='".session_id()."'>";
+echo "<input onmouseover=\"this.style.background='#FFFFFF';\" onmouseout=\"this.style.background='#C7D9F5'\" class='bouton' type='button' value='   ".$l->g(113)."   ' onClick='window.open(\"./machine.php?systemid=$systemid\", \"_self\");' $event_mouse>\n";
 echo "<input type='hidden' name='systemid' value='".$systemid."'>";
 echo "</td></tr>\n";
 echo "</table>\n";

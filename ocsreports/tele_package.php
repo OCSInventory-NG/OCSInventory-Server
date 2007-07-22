@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.10 $)
+//Modified on $Date: 2007-07-22 18:05:41 $$Author: plemmet $($Revision: 1.11 $)
 ?>
 <script language='javascript'>
 
@@ -225,8 +225,8 @@
 	}
 	
 	function clean( $txt ) {
-		$cherche = array("<",">","&");
-		$replace = array(" "," "," ");
+		$cherche = array( "<",   ">",   "&",     "\"",     "'");
+		$replace = array( "&lt;","&gt;","&amp;", "&quot;", "&apos;");
 		return str_replace($cherche, $replace, $txt);
 	}
 ?>

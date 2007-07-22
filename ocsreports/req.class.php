@@ -8,8 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 15:53:24 $$Author: plemmet $($Revision: 1.6 $)
-require("fichierConf.class.php");
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.7 $)
 
 if(!class_exists("Req"))
 { 

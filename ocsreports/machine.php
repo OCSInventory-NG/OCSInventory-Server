@@ -8,23 +8,18 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-16 16:39:13 $$Author: plemmet $($Revision: 1.16 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.17 $)
+
 require('fichierConf.class.php');
-
-$_GET["sessid"] = isset( $_POST["sessid"] ) ? $_POST["sessid"] : $_GET["sessid"];
-if( isset($_GET["sessid"])){
-	session_id($_GET["sessid"]);
-	session_start();
-	
-	if( !isset($_SESSION["loggeduser"]) ) {
-		die("FORBIDDEN");
-	}
-}
-else
-	die("FORBIDDEN");
-
-$_GET["multi"] = 24; // To avoid storing systemid in querystring
+@session_start();
 require_once("preferences.php");
+
+if( ! in_array($_SESSION["lvluser"], array(SADMIN,LADMIN,ADMIN) )) {
+	die("FORBIDDEN");
+}
+
+unset( $_SESSION["isgroup"] );
+//$_GET["multi"] = 24; // To avoid storing systemid in querystring
 
 if (isset($_GET['systemid'])) {
 	$systemid = $_GET['systemid'];
@@ -45,13 +40,23 @@ if (isset($_GET['state']))
 		echo "<script language='javascript'>window.location.reload();</script>\n";		
 }// fin if
 
-if( isset( $_GET["suppack"] ) ) {
+if( isset( $_GET["suppack"] ) &  $_SESSION["lvluser"]==SADMIN  ) {
 	if( $_SESSION["justAdded"] == false )
 		@mysql_query("DELETE FROM devices WHERE ivalue=".$_GET["suppack"]." AND hardware_id='$systemid' AND name='DOWNLOAD'", $_SESSION["writeServer"]);
 	else $_SESSION["justAdded"] = false;
 }
 else 
 	$_SESSION["justAdded"] = false;
+	
+if( isset( $_GET["actgrp"] ) && $_SESSION["lvluser"]==SADMIN ) {	
+	$reqDelete = "DELETE FROM groups_cache WHERE hardware_id=".$systemid." AND group_id=".$_GET["grp"];
+	if( $_GET["actgrp"] == 0 ) 
+		$reqDelete .= " AND static<>0";
+	$reqInsert = "INSERT INTO groups_cache(hardware_id, group_id, static) VALUES (".$systemid.", ".$_GET["grp"].", ".$_GET["actgrp"].")";
+	@mysql_query( $reqDelete, $_SESSION["writeServer"] );
+	if( $_GET["actgrp"] != 0 )
+		@mysql_query( $reqInsert, $_SESSION["writeServer"] );
+}
 
 $queryMachine    = "SELECT * FROM hardware WHERE (ID=$systemid)";
 $result   = mysql_query( $queryMachine, $_SESSION["readServer"] ) or mysql_error($_SESSION["readServer"]);
@@ -69,9 +74,9 @@ echo "\tfunction Ajouter_donnees(systemid)\n";
 echo "\t{\n";
 echo "\t\twindow.open(\"./machine.php?action=ajouter_donnees&systemid=\" + systemid, \"_self\");\n";
 echo "\t}\n\n";
-echo "\tfunction MAJ_donnees(systemid,sessid)\n";
+echo "\tfunction MAJ_donnees(systemid)\n";
 echo "\t{\n";
-echo "\t\twindow.open(\"./machine.php?action=MAJ_donnees&sessid=\" +sessid+ \"&systemid=\" + systemid, \"_self\");\n";
+echo "\t\twindow.open(\"./machine.php?action=MAJ_donnees&systemid=\" + systemid, \"_self\");\n";
 echo "\t}\n";
 echo "</script>\n";
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html";
@@ -82,6 +87,12 @@ else
 
 echo "\"></head>\n";
 echo "<body style='font: Tahoma' alink='#000000' vlink='#000000' link='#000000' bgcolor='#ffffff' text='#000000'>\n";
+
+if( ! $item ) {
+	echo "<script language='javascript'>wait(0);</script>";
+	flush();
+	die();
+}
 
 // COMPUTER SUMMARY
 $tdhdpb = "<td  align='left' width='20%'>";
@@ -124,7 +135,6 @@ echo "<tr>".$tdhd.$l->g(348).$tdhf.$tdhdpb.textDecode($item->WINOWNER).$tdhfpb."
 echo "<tr>".$tdhd.$l->g(111).$tdhf.$tdhdpb.textDecode($item->WINPRODID).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(553).$tdhf.$tdhdpb.textDecode($item->WINPRODKEY).$tdhfpb."</tr>";
 echo "<tr>".$tdhd.$l->g(357).$tdhf.$tdhdpb.textDecode($item->USERAGENT).$tdhfpb."</tr>";
-
 echo "</table></td></tr></table>";
 //*/// END COMPUTER SUMMARY
 
@@ -209,11 +219,6 @@ echo "<table width='80%' border=0 align='center' cellpadding='0' cellspacing='0'
 		</tr>
 	</table>";
 
-		
-/*for($i=0;$i<18;$i++) {
-	echo"<a href='machine.php?sessid=".session_id()."&systemid=".urlencode(stripslashes($systemid))."&option=$i'>".$tab[$i]."</a>";
-	if($i==8)	echo"<br>";
-}*/
 echo"<br><br><br>";
 
 if($_GET["tout"]==1)
@@ -290,7 +295,7 @@ echo "<a style=\"text-decoration:underline\" onClick=print()><img src='image/imp
 
 
 if(!isset($_GET["tout"]))
-		echo"<td width=50%><a style=\"text-decoration:underline\" href=\"machine.php?sessid=".session_id()."&systemid=".urlencode(stripslashes($systemid))."&tout=1\"><img width='60px' src='image/ttaff.png' title='".$l->g(215)."'></a></td>";
+		echo"<td width=50%><a style=\"text-decoration:underline\" href=\"machine.php?systemid=".urlencode(stripslashes($systemid))."&tout=1\"><img width='60px' src='image/ttaff.png' title='".$l->g(215)."'></a></td>";
 		
 echo "</tr></table></body>";
 echo "</html>";
@@ -342,6 +347,40 @@ function print_perso($systemid) {
 		echo "$td3<a href='index.php?multi=22&systemid=$systemid'>".$l->g(115)."</a></td>";		
 	echo "</tr>";
 	
+	//GROUPS
+	$resGroups = @mysql_query("SELECT static, name, group_id  FROM groups_cache g, hardware h WHERE g.hardware_id=$systemid AND h.id=g.group_id"); 
+	
+	if( mysql_num_rows( $resGroups )>0 ) {
+		while( $valGroups = mysql_fetch_array( $resGroups ) ) {
+			$ii++; $td3 = $ii%2==0?$td2:$td4;
+			echo "<tr>";
+			echo "<td bgcolor='white' align='center' valign='center'>&nbsp;</td>";
+			echo $td3.$l->g(607)." ";		
+			if( $_SESSION["lvluser"] == SADMIN || $_SESSION["lvluser"] == LADMIN)
+				echo "<a href='index.php?multi=29&popup=1&systemid=".$valGroups["group_id"]."' target='_blank'>".$valGroups["name"]."</td>";
+			else
+				echo "<b>".$valGroups["name"]."</b></td>";			
+				
+			echo $td3.$l->g(81).": ";
+			switch( $valGroups["static"] ) {
+				case 0: echo "<font color='green'>".$l->g(596)."</font></td>"; break;
+				case 1: echo "<font color='blue'>".$l->g(610)."</font></td>"; break;
+				case 2: echo "<font color='red'>".$l->g(597)."</font></td>"; break;
+			}
+			
+			if( $_SESSION["lvluser"]==SADMIN ) {
+				$hrefBase = "machine.php?systemid=".urlencode($systemid)."&option=".urlencode($l->g(500))."&grp=".$valGroups["group_id"];
+				switch( $valGroups["static"] ) {
+					case 0: echo $td3."<a href='$hrefBase&actgrp=1'>".$l->g(598)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=2'>".$l->g(600)."</a></td>"; break;
+					case 1: echo $td3."<a href='$hrefBase&actgrp=0'>".$l->g(599)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=2'>".$l->g(600)."</a></td>"; break;
+					case 2: echo $td3."<a href='$hrefBase&actgrp=1'>".$l->g(598)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=0'>".$l->g(599)."</a></td>"; break;
+				}
+			}			
+			echo "</td>";
+			echo "</tr>";			
+		}
+	}
+	
 	//TELEDEPLOY
 	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc  FROM devices d, download_enable e LEFT JOIN download_available a 
 	ON e.fileid=a.fileid WHERE d.name='DOWNLOAD' AND e.id=d.ivalue AND d.hardware_id=$systemid"); 
@@ -355,13 +394,35 @@ function print_perso($systemid) {
 			echo $td3.$l->g(498)." <b>".$valDeploy["name"]."</b> (".$l->g(499).": ".$valDeploy["pack_loc"]." )</td>";			
 			echo $td3.$l->g(81).": ".($valDeploy["tvalue"]!=""?$valDeploy["tvalue"]:$l->g(482))."</td>";
 			if( $_SESSION["lvluser"]==SADMIN )	
-				echo "$td3 <a href='machine.php?suppack=".$valDeploy["ivalue"]."&sessid=".session_id().
-				"&systemid=".urlencode($systemid)."&option=".urlencode($l->g(500))."'>".$l->g(122)."</a></td>";
+				echo "$td3 <a href='machine.php?suppack=".$valDeploy["ivalue"]."&systemid=".
+				urlencode($systemid)."&option=".urlencode($l->g(500))."'>".$l->g(122)."</a></td>";
 			echo "</tr>";
 		}
 	}
-	if( $_SESSION["lvluser"]==SADMIN )
-		echo "<tr><td colspan='10' align='right'><a href='index.php?multi=24&systemid=$systemid'>".$l->g(501)."</a></td></tr>";	
+	if( $_SESSION["lvluser"]==SADMIN ) {
+		$hrefBase = "machine.php?systemid=".urlencode($systemid)."&option=".urlencode($l->g(500));
+		
+		echo "<tr><td colspan='10' align='right'>";
+		echo "<a href='index.php?multi=24&systemid=$systemid&isgroup=0'>".$l->g(501)."</a> ".$l->g(386).
+		" <a href=# OnClick=window.location='$hrefBase&actgrp=1&grp='+document.getElementById(\"groupcombo\").options[document.getElementById(\"groupcombo\").selectedIndex].value>".
+		$l->g(589)."</a>";
+		
+		$reqGroups = "SELECT name,id FROM hardware WHERE deviceid='_SYSTEMGROUP_'";
+		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
+		$first = true;
+		while( $valGroups = mysql_fetch_array( $resGroups ) ) {
+			if( $first ) {
+				echo " <select id='groupcombo'>";
+				$first = false;
+			}
+			echo "<option value='".$valGroups["id"]."'>".$valGroups["name"]."</option>";
+		}
+		
+		if( ! $first )
+			echo "</select>";
+			
+		echo "</td></tr>";		
+	}
 	echo "</table><br>";
 }
 
@@ -952,7 +1013,7 @@ function img($i,$a,$avail,$opt) {
 	}
 	
 	if( $avail ) {
-		$href = "<a href='machine.php?sessid=".session_id()."&systemid=".urlencode($systemid)."&option=".urlencode($a)."'>";
+		$href = "<a href='machine.php?systemid=".urlencode($systemid)."&option=".urlencode($a)."'>";
 		$fhref = "</a>";
 		$img = "<img title=\"".htmlspecialchars($a)."\" src='image/{$i}{$suff}.png' />";
 	}

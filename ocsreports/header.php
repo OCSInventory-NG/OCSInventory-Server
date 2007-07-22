@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-02-08 16:59:15 $$Author: plemmet $($Revision: 1.11 $)
+//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.12 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @set_time_limit(0);
@@ -94,6 +94,8 @@ if( !isset($_GET["popup"] )) {
 	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
 	<b>Ver. <?php echo GUI_VER?>&nbsp&nbsp&nbsp;</b>	
 <?php 
+if($_SESSION["debug"]==1)
+	echo "<br><font color='black'><b>CACHE:&nbsp;<font color='".($_SESSION["usecache"]?"green'><b>ON</b>":"red'><b>OFF</b>")."</font><div id='tps'>Calcul...</div>";
 }
 
 	if(isset($_POST["login"])) {				
@@ -169,9 +171,9 @@ if( !isset($_GET["popup"] )) {
 		";
 		require ("footer.php");
 		die();
-	}	
-
-	$limitedAccess = array(2,3,4,5,6,7,8,9,14,13,22,23,24,27,20,21,26);
+	}
+	//TODO: relister
+	$limitedAccess = array(2,3,4,5,6,7,8,9,14,13,22,23,24,27,20,21,26,28,31);
 	if( in_array($_GET["multi"],$limitedAccess) && $_SESSION["lvluser"]!=1) {
 		echo "<br><br><center><b><font color=red>ACCESS DENIED</font></b></center><br>";
 		unset($_GET["multi"]);
