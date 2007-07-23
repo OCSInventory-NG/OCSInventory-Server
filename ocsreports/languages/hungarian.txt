@@ -166,7 +166,7 @@
 165 You have to enter a name or a difusion list to search !
 166 You have to choose an element from the list !
 167 See the details
-168 This format file is invalid (it must be zip, ocsagent.exe, ocspackage.exe, pl or unix binary)
+168 This format file is invalid (it must be zip, pl or unix binary)
 169 hozzádás
 170 Ez az állomány már létezik !
 171 Állomány törölve
@@ -561,3 +561,49 @@
 574 Stats
 575 Unaffect not notified
 576 Customized ipdiscover
+577 Group name
+580 All computers (replay)
+581 All computers (cached)
+582 and
+583 Groups
+584 For the request
+585 For selection
+586 New group
+587 New static group
+588 Overwrite group
+589 statically add to group
+590 Reset state
+591 Include statically
+592 Exclude statically
+593 Creation date
+594 Cache generated on
+595 STATIC GROUP
+596 DYNAMICALLY INCLUDED
+597 STATICALLY EXCLUDED
+598 Include
+599 Reset
+600 Exclude
+601 Mass affectation
+602 You need to send a file
+603 No computer found, please check your file
+604 computer(s) successfully affected(s)
+605 computer(s) failed
+606 Computers file
+607 Group
+608 created
+609 overwritten
+610 STATICALLY INCLUDED
+611 NO CACHE
+612 STATIC
+613 DYNAMIC
+614 EXCLUDED
+615 Query
+616 Perimeter of user
+617 New
+618 Perimeter
+619 Local user
+620 No computer in your perimeter.
+621 The group was not created. Its name is already in use
+622 Cached
+623 The information you are trying to access does not exist
+624 Do you really want to delete group 

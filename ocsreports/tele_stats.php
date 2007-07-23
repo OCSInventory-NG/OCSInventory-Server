@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-22 18:05:41 $$Author: plemmet $($Revision: 1.11 $)
+//Modified on $Date: 2007-07-23 10:30:26 $$Author: plemmet $($Revision: 1.12 $)
 require('fichierConf.class.php');
 require_once("preferences.php");
 

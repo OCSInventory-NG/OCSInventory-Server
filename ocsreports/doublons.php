@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.12 $)
+//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.13 $)
 
 $mysql_result = mysql_query("SELECT SERIAL FROM blacklist_serials", $_SESSION["readServer"]);
 while ($ligne = mysql_fetch_array($mysql_result))

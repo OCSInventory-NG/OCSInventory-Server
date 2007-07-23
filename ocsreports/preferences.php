@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-22 18:05:44 $$Author: plemmet $($Revision: 1.28 $)
+//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.29 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();

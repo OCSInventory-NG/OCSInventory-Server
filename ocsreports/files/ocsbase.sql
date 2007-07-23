@@ -19,7 +19,7 @@ CREATE TABLE hardware (
   ETIME DATETIME default NULL,
   LASTDATE DATETIME default NULL,
   LASTCOME DATETIME default NULL,
-  QUALITY DECIMAL(4,3) default 0,
+  QUALITY DECIMAL(7,4) default 0,
   FIDELITY BIGINT default 1,
   USERID VARCHAR(255) default NULL,
   `TYPE` INTEGER default NULL,
@@ -34,6 +34,10 @@ CREATE TABLE hardware (
   PRIMARY KEY  (ID),
   INDEX NAME (NAME),
   INDEX CHECKSUM (CHECKSUM),
+  INDEX USERID(USERID),
+  INDEX WORKGROUP(WORKGROUP),
+  INDEX OSNAME(OSNAME),
+  INDEX MEMORY(MEMORY),
   INDEX DEVICEID (DEVICEID)
 ) ENGINE=INNODB ;
 
@@ -43,6 +47,7 @@ CREATE TABLE accesslog (
   USERID VARCHAR(255) default NULL,
   LOGDATE DATETIME default NULL,
   PROCESSES TEXT,
+  INDEX USERID(USERID),
   PRIMARY KEY  (ID, HARDWARE_ID)
 ) ENGINE=INNODB ;
 
@@ -200,6 +205,8 @@ CREATE TABLE networks (
   IPDHCP VARCHAR(255) default NULL,
   PRIMARY KEY  (ID, HARDWARE_ID),
   INDEX MACADDR (MACADDR),
+  INDEX IPADDRESS(IPADDRESS),
+  INDEX IPGATEWAY(IPGATEWAY),
   INDEX IPSUBNET (IPSUBNET)
 ) ENGINE=INNODB ;
 
@@ -285,7 +292,8 @@ CREATE TABLE softwares (
   FILESIZE INTEGER default '0',
   SOURCE INTEGER default NULL,
   PRIMARY KEY  (ID, HARDWARE_ID),
-  INDEX NAME (NAME)
+  INDEX NAME (NAME),
+  INDEX `VERSION`(`VERSION`)
 ) ENGINE=INNODB ;
 
 CREATE TABLE `sounds` (
@@ -330,7 +338,8 @@ CREATE TABLE subnet (
   NAME VARCHAR(255),
   ID INTEGER,
   MASK VARCHAR(255),
-  PRIMARY KEY (NETID)
+  PRIMARY KEY (NETID),
+  INDEX ID(ID)
 ) ENGINE=MYISAM ;
 
 CREATE TABLE locks(
@@ -339,12 +348,6 @@ CREATE TABLE locks(
   SINCE TIMESTAMP,
   INDEX SINCE (SINCE)
 ) ENGINE=HEAP ;
-
-CREATE TABLE dico_cat(
-  NAME VARCHAR(255) NOT NULL,
-  PERMANENT TINYINT DEFAULT 0,
-  PRIMARY KEY(NAME)
-) ENGINE=MYISAM ;
 
 CREATE TABLE dico_ignored(
   EXTRACTED VARCHAR(255) NOT NULL,
@@ -379,7 +382,8 @@ CREATE TABLE download_enable(
 	INFO_LOC VARCHAR(255) NOT NULL,
 	PACK_LOC VARCHAR(255) NOT NULL,
 	CERT_PATH VARCHAR(255),
-	CERT_FILE VARCHAR(255)
+	CERT_FILE VARCHAR(255),
+	INDEX FILEID(FILEID)
 ) ENGINE = INNODB;
 
 CREATE TABLE download_history(
@@ -447,22 +451,6 @@ CREATE TABLE hardware_osname_cache(
 TRUNCATE TABLE hardware_osname_cache;
 INSERT INTO hardware_osname_cache(osname) SELECT DISTINCT osname FROM hardware;
 
-CREATE TABLE download_available_name_cache(
-        ID INTEGER auto_increment,
-        NAME VARCHAR(255) UNIQUE,
-        PRIMARY KEY(ID)
-) ENGINE = MYISAM;
-TRUNCATE TABLE download_available_name_cache;
-INSERT INTO download_available_name_cache(name) SELECT DISTINCT name FROM download_available;
-
-CREATE TABLE devices_tvalue_cache(
-        ID INTEGER auto_increment,
-        TVALUE VARCHAR(255) UNIQUE,
-        PRIMARY KEY(ID)
-) ENGINE = MYISAM;
-TRUNCATE TABLE devices_tvalue_cache;
-INSERT INTO devices_tvalue_cache(tvalue) SELECT DISTINCT tvalue FROM devices WHERE name='DOWNLOAD';
-
 CREATE TABLE softwares_name_cache(
         ID INTEGER auto_increment,
         NAME VARCHAR(255) UNIQUE,
@@ -471,6 +459,13 @@ CREATE TABLE softwares_name_cache(
 TRUNCATE TABLE softwares_name_cache;
 INSERT INTO softwares_name_cache(name) SELECT DISTINCT name FROM softwares;
 
+CREATE TABLE tags (
+  Tag VARCHAR(255) NOT NULL default '',
+  Login VARCHAR(255) NOT NULL default '',
+  PRIMARY KEY  (Tag,Login),
+  KEY Tag (Tag),
+  KEY Login (Login)
+) ENGINE=MyISAM;
 
 ALTER TABLE devices ADD INDEX IVALUE (IVALUE);
 ALTER TABLE devices ADD INDEX NAME (NAME);
@@ -662,13 +657,25 @@ ALTER TABLE sounds ADD PRIMARY KEY(HARDWARE_ID,ID);
 ALTER TABLE sounds DROP DEVICEID;
 
 DROP TABLE IF EXISTS tag;
-
 TRUNCATE TABLE locks;
 
 ALTER TABLE softwares CHANGE NAME NAME VARCHAR(255) default NULL;
 ALTER TABLE locks DROP DEVICEID;
 ALTER TABLE locks ADD HARDWARE_ID INTEGER NOT NULL PRIMARY KEY FIRST;
 ALTER TABLE locks ADD INDEX SINCE (SINCE);
+
+DROP TABLE IF EXISTS dico_cat;
+ALTER TABLE accesslog ADD INDEX USERID(USERID);
+ALTER TABLE download_enable ADD INDEX FILEID(FILEID);
+ALTER TABLE hardware ADD INDEX USERID(USERID);
+ALTER TABLE hardware ADD INDEX WORKGROUP(WORKGROUP);
+ALTER TABLE hardware ADD INDEX OSNAME(OSNAME);
+ALTER TABLE hardware ADD INDEX MEMORY(MEMORY);
+ALTER TABLE networks ADD INDEX IPADDRESS(IPADDRESS);
+ALTER TABLE networks ADD INDEX IPGATEWAY(IPGATEWAY);
+ALTER TABLE softwares ADD INDEX `VERSION`(`VERSION`);
+ALTER TABLE subnet ADD INDEX ID(ID);
+ALTER TABLE hardware CHANGE QUALITY QUALITY DECIMAL(7,4) default NULL;
 
 DELETE FROM `config` WHERE name='GUI_VERSION';
 DELETE FROM `config` WHERE name='IP_MIN_QUALITY';
@@ -683,7 +690,6 @@ INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry q
 INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
 INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
 INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4200', 'Version of the installed GUI and database');
 INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
 INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
 INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
@@ -702,3 +708,5 @@ INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default admi
 
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs IDENTIFIED BY 'ocs';
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs@localhost IDENTIFIED BY 'ocs';
+
+INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4500', 'Version of the installed GUI and database');

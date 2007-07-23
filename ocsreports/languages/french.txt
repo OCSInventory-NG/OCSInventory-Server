@@ -78,7 +78,7 @@
 135 Attention, vous allez supprimer ce fichier définitivement !
 136 Télécharger
 137 Fichier
-168 Ce format de fichier n'est pas utilisable (il doit être: zip, ocsagent.exe, ocspackage.exe, pl ou binaire unix)
+168 Ce format de fichier n'est pas utilisable (il doit être: ocsagent.exe, zip, pl ou binaire unix)
 170 Un fichier correspondant existe déjà !
 171 Fichier supprimé
 172 Une erreur est survenue, le fichier
@@ -393,7 +393,7 @@
 498 Paquet
 499 serveur
 500 Traitements personnalisés
-501 ajouter paquet
+501 Ajouter paquet
 502 élu
 503 élu forcé
 504 non élu
@@ -469,3 +469,49 @@
 574 Stats
 575 Désaffecter non notifiés
 576 Ipdiscover personnalisé
+577 Nom du groupe
+580 Toutes les machines (rejouer)
+581 Toutes les machines (cache)
+582 et
+583 Groupes
+584 Pour la requete
+585 Pour la sélection
+586 Créer groupe
+587 Créer groupe statique
+588 Ecraser groupe
+589 ajouter statiquement au groupe
+590 Reinitialiser état
+591 Inclure statiquement
+592 Exclure statiquement
+593 Date de création
+594 Régénération du cache
+595 GROUPE STATIQUE PUR
+596 INCLU DYNAMIQUEMENT
+597 EXCLU STATIQUEMENT
+598 Inclure
+599 Reinitialiser
+600 Exclure
+601 Affectation de masse
+602 Vous devez envoyer un fichier
+603 Aucune machine n'a été trouvée, merci de vérifier votre fichier
+604 machine(s) affectée(s) avec succès.
+605 machine(s) en erreur
+606 Fichier des machines à affecter
+607 Groupe
+608 créé
+609 ecrasé
+610 INCLU STATIQUEMENT
+611 PAS CACHE
+612 STATIQUE
+613 DYNAMIQUE
+614 EXCLU
+615 Requête
+616 Périmètre de l'utilisateur
+617 Nouveau
+618 Perimètre
+619 Utilisateur local
+620 Vous n'avez aucune machine affectée.
+621 Ce groupe n'a pas été créé. Ce nom existe déja.
+622 En cache
+623 L'information que vous essayez de voir n'existe pas.
+624 Voulez-vous vraiment supprimer le groupe 

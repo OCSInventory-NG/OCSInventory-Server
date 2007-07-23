@@ -166,7 +166,7 @@
 165 ¡Tiene que entrar un nombre o un lista de {difusion} para buscar!
 166 ¡Tiene que selecionar un elemento de la lista!
 167 Mirar los detalles
-168 Este formato de archivo no es válido (debe ser zip, ocsagent.exe, ocspackage.exe, pl o binario unix)
+168 Este formato de archivo no es válido (debe ser zip, pl o binario unix)
 169 adicionar a la base
 170 ¡Ya existe el mismo archivo!
 171 Archivo borrado
@@ -560,3 +560,49 @@
 574 Stats
 575 Unaffect not notified
 576 Ipdiscover personalizado
+577 Group name
+580 All computers (replay)
+581 All computers (cached)
+582 and
+583 Groups
+584 For the request
+585 For selection
+586 New group
+587 New static group
+588 Overwrite group
+589 statically add to group
+590 Reset state
+591 Include statically
+592 Exclude statically
+593 Creation date
+594 Cache generated on
+595 STATIC GROUP
+596 DYNAMICALLY INCLUDED
+597 STATICALLY EXCLUDED
+598 Include
+599 Reset
+600 Exclude
+601 Mass affectation
+602 You need to send a file
+603 No computer found, please check your file
+604 computer(s) successfully affected(s)
+605 computer(s) failed
+606 Computers file
+607 Group
+608 created
+609 overwritten
+610 STATICALLY INCLUDED
+611 NO CACHE
+612 STATIC
+613 DYNAMIC
+614 EXCLUDED
+615 Query
+616 Perimeter of user
+617 New
+618 Perimeter
+619 Local user
+620 No computer in your perimeter.
+621 The group was not created. Its name is already in use
+622 Cached
+623 The information you are trying to access does not exist
+624 Do you really want to delete group 
