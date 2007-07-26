@@ -179,8 +179,8 @@ sub _lock{
  	my $device = shift;
  	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	
-	if($dbh->do('INSERT INTO locks(HARDWARE_ID, SINCE) VALUES(?,NULL)', {} , $device )){
-		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
+	if($dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NULL)', {} , $device, $$ )){
+		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
 		return(0);
 	}else{
 		if( $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ){
@@ -197,7 +197,7 @@ sub _lock{
 
 sub _unlock{
 	my $device = shift;
-	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=?', {}, $device)){
+	if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=? AND ID=?', {}, $device, $$)){
 		$Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 0 if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
 		return(0);
 	}else{
@@ -213,7 +213,7 @@ sub _log{
 	my $ipaddress = $Apache::Ocsinventory::CURRENT_CONTEXT{'IPADDRESS'}||'??';
 	my $fh = \*Apache::Ocsinventory::LOG;
 	
-	print $fh localtime().";$code;$DeviceID;$ipaddress;".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
+	print $fh localtime().";$$;$code;$DeviceID;$ipaddress;".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
 }
 
 # Subroutine called at the end of execution

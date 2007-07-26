@@ -36,7 +36,7 @@ our %DATA_MAP= (
 											NAME 					=> {},
 											WORKGROUP 		=> {},
 											USERDOMAIN 		=> {},
-											OSNAME 				=> {},
+											OSNAME 				=> { cache=>1 },
 											OSVERSION 		=> {},
 											OSCOMMENTS 		=> {},
 											PROCESSORT 		=> {},
@@ -144,7 +144,7 @@ our %DATA_MAP= (
 									delOnReplace => 1,
 									
 									fields =>  {
-											NAME 			=> {},
+											NAME 			=> { cache => 1 },
 											REGVALUE 	=> { cache => 1 }
 									}
 	},

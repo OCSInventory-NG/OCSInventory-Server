@@ -24,6 +24,7 @@ BEGIN{
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Constants;
+use Apache::Ocsinventory::Map;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -31,10 +32,10 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 	'HANDLER_PROLOG_READ' => undef,
 	'HANDLER_PROLOG_RESP' => \&_registry_prolog_resp,
 	'HANDLER_PRE_INVENTORY' => undef,
-	'HANDLER_POST_INVENTORY' => \&_registry_main,
+	'HANDLER_POST_INVENTORY' => undef,
 	'REQUEST_NAME' => undef,
 	'HANDLER_REQUEST' => undef,
-	'HANDLER_DUPLICATE' => \&_registry_duplicate,
+	'HANDLER_DUPLICATE' => undef,
 	'TYPE' => OPTION_TYPE_SYNC,
 	'XML_PARSER_OPT' => {
 			'ForceArray' => ['REGISTRY']
@@ -43,41 +44,6 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 
 # Default
 $Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
-
-sub _registry_main{
-
-	return unless $ENV{'OCS_OPT_REGISTRY'};
-	
-	my $current_context = shift;
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DATABASE_ID'};
-	my $update = $current_context->{'EXIST_FL'};
-	my $result = $current_context->{'XML_ENTRY'};
-
-	if($update){
-		if(!$dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $DeviceID)){
-			return 1;
-		}
-	}
-	
-	unless($result->{CONTENT}->{REGISTRY}){
-		$dbh->commit;
-		return 0;
-	}
-	
-	my $sth = $dbh->prepare('INSERT INTO registry(HARDWARE_ID, NAME, REGVALUE) VALUES(?, ?, ?)');
-
-	my $array = $result->{CONTENT}->{REGISTRY};
-
-	for(@$array){
-		if(!$sth->execute($DeviceID, $_->{NAME}, $_->{REGVALUE})){
-			return 1;
-		}
-	}
-	$dbh->commit;
-	return 0;
-}
-
 
 sub _registry_prolog_resp{
 
@@ -119,17 +85,5 @@ sub _registry_prolog_resp{
 	}else{
 		return 0;
 	}
-}
-
-sub _registry_duplicate{	
-	
-	my $current_context = shift;
-	my $device = shift;
-	
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DATABASE_ID'};
-
-	# If we encounter problems, it aborts whole replacement
-	return $dbh->do('DELETE FROM registry WHERE HARDWARE_ID=?', {}, $device);
 }
 1;

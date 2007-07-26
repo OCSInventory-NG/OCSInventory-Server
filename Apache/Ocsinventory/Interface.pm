@@ -10,6 +10,7 @@
 package Apache::Ocsinventory::Interface;
 
 use Apache::Ocsinventory::Interface::Internals;
+use Apache::Ocsinventory::Interface::InternetGranted;
 
 use strict;
 sub get_computers_V1{

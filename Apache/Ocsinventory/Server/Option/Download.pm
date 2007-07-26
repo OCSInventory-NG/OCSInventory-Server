@@ -101,7 +101,7 @@ sub download_prolog_resp{
 				AND download_enable.ID=devices.IVALUE
 			};
 			
-			my $verif_affected = 'SELECT HARDWARE_ID FROM devices WHERE HARDWARE_ID=? AND IVALUE=? AND NAME="DOWNLOAD"';
+			my $verif_affected = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=? AND NAME="DOWNLOAD"';
 			my $trace_event = 'INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES(?,"DOWNLOAD",?,NULL)';
 			$pack_req = $dbh->prepare( $pack_sql );
 						
@@ -109,13 +109,23 @@ sub download_prolog_resp{
 				$pack_req->execute( $_ );
 				while( $pack_row = $pack_req->fetchrow_hashref ){
 					my $fileid = $pack_row->{'FILEID'};
-					if( grep /^$fileid$/, @history or grep /^$fileid$/, @dont_repeat){
+					if( (grep /^$fileid$/, @history) or (grep /^$fileid$/, @dont_repeat)){
 						next;
 					}
 
 					if( $ENV{'OCS_OPT_DOWNLOAD_GROUPS_TRACE_EVENTS'} ){
 						# We verify if the package is already traced and not already in history
-						if( $dbh->do($verif_affected ,{}, $hardware_id, $pack_row->{'IVALUE'})==0E0 ){
+						my $verif_affected_sth = $dbh->prepare($verif_affected);
+						$verif_affected_sth->execute($hardware_id, $pack_row->{'IVALUE'});
+						if($verif_affected_sth->rows){
+							my $verif_affected_row = $verif_affected_sth->fetchrow_hashref();
+							if($verif_affected_row!~/NULL/ && $verif_affected_row!~/NOTIFIED/){
+								$verif_affected_sth->finish();
+								# We do not send package if the current state is fed
+								next;
+							}
+						}
+						else{
 							$dbh->do($trace_event, {}, $hardware_id, $pack_row->{'IVALUE'})
 						}
 					}

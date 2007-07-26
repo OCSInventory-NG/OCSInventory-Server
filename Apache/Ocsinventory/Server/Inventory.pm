@@ -122,6 +122,14 @@ sub _inventory_handler{
 # Ref to xml in global struct 
 	$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'} = $result;
 
+	return APACHE_SERVER_ERROR if &_context();
+
+# Lock device
+	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
+		&_log( 516, 'inventory', 'device locked');
+		return(APACHE_FORBIDDEN);
+	}
+
 #Inventory incoming
 	&_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
@@ -129,14 +137,6 @@ sub _inventory_handler{
 	if( &_pre_options() == INVENTORY_STOP ){
 		&_log(107,'inventory','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
 		return APACHE_FORBIDDEN;
-}
-	
-	return APACHE_SERVER_ERROR if &_context();
-	
-# Lock device
-	if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
-		&_log( 516, 'inventory', 'device locked');
-		return(APACHE_FORBIDDEN);
 	}
 
 # Put the inventory in the database
@@ -264,7 +264,7 @@ sub _get_bind_values{
 
 
 sub _init_inventory_cache{
-	my $check_cache = $dbh->prepare('SELECT UNIX_TIMESTAMP(NOW())-TVALUE AS TVALUE FROM config WHERE NAME="_EP_INVENTORY_CACHE_CLEAN_DATE"');
+	my $check_cache = $dbh->prepare('SELECT UNIX_TIMESTAMP(NOW())-IVALUE AS IVALUE FROM engine_persistent WHERE NAME="INVENTORY_CACHE_CLEAN_DATE"');
 	$check_cache->execute();
 	if($check_cache->rows()){
 		my $row = $check_cache->fetchrow_hashref();
@@ -277,9 +277,12 @@ sub _init_inventory_cache{
 	for my $section (keys(%DATA_MAP)){
 		_inventory_cache($section, 1);
 	}
-	&_log(108,'inventory','Cache') if $ENV{'OCS_OPT_LOGLEVEL'};
-	$dbh->do('INSERT INTO config(NAME,TVALUE) VALUES("_EP_INVENTORY_CACHE_CLEAN_DATE", UNIX_TIMESTAMP(NOW()))')
-		if($dbh->do('UPDATE config SET TVALUE=UNIX_TIMESTAMP(NOW()) WHERE NAME="_EP_INVENTORY_CACHE_CLEAN_DATE"')==0E0);
+
+	$dbh->do('INSERT INTO engine_persistent(NAME,IVALUE) VALUES("INVENTORY_CACHE_CLEAN_DATE", UNIX_TIMESTAMP(NOW()))')
+		if($dbh->do('UPDATE engine_persistent SET IVALUE=UNIX_TIMESTAMP(NOW()) WHERE NAME="INVENTORY_CACHE_CLEAN_DATE"')==0E0);
+	
+	# We release our own mutex
+	$dbh->do("DELETE FROM engine_mutex WHERE NAME='CACHE_REVALIDATE' AND PID=?", {}, $$);
 	$initCache = 1;
 }
 
@@ -287,58 +290,67 @@ sub _init_inventory_cache{
 # Feed the "cache" table for each field "cache" activated
 sub _inventory_cache{
 	my ($section, $init) = @_;
+
+	# A flag to know if there is some cache in the section
 	return unless $SECTIONS{$section}->{cache};
-	
+
+	# From the current xml data
 	my $base = $result->{CONTENT}->{uc $section};
+	# From Map.pm (only field to cache)
 	my $fields_array = $SECTIONS{$section}->{field_cached};
-# There is some cache to generate
+
+	# See if there is some cache to generate for each field
 	for my $field (@$fields_array){
 		my $table = $section.'_'.lc $field.'_cache';
 		if($init){
+			# We lock the section
+			return unless $dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('CACHE_REVALIDATE',?,?)", {}, $$, $section);
+
+			&_log(108,'inventory',"Cache($section)") if $ENV{'OCS_OPT_LOGLEVEL'};
+			
 			my $src_table = lc $section;
 			my $to_clean = $dbh->prepare(qq{
 				SELECT c.$field AS $field
 				FROM $table c
 				LEFT JOIN $src_table src
 				ON c.$field=src.$field
-				WHERE src.$field IS NULL FOR UPDATE
+				WHERE src.$field IS NULL
 			});
 			$to_clean->execute();
 			while(my $row = $to_clean->fetchrow_hashref()){
 				$dbh->do("DELETE FROM $table WHERE $field=?", {}, $row->{$field});
 			}
-			$dbh->do('UNLOCK TABLES');
+			
+
 			next;
 		}
-# Prepare queries
-		my $select = $dbh->prepare("SELECT $field FROM $table WHERE $field=? FOR UPDATE");
+		# Prepare queries
+		my $select = $dbh->prepare("SELECT $field FROM $table WHERE $field=?");
 		my $insert = $dbh->prepare("INSERT INTO $table($field) VALUES(?)");
-# hash ref or array ref ?
+		# hash ref or array ref ?
 		if($DATA_MAP{$section}->{multi}){
 			for(@$base){
 				$select->execute($_->{$field});
-# Value is already in the cache
+				# Value is already in the cache
 				if($select->rows){
 					$select->finish;
-					$dbh->do('UNLOCK TABLES');
+					$dbh->commit;
 					next;
 				}
-# We have to insert the value
+				# We have to insert the value
 				$insert->execute($_->{$field});
-				$dbh->do('UNLOCK TABLES');
 			}
 		}
 		else{
 			$select->execute($base->{$field});
 			if($select->rows){
 					$select->finish;
-					$dbh->do('UNLOCK TABLES');
 					next;
 			}
 			$insert->execute($_->{$field});
-			$dbh->do('UNLOCK TABLES');
 		}
 	}
+
 }
 
 # Inserting values of <HARDWARE> in hardware table
