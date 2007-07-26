@@ -25,6 +25,7 @@ ERRORS
 517--Cannot handle normal duplicate
 518--Cannot retrieve database id
 519--A device try to add a new computer whereas it is forbidden by filter inventory rules
+520--The request for the group is not valid
 
 INVENTORY
 ---------
