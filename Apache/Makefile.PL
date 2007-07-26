@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: Makefile.PL,v 1.2 2007-01-03 21:10:15 dliroulet Exp $
+# $Id: Makefile.PL,v 1.3 2007-07-26 22:05:01 dliroulet Exp $
 #
 #-------------------------------------------------------
 
@@ -33,7 +33,7 @@ WriteMakefile(
 			'Net::IP'         => 1.21,   # no Net::IP can never be any fun.
 #			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (not required).
 		      },
-    'EXE_FILES'         => ['binutils/Ocsinventory_local.pl'],
+    'EXE_FILES'         => ['binutils/ocsinventory-local.pl'],
     'INSTALLSCRIPT'     => "/usr/bin",
     'INSTALLSITESCRIPT' => "/usr/bin",
     ($] >= 5.005 ?      ## Add these new keywords supported since 5.005
