@@ -1,0 +1,473 @@
+0 UTF-8
+2 Vsi računalniki
+3 Računalniki z programsko opremo...
+5 Unity codes under my responsibility
+9 Iskanje po različnih kriterijih
+12 Vrednost oznake
+13 Pošlji
+17 Agent
+19 Verzija programske opreme
+20 Programska oprema
+23 Računalnik
+24 Uporabnik
+25 Operacijski sistem
+26 Pomnilnik
+27 Hitrost pomnilnika (MHz)
+28 Število računalnikov
+30 Iskanje
+31 Izberi parametre
+32 Izberi
+33 Domena
+34 IP številka
+35 Ime računalnika
+36 Serijska številka
+41 Ponovni zagon
+42 Ni rezultatov
+43 Osnovni meni
+45 Prazen prostor
+46 Zadnji popis
+48 Podrobnosti računalnika
+49 Ime
+50 Menjava
+51 Komentarji
+53 Opis 
+54 Procesor(ji)
+55 Številka
+56 Administrtrativni podatki
+61 Video kartica
+62 Resolucija
+63 Skladišče
+64 Proizvajalec
+65 Model
+66 Tip
+67 Velikost diska
+69 Urejevalnik
+70 Določitev
+79 Tiskalnik (i)
+80 Zajem 
+81 Status
+82 Omrežje(a)
+83 Kapaciteta
+84 Vmesnik 
+85 Pismo
+86 Datotečni sistem
+87 Končno
+88 Prosto
+90 Rezultat(i)
+91 Vhodne enote
+92 Disk(i)
+93 Kontroler(ji)
+94 Številka Slota
+95 MAC številka
+96 Zvok
+97 Monitor(ji)
+98 Bodi pazljiv, izbereš lahko samo 8 možnosti!
+99 Podrobnosti računalnika
+103 Nadgradnja
+107 Nastavitve
+108 Zahteva registra
+111 Windows licenca
+113 Prekliči
+114 Register
+115 Nadgradi
+116 Dodaj
+117 Registrer
+119 Ali res želiš izbrisati ta računalnik 
+122 Izbriši
+129 Je enako
+130 Ni enako
+134 Dodaj novo datoteko v podatkovno bazo
+135 Bodi previden, si tik pred tem, da za vedno izbrišeš to datoteko!
+136 Prenos
+137 Datoteka
+168 Ta format datoteke je napačen (biti mora zip, ocsagent.exe, ocspackage.exe, pl ali unix binary)
+170 Datoteka že obstaja !
+171 Datoteka izbrisana
+172 Pojavila se je napaka, datoteka je
+173 ne bo dodano v podatkovno bazo
+174 Varnost
+175 Duplikati
+176 IPs
+177 Združi odvečne računalnike
+178 Seštevek računalnikov z oznakami
+180 Uporabnik ni registriran
+182 Računalniki z določeno oznako
+183 Prenos
+184 Ta datoteka ne vsebuje \"use constant version\"
+185 Vrednost mora biti nad 1
+186 Ta datoteka ne vsebuje \"ver\"-podatkov
+187 To ni veljavna zip datoteka
+188 Nazaj
+189 Izbrati morate najmanj dva računalnika
+190 Informacija o računu
+191 izbriši
+192 Redundancy summary
+193 Ime gostitelja + Serijska številka
+194 Ime gostitelja + Mac številka
+195 Mac številka + Serijska številka
+196 Samo ime gostitelja
+197 Samo serijsko
+198 Samo Mac številko
+199 Redundancy
+200 Corresponding relay decremented
+201 MANJŠI KOT
+202 VEČJIKOT
+203 MED
+204 IZVEN
+205 Omogočeno
+206 shranjeno za
+207 Prehod
+208 maska
+209 BIOS Verzija
+210 BIOS Datum
+211 Register
+212 Ime ključa
+213 Vrednost Ključa
+214 Natisni to stran
+215 Pokaži vse
+216 Geslo je napačno
+217 Geslo
+218 Verzija Agentov
+219 nepopisan mrežni vmesnik
+220 izbriši
+221 Računalniki zbrani po IP številki
+222 Opozorilo! Vsi izbrani računalniki bodo združeni v en računalnik! Ste prepričani?
+223 Informacije
+224 Vrednost
+225 Podatki administratorja
+226 je bil uspešno izbrisan iz uporabniške tabele
+227 Ste prepričani da želite izbrisati stolpec
+228 Vnesite nove administrativne podatke
+229 Besedilo (255)
+230 Število 
+231 Real
+232 Datum
+233 Trenutni podatki
+234 je bilo uspešno venšeno
+235 Uporabniki
+236 Spremeni geslo
+237 Novo geslo
+238 Potrditev
+239 Izpolniti morate vsa polja
+240 Geslo se ne ujema
+241 Geslo je bilo uspešno spremenjeno
+242 Administrator
+243 Uporabnik
+244 Dodaj novega uporabnika
+245 je bil uspešno izbrisan
+246 Si prepričan, da želiš izbrisati uporabnika
+247 MySql uporabnik
+248 MySql geslo
+249 Ne morem se povezati v MySql. Prosim vnesi pravilno uporabnika/geslo.
+250 MySql gostitelj
+251 Odjava
+252 Ime (ti izbiraš)        	
+253 Registersko gnezdo
+254 Pot do ključa(Primer: Programska oprema\Mozilla)  	
+255 Ime ključa, ki bo bran (* za vse)
+256 Izberi 
+257 Ključ za registracijo
+258 Vrednost registrirnega ključa
+259 Napaka, podatek ne more biti vstavljen (specialni znaki niso dovoljeni
+260 Označba spremenjene datoteke je pravilna
+261 Označena datoteka je izbrisana
+262 Vrsta v oznaki
+263 Označite datotečno nastavitev
+264 Ne označi datoteke
+265 Kar koli
+266 Napačen datum
+267 mm/dd/yyyy
+268 Hitrost
+269 %d/%m/%Y
+270 Modem(i)
+271 Vodilo(a)
+272 Vrata
+273 BIOS
+274 Ime OS
+275 Verzija OS
+276 Chipset
+277 Verzija
+278 Gonilnik
+279 Vrata
+280 MIB Tip 
+281 DHCP IP
+282 Prehodi
+283 Namen
+284 Proizvajalec BIOS-ov
+285 Izberite parameter, ki ga želite spremeniti
+286 Service pack
+287 Lokalni uvoz
+288 Lokalno uvažanje
+289 Podatki o omrežju
+290 Ip povpraševanje
+291 Experten način
+292 Dodaj / izbriši mrežno napravo
+293 Tipi mrežnih naprav
+294 Imena poddomen
+295 Klikni za urejanje
+296 Uid
+297 Ne morem pisati v mapo
+298 Vsa polja morajo biti polna
+299 Napačna IP številka (biti mora: x.x.x.x)
+300 Napačna maska: biti mora: x.x.x.x ali xx (xx<32)
+301 Omrežje vstavljeno
+302 Omrežje izbrisano
+303 Dodaj poddomeno
+304 Ime omrežja
+305 Uid
+306 Lista podomrežij
+307 Dodaj tip
+308 Ime tipa
+309 Tip mrežne naprave
+310 IpDiscover less than
+311 Gostitelji
+312 IpDiscover
+313 Prehodi računalnikov
+314 IpDiscover gateway computers
+315 Ne popisani računalniki
+316 Podmreža
+317 ANALIZIRANJE
+318 DNS ime
+319 Podatki analize omrežja
+320 Te analize so že bile izvedene
+321 Ali želiš videti podatke iz vmesnika (cache) ?
+322 Podatki iz vmesnika (cache)
+323 generirano na
+324 Gostitelj je ocenjen kot
+325 prazno
+326 nebena maska ni vpisana
+327 Podrobnosti računalnika
+328 Odkrito
+329 Popisano
+330 NetBIOS ime
+331 Številka omrežja
+332 Prosim počakaj...
+333 Dodaj novo mrežno napravo
+334 Lista mrežnih naprav
+335 Tip naprave
+336 Opis naprave
+337 PROGRAM NI POSLAL NIČESAR
+338 Omejen mode
+339 Potrebujete ipdiscover-util.pl (Samo Linux) za napredni način
+340 Prikaži
+341 ni izvedljivo, nastaviti morate pravice izvajanja
+342 Nastaviti morate pravico pisanja v korensko mapo
+344 NAPAKA
+345 TA ANALIZA TRENUTNO POTEKA, PROSIM POSKUSI ČEZ NEKAJ MINUT
+346 PRED
+347 ZA
+348 Uporabnik Windows-ov
+349 Dodaj stolpec
+350 Tip CPU-ja
+351 število CPU-jev
+352 Na zadnje prispelo
+353 Kvaliteta
+354 Zvestoba
+355 Podjetje
+356 Lastnik
+357 Uporabniški agent
+358 Wildcards: ? (en znak), * (nekaj znakov)
+359 Serijska št. Monitorja
+360 Proizvedeno(teden/leto)
+362 Omrežje
+363 že obstaja
+364 Popisano
+365 Ne- popisano
+366 Identificirano
+367 Naprave omrežja
+368 omrežja
+369 Dodano od
+370 Postavitev
+371 Vse komponente
+372 Izberi komponente
+373 Registrirani uporabniki
+374 Registrirana družba
+375 OCS NG Verzija agenta
+376 Računalnik je zaklenjen. Prosim ponovno poskusi čez nekaj minut.
+377 Hitrost procesorja(Mhz)
+380 Slovar
+381 Število
+382 Ime programske opreme
+383 Stran
+384 Premakni VSE
+385 v novo kategorijo
+386 ALI
+387 na obstoječo kategorijo
+388 Kategorija
+389 Nič
+390 Kategorije slovarja
+391 Ime kategorije
+392 Izbriši
+393 Išči
+394 Išči po kategoriji
+395 Išči programsko opremo POVSOD
+396 Ponastavi
+397 Pojdi v kategorijo
+398 Lista kategorijCategories list
+410 NATANČNO TAKO
+411 Polje mora vsebovati samo številke !
+412 Omogoči/onemogoči zbrano funkcionalnost ključa registra
+413 Omogoči/onemogoči samodejno nadgradnjo funkcionalnosti
+414 Omogoči/onemogoči samodejno uporabno postavitev 
+415 Enable/disable the deletion logging functionality (needed by GLPI).
+416 Enable/disable the logging functionality.
+417 Enable/disable the automatic software distribution functionality.
+418 Enable/disable the differential inventory functionality.
+419 Maximum number of day before an ipdiscover computer is replaced.
+420 Automatic software distribution: see documentation.
+421 Automatic software distribution: see documentation.
+422 Automatic software distribution: see documentation.
+423 Automatic software distribution: see documentation. (Packages with a higher or equivalent priority won't be downloaded anymore).
+424 Maximum number of days before a package to be downloaded on a computer become obsolete.
+425 Max number of computers per gateway retrieving IP on the network.
+426 Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)
+427 Defines criteria that must be equals for two computers to be automatically merged.
+428 Razviti
+429 Frekvenca
+430 Množična obdelava
+431 Aktiviraj
+432 Ne obveščen
+433 Vpliv
+434 Gradnik paketov
+435 Gradnja novega paketa
+436 Ne morem odpreti datoteke
+437 Vaš paket je bil uspešno izdelan v mapi
+438 Gradnja novega paketa
+439 Protokol
+440 Prioritete
+441 Digest algorithm
+442 Digest encoding
+443 Akcija
+444 Ukaz
+445 Pot
+446 Ime datoteke
+447 Obvesti uporabnika
+448 Upozori uporabnika
+449 Besedilo
+450 Odštevanje
+451 Uporabnik lahko prekine
+452 Uporabnik lahko odlaša
+453 Dokončanje namestitve potrebuje poseg uporabnika
+454 NE
+455 DA
+456 Izvedi
+457 Shrani
+458 Zaženi
+459 Odštevanje mora biti številka
+460 Unikaten označevalnik
+461 Digest
+462 Celotna velikost
+463 Velikost odlomkov(1 KB min)
+464 Število odlomkov
+465 Aktivacija paketa
+466 OPOZORILO: Ne najdem informacijske datoteke v
+467 OPOZORILO: Ne najdem odlomkov datotek pri
+468 Si prepričan, da želiš vključiti ta paket ?
+469 Paket je aktivirn, sedaj je lahko razvit
+470 Https url (varni url)
+471 Odlomki url
+472 NAPAKA: ne morem izbrisati mape
+473 Časovni žig mora biti številka
+474 Časovni žig mora biti dolg 10 digitov
+475 Časovni žig
+476 Ali omogoči paket ročno
+477 Delujte na paket
+478 Računalnik(i)
+479 Noben računalnik ni izbran
+480 odlomki
+481 Aktivirani paketi
+482 ČAKAJOČE OBVESTILO
+483 Potrditev USPEŠNA
+484 Delujte na po meri narejeno pogostnost
+485 Zmeraj popisano
+486 Nikoli popisano
+487 Ročno
+488 Privzeto
+489 Obnašanje IPraziskovaleca
+490 NIKOLI IPraziskovalec
+491 ZMERAJ IPraziskovalec omrežij
+492 IZVOLJEN IPraziskovalec omrežja
+493 Privzeto Default (lahko je izvoljen)
+494 Po meri izdelana pogostost popisa
+495 Popisan vsak
+496 dan(dnevov)
+497 Privzeto, uporabljen je 'FREQUENCY' parameter.
+498 Paket
+499 strežnik
+500 Customization
+501 dodaj paket
+502 Izvoljen
+503 Prisili izvoljenega
+504 Ni izvoljen
+505 Izvoljiv
+506 Ni izvoljiv
+507 POSEDOVATI
+508 NE POSEDOVATI
+509 POLJUBNO
+510 Ni paketov
+511 sekunde
+512 Razvrstitev
+513 Izdelava paketov
+514 Aktiviraj
+515 Aktivirano
+516 KB
+517 Ta obcija je lahko razvita samo na enem računalniku v danem času.
+518 Prisili IPrazikovalec
+519 Računalnik je že izvoljen za omrežje
+520 Računalnik je že PRISILIL IPraziskovalec za omrežje
+521 Računalnik je že PRISILJEN v ne izvoljivost
+522 Standardni računalnik
+523 Vrni se nazaj k standardnemu stanju
+524 NIKOLI VEČ ne vplivaj
+525 SI PREPRIČAN ?
+526 NOBEN RAČUNALNIK NI SIMULIRAN
+527 Januar
+528 Februar
+529 Marec
+530 April
+531 Maj
+532 Junij
+533 Julij
+534 Avgust
+535 September
+536 Oktober
+537 November
+538 December
+539 Nedelja
+540 Ponedeljek
+541 Torek
+542 Sreda
+543 Četrtek
+544 Petek
+545 Sobota
+546 in state
+547 vse
+548 Vse razen USPEHA
+549 Datoteka (razvita na računalnikih odjemalcev)
+550 Datoteka File (ne obvezna, lahko uporabljena od "execute" ukaza)
+551 Ime tega paketa že obstaja
+552 <i>Moraš narediti računalniško iskanje in nato pritisni na 'razviti' za namestitev teh aktiviranih paketov<br>Prav tako lahko namestite paket na posamezen računalnik z uporabo 'customization' ukaza za katerokoli podrobnost računalnika</i>.
+553 Windows ključ
+554 Monitor: serijska številka
+555 Monitor: proizvajalec
+556 Monitor: zajeto
+557 Uporabnikova domena
+558 Simulirani paketi
+559 Ta datoteka ni .ocs
+560 Na strežnik
+561 Neznano (izbrisan paket)
+562 Omrežja imajo uid:
+563 Proizvajalec
+564 Agent za avto-sprožitev pogostosti
+565 Strežnik uporabljen za lokalni popise
+566 Vrata uporabljena za lokalni popis
+567 IPraziskovalec  latenca
+568 RAM(MB)
+569 CPU(MHz)
+570 Pomoč
+571 Potrdi vse
+572 Uspelo
+573 Napake
+574 Stanja
+575 Nedelujoči niso obveščeni
+576 Prilagojeno IPraziskovalcu
