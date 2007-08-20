@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.29 $)
+//Modified on $Date: 2007-08-20 14:57:36 $$Author: hunal $($Revision: 1.30 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -1256,7 +1256,7 @@ function deleteDid($id, $checkLock = true, $traceDel = true, $silent=false) {
   */
 function lock($id) {
 	//echo "<br><font color='red'><b>LOCK $id</b></font><br>";
-	$reqClean = "DELETE FROM locks WHERE unix_timestamp(since)<(unix_timestamp(NOW())-60)";
+	$reqClean = "DELETE FROM locks WHERE unix_timestamp(since)<(unix_timestamp(NOW())-3600)";
 	$resClean = mysql_query($reqClean, $_SESSION["writeServer"]) or die(mysql_error());
 	
 	$reqLock = "INSERT INTO locks(hardware_id) VALUES ('$id')";
