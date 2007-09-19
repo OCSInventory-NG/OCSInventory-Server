@@ -467,21 +467,21 @@ CREATE TABLE tags (
   KEY Login (Login)
 ) ENGINE=MyISAM;
 
-Create Table: CREATE TABLE `engine_mutex` (
-  `NAME` varchar(255) NOT NULL default '',
-  `PID` int(11) default NULL,
-  `TAG` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`NAME`,`TAG`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1
+CREATE TABLE engine_mutex (
+  NAME varchar(255) NOT NULL default '',
+  PID int(11) default NULL,
+  TAG varchar(255) NOT NULL default '',
+  PRIMARY KEY  (NAME,TAG)
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 
-Create Table: CREATE TABLE `engine_persistent` (
- `ID` int(11) NOT NULL auto_increment,
- `NAME` varchar(255) NOT NULL default '',
- `IVALUE` int(11) default NULL,
- `TVALUE` varchar(255) default NULL,
-  UNIQUE KEY `NAME` (`NAME`),
-  KEY `ID` (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1
+CREATE TABLE engine_persistent (
+ ID int(11) NOT NULL auto_increment,
+ NAME varchar(255) NOT NULL default '',
+ IVALUE int(11) default NULL,
+ TVALUE varchar(255) default NULL,
+  UNIQUE KEY NAME (NAME),
+  KEY ID (ID)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 ALTER TABLE devices ADD INDEX IVALUE (IVALUE);
 ALTER TABLE devices ADD INDEX NAME (NAME);
