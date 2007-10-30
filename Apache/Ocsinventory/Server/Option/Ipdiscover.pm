@@ -93,17 +93,16 @@ sub _ipdiscover_prolog_resp{
 		$row = $request->fetchrow_hashref();
 	# Agents newer than 13(linux) ans newer than 4027(Win32) receive new xml formatting (including ipdisc_lat)
 		$ua = _get_http_header('User-agent', $current_context->{'APACHE_OBJECT'});
-		if( $ua=~/OCS-NG_windows_client_v(\d+)/ ){
-			$v = ($1>4027)?2:1;
-		}
-		elsif( $ua=~/OCS-NG_linux_client_v(\d+)/ ){
-			$v = ($1>13)?2:1;
+
+		my $legacymode;
+		if( $ua=~/OCS-NG_(\w+)_client_v(\d+)/ ){
+		  $legacymode = 1 if ($1 eq "windows" && $2<=4027) or ($1 eq "linux" && $2<=13);
 		}
 		
-		if( $v==1 ){		
+		if( $legacymode ){		
 			push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ] };
 		}
-		elsif( $v==2 ){
+		else{
 			push @{$$resp{'OPTION'}}, { 
 						'NAME' => [ 'IPDISCOVER' ], 
 						'PARAM' => { 
