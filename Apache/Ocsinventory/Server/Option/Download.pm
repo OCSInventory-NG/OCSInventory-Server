@@ -79,7 +79,7 @@ sub download_prolog_resp{
 	
 # If this option is set, we send only the needed package to the agent
 # Can be a performance issue
-# Agents prior to 4.0.3.0 do not send history data
+# Agents prior to 4.0.3.0 do not send history data
 		$hist_sql = q {
 			SELECT PKG_ID
 			FROM download_history
@@ -144,7 +144,7 @@ sub download_prolog_resp{
 		}
 	
 		$pack_sql =  q {
-			SELECT FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE
+			SELECT FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE, SERVER_ID
 			FROM devices,download_enable 
 			WHERE HARDWARE_ID=? 
 			AND devices.IVALUE=download_enable.ID 
@@ -156,24 +156,45 @@ sub download_prolog_resp{
 		# Retrieving packages associated to the current device
 		$pack_req->execute( $hardware_id );
 		
-		
-		while($pack_row = $pack_req->fetchrow_hashref){
+		while($pack_row = $pack_req->fetchrow_hashref()){
 			my $fileid = $pack_row->{'FILEID'};
+			my $pack_loc = $pack_row->{'PACK_LOC'};
 			if( grep /^$fileid$/, @history or grep /^$fileid$/, @dont_repeat){
 				next;
 			}
+			
+			# Substitude $IP$ with server ipaddress or $NAME with server name
+			my $field;
+			if($pack_loc=~/\$(IP|NAME)\$/){
+				$field = 'IPADDR' if $1 eq 'IP';
+				$field = 'NAME' if $1 eq 'NAME';
+
+				my( $srvreq, $srvreq_sth, $srvreq_row);
+				$srvreq = "select $field from hardware where ID=?";
+				$dbh->prepare($srvreq);
+				$srvreq_sth = $dbh->execute($pack_row->{'SERVER_HARDWARE_ID'});
+				if($srvreq_row=$srvreq_sth->fetchrow_hashref()){
+					$pack_loc=$srvreq_row->{$field};
+				}
+				else{
+					$pack_loc='';
+				}
+			}
+
+			next if $pack_loc eq '';
+
 			push @packages,{
 				'TYPE'		=> 'PACK',
 				'ID'		=> $pack_row->{'FILEID'},
 				'INFO_LOC'	=> $pack_row->{'INFO_LOC'},
-				'PACK_LOC'	=> $pack_row->{'PACK_LOC'},
+				'PACK_LOC'	=> $pack_loc,
 				'CERT_PATH'	=> $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
 				'CERT_FILE'	=> $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
 			};
 			push @dont_repeat, $fileid;
 		}
-		$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED' WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
-		,{}, $current_context->{'DATABASE_ID'}) if $pack_req->rows;
+		$dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
+		,{},  scalar localtime(), $current_context->{'DATABASE_ID'} ) if $pack_req->rows;
 	}
 
 	push @{ $resp->{'OPTION'} },{
@@ -192,14 +213,27 @@ sub download_pre_inventory{
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $hardware_id = $current_context->{'DATABASE_ID'};
 	my $result = $current_context->{'XML_ENTRY'};
+	my @blacklist;
+	my ($already_set, $entry);
 		
 	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $hardware_id);
 	# Reference to the module part
 
 	my $base = $result->{'CONTENT'}->{'DOWNLOAD'}->{'HISTORY'}->{'PACKAGE'};
 	my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
-	for( @{ $base }) {
-		$sth->execute( $hardware_id, $_->{'ID'});
+	for $entry ( @{ $base }) {
+	# fix the history handling bug
+		$already_set=0;
+		for(@blacklist){
+			if($_ eq $entry->{'ID'}){
+				$already_set=1;
+				last;
+			}
+		}
+		if(!$already_set){
+			push @blacklist, $entry->{'ID'};
+			$sth->execute( $hardware_id, $entry->{'ID'});
+		}
 	}
 	0;
 }
@@ -222,11 +256,11 @@ sub download_handler{
 	$request->execute( $result->{'ID'}, $hardware_id);
 	
 	if(my $row = $request->fetchrow_hashref()){
-		$dbh->do('UPDATE devices SET TVALUE=? 
+		$dbh->do('UPDATE devices SET TVALUE=?, COMMENTS=?
 		WHERE NAME="DOWNLOAD" 
 		AND HARDWARE_ID=? 
 		AND IVALUE=?',
-		{}, $result->{'ERR'}?$result->{'ERR'}:'UNKNOWN_CODE', $hardware_id, $row->{'ID'} ) 
+		{}, $result->{'ERR'}?$result->{'ERR'}:'UNKNOWN_CODE', scalar localtime(), $hardware_id, $row->{'ID'} ) 
 			or return(APACHE_SERVER_ERROR);
 		&_set_http_header('content-length', 0, $r);
 		&_send_http_headers($r);
@@ -244,6 +278,10 @@ sub download_duplicate {
 	my $device = shift;
 	
 	my $dbh = $current_context->{'DBI_HANDLE'};
+
+	# Handle deployment servers
+	$dbh->do('UPDATE download_enable SET SERVER_ID=? WHERE SERVER_ID=?', {}, $current_context->{'DATABASE_ID'}, $device);
+	$dbh->do('UPDATE download_servers SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $current_context->{'DATABASE_ID'}, $device);
 
 	# If we encounter problems, it aborts whole replacement
 	return $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $device);
