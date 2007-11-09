@@ -164,20 +164,28 @@ sub download_prolog_resp{
 			}
 			
 			# Substitude $IP$ with server ipaddress or $NAME with server name
-			my $field;
-			if($pack_loc=~/\$(IP|NAME)\$/){
-				$field = 'IPADDR' if $1 eq 'IP';
-				$field = 'NAME' if $1 eq 'NAME';
+			my %substitute = (
+				'\$IP\$'   => {'table' => 'hardware', 'field' => 'IPADDR'},
+				'\$NAME\$' => {'table' => 'hardware', 'field' => 'NAME'}
+			);
 
-				my( $srvreq, $srvreq_sth, $srvreq_row);
-				$srvreq = "select $field from hardware where ID=?";
-				$dbh->prepare($srvreq);
-				$srvreq_sth = $dbh->execute($pack_row->{'SERVER_HARDWARE_ID'});
-				if($srvreq_row=$srvreq_sth->fetchrow_hashref()){
-					$pack_loc=$srvreq_row->{$field};
-				}
-				else{
-					$pack_loc='';
+			for my $motif (keys(%substitute)){
+				if($pack_loc=~/$motif/){
+					
+					my( $srvreq, $srvreq_sth, $srvreq_row);
+					my $field = $substitute{$motif}->{field};
+					my $table = $substitute{$motif}->{table};
+
+					$srvreq = "select $field from $table where ID=?";
+					$dbh->prepare($srvreq);
+					$srvreq_sth = $dbh->execute($pack_row->{'SERVER_ID'});
+
+					if($srvreq_row=$srvreq_sth->fetchrow_hashref()){
+						$pack_loc =~ s/(.*)$motif(.*)/${1}${field}${2}/g;
+					}
+					else{
+						$pack_loc='';
+					}
 				}
 			}
 
