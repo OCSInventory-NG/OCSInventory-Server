@@ -177,11 +177,12 @@ sub download_prolog_resp{
 					my $table = $substitute{$motif}->{table};
 
 					$srvreq = "select $field from $table where ID=?";
-					$dbh->prepare($srvreq);
-					$srvreq_sth = $dbh->execute($pack_row->{'SERVER_ID'});
+					$srvreq_sth = $dbh->prepare($srvreq);
+					$srvreq_sth->execute($pack_row->{'SERVER_ID'});
 
 					if($srvreq_row=$srvreq_sth->fetchrow_hashref()){
-						$pack_loc =~ s/(.*)$motif(.*)/${1}${field}${2}/g;
+						my $template = $srvreq_row->{$field};
+						$pack_loc =~ s/(.*)$motif(.*)/${1}${template}${2}/g;
 					}
 					else{
 						$pack_loc='';
