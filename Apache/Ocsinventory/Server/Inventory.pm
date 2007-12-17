@@ -364,7 +364,7 @@ sub _hardware{
 $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
 		LASTDATE=NOW(), 
 		LASTCOME=NOW(),
-		CHECKSUM=(".(defined($base->{CHECKSUM})?$base->{CHECKSUM}:CHECKSUM_MAX_VALUE)."|CHECKSUM), 
+		CHECKSUM=(".(defined($base->{CHECKSUM})?$base->{CHECKSUM}:CHECKSUM_MAX_VALUE)."|CHECKSUM|1),
 		NAME=".$dbh->quote($base->{NAME}).", 
 		WORKGROUP=".$dbh->quote($base->{WORKGROUP}).",
 		USERDOMAIN=".$dbh->quote($base->{USERDOMAIN}).",
