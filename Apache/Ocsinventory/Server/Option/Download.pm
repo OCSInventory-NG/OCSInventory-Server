@@ -182,7 +182,7 @@ sub download_prolog_resp{
 
 					if($srvreq_row=$srvreq_sth->fetchrow_hashref()){
 						my $template = $srvreq_row->{$field};
-						$pack_loc =~ s/(.*)$motif(.*)/${1}${template}${2}/g;
+						$pack_loc =~ s/(.*)\Q$motif\E(.*)/${1}${template}${2}/g;
 					}
 					else{
 						$pack_loc='';
