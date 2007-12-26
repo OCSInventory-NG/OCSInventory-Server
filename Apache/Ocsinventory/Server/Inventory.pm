@@ -330,7 +330,8 @@ sub _inventory_cache{
 		# hash ref or array ref ?
 		if($DATA_MAP{$section}->{multi}){
 			for(@$base){
-				$select->execute($_->{$field});
+				next unless $_->{$field};
+				next unless $select->execute($_->{$field});
 				# Value is already in the cache
 				if($select->rows){
 					$select->finish;
@@ -342,7 +343,8 @@ sub _inventory_cache{
 			}
 		}
 		else{
-			$select->execute($base->{$field});
+			next unless $base->{$field};
+			next unless $select->execute($base->{$field});
 			if($select->rows){
 					$select->finish;
 					next;

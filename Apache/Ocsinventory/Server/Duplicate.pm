@@ -206,12 +206,13 @@ sub _duplicate_replace{
 		$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $DeviceID)
 		and
 		$dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
-		and
-		$dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
 	){
 		&_unlock($device);
 		return(1);
 	}
+
+	# Updating groups cache
+	$dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device);
 	
 	# Drop old computer
 	for (keys(%DATA_MAP)){

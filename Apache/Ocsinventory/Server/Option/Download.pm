@@ -170,7 +170,7 @@ sub download_prolog_resp{
 			);
 
 			for my $motif (keys(%substitute)){
-				if($pack_loc=~/$motif/){
+				if($pack_loc=~/\Q$motif\E/){
 					
 					my( $srvreq, $srvreq_sth, $srvreq_row);
 					my $field = $substitute{$motif}->{field};
