@@ -106,9 +106,18 @@ sub _inflate{
 	my @inflate_subs = (
 		# gzip file content
 		sub {	my $data_ref = shift; 
-			$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = \&Compress::Zlib::memGzip;
-			return Compress::Zlib::memGunzip( ${$data_ref} ); 
-		}
+			if(my $result = Compress::Zlib::memGunzip( ${$data_ref})){
+				$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = \&Compress::Zlib::memGzip;
+				return $result; 
+			}
+			else{
+				undef;
+			}
+		},
+		sub {
+			my $ref = shift;
+			return $$ref;
+		    }
 	);
 	my $data_ref = shift;
 	my $inflated_ref = shift;

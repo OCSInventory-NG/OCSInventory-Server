@@ -165,8 +165,8 @@ sub download_prolog_resp{
 			
 			# Substitude $IP$ with server ipaddress or $NAME with server name
 			my %substitute = (
-				'\$IP\$'   => {'table' => 'hardware', 'field' => 'IPADDR'},
-				'\$NAME\$' => {'table' => 'hardware', 'field' => 'NAME'}
+				'$IP$'   => {'table' => 'hardware', 'field' => 'IPADDR'},
+				'$NAME$' => {'table' => 'hardware', 'field' => 'NAME'}
 			);
 
 			for my $motif (keys(%substitute)){
