@@ -116,6 +116,7 @@ sub _inflate{
 		},
 		sub {
 			my $ref = shift;
+			$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = sub {return $_[0]};
 			return $$ref;
 		    }
 	);
