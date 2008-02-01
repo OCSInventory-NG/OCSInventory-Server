@@ -110,14 +110,15 @@ sub _inflate{
 				$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = \&Compress::Zlib::memGzip;
 				return $result; 
 			}
-			else{
-				undef;
-			}
+			undef;
 		},
 		sub {
 			my $ref = shift;
-			$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = sub {return $_[0]};
-			return $$ref;
+			if($$ref =~ /^<\?xml/i){
+				$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = sub {return $_[0]};
+				return $$ref;
+			}
+			undef;
 		    }
 	);
 	my $data_ref = shift;
