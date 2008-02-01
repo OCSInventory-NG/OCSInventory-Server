@@ -258,7 +258,7 @@ sub _init{
 	
 	for my $ipreg (@TRUSTED_IP){
 			if($CURRENT_CONTEXT{'IPADDRESS'}=~/^$ipreg$/){
-				&_log(310,'handler','Trusted computer');
+				&_log(310,'handler','Trusted computer') if $ENV{'OCS_OPT_LOGLEVEL'};
 				$CURRENT_CONTEXT{'IS_TRUSTED'} = 1;
 			}
 	}
