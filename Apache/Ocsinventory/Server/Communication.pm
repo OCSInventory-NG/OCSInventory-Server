@@ -182,13 +182,24 @@ sub _prolog_resp{
 }
 
 sub _prolog_build_resp{
-	my $decision = shift;
-	my $resp = shift;
+	my ($decision, $resp) = @_;
 	my $module;
 	my $state;
 
 	#Agent execution periodicity
-	$resp->{'PROLOG_FREQ'} = [ $ENV{'OCS_OPT_PROLOG_FREQ'} ];
+	if(defined($Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS'}{'PROLOG_FREQ'}->{'IVALUE'})){
+		$resp->{'PROLOG_FREQ'} = [$Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS'}{'PROLOG_FREQ'}->{'IVALUE'}];
+	}
+	else{
+		my ($groupFreq, $groupsParams);
+		my $groupsParams = $Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS_G'};
+		for(keys(%$groupsParams)){
+			$groupFreq = $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'} 
+				if (exists($$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}) 
+				and $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}<$groupFreq) or !$groupFreq;
+		}
+		$resp->{'PROLOG_FREQ'} = [ $groupFreq || $ENV{'OCS_OPT_PROLOG_FREQ'} ];
+	}
 	
 	if($decision == PROLOG_RESP_BREAK){
 		$resp->{'RESPONSE'} = [ 'STOP' ];

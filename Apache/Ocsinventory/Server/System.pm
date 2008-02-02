@@ -27,6 +27,7 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw /
 	_log
+	_debug
 	_lock
 	_unlock
 	_send_file
@@ -41,10 +42,13 @@ our %EXPORT_TAGS = (
 		_end
 		_check_deviceid
 		_log
+		_debug
 		_lock
 		_unlock
 		_send_file
 		_inflate
+		_get_spec_params
+		_get_spec_params_g
 		/
 	]
 );
@@ -417,5 +421,50 @@ sub _send_file{
 			return APACHE_OK;
 		}
 	}
+}
+
+sub _get_spec_params{
+	my $hardwareId = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
+	return &_params_from_devices($hardwareId);
+}
+
+sub _get_spec_params_g{
+	my $groups = $Apache::Ocsinventory::CURRENT_CONTEXT{'MEMBER_OF'};
+	my %result;
+	for(@$groups){
+		$result{$_} = {&_params_from_devices($_)} ;
+	}
+	return %result;
+}
+
+sub _params_from_devices{
+	my $hardwareId = shift;
+	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+	my $sth;
+	my $row;
+	my %result;
+	
+	$sth = $dbh->prepare('SELECT NAME,IVALUE,TVALUE FROM devices WHERE HARDWARE_ID=?');
+	$sth->execute($hardwareId);
+	while( $row = $sth->fetchrow_hashref()){
+		if(exists($result{ $row->{'NAME'} })){
+			if($result{ $row->{'NAME'} } =~ /ARRAY/){
+				push @{$result{$row->{'NAME'}}}, 
+					{ 'IVALUE' => $row->{'IVALUE'}, 'TVALUE' => $row->{'TVALUE'} };
+			}
+			else{
+				my $temp = $result{ $row->{'NAME'} };
+				$result{ $row->{'NAME'} } = [];
+				push @{$result{$row->{'NAME'}}}, $temp;
+			}
+		}
+		else{
+			$result{ $row->{'NAME'} } = { 
+				'IVALUE' => $row->{'IVALUE'},
+				'TVALUE' => $row->{'TVALUE'}
+			};
+		}
+	}
+	return %result;
 }
 1;

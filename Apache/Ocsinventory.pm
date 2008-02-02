@@ -86,6 +86,9 @@ sub handler{
 		'MEMBER_OF' 	=> undef,
 		'DEFLATE_SUB' 	=> \&Compress::Zlib::compress,
 		'IS_TRUSTED'	=> 0,
+		'DETAILS'	=> undef,
+		'PARAMS'	=> undef,
+		'MEMBER_OF'	=> undef,
 		'IPADDRESS'	=> $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'}
 	);
 
@@ -277,17 +280,20 @@ sub _init{
 		
 		# Computing groups list 
 		if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
-			$CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups( $CURRENT_CONTEXT{'DATABASE_ID'} ) ];
+			$CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups() ];
 		}
 		else{
 			$CURRENT_CONTEXT{'MEMBER_OF'} = [];
 		}
+		
+		$CURRENT_CONTEXT{'PARAMS'} = { &_get_spec_params() };
+		$CURRENT_CONTEXT{'PARAMS_G'} = { &_get_spec_params_g() };
 	}else{
 		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
 		$CURRENT_CONTEXT{'MEMBER_OF'} = [];
 	}
 	
-	$request->finish;
+	$request->finish;	
 	return;
 }
 1;

@@ -59,23 +59,80 @@ sub download_prolog_resp{
 	my $groups = $current_context->{'MEMBER_OF'};
 	my $hardware_id = $current_context->{'DATABASE_ID'};
 	
+	my $groupsParams = $current_context->{'PARAMS_G'};
+	my ( $downloadSwitch, $cycleLatency, $fragLatency, $periodLatency, $periodLength, $timeout);
+	
+
 	my($pack_sql, $hist_sql);
 	my($pack_req, $hist_req);
 	my($hist_row, $pack_row);
 	my(@packages, @history, @dont_repeat);
 	my $blacklist;
 	
+	if($ENV{'OCS_OPT_DOWNLOAD'}){
+		$downloadSwitch = 1;
+		# Group's parameters
+		for(keys(%$groupsParams)){
+			
+			$cycleLatency = $$groupsParams{$_}->{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'} 
+				if ( (exists($$groupsParams{$_}->{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'}) 
+				and $$groupsParams{$_}->{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'} > $cycleLatency)
+				or !$cycleLatency);
+			
+			$fragLatency = $$groupsParams{$_}->{'DOWNLOAD_FRAG_LATENCY'}->{'IVALUE'} 
+				if ( (exists($$groupsParams{$_}->{'DOWNLOAD_FRAG_LATENCY'}->{'IVALUE'}) 
+				and $$groupsParams{$_}->{'DOWNLOAD_FRAG_LATENCY'}->{'IVALUE'} > $fragLatency)
+				or !$fragLatency);
+			
+			$periodLatency = $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'} 
+				if ( (exists($$groupsParams{$_}->{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'}) 
+				and $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'} > $periodLatency)
+				or !$periodLatency);
+			
+			$timeout = $$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'} 
+				if ( (exists($$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'}) 
+				and $$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'} < $timeout) 
+				or !$timeout);
+			
+			$periodLength = $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'}
+				if ( (exists($$groupsParams{$_}->{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'}) 
+				and $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'} < $periodLength) 
+				or !$periodLength); 
+			
+			$downloadSwitch = $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'}
+				if exists( $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'} ) 
+				and $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'} < $downloadSwitch;
+		}	
+	}
+	else{
+		$downloadSwitch = 0;
+	}
+	
+	$downloadSwitch = $current_context->{'PARAMS'}{'DOWNLOAD_SWITCH'}->{'IVALUE'} 
+			if defined($current_context->{'PARAMS'}{'DOWNLOAD_SWITCH'}->{'IVALUE'}) and $downloadSwitch;
+			
+	$cycleLatency 	= $ENV{'OCS_OPT_DOWNLOAD_CYCLE_LATENCY'} unless $cycleLatency;
+	$fragLatency 	= $ENV{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'} unless $fragLatency;
+	$periodLatency 	= $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} unless $periodLatency;
+	$periodLength 	= $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} unless $periodLength;
+	$timeout	= $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'} unless $timeout;
+	
 	push @packages,{
 		'TYPE' 			=> 'CONF',
-		'ON' 			=> $ENV{'OCS_OPT_DOWNLOAD'},
-		'TIMEOUT' 		=> $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'},
-		'PERIOD_LENGTH' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'},
-		'PERIOD_LATENCY' 	=> $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'},
-		'FRAG_LATENCY' 		=> $ENV{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'},
-		'CYCLE_LATENCY' 	=> $ENV{'OCS_OPT_DOWNLOAD_CYCLE_LATENCY'}
+		'ON' 			=> $downloadSwitch,
+		'TIMEOUT' 		=> $current_context->{'PARAMS'}{'DOWNLOAD_TIMEOUT'}->{'IVALUE'}
+						|| $timeout,
+		'PERIOD_LENGTH' 	=> $current_context->{'PARAMS'}{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'} 	
+						|| $periodLength,
+		'PERIOD_LATENCY' 	=> $current_context->{'PARAMS'}{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'} 
+						|| $periodLatency,
+		'FRAG_LATENCY' 		=> $current_context->{'PARAMS'}{'DOWNLOAD_FRAG_LATENCY'}->{'IVALUE'} 	
+						|| $fragLatency,
+		'CYCLE_LATENCY' 	=> $current_context->{'PARAMS'}{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'} 	
+						|| $cycleLatency
 	};
 	
-	if($ENV{'OCS_OPT_DOWNLOAD'}){
+	if($downloadSwitch){
 	
 # If this option is set, we send only the needed package to the agent
 # Can be a performance issue
@@ -295,6 +352,5 @@ sub download_duplicate {
 	# If we encounter problems, it aborts whole replacement
 	return $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $device);
 }
-
 1;
 

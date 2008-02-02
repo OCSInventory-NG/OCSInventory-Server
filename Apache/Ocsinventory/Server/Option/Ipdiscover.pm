@@ -62,36 +62,29 @@ sub _ipdiscover_prolog_resp{
 	
 	my $resp = shift;
 	
-	my $request;
-	my $row;
-	my $dbh = $current_context->{'DBI_HANDLE'};
-	my $DeviceID = $current_context->{'DATABASE_ID'};
-	# To handle the agent versions
 	my ($ua, $os, $v);
+	
+	my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
+	my $behaviour 	  = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+	my $groupsParams  = $current_context->{'PARAMS_G'};
+	my $ipdiscoverLatency;
+	
+	return if $behaviour == IPD_NEVER;
 
-	################################
-	#IPDISCOVER
-	###########
-	# What is the current state of this option ?
-
-	#ipdiscover for this device ?
-	$request=$dbh->prepare('SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER" AND (IVALUE=? OR IVALUE=?)');
-	$request->execute($DeviceID, IPD_ON, IPD_MAN);
-	if($request->rows){
+	if($lanToDiscover){
+		&_log(1004,'ipdiscover','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 		# We can use groups to prevent some computers to be elected
 		if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
-			my $groups = $current_context->{'MEMBER_OF'};
-			for(@$groups){
-				if( $dbh->do('SELECT IVALUE FROM devices WHERE NAME="IPDISCOVER" AND IVALUE=? AND HARDWARE_ID=?',{},IPD_NEVER,$_)!=0E0 ){
-					$dbh->do('DELETE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"', {}, $DeviceID);
+			for(keys(%$groupsParams)){
+				if(defined($$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'}) && $$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'} == IPD_NEVER){
+					&_log(1005,'ipdiscover','Conflict') if $ENV{'OCS_OPT_LOGLEVEL'};
 					return;
 				}
 			}
 		}
 
 		$resp->{'RESPONSE'} = [ 'SEND' ];
-		$row = $request->fetchrow_hashref();
-	# Agents newer than 13(linux) ans newer than 4027(Win32) receive new xml formatting (including ipdisc_lat)
+		# Agents newer than 13(linux) ans newer than 4027(Win32) receive new xml formatting (including ipdisc_lat)
 		$ua = _get_http_header('User-agent', $current_context->{'APACHE_OBJECT'});
 
 		my $legacymode;
@@ -100,14 +93,29 @@ sub _ipdiscover_prolog_resp{
 		}
 		
 		if( $legacymode ){		
-			push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $row->{'TVALUE'} ] };
+			push @{$$resp{'OPTION'}}, { 'NAME' => [ 'IPDISCOVER' ], 'PARAM' => [ $lanToDiscover ] };
 		}
 		else{
+			if(defined( $current_context->{'PARAMS'}{'IPDISCOVER_LATENCY'}->{'IVALUE'} )){
+				$ipdiscoverLatency = $current_context->{'PARAMS'}{'IPDISCOVER_LATENCY'}->{'IVALUE'};
+			}
+			else{
+				for(keys(%$groupsParams)){
+					$ipdiscoverLatency = $$groupsParams{$_}->{'IPDISCOVER_LATENCY'}->{'IVALUE'} 
+					if (exists($$groupsParams{$_}->{'IPDISCOVER_LATENCY'}->{'IVALUE'}) 
+						and $$groupsParams{$_}->{'IPDISCOVER_LATENCY'}->{'IVALUE'}>$ipdiscoverLatency) 
+						or !$ipdiscoverLatency;
+				}
+			}
+			# Protection against arp flood
+			$ipdiscoverLatency = $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} if 
+				$ipdiscoverLatency == 0;
+						
 			push @{$$resp{'OPTION'}}, { 
 						'NAME' => [ 'IPDISCOVER' ], 
 						'PARAM' => { 
-								'IPDISC_LAT' => $ENV{'OCS_OPT_IPDISCOVER_LATENCY'}?$ENV{'OCS_OPT_IPDISCOVER_LATENCY'}:'0', 
-								'content' => $row->{'TVALUE'} 
+							'IPDISC_LAT' => $ipdiscoverLatency,
+							'content' => $lanToDiscover
 						} 
 			};
 		}
@@ -125,40 +133,36 @@ sub _ipdiscover_main{
 	my $row;
 	my $subnet;
 	my $remove;
-	my $ivalue;
 
 	return unless $ENV{'OCS_OPT_IPDISCOVER'};
 	
 	my $current_context = shift;
+	
 	my $DeviceID = $current_context->{'DATABASE_ID'};
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $result = $current_context->{'XML_ENTRY'};
+	my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
+	my $behaviour 	  = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+	my $groupsParams  = $current_context->{'PARAMS_G'};
 	
 	# We can use groups to prevent some computers to be elected
 	if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
-		my $groups = $current_context->{'MEMBER_OF'};
-		for(@$groups){
-			if( $dbh->do('SELECT IVALUE FROM devices WHERE NAME="IPDISCOVER" AND IVALUE=? AND HARDWARE_ID=?',{},IPD_NEVER,$_)!=0E0 ){
-				return;
-			}
+		for(keys(%$groupsParams)){
+			return if $$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'} == IPD_NEVER;
 		}
 	}
 
 	# Is the device already have the ipdiscover function ?
-	$request=$dbh->prepare('SELECT IVALUE, TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME="IPDISCOVER"');
-	$request->execute($DeviceID);
-	if($request->rows){
-		$row = $request->fetchrow_hashref;
+	if($lanToDiscover){
 		#IVALUE = 0 means that computer will not ever be elected
-		if( ($ivalue = $row->{IVALUE}) == IPD_NEVER ){
+		if( $behaviour == IPD_NEVER ){
 			return 0;
 		}
 		# get 1 on removing and 0 if ok
-		$remove = &_ipdiscover_read_result($dbh, $result, $row->{'TVALUE'});
-		if( $ivalue == IPD_MAN ){
+		$remove = &_ipdiscover_read_result($dbh, $result, $lanToDiscover);
+		if( $behaviour == IPD_MAN ){
 			$remove = 0;
 		}
-		$request->finish;
 		if(!defined($remove)){
 			return 1;
 		}
