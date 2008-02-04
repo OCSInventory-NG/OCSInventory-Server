@@ -192,7 +192,7 @@ sub _prolog_build_resp{
 	}
 	else{
 		my ($groupFreq, $groupsParams);
-		my $groupsParams = $Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS_G'};
+		$groupsParams = $Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS_G'};
 		for(keys(%$groupsParams)){
 			$groupFreq = $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'} 
 				if (exists($$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}) 
