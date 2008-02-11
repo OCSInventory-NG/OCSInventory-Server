@@ -70,7 +70,6 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_TOTO'} = 'titi';
 #	'DATA' => ref, gives you a pointer to the initial deflated data (earliest stage) -- Always filled
 #	'RAW_DATA' => ref, gives you a pointer to the initial compressed data (earliest stage) -- Always filled
 #	'XML_ENTRY' => ref, gives you a pointer to the data structure generated when parsing the incoming request (with core and optionnal modules parsing options) -- Always filled
-#	'XML_INVENTORY' => ref, gives you a pointer to the data structure generated when parsing xml inventory -- Filled for inventory post handlers
 #	'LOCK_FL' => 1(true) or 0(false), shows if the computer is locked -- Always filled
 #	'EXIST_FL' => 1(true) or 0(false) shows if the computer whether exists in the database or not (update) -- Always filled
 #       'MEMBER_OF' => array ref, gives you the groups that computer is member of

@@ -136,43 +136,49 @@ sub _inflate{
 
 # Database connection
 sub _database_connect{
-
-	my $Database;
-	my $Port;
-	my $Host;
-	my $DBuser;
-	my $DBpassword;
-	my %DBparams;
-
-	# Get the variables declared in httpd.conf
-	# Login
-	$DBuser = $ENV{'OCS_DB_USER'};
-	# Password
-	$DBpassword = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
-	# Port
-	$Port = $ENV{'OCS_DB_PORT'};
-	# Host
-	$Host = $ENV{'OCS_DB_HOST'};
-	#
-	# To manage A specific database for the non connected computers
-	# If no database specified, we take the httpd DBNAME one
-	if(&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}) =~ /local/i){
-	    if($ENV{'OCS_DB_LOCAL'}){
-	      $Database = $ENV{'OCS_DB_LOCAL'};
-	    }else{
-	      $Database = $ENV{'OCS_DB_NAME'};
-	    }
-	}else{
-	    $Database = $ENV{'OCS_DB_NAME'};
-	}
+	my $mode = shift;
+	my %params;
+	my ($host, $database, $port, $user, $password, $params);
 	
-	$DBparams{'AutoCommit'} = 0;
-	$DBparams{'PrintError'} = $ENV{'OCS_OPT_DBI_PRINT_ERROR'};
+	if($mode eq 'write'){
+	  ($host, $database, $port, $user, $password) = ( $ENV{'OCS_DB_HOST'}, $ENV{'OCS_DB_NAME'}, $ENV{'OCS_DB_PORT'}, 
+	    $ENV{'OCS_DB_USER'}, $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD') );
+	}
+	# Local Mode
+	elsif($mode eq 'local'){
+	  ($host, $port, $user, $password) = ( $ENV{'OCS_DB_HOST'}, $ENV{'OCS_DB_PORT'}, 
+	    $ENV{'OCS_DB_USER'}, $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD') );
+	    $database = $ENV{'OCS_DB_LOCAL'}||$ENV{'OCS_DB_NAME'};
+	}
+	# Slave mode
+	elsif($mode eq 'read'){
+	  if($ENV{'OCS_DB_SL_HOST'}){
+	  $host = $ENV{'OCS_DB_SL_HOST'};
+	  $database = $ENV{'OCS_DB_SL_NAME'}||'ocsweb';
+	  $port = $ENV{'OCS_DB_SL_PORT'}||'3306';
+	  $user = $ENV{'OCS_DB_SL_USER'};
+	  $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_SL_PWD');
+	}
+	else{
+  	  $host = $ENV{'OCS_DB_HOST'};
+	  $database = $ENV{'OCS_DB_NAME'}||'ocsweb';
+	  $port = $ENV{'OCS_DB_PORT'}||'3306';
+	  $user = $ENV{'OCS_DB_USER'};
+	  $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
+	}
+	}
+	else{
+	  &_log(521,'database_connect', 'invalid mode') if $ENV{'OCS_OPT_LOGLEVEL'};
+	  return undef;
+	}
+
+	$params{'AutoCommit'} = 0;
+	$params{'PrintError'} = $ENV{'OCS_OPT_DBI_PRINT_ERROR'};
 	# Optionnaly a mysql socket different than the client's built in
-	$DBparams{'mysql_socket'} = $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'} if $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'};
+	$params{'mysql_socket'} = $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'} if $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'};
 
 	# Connection...
-	return DBI->connect("DBI:mysql:database=$Database;host=$Host;port=$Port", $DBuser, $DBpassword, \%DBparams);
+	return DBI->connect("DBI:mysql:database=$database;host=$host;port=$port", $user, $password, \%params);
 }
 
 sub _check_deviceid{
@@ -233,7 +239,6 @@ sub _log{
 
 # Subroutine called at the end of execution
 sub _end{
-	
 	my $ret = shift;
  	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
@@ -250,7 +255,6 @@ sub _end{
 	close(LOG);
 	$dbh->disconnect;
 	return $ret;
-
 }
 
 # Retrieve option request handler

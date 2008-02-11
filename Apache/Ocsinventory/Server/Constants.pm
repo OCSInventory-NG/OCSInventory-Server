@@ -26,6 +26,7 @@ our @EXPORT = qw/
 	DUP_HOSTNAME_FL
 	DUP_SERIAL_FL
 	DUP_MACADDR_FL
+	DUP_SMODEL_FL
 	PROLOG_STOP
 	PROLOG_CONTINUE
 	INVENTORY_STOP
@@ -46,6 +47,7 @@ use constant CHECKSUM_MAX_VALUE => 131071;
 use constant DUP_HOSTNAME_FL => 1;
 use constant DUP_SERIAL_FL => 2;
 use constant DUP_MACADDR_FL => 4;
+use constant DUP_SMODEL_FL => 8;
 
 use constant PROLOG_STOP => 1;
 use constant PROLOG_CONTINUE => 0;

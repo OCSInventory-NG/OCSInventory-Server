@@ -69,7 +69,7 @@ sub _ipdiscover_prolog_resp{
 	my $groupsParams  = $current_context->{'PARAMS_G'};
 	my $ipdiscoverLatency;
 	
-	return if $behaviour == IPD_NEVER;
+	return if !defined($behaviour) or $behaviour == IPD_NEVER;
 
 	if($lanToDiscover){
 		&_log(1004,'ipdiscover','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -85,7 +85,7 @@ sub _ipdiscover_prolog_resp{
 
 		$resp->{'RESPONSE'} = [ 'SEND' ];
 		# Agents newer than 13(linux) ans newer than 4027(Win32) receive new xml formatting (including ipdisc_lat)
-		$ua = _get_http_header('User-agent', $current_context->{'APACHE_OBJECT'});
+		$ua = $current_context->{'USER_AGENT'};
 
 		my $legacymode;
 		if( $ua=~/OCS-NG_(\w+)_client_v(\d+)/ ){
@@ -145,19 +145,22 @@ sub _ipdiscover_main{
 	my $behaviour 	  = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
 	my $groupsParams  = $current_context->{'PARAMS_G'};
 	
+	#IVALUE = 0 means that computer will not ever be elected
+	if( defined($behaviour) && $behaviour == IPD_NEVER ){
+		return 0;
+	}
+	
+	
 	# We can use groups to prevent some computers to be elected
 	if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
 		for(keys(%$groupsParams)){
-			return if $$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'} == IPD_NEVER;
+			return 0 if defined($$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'}) 
+			  && $$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'} == IPD_NEVER;
 		}
 	}
 
 	# Is the device already have the ipdiscover function ?
 	if($lanToDiscover){
-		#IVALUE = 0 means that computer will not ever be elected
-		if( $behaviour == IPD_NEVER ){
-			return 0;
-		}
 		# get 1 on removing and 0 if ok
 		$remove = &_ipdiscover_read_result($dbh, $result, $lanToDiscover);
 		if( $behaviour == IPD_MAN ){

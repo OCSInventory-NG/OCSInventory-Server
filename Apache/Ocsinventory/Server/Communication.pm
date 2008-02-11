@@ -192,13 +192,16 @@ sub _prolog_build_resp{
 	}
 	else{
 		my ($groupFreq, $groupsParams);
-		$groupsParams = $Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS_G'};
-		for(keys(%$groupsParams)){
-			$groupFreq = $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'} 
-				if (exists($$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}) 
-				and $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}<$groupFreq) or !$groupFreq;
+	
+		if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
+		  $groupsParams = $Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS_G'};
+		  for(keys(%$groupsParams)){
+		    $groupFreq = $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'} 
+		    if (exists($$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}) 
+		      and $$groupsParams{$_}->{'PROLOG_FREQ'}->{'IVALUE'}<$groupFreq) or !$groupFreq;
+		  }
 		}
-		$resp->{'PROLOG_FREQ'} = [ $groupFreq || $ENV{'OCS_OPT_PROLOG_FREQ'} ];
+	        $resp->{'PROLOG_FREQ'} = [ $groupFreq || $ENV{'OCS_OPT_PROLOG_FREQ'} ];
 	}
 	
 	if($decision == PROLOG_RESP_BREAK){

@@ -36,7 +36,7 @@ sub _duplicate_main{
 	my %exist;
 	my $red;
 	
-	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
+	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
@@ -62,7 +62,7 @@ sub _duplicate_main{
 		# Trying to find some duplicate evidences
 		&_duplicate_detect(\%exist);
 		# For each result, we are trying to know if it is a true duplicate (according to AUTO_DUPLICATE_LVL
-		for(keys(%exist)){
+		for(sort keys(%exist)){
 			if(&_duplicate_evaluate(\%exist, $_)){
 				if(&_duplicate_replace($_)){
 					&_log(517,'duplicate','Replacing error') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -95,8 +95,8 @@ sub _duplicate_evaluate{
 	$exist->{$key}->{'MASK'}|=DUP_HOSTNAME_FL if $exist->{$key}->{'HOSTNAME'};
 	$exist->{$key}->{'MASK'}|=DUP_SERIAL_FL if $exist->{$key}->{'SSN'};
 	$exist->{$key}->{'MASK'}|=DUP_MACADDR_FL if $exist->{$key}->{'MACADDRESS'};
+	$exist->{$key}->{'MASK'}|=DUP_SMODEL_FL if $exist->{$key}->{'SMODEL'};
 	
-	# If  
 	if((($ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'} & $exist->{$key}->{'MASK'})) == $ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'}){
 		return(1);
 	}else{
@@ -108,7 +108,7 @@ sub _duplicate_detect{
 
 	my $exist = shift;
 	
-	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
+	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 		
@@ -128,7 +128,7 @@ sub _duplicate_detect{
 	push @bad_serial, $row->{SERIAL} while($row = $request->fetchrow_hashref());
 	
 	# Have we already got the hostname
-	$request = $dbh->prepare('SELECT ID, NAME FROM hardware WHERE NAME=? AND ID<>? ORDER BY LASTDATE');
+	$request = $dbh->prepare('SELECT ID, NAME FROM hardware WHERE NAME=? AND ID<>? ORDER BY ID');
 	$request->execute($result->{CONTENT}->{HARDWARE}->{NAME}, $DeviceID);
 	while($row = $request->fetchrow_hashref()){
 		if(!($row->{'NAME'} eq '')){
@@ -156,6 +156,16 @@ sub _duplicate_detect{
 			}
 		}
 	}
+	
+	# ...or its serial model
+	if($result->{CONTENT}->{BIOS}->{SMODEL}){
+		$request = $dbh->prepare('SELECT HARDWARE_ID, SMODEL FROM bios WHERE SMODEL=? AND HARDWARE_ID<>?');
+		$request->execute($result->{CONTENT}->{BIOS}->{SMODEL}, $DeviceID);
+		while($row = $request->fetchrow_hashref()){
+			$exist->{$row->{'HARDWARE_ID'}}->{'SMODEL'}=1;
+		}
+	}
+	
 	$request->finish;
 }
 
@@ -170,7 +180,7 @@ sub _duplicate_replace{
 	}
 	my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 	my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
-	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_INVENTORY'};
+	my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 					
 	# We keep the old quality and fidelity
 	my $request=$dbh->prepare('SELECT QUALITY,FIDELITY,CHECKSUM,USERID FROM hardware WHERE ID=?');

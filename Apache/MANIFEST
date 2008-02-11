@@ -2,6 +2,7 @@ binutils/Ocsinventory_local.pl
 INSTALL
 logrotate.ocsinventory-NG
 Makefile.PL
+LICENSE
 MANIFEST
 Ocsinventory/Server/Communication.pm
 Ocsinventory/Server/Constants.pm

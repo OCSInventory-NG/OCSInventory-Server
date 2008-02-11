@@ -274,14 +274,14 @@ sub download_prolog_resp{
 sub download_pre_inventory{
 	my $current_context = shift;
 	
-	return if !$ENV{'OCS_OPT_DOWNLOAD'} or !$current_context->{'EXIST_FL'};
+	return if !$ENV{'OCS_OPT_DOWNLOAD'};
 	
 	my $dbh = $current_context->{'DBI_HANDLE'};
 	my $hardware_id = $current_context->{'DATABASE_ID'};
 	my $result = $current_context->{'XML_ENTRY'};
 	my @blacklist;
 	my ($already_set, $entry);
-		
+	#TODO: WRITE_DIFF
 	$dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $hardware_id);
 	# Reference to the module part
 

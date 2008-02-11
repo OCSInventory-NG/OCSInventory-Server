@@ -69,6 +69,7 @@ sub handler{
 	my $raw_data;
 	my $inflated;
 	my $query;
+	my $dbMode;
 
 	# current context
 	# Will be used to handle all globales
@@ -88,8 +89,10 @@ sub handler{
 		'IS_TRUSTED'	=> 0,
 		'DETAILS'	=> undef,
 		'PARAMS'	=> undef,
+		'PARAMS_G'	=> undef,
 		'MEMBER_OF'	=> undef,
-		'IPADDRESS'	=> $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'}
+		'IPADDRESS'	=> $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'},
+		'USER_AGENT'	=> undef
 	);
 
 	#LOG FILE
@@ -107,14 +110,19 @@ sub handler{
 	$r=shift;
 	$CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
 	
+	$CURRENT_CONTEXT{'USER_AGENT'} = &_get_http_header('User-agent', $r);
+	
 	@TRUSTED_IP = $r->dir_config->get('OCS_OPT_TRUSTED_IP');
-
+	
 	#Connect to database
-	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect())){
+	$dbMode = 'write';
+	$dbMode = 'local' if($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ /local/i);
+	
+	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect( $dbMode ))){
 		&_log(505,'handler','Database connection');
 		return &_end(APACHE_SERVER_ERROR);
 	}
-
+	
 	#Retrieve server options
 	if(&_get_sys_options()){
 		&_log(503,'handler', 'System options');

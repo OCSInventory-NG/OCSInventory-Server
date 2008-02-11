@@ -70,12 +70,28 @@ sub engine_first {
 
 # Database connection
 sub database_connect{
-	my $cstr = "DBI:mysql:database=$ENV{OCS_DB_NAME};host=$ENV{OCS_DB_HOST};port=$ENV{OCS_DB_PORT}";
+	my $dbHost;
+	my $dbName;
+	my $dbPort;
+	my $dbUser;
+	my $dbPwd;
 	
-	return DBI->connect(
-		$cstr, $ENV{OCS_DB_USER},
-		$Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD')
-	);
+	if($ENV{'OCS_DB_SL_HOST'}){
+	  $dbHost = $ENV{'OCS_DB_SL_HOST'};
+	  $dbName = $ENV{'OCS_DB_SL_NAME'} || 'ocsweb';
+	  $dbPort = $ENV{'OCS_DB_SL_PORT'} || '3306';
+	  $dbUser = $ENV{'OCS_DB_SL_USER'};
+	  $dbPwd  = $Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_SL_PWD');
+	}
+	else{
+  	  $dbHost = $ENV{'OCS_DB_HOST'};
+	  $dbName = $ENV{'OCS_DB_NAME'} || 'ocsweb';
+	  $dbPort = $ENV{'OCS_DB_PORT'} || '3306';
+	  $dbUser = $ENV{'OCS_DB_USER'};
+	  $dbPwd  = $Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD');
+	}
+	
+	return DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort" );
 }
 # Process the sql requests (prepare)
 sub get_sth {
