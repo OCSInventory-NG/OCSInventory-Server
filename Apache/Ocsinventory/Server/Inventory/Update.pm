@@ -100,6 +100,7 @@ sub _update_inventory_section{
     }
     # Now we have to delete from DB elements that still remain in fromDb
     for(@fromDb){
+      next if !defined (${$_}[0]);
       $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, ${$_}[0]);
     }
   }

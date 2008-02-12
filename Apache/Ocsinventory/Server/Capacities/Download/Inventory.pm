@@ -96,6 +96,7 @@ sub update_history_diff{
   }
   
   for( @$fromDb ){
+    next if !defined ($_);
     $dbh->do( 'DELETE FROM download_history WHERE HARDWARE_ID=? AND PKG_ID=?', {}, $hardwareId, $_ );
   }
 }
