@@ -26,6 +26,8 @@ ERRORS
 518--Cannot retrieve database id
 519--A device try to add a new computer whereas it is forbidden by filter inventory rules
 520--The request for the group is not valid
+521--Invalid database connection mode
+522--Inventory Cache handling error
 
 INVENTORY
 ---------
@@ -37,6 +39,11 @@ INVENTORY
 105--Inventory refused but other task required
 106--Prolog stopped by module
 107--Inventory stopped by module
+108--Cleaning inventory cache
+109--Inventory cache handling success
+110--Inventory cache out of date
+111--Inventory cache already handled (lock fault)
+112--Inventory cache updated
 
 MANAGEMENT
 ----------
@@ -63,3 +70,4 @@ DOWNLOAD
 --------
 2500--impossible to get config
 2501--message refers to an unexisting package
+2502--cannot retrieve package history (db error)
