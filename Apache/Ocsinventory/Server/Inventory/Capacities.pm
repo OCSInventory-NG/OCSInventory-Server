@@ -7,7 +7,7 @@
 ## code is always made freely available.
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-package Apache::Ocsinventory::Server::Inventory::Options;
+package Apache::Ocsinventory::Server::Inventory::Capacities;
 
 use strict;
 
