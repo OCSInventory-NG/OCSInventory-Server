@@ -16,14 +16,14 @@ require Exporter;
 our @ISA = qw /Exporter/;
 
 our @EXPORT = qw/
-	APACHE_SERVER_ERROR
-	APACHE_FORBIDDEN
-	APACHE_OK
-	APACHE_BAD_REQUEST
-	_set_http_header
-	_set_http_content_type
-	_get_http_header
-	_send_http_headers
+  APACHE_SERVER_ERROR
+  APACHE_FORBIDDEN
+  APACHE_OK
+  APACHE_BAD_REQUEST
+  _set_http_header
+  _set_http_content_type
+  _get_http_header
+  _send_http_headers
 /;
 
 # mod-perl2
@@ -47,22 +47,22 @@ use constant APACHE_BAD_REQUEST => Apache2::Const::HTTP_BAD_REQUEST;
 
 # Wrappers
 sub _set_http_header{
-	my ($header, $value, $r) = @_;
-	$r->headers_out->{$header} = $value;
-	
+  my ($header, $value, $r) = @_;
+  $r->headers_out->{$header} = $value;
+  
 }
 
 sub _set_http_content_type{
-	my ($type, $r) = @_;
-	$r->content_type($type);
+  my ($type, $r) = @_;
+  $r->content_type($type);
 }
 
 sub _get_http_header{
-	my ($header, $r) = @_;
-	return $r->headers_in->{$header};
+  my ($header, $r) = @_;
+  return $r->headers_in->{$header};
 }
 
 sub _send_http_headers{
-	return;
+  return;
 }
 1;

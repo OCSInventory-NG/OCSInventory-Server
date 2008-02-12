@@ -19,26 +19,26 @@ require Exporter;
 our @ISA = qw /Exporter/;
 
 our @EXPORT = qw/
-	APACHE_SERVER_ERROR
-	APACHE_FORBIDDEN
-	APACHE_OK
-	APACHE_BAD_REQUEST
-	_set_http_header
-	_set_http_content_type
-	_get_http_header
-	_send_http_headers
+  APACHE_SERVER_ERROR
+  APACHE_FORBIDDEN
+  APACHE_OK
+  APACHE_BAD_REQUEST
+  _set_http_header
+  _set_http_content_type
+  _get_http_header
+  _send_http_headers
 /;
 
 BEGIN{
-	if(MP2){
-		require Apache::compat;
-		Apache::compat->import();
-		require Apache::Const;
-		Apache::Const->import(-compile => qw(:common :http));
-	}else{
-		require Apache::Constants;
-		Apache::Constants->import(qw(:common :response));
-	}
+  if(MP2){
+    require Apache::compat;
+    Apache::compat->import();
+    require Apache::Const;
+    Apache::Const->import(-compile => qw(:common :http));
+  }else{
+    require Apache::Constants;
+    Apache::Constants->import(qw(:common :response));
+  }
 }
 
 # retrieve apache constants
@@ -49,22 +49,22 @@ use constant APACHE_BAD_REQUEST => MP2?Apache::BAD_REQUEST:Apache::Constants::BA
 
 # Wrappers
 sub _set_http_header{
-	my ($header, $value, $r) = @_;
-	$r->header_out($header => $value);
-	return(0);
+  my ($header, $value, $r) = @_;
+  $r->header_out($header => $value);
+  return(0);
 }
 
 sub _set_http_content_type{
-	my ($type, $r) = @_;
-	$r->content_type($type);
+  my ($type, $r) = @_;
+  $r->content_type($type);
 }
 
 sub _get_http_header{
-	my ($header, $r) = @_;
-	return $r->headers_in->{$header};
+  my ($header, $r) = @_;
+  return $r->headers_in->{$header};
 }
 sub _send_http_headers{
-	my $r = shift;
-	$r->send_http_header;
+  my $r = shift;
+  $r->send_http_header;
 }
 1;

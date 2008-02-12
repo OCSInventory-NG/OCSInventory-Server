@@ -12,12 +12,12 @@ package Apache::Ocsinventory::Server::Groups;
 use strict;
 
 BEGIN{
-	if($ENV{'OCS_MODPERL_VERSION'} == 1){
-		require Apache::Ocsinventory::Server::Modperl1;
-		Apache::Ocsinventory::Server::Modperl1->import();
+  if($ENV{'OCS_MODPERL_VERSION'} == 1){
+    require Apache::Ocsinventory::Server::Modperl1;
+    Apache::Ocsinventory::Server::Modperl1->import();
         }elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
-		require Apache::Ocsinventory::Server::Modperl2;
-		Apache::Ocsinventory::Server::Modperl2->import();
+    require Apache::Ocsinventory::Server::Modperl2;
+    Apache::Ocsinventory::Server::Modperl2->import();
         }
 }
 
@@ -47,12 +47,12 @@ sub _validate_groups_cache{
  
   # Test cache validity
   my $request = $dbh->prepare('
-  	SELECT g.HARDWARE_ID
-	FROM groups 
-	g LEFT OUTER JOIN locks l
-	ON l.HARDWARE_ID=g.HARDWARE_ID
-	WHERE UNIX_TIMESTAMP()-CREATE_TIME > ?
-	AND l.HARDWARE_ID IS NULL'
+    SELECT g.HARDWARE_ID
+  FROM groups 
+  g LEFT OUTER JOIN locks l
+  ON l.HARDWARE_ID=g.HARDWARE_ID
+  WHERE UNIX_TIMESTAMP()-CREATE_TIME > ?
+  AND l.HARDWARE_ID IS NULL'
   );
   # Updating cache when needed
   return unless $request->execute( $ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} );
@@ -63,9 +63,9 @@ sub _validate_groups_cache{
       my $check_request = $dbh->prepare('SELECT HARDWARE_ID, (UNIX_TIMESTAMP()-CREATE_TIME) AS OFF FROM groups WHERE UNIX_TIMESTAMP()-CREATE_TIME > ? AND HARDWARE_ID=?'); 
       $check_request->execute($ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'}, $row->{'HARDWARE_ID'});
       if(!$check_request->rows()){
-        &_unlock($row->{'HARDWARE_ID'});	
-	$check_request->finish();
-	next;
+        &_unlock($row->{'HARDWARE_ID'});  
+  $check_request->finish();
+  next;
       }
 
       &_log(306,'groups','cache out-of-date('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -90,20 +90,20 @@ sub _build_group_cache{
   $get_request->execute( $group_id );
   my $row = $get_request->fetchrow_hashref();
   if($row->{'REQUEST'} ne ''){
-	  my $group_request = $dbh->prepare( $row->{'REQUEST'} );
-	  if($group_request->execute()){
+    my $group_request = $dbh->prepare( $row->{'REQUEST'} );
+    if($group_request->execute()){
             # Build cache request
-  	    my $build_cache = $dbh->prepare('INSERT INTO groups_cache(GROUP_ID, HARDWARE_ID, STATIC) VALUES(?,?,0)');
-	    # Deleting the current cache
-	    $dbh->do('DELETE FROM groups_cache WHERE GROUP_ID=? AND STATIC=0', {}, $group_id);
-	    # Build the cache
-	    while( my @cache = $group_request->fetchrow_array() ){
-	      $build_cache->execute($group_id, $cache[0]);
-	    }
-	  }
-	  else{
-	    &_log(520,'groups','Bad request('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
-	  }
+        my $build_cache = $dbh->prepare('INSERT INTO groups_cache(GROUP_ID, HARDWARE_ID, STATIC) VALUES(?,?,0)');
+      # Deleting the current cache
+      $dbh->do('DELETE FROM groups_cache WHERE GROUP_ID=? AND STATIC=0', {}, $group_id);
+      # Build the cache
+      while( my @cache = $group_request->fetchrow_array() ){
+        $build_cache->execute($group_id, $cache[0]);
+      }
+    }
+    else{
+      &_log(520,'groups','Bad request('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
+    }
   }
 # Updating cache time
   $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
