@@ -24,6 +24,7 @@ BEGIN{
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Constants;
+use Apache::Ocsinventory::Server::Capacities::Download::Inventory;
 
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
@@ -277,31 +278,19 @@ sub download_pre_inventory{
   return if !$ENV{'OCS_OPT_DOWNLOAD'};
   
   my $dbh = $current_context->{'DBI_HANDLE'};
-  my $hardware_id = $current_context->{'DATABASE_ID'};
-  my $result = $current_context->{'XML_ENTRY'};
-  my @blacklist;
-  my ($already_set, $entry);
-  #TODO: WRITE_DIFF
-  $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=(?)', {}, $hardware_id);
-  # Reference to the module part
-
-  my $base = $result->{'CONTENT'}->{'DOWNLOAD'}->{'HISTORY'}->{'PACKAGE'};
-  my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
-  for $entry ( @{ $base }) {
-  # fix the history handling bug
-    $already_set=0;
-    for(@blacklist){
-      if($_ eq $entry->{'ID'}){
-        $already_set=1;
-        last;
-      }
-    }
-    if(!$already_set){
-      push @blacklist, $entry->{'ID'};
-      $sth->execute( $hardware_id, $entry->{'ID'});
-    }
+  my $hardwareId = $current_context->{'DATABASE_ID'};
+  my $result = $current_context->{'XML_ENTRY'}; 
+    
+  my @fromXml = get_history_xml( $result );
+  my @fromDb;
+  
+  if( !$ENV{OCS_OPT_INVENTORY_WRITE_DIFF} ){
+    @fromDb = get_history_db( $dbh );
+    &update_history_diff( $hardwareId, $dbh, \@fromXml, \@fromDb );
   }
-  0;
+  else{
+    &update_history_full( $hardwareId, $dbh, \@fromXml );
+  }
 }
 
 sub download_handler{
@@ -323,9 +312,9 @@ sub download_handler{
   
   if(my $row = $request->fetchrow_hashref()){
     $dbh->do('UPDATE devices SET TVALUE=?, COMMENTS=?
-    WHERE NAME="DOWNLOAD" 
-    AND HARDWARE_ID=? 
-    AND IVALUE=?',
+      WHERE NAME="DOWNLOAD" 
+      AND HARDWARE_ID=? 
+      AND IVALUE=?',
     {}, $result->{'ERR'}?$result->{'ERR'}:'UNKNOWN_CODE', scalar localtime(), $hardware_id, $row->{'ID'} ) 
       or return(APACHE_SERVER_ERROR);
     &_set_http_header('content-length', 0, $r);
