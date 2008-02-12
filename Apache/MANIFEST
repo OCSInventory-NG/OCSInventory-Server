@@ -13,7 +13,7 @@ Ocsinventory/Server/Modperl2.pm
 Ocsinventory/Server/Constants.pm
 Ocsinventory/Server/Communication.pm
 Ocsinventory/Server/Inventory/Update.pm
-Ocsinventory/Server/Inventory/Options.pm
+Ocsinventory/Server/Inventory/Capacities.pm
 Ocsinventory/Server/Inventory/Update/Hardware.pm
 Ocsinventory/Server/Inventory/Update/AccountInfos.pm
 Ocsinventory/Server/Inventory/Data.pm
@@ -21,12 +21,12 @@ Ocsinventory/Server/Inventory/Cache.pm
 Ocsinventory/Server/Inventory/Export.pm
 Ocsinventory/Server/Inventory/Filter.pm
 Ocsinventory/Server/Groups.pm
-Ocsinventory/Server/Option/Update.pm
-Ocsinventory/Server/Option/Download.pm
-Ocsinventory/Server/Option/Registry.pm
-Ocsinventory/Server/Option/Ipdiscover.pm
-Ocsinventory/Server/Option/Example.pm
-Ocsinventory/Server/Option/Filter.pm
+Ocsinventory/Server/Capacities/Update.pm
+Ocsinventory/Server/Capacities/Download.pm
+Ocsinventory/Server/Capacities/Registry.pm
+Ocsinventory/Server/Capacities/Ipdiscover.pm
+Ocsinventory/Server/Capacities/Example.pm
+Ocsinventory/Server/Capacities/Filter.pm
 Ocsinventory/Server/Inventory.pm
 Ocsinventory/Server/Modperl1.pm
 Ocsinventory/Interface.pm

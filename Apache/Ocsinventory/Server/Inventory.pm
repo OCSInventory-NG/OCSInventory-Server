@@ -35,7 +35,7 @@ use Apache::Ocsinventory::Server::Duplicate;
 
 use Apache::Ocsinventory::Server::Inventory::Data;
 use Apache::Ocsinventory::Server::Inventory::Cache;
-use Apache::Ocsinventory::Server::Inventory::Options;
+use Apache::Ocsinventory::Server::Inventory::Capacities;
 use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Inventory::Update;
 use Apache::Ocsinventory::Server::Inventory::Filter;

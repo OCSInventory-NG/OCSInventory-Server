@@ -12,7 +12,7 @@
 # All modules using modperl api functions must use the wrappers defined in MODPERL1 or 2 .pm 
 # or create a new one in these 2 files if you need to use something that is not wrapped yet
 
-package Apache::Ocsinventory::Server::Capacities::Example;
+package Apache::Ocsinventory::Server::Option::Example;
 
 use strict;
 
@@ -65,7 +65,6 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_TOTO'} = 'titi';
 #%CURRENT_CONTEXT = (
 #	'APACHE_OBJECT' => ref, gives you a pointer to the apache request object -- Always filled
 #	'DBI_HANDLE' => ref, gives you a pointer to the database handle -- Always filled
-#	'DBI_SL_HANDLE' => ref, gives you a pointer to the slave database handle (only for read) -- Always filled
 #	'DEVICEID' => string, gives you the computer's unique deviceid -- Always filled
 #	'DATABASE_ID' => integer, gives you the computer's database identifier -- Always filled
 #	'DATA' => ref, gives you a pointer to the initial deflated data (earliest stage) -- Always filled

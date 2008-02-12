@@ -12,19 +12,19 @@ package Apache::Ocsinventory;
 use strict;
 
 BEGIN{
-	if($ENV{'OCS_MODPERL_VERSION'} == 1){
-		require Apache::Ocsinventory::Server::Modperl1;
-		Apache::Ocsinventory::Server::Modperl1->import();
-	}elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
-		require Apache::Ocsinventory::Server::Modperl2;
-		Apache::Ocsinventory::Server::Modperl2->import();
-	}else{
-		if(!defined($ENV{'OCS_MODPERL_VERSION'})){
-			die("OCS_MODPERL_VERSION not defined. Abort\n");
-		}else{
-			die("OCS_MODPERL_VERSION set to, a bad parameter. Must be '1' or '2'. Abort\n");
-		}
-	}
+  if($ENV{'OCS_MODPERL_VERSION'} == 1){
+    require Apache::Ocsinventory::Server::Modperl1;
+    Apache::Ocsinventory::Server::Modperl1->import();
+  }elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
+    require Apache::Ocsinventory::Server::Modperl2;
+    Apache::Ocsinventory::Server::Modperl2->import();
+  }else{
+    if(!defined($ENV{'OCS_MODPERL_VERSION'})){
+      die("OCS_MODPERL_VERSION not defined. Abort\n");
+    }else{
+      die("OCS_MODPERL_VERSION set to, a bad parameter. Must be '1' or '2'. Abort\n");
+    }
+  }
 }
 
 $Apache::Ocsinventory::VERSION = '1.02';
@@ -62,247 +62,250 @@ my %XML_PARSER_OPT;
 our @TRUSTED_IP;
 
 sub handler{
-	my $d;
-	my $status;
-	my $r;
-	my $data;
-	my $raw_data;
-	my $inflated;
-	my $query;
-	my $dbMode;
+  my $d;
+  my $status;
+  my $r;
+  my $data;
+  my $raw_data;
+  my $inflated;
+  my $query;
+  my $dbMode;
 
-	# current context
-	# Will be used to handle all globales
-	%CURRENT_CONTEXT = (
-		'APACHE_OBJECT' => undef,
-		'RAW_DATA'	=> undef,
-		#'DBI_HANDLE' 	=> undef,
-		'DEVICEID' 	=> undef,
-		'DATABASE_ID' 	=> undef,
-		'DATA' 		=> undef,
-		'XML_ENTRY' 	=> undef,
-		'XML_INVENTORY' => undef,
-		'LOCK_FL' 	=> 0,
-		'EXIST_FL' 	=> 0,
-		'MEMBER_OF' 	=> undef,
-		'DEFLATE_SUB' 	=> \&Compress::Zlib::compress,
-		'IS_TRUSTED'	=> 0,
-		'DETAILS'	=> undef,
-		'PARAMS'	=> undef,
-		'PARAMS_G'	=> undef,
-		'MEMBER_OF'	=> undef,
-		'IPADDRESS'	=> $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'},
-		'USER_AGENT'	=> undef
-	);
+  # current context
+  # Will be used to handle all globales
+  %CURRENT_CONTEXT = (
+    'APACHE_OBJECT' => undef,
+    'RAW_DATA'  => undef,
+    #'DBI_HANDLE'   => undef,
+    'DEVICEID'   => undef,
+    'DATABASE_ID'   => undef,
+    'DATA'     => undef,
+    'XML_ENTRY'   => undef,
+    'XML_INVENTORY' => undef,
+    'LOCK_FL'   => 0,
+    'EXIST_FL'   => 0,
+    'MEMBER_OF'   => undef,
+    'DEFLATE_SUB'   => \&Compress::Zlib::compress,
+    'IS_TRUSTED'  => 0,
+    'DETAILS'  => undef,
+    'PARAMS'  => undef,
+    'PARAMS_G'  => undef,
+    'MEMBER_OF'  => undef,
+    'IPADDRESS'  => $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'},
+    'USER_AGENT'  => undef
+  );
 
-	#LOG FILE
-	##########
-	#
-	# All events will be stored in this file in the csv format(See the errors code in the documentation)
-	open LOG, '>>'.$ENV{'OCS_LOGPATH'}.'/ocsinventory-NG.log' or die "Failed to open log file : $!\n";
-	# We don't want buffer, so we allways flush the handles
-	select(LOG);
-	$|=1;
-	select(STDOUT);
-	$|=1;
-	
-	# Get the data and the apache object
-	$r=shift;
-	$CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
-	
-	$CURRENT_CONTEXT{'USER_AGENT'} = &_get_http_header('User-agent', $r);
-	
-	@TRUSTED_IP = $r->dir_config->get('OCS_OPT_TRUSTED_IP');
-	
-	#Connect to database
-	$dbMode = 'write';
-	$dbMode = 'local' if($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ /local/i);
-	
-	if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect( $dbMode ))){
-		&_log(505,'handler','Database connection');
-		return &_end(APACHE_SERVER_ERROR);
-	}
-	
-	#Retrieve server options
-	if(&_get_sys_options()){
-		&_log(503,'handler', 'System options');
-		return &_end(APACHE_SERVER_ERROR);
-	}
-	
-	# First, we determine the http method
-	# The get method will be only available for the bootstrap to manage the deploy, and maybe, sometime to give files wich will be stored in the database
-	if($r->method() eq 'GET'){
+  #LOG FILE
+  ##########
+  #
+  # All events will be stored in this file in the csv format(See the errors code in the documentation)
+  open LOG, '>>'.$ENV{'OCS_LOGPATH'}.'/ocsinventory-NG.log' or die "Failed to open log file : $!\n";
+  # We don't want buffer, so we allways flush the handles
+  select(LOG);
+  $|=1;
+  select(STDOUT);
+  $|=1;
+  
+  # Get the data and the apache object
+  $r=shift;
+  $CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
+  
+  $CURRENT_CONTEXT{'USER_AGENT'} = &_get_http_header('User-agent', $r);
+  
+  @TRUSTED_IP = $r->dir_config->get('OCS_OPT_TRUSTED_IP');
+  
+  #Connect to database
+  $dbMode = 'write';
+  $dbMode = 'local' if($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ /local/i);
+  
+  if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect( $dbMode ))){
+    &_log(505,'handler','Database connection');
+    return &_end(APACHE_SERVER_ERROR);
+  }
+  
+  #Retrieve server options
+  if(&_get_sys_options()){
+    &_log(503,'handler', 'System options');
+    return &_end(APACHE_SERVER_ERROR);
+  }
+  
+  # First, we determine the http method
+  # The get method will be only available for the bootstrap to manage the deploy, and maybe, sometime to give files wich will be stored in the database
+  if($r->method() eq 'GET'){
 
-		# To manage the first contact with the bootstrap
-		# The uri must be '/ocsinventory/deploy/[filename]'
-		if($r->uri()=~/deploy\/(.+)\/?$/){
-			if($ENV{'OCS_OPT_DEPLOY'}){
-				&_end(0);
-				return(&_send_file('deploy',$1));
-			}else{
-				return &_end(APACHE_FORBIDDEN);
-			}
-		}elsif($r->uri()=~/update\/(.+)\/(.+)\/(\d+)\/?/){
-		# We use the GET method for the update to use the proxies
-		# The URL is built like that : [OCSFSERVER]/ocsinventory/[os]/[name]/[version]
-			if($ENV{'OCS_OPT_UPDATE'}){
-				&_end(0);
-				return(&_send_file('update',$1,$2,$3));
-			}else{
-				return &_end(APACHE_FORBIDDEN);
-			}
-		}else{
-		# If the url is invalid
-			return &_end(APACHE_BAD_REQUEST);
-		}
+    # To manage the first contact with the bootstrap
+    # The uri must be '/ocsinventory/deploy/[filename]'
+    if($r->uri()=~/deploy\/(.+)\/?$/){
+      if($ENV{'OCS_OPT_DEPLOY'}){
+        &_end(0);
+        return(&_send_file('deploy',$1));
+      }else{
+        return &_end(APACHE_FORBIDDEN);
+      }
+    }elsif($r->uri()=~/update\/(.+)\/(.+)\/(\d+)\/?/){
+    # We use the GET method for the update to use the proxies
+    # The URL is built like that : [OCSFSERVER]/ocsinventory/[os]/[name]/[version]
+      if($ENV{'OCS_OPT_UPDATE'}){
+        &_end(0);
+        return(&_send_file('update',$1,$2,$3));
+      }else{
+        return &_end(APACHE_FORBIDDEN);
+      }
+    }else{
+    # If the url is invalid
+      return &_end(APACHE_BAD_REQUEST);
+    }
 
-	# Here is the post method management
-	}elsif($r->method eq 'POST'){
-	
-		unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
-		# Our discussion is compressed stream, nothing else
-			&_log(510,'handler', 'Bad content type') if $ENV{'OCS_OPT_LOGLEVEL'};
-			return &_end(APACHE_FORBIDDEN);
+  # Here is the post method management
+  }elsif($r->method eq 'POST'){
+  
+    unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
+    # Our discussion is compressed stream, nothing else
+      &_log(510,'handler', 'Bad content type') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return &_end(APACHE_FORBIDDEN);
 
-		}
-		
-		# Get the data
-		if( !read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ){
-			&_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
-			return &_end(APACHE_SERVER_ERROR);
-		}
-		# Copying buffer because inflate() modify it
-		$raw_data = $data;
-		$CURRENT_CONTEXT{'RAW_DATA'} = \$raw_data;
-		# Debug level for Apache::DBI (apache/error.log)
-		# $Apache::DBI::DEBUG=2;
-	
-		# Read the request
-		# Possibilities :
-		# prolog : The agent wants to know if he have to send an inventory(and with wich options)
-		# update : The agent wants to know if there is a newer version available
-		# inventory : It is an inventory
-		# system : Request to know the server's time response (and if it's alive) not yet implemented
-		# file : Download files when upgrading (For the moment, only when upgrading)
-		##################################################
-		#
-		# Inflate the data
-		unless($d = Compress::Zlib::inflateInit()){
-			&_log(506,'handler','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
-			return &_end(APACHE_BAD_REQUEST);
-		}
-		($inflated, $status) = $d->inflate($data);
-		unless( $status == Z_OK or $status == Z_STREAM_END){
-			&_inflate(\$raw_data, \$inflated);
-			if(!$inflated){
-				&_log(506,'handler','Compress stage');
-				return &_end(APACHE_SERVER_ERROR);
-			}
-		}
-		$CURRENT_CONTEXT{'DATA'} = \$inflated;
-		##########################
-		# Parse the XML request
-		# Retrieving xml parsing options if needed
-		&_get_xml_parser_opt( \%XML_PARSER_OPT ) unless %XML_PARSER_OPT;
-		unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
-			&_log(507,'handler','Xml stage');
-			return &_end(APACHE_BAD_REQUEST);
-		}
-		$CURRENT_CONTEXT{'XML_ENTRY'} = $query;
+    }
+    
+    # Get the data
+    if( !read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ){
+      &_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return &_end(APACHE_SERVER_ERROR);
+    }
+    # Copying buffer because inflate() modify it
+    $raw_data = $data;
+    $CURRENT_CONTEXT{'RAW_DATA'} = \$raw_data;
+    # Debug level for Apache::DBI (apache/error.log)
+    # $Apache::DBI::DEBUG=2;
+  
+    # Read the request
+    # Possibilities :
+    # prolog : The agent wants to know if he have to send an inventory(and with wich options)
+    # update : The agent wants to know if there is a newer version available
+    # inventory : It is an inventory
+    # system : Request to know the server's time response (and if it's alive) not yet implemented
+    # file : Download files when upgrading (For the moment, only when upgrading)
+    ##################################################
+    #
+    # Inflate the data
+    unless($d = Compress::Zlib::inflateInit()){
+      &_log(506,'handler','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return &_end(APACHE_BAD_REQUEST);
+    }
+    ($inflated, $status) = $d->inflate($data);
+    unless( $status == Z_OK or $status == Z_STREAM_END){
+      &_inflate(\$raw_data, \$inflated);
+      if(!$inflated){
+        &_log(506,'handler','Compress stage');
+        return &_end(APACHE_SERVER_ERROR);
+      }
+    }
+    $CURRENT_CONTEXT{'DATA'} = \$inflated;
+    ##########################
+    # Parse the XML request
+    # Retrieving xml parsing options if needed
+    &_get_xml_parser_opt( \%XML_PARSER_OPT ) unless %XML_PARSER_OPT;
+    unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
+      &_log(507,'handler','Xml stage');
+      return &_end(APACHE_BAD_REQUEST);
+    }
+    $CURRENT_CONTEXT{'XML_ENTRY'} = $query;
 
-		# Get the request type
-		my $request=$query->{QUERY};
-		$CURRENT_CONTEXT{'DEVICEID'} = $query->{DEVICEID} or $CURRENT_CONTEXT{'DEVICEID'} = $query->{CONTENT}->{DEVICEID};
-		
-		unless($request eq 'UPDATE'){
-			if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
-				&_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
-				return &_end(APACHE_BAD_REQUEST);
-			}
-		}
-		
-		 # Must be filled
-		unless($request){
-			&_log(500,'handler','Request not defined');
-			return &_end(APACHE_BAD_REQUEST);
-		}
+    # Get the request type
+    my $request=$query->{QUERY};
+    $CURRENT_CONTEXT{'DEVICEID'} = $query->{DEVICEID} or $CURRENT_CONTEXT{'DEVICEID'} = $query->{CONTENT}->{DEVICEID};
+    
+    unless($request eq 'UPDATE'){
+      if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
+        &_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
+        return &_end(APACHE_BAD_REQUEST);
+      }
+    }
+    
+     # Must be filled
+    unless($request){
+      &_log(500,'handler','Request not defined');
+      return &_end(APACHE_BAD_REQUEST);
+    }
 
-		# Init global structure
-		my $err = &_init();
-		return &_end($err) if $err;
-		
-		# The three above are hardcoded
-		if($request eq 'PROLOG'){
-			my $ret = &_prolog();
-			return(&_end($ret));
-		}elsif($request eq 'INVENTORY'){
-			my $ret = &_inventory_handler();
-			return(&_end($ret))
-		}elsif($request eq 'SYSTEM'){
-			my $ret = &_system_handler();
-			return(&_end($ret));
-		}else{
-			# Other request are handled by options
-			my $handler = &_modules_get_request_handler($request);
-			if($handler == 0){
-				&_log(500,'handler', 'No handler');
-				return APACHE_BAD_REQUEST;
-			}else{
-				my $ret = &{$handler}(\%CURRENT_CONTEXT);
-				return(&_end($ret));
-			}
+    # Init global structure
+    my $err = &_init();
+    return &_end($err) if $err;
+    
+    # The three above are hardcoded
+    if($request eq 'PROLOG'){
+      my $ret = &_prolog();
+      return(&_end($ret));
+    }elsif($request eq 'INVENTORY'){
+      my $ret = &_inventory_handler();
+      return(&_end($ret))
+    }elsif($request eq 'SYSTEM'){
+      my $ret = &_system_handler();
+      return(&_end($ret));
+    }else{
+      # Other request are handled by options
+      my $handler = &_modules_get_request_handler($request);
+      if($handler == 0){
+        &_log(500,'handler', 'No handler');
+        return APACHE_BAD_REQUEST;
+      }else{
+        my $ret = &{$handler}(\%CURRENT_CONTEXT);
+        return(&_end($ret));
+      }
 
-		}
+    }
 
-	}else{ return APACHE_FORBIDDEN }
+  }else{ return APACHE_FORBIDDEN }
 
 }
 
 sub _init{
-	my $request;
-	
-	# Retrieve Device if exists
-	$request = $CURRENT_CONTEXT{'DBI_HANDLE'}->prepare('SELECT DEVICEID,ID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY FROM hardware WHERE DEVICEID=?');
-	unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
-		return(APACHE_SERVER_ERROR);
-	}
-	
-	for my $ipreg (@TRUSTED_IP){
-			if($CURRENT_CONTEXT{'IPADDRESS'}=~/^$ipreg$/){
-				&_log(310,'handler','Trusted computer') if $ENV{'OCS_OPT_LOGLEVEL'};
-				$CURRENT_CONTEXT{'IS_TRUSTED'} = 1;
-			}
-	}
-        	
-	if($request->rows){
-		my $row = $request->fetchrow_hashref;
-		
-		$CURRENT_CONTEXT{'EXIST_FL'} = 1;
-		$CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
-		$CURRENT_CONTEXT{'DETAILS'} = {
-			'LCOME' => $row->{'LCOME'},
-			'LDATE' => $row->{'LDATE'},
-			'QUALITY' => $row->{'QUALITY'},
-			'FIDELITY' => $row->{'FIDELITY'},
-		};
-		
-		# Computing groups list 
-		if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
-			$CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups() ];
-		}
-		else{
-			$CURRENT_CONTEXT{'MEMBER_OF'} = [];
-		}
-		
-		$CURRENT_CONTEXT{'PARAMS'} = { &_get_spec_params() };
-		$CURRENT_CONTEXT{'PARAMS_G'} = { &_get_spec_params_g() };
-	}else{
-		$CURRENT_CONTEXT{'EXIST_FL'} = 0;
-		$CURRENT_CONTEXT{'MEMBER_OF'} = [];
-	}
-	
-	$request->finish;	
-	return;
+  my $request;
+  
+  # Retrieve Device if exists
+  $request = $CURRENT_CONTEXT{'DBI_HANDLE'}->prepare('
+    SELECT DEVICEID,ID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY 
+    FROM hardware WHERE DEVICEID=?'
+  );
+  unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
+    return(APACHE_SERVER_ERROR);
+  }
+  
+  for my $ipreg (@TRUSTED_IP){
+      if($CURRENT_CONTEXT{'IPADDRESS'}=~/^$ipreg$/){
+        &_log(310,'handler','Trusted computer') if $ENV{'OCS_OPT_LOGLEVEL'};
+        $CURRENT_CONTEXT{'IS_TRUSTED'} = 1;
+      }
+  }
+          
+  if($request->rows){
+    my $row = $request->fetchrow_hashref;
+    
+    $CURRENT_CONTEXT{'EXIST_FL'} = 1;
+    $CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
+    $CURRENT_CONTEXT{'DETAILS'} = {
+      'LCOME' => $row->{'LCOME'},
+      'LDATE' => $row->{'LDATE'},
+      'QUALITY' => $row->{'QUALITY'},
+      'FIDELITY' => $row->{'FIDELITY'},
+    };
+    
+    # Computing groups list 
+    if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
+      $CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups() ];
+    }
+    else{
+      $CURRENT_CONTEXT{'MEMBER_OF'} = [];
+    }
+    
+    $CURRENT_CONTEXT{'PARAMS'} = { &_get_spec_params() };
+    $CURRENT_CONTEXT{'PARAMS_G'} = { &_get_spec_params_g() };
+  }else{
+    $CURRENT_CONTEXT{'EXIST_FL'} = 0;
+    $CURRENT_CONTEXT{'MEMBER_OF'} = [];
+  }
+  
+  $request->finish;  
+  return;
 }
 1;
 
