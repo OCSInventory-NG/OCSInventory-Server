@@ -9,7 +9,20 @@
 ################################################################################
 package Apache::Ocsinventory::Server::Capacities::Download::Inventory;
 
+require Exporter;
+
+our @ISA = qw /Exporter/;
+
+our @EXPORT = qw / 
+  get_history_xml 
+  get_history_db
+  update_history_full
+  update_history_diff
+/;
+
 use strict;
+
+use Apache::Ocsinventory::Server::System;
 
 sub get_history_xml{
   my $result = shift;
@@ -23,14 +36,15 @@ sub get_history_xml{
 }
 
 sub get_history_db{
-  my $dbh = shift;
-  my $sth = $dbh->prepare('SELECT PKD_ID from download_history WHERE HARDWARE_ID=?');
+  my ( $hardwareId, $dbh ) = @_;
+  my $sth = $dbh->prepare('SELECT PKG_ID from download_history WHERE HARDWARE_ID=?');
   my @ret;
   
-  if( $sth->execute ){
-    while( $row = $sth->fetchrow_hashref ){
+  if( $sth->execute( $hardwareId ) ){
+    while( my $row = $sth->fetchrow_hashref ){
       push @ret, $row->{PKG_ID};
     }
+  }
   else{
     &_log(2502, 'download');
   }
@@ -43,7 +57,7 @@ sub update_history_full{
   
   my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
   
-  $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $hardware_id);
+  $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $hardwareId);
   
   for my $entry ( @{ $pkgList }) {
   # fix the history handling bug (agent side)
@@ -56,13 +70,13 @@ sub update_history_full{
     }
     if(!$already_set){
       push @blacklist, $entry;
-      $sth->execute( $hardware_id, $entry );
+      $sth->execute( $hardwareId, $entry );
     }
   }
 }
 
 sub update_history_diff{
-  my ( $dbh, $hardwareId, $fromXml, $fromDb ) = @_;
+  my ( $hardwareId, $dbh, $fromXml, $fromDb ) = @_;
   
   for my $l_xml (@$fromXml){
     my $found = 0;

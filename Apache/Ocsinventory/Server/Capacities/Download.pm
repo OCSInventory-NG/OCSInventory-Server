@@ -284,8 +284,8 @@ sub download_pre_inventory{
   my @fromXml = get_history_xml( $result );
   my @fromDb;
   
-  if( !$ENV{OCS_OPT_INVENTORY_WRITE_DIFF} ){
-    @fromDb = get_history_db( $dbh );
+  if( $ENV{OCS_OPT_INVENTORY_WRITE_DIFF} ){
+    @fromDb = get_history_db( $hardwareId, $dbh );
     &update_history_diff( $hardwareId, $dbh, \@fromXml, \@fromDb );
   }
   else{
