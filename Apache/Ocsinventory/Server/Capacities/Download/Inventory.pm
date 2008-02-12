@@ -55,9 +55,9 @@ sub update_history_full{
   my ( $hardwareId, $dbh, $pkgList ) = @_;
   my ( @blacklist, $already_set );
   
-  my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
-  
   $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $hardwareId);
+  
+  my $sth = $dbh->prepare('INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)');
   
   for my $entry ( @{ $pkgList }) {
   # fix the history handling bug (agent side)
@@ -82,11 +82,13 @@ sub update_history_diff{
     my $found = 0;
     for my $i_db (0..(@{$fromDb}-1)){
       next unless $fromDb->[$i_db];
-      $found = 1 if $fromDb->[$i_db] eq $l_xml;
-      # The value has been found, we have to delete it from the db list
-      # (elements remaining will be deleted)
-      delete $fromDb->[$i_db];
-      last;
+      if($fromDb->[$i_db] eq $l_xml){
+        $found = 1;
+        # The value has been found, we have to delete it from the db list
+        # (elements remaining will be deleted)
+        delete $fromDb->[$i_db];
+        last;
+      }
     }
     if(!$found){
       $dbh->do( 'INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)', {}, $hardwareId, $l_xml );
