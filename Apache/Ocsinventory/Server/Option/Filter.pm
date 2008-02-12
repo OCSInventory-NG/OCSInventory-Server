@@ -10,7 +10,7 @@
 
 # This core module is used to implement what filter you want.
 
-package Apache::Ocsinventory::Server::Option::Filter;
+package Apache::Ocsinventory::Server::Capacities::Filter;
 
 use strict;
 
