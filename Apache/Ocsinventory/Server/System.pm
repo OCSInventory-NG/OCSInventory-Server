@@ -9,6 +9,8 @@
 ################################################################################
 package Apache::Ocsinventory::Server::System;
 
+use Apache::Ocsinventory::Server::System::Config;
+
 use strict;
 
 BEGIN{
@@ -84,8 +86,7 @@ sub _get_sys_options{
   # Wich options enabled ?
   #############
   # We read the table config looking for the ivalues of these options
-   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
-  my %options = %Apache::Ocsinventory::OPTIONS;
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $row;
   my $request = $dbh->prepare('SELECT * FROM config');
   $request->execute;
@@ -94,10 +95,9 @@ sub _get_sys_options{
 
   # read options defined in ocs GUI
   while($row=$request->fetchrow_hashref){
-    for(keys(%options)){
+    for(keys(%CONFIG)){
       if('OCS_OPT_'.$row->{'NAME'} eq $_){
-        $ENV{$_} = $row->{'IVALUE'};
-        next;
+          $ENV{$_} = $row->{ $CONFIG{$_}->{type} };
       }
     }
   }
