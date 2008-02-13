@@ -72,15 +72,6 @@ Exporter::export_ok_tags('server');
 
 use Apache::Ocsinventory::Server::Constants;
 
-sub _init_sys_options{
-  # If there is no defined value in ENV for an option, we define it with its default
-  for(keys(%Apache::Ocsinventory::OPTIONS)){
-    if(!defined($ENV{$_})){
-      $ENV{$_} = $Apache::Ocsinventory::OPTIONS{$_};
-    }
-  }
-}
-
 sub _get_sys_options{
 
   # Wich options enabled ?
@@ -90,8 +81,6 @@ sub _get_sys_options{
   my $row;
   my $request = $dbh->prepare('SELECT * FROM config');
   $request->execute;
-
-  &_init_sys_options;
 
   # read options defined in ocs GUI
   while($row=$request->fetchrow_hashref){
