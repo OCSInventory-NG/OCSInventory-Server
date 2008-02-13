@@ -95,9 +95,9 @@ sub _get_sys_options{
 
   # read options defined in ocs GUI
   while($row=$request->fetchrow_hashref){
-    for(keys(%CONFIG)){
-      if('OCS_OPT_'.$row->{'NAME'} eq $_){
-          $ENV{$_} = $row->{ $CONFIG{$_}->{type} };
+    for( keys %CONFIG ){
+      if( $row->{'NAME'} eq $_){
+          $ENV{'OCS_OPT_'.$_} = $row->{ $CONFIG{$_}->{type} };
       }
     }
   }

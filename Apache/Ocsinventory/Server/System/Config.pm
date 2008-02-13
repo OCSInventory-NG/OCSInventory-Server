@@ -21,6 +21,7 @@ our @EXPORT = qw /
 /;
 
 our %CONFIG = (
+  LOGPATH => { type => 'TVALUE' },
   FREQUENCY => { type => 'IVALUE' },
   PROLOG_FREQ => { type => 'IVALUE' },
   DEPLOY => { type => 'IVALUE' },
