@@ -29,22 +29,6 @@ BEGIN{
 
 $Apache::Ocsinventory::VERSION = '1.02';
 
-# Defaults
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_FREQUENCY'} = 3;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROLOG_FREQ'} = 24;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DEPLOY'} = 1;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_TRACE_DELETED'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_AUTO_DUPLICATE_LVL'} = 7;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOGLEVEL'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROXY_REVALIDATE_DELAY'} = 3600;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_UPDATE'} = 1;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_DIFF'} = 1;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_TRANSACTION'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_LOCK_REUSE_TIME'} = 3600;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_ENABLE_GROUPS'} = 1;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} = 3600;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_GROUPS_CACHE_OFFSET'} = 3600;
-
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw /:server _modules_get_request_handler /;
