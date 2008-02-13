@@ -1,9 +1,22 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Web service upgrade ( bug fixes, and many improvements)
+	* New configuration system using Apache::Ocsinventory::Server::System::Config
+	* Groups are now computed using DB Slae if available
+	* Engine extensions : "Option" renamed to "Capacity"
+	* Changed module structure
+	* Code improvement for Inventory.pm
 	* Added model serial as auto duplicate criteria
 	* Added INVENTORY_WRITE_DIFF for lower load on DB backends and more afficient sql query cache
-	* Added Slave DB backend support (for read: soap engine, groups...etc)
+	* Added Slave DB backend support (for read: soap engine...etc)
 	* PROLOG_FREQ specific parameter handling (computer, mass processing and group levels)
 	* DOWNLOAD* specific parameters handling (computer, mass processing and group levels)
 	* IPDISCOVER specific parameter handling (computer, mass processing and group levels)
+	* Computer's groups support (dynamic and static)
+	* blacklists of MAC and SERIAL are now handled from database
+	* Multiple ocs servers support (Backends)
+	* Trusted computers support (filter exceptions)
+	* GZIP compression support
+	* No compression support
+	* inventory cache handling improved
