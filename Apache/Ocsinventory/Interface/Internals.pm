@@ -18,12 +18,14 @@ eval {
   require XML::Entities;
 };
 use Apache::Ocsinventory::Interface::Database;
+use XML::Simple;
 
 our @ISA = qw /Exporter/;
 
 our @EXPORT = qw /
   decode_xml
-  encode_xml 
+  encode_xml
+  send_error 
 /;
 
 sub decode_xml{
@@ -84,5 +86,12 @@ sub reset_checksum {
   my( $checksum, $ref ) = @_;
   my $where = join(',', @$ref);
   return do_sql("UPDATE hardware SET CHECKSUM=? WHERE ID IN ($where)", $checksum);
+}
+sub send_error{
+  my $error = shift;
+  return XMLout ( 
+    { 'ERROR' => [ $error ] }, 
+    RootName => 'RESULT'
+  );
 }
 1;

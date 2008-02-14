@@ -24,12 +24,12 @@ our @EXPORT = qw /
 /;
 
 sub get_history_events {
-  my( $begin, $offset ) = @_;
+  my $offset = shift;
   my @tmp;
   
   $offset = $offset * $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
   
-  my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE LIMIT $begin,$offset" );
+  my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE LIMIT $offset, $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}" );
     
   while( my $row = $sth->fetchrow_hashref() ){
     push @tmp, {
@@ -43,8 +43,11 @@ sub get_history_events {
 }
 
 sub clear_history_events {
-  my( $begin, $num ) = @_;
-  my $sth = get_sth( "SELECT * FROM deleted_equiv ORDER BY DATE LIMIT $begin,$num" );
+  my $offset = shift;
+  
+  $offset = $offset * $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+  
+  my $sth = get_sth( "SELECT * FROM deleted_equiv ORDER BY DATE LIMIT $offset, $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}" );
   while( my $row = $sth->fetchrow_hashref() ) {
     do_sql('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT=?', $row->{'DELETED'}, $row->{'DATE'}, $row->{'EQUIVALENT'}) or die;
   }

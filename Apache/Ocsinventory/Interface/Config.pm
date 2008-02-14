@@ -10,6 +10,7 @@
 package Apache::Ocsinventory::Interface::Config;
 
 use Apache::Ocsinventory::Interface::Database;
+use Apache::Ocsinventory::Interface::Internals;
 use Apache::Ocsinventory::Server::System::Config;
 
 use XML::Simple;
@@ -33,7 +34,7 @@ sub ocs_config_read{
   my ($key, $legacy) = @_;
   
   unless( ocs_config_is_supported( $key ) ){
-    return ocs_config_error( 'KEY_NOT_SUPPORTED' );    
+    return send_error( 'KEY_NOT_SUPPORTED' );    
   }
   
   my $sth = get_sth('SELECT IVALUE,TVALUE FROM config WHERE NAME=?', $key);
@@ -71,14 +72,6 @@ sub ocs_config_is_valid {
   return $testedValue =~ $CONFIG{$key}->{filter};
 }
 
-sub ocs_config_error{
-  my $error = shift;
-  return XMLout ( 
-    { 'ERROR' => [ $error ] }, 
-    RootName => 'RESULT'
-  );
-}
-
 # Set a config value in "config" table
 # If ocs GUI is not used,
 # you have to change parameters in ocsinventory.conf
@@ -87,7 +80,7 @@ sub ocs_config_write{
   
   if( ocs_config_is_supported( $key ) ){
     if( !ocs_config_is_valid( $key, $ivalue, $tvalue ) ){
-      return (1, ocs_config_error( 'VALUE_NOT_VALID' ));
+      return (1, send_error( 'VALUE_NOT_VALID' ));
     }
     my $sth = get_sth("SELECT * FROM config WHERE NAME=?", $key);
     if( !$sth->rows ){
@@ -98,7 +91,7 @@ sub ocs_config_write{
     do_sql("UPDATE config SET TVALUE=? WHERE NAME=?", $tvalue, $key ) if defined $tvalue;
   }
   else{
-    return ( 1, ocs_config_error( 'KEY_NOT_SUPPORTED' ) );
+    return ( 1, send_error( 'KEY_NOT_SUPPORTED' ) );
   }
   0;
 }
