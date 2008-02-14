@@ -11,15 +11,21 @@ package Apache::Ocsinventory::Interface;
 
 use Apache::Ocsinventory::Interface::Internals;
 use Apache::Ocsinventory::Interface::Database;
-use Apache::Ocsinventory::Interface::Ipdiscover;
-use Apache::Ocsinventory::Interface::Inventory;
-use Apache::Ocsinventory::Interface::Config;
-use Apache::Ocsinventory::Interface::History;
-use Apache::Ocsinventory::Interface::Extensions;
+
+require Apache::Ocsinventory::Interface::Ipdiscover;
+require Apache::Ocsinventory::Interface::Inventory;
+require Apache::Ocsinventory::Interface::Config;
+require Apache::Ocsinventory::Interface::History;
+require Apache::Ocsinventory::Interface::Extensions;
 
 use strict;
 
 $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT} = 100 if !defined $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+
+require $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} 
+  if $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF};
+
+# ===== ACCESSOR TO COMPUTER'S DATA =====
 
 sub get_computers_V1{
   my $class = shift;
@@ -63,6 +69,8 @@ sub get_computers_V1{
   return "<COMPUTERS>\n", @result, "</COMPUTERS>\n";
 }
 
+# ===== CONFIGURATION METHODS =====
+
 # Read a general config parameter
 # If a value is provided, set it to given parameters
 # If only a tvalue is given, set ivalue to NULL
@@ -96,16 +104,27 @@ sub ocs_config_V2{
   return Apache::Ocsinventory::Interface::Config::ocs_config_read( $key, 0 );
 }
 
+# ===== SOFTWARE DICTIONNARY =====
+
 # Get a software dictionnary word
 sub get_dico_soft_element_V1{
   my( $class, $word ) = @_;
   return Apache::Ocsinventory::Interface::Inventory::get_dico_soft_extracted( $word );
 }
-# Get ipdiscover network device(s)
-# sub network_devices_V1{
-#   my $class = shift;
-#   
-# }
+
+# ===== CHECKSUM UPDATE =====
+
+sub reset_checksum_V1 {
+  my $class = shift;
+  my $checksum = shift;
+  return send_error('BAD_CHECKSUM') unless $checksum =~ /^\d+$/;
+  for(@_){
+    return send_error('BAD_ID') unless $_ =~ /^\d+$/;
+  }
+  return Apache::Ocsinventory::Interface::Internals::reset_checksum( $checksum, \@_ );
+}
+
+# ===== EVENTS TRACKING =====
 
 # Get computer's history
 sub get_history_V1{
@@ -121,15 +140,7 @@ sub clear_history_V1{
   return Apache::Ocsinventory::Interface::History::clear_history_events( $offset );
 }
 
-sub reset_checksum_V1 {
-  my $class = shift;
-  my $checksum = shift;
-  return send_error('BAD_CHECKSUM') unless $checksum =~ /^\d+$/;
-  for(@_){
-    return send_error('BAD_ID') unless $_ =~ /^\d+$/;
-  }
-  return Apache::Ocsinventory::Interface::Internals::reset_checksum( $checksum, \@_ );
-}
+# ===== IPDISCOVER METHODS =====
 
 sub get_ipdiscover_devices_V1{
   my $class = shift;

@@ -1,6 +1,12 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added a minimal system to load external methods in web service (OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF)
+	* Added ipdiscover_delete_type_V1() to web service
+	* Added ipdiscover_create_type_V1() to web service
+	* Added ipdiscover_untag_V1() to web service
+	* Added ipdiscover_remove_V1() to web service
+	* Added ipdiscover_tag_V1() to web service
 	* Added get_ipdiscover_device() to web service
 	* Added OCS_OPT_WEB_SERVICE_RESULTS_LIMIT setting
 	* Added XML::Entities dependency on SOAP service (as SOAP::Lite may not decode CDATA)
