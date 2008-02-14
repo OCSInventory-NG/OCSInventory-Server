@@ -1,6 +1,8 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added get_ipdiscover_device() to web service
+	* Added OCS_OPT_WEB_SERVICE_RESULTS_LIMIT setting
 	* Added XML::Entities dependency on SOAP service (as SOAP::Lite may not decode CDATA)
 	* Web service upgrade ( bug fixes, and many improvements)
 	* New configuration system using Apache::Ocsinventory::Server::System::Config
