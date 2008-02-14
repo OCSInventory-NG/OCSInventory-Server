@@ -31,7 +31,7 @@ sub _init_inventory_cache{
   $check_cache->execute();
   if($check_cache->rows()){
     my $row = $check_cache->fetchrow_hashref();
-    if($row->{IVALUE}<($ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}?$ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}:3600)){
+    if($row->{IVALUE}<($ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}?$ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}*86400:7*86400)){
       return;
     }
   }

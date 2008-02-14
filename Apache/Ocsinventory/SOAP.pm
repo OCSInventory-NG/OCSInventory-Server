@@ -12,7 +12,7 @@ package Apache::Ocsinventory::SOAP;
 BEGIN{
 	eval{
 		# Use the good modperl transport
-		if( $ENV{OCS_MODPERL_VERSION}==1 ){
+		if($ENV{OCS_MODPERL_VERSION}==1){
 			require Apache::Ocsinventory::Server::Modperl1;
 			Apache::Ocsinventory::Server::Modperl1->import();
 			require SOAP::Transport::HTTP;
@@ -29,7 +29,7 @@ BEGIN{
 }
 
 sub handler {
-	our $apache_req = $_[0];
+	our $apache_req = $_[0];	
 	return APACHE_FORBIDDEN unless $ENV{OCS_OPT_WEB_SERVICE_ENABLED};
 	$server->handler(@_);
 }

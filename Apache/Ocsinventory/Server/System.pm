@@ -221,15 +221,23 @@ sub _log{
   my $comment = shift;
   my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}||'NA';
   my $ipaddress = $Apache::Ocsinventory::CURRENT_CONTEXT{'IPADDRESS'}||'??';
-  my $fh = \*Apache::Ocsinventory::LOG;
+  our $LOG;
   
-  print $fh localtime().";$$;$code;$DeviceID;$ipaddress;".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
+  if(!$LOG){
+    open LOG, '>>'.$ENV{'OCS_OPT_LOGPATH'}.'/ocsinventory-NG.log' or die "Failed to open log file : $! ($ENV{'OCS_LOGPATH'})\n";
+    # We don't want buffer, so we allways flush the handles
+    select(LOG);
+    $|=1;
+    $LOG = \*LOG;
+  }
+    
+  print $LOG localtime().";$$;$code;$DeviceID;$ipaddress;".&_get_http_header('User-agent',$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}).";$phase;".($comment?$comment:"")."\n";
 }
 
 # Subroutine called at the end of execution
 sub _end{
   my $ret = shift;
-   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
   #Non-transactionnal table
@@ -241,7 +249,7 @@ sub _end{
   }else{
     $dbh->commit;
   }
-  close(LOG);
+  close(our $LOG) && undef $LOG;
   $dbh->disconnect;
   return $ret;
 }

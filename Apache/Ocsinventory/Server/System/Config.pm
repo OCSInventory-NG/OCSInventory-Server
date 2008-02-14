@@ -124,7 +124,7 @@ our %CONFIG = (
     unit => 'day',
     description => 'Specify when the engine will clean the inventory cache structures',
     level => CRITICAL,
-    filter => qr '^(1|0)$'
+    filter => qr '^([1-9]\d*)$'
   },
   INVENTORY_FILTER_ENABLED => { 
     type => 'IVALUE',  
@@ -325,6 +325,14 @@ our %CONFIG = (
     description => 'Specify if you want to track packages affected to a group on computer\'s level',
     level => IMPORTANT,
     filter => qr '^(1|0)$'
+  },
+  DOWNLOAD_PERIOD_LENGTH => {
+    type => 'IVALUE',
+    default => 10,
+    unit => 'cycle',
+    description => 'Specify the number of cycle within a period',
+    level => IMPORTANT,
+    filter => qr '^([1-9]\d*)$'
   },
   PROLOG_FILTER_ON => {
     type => 'IVALUE',

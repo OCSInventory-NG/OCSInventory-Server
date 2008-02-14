@@ -78,15 +78,8 @@ sub handler{
     'IPADDRESS'  => $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'},
     'USER_AGENT'  => undef
   );
-
-  #LOG FILE
-  ##########
-  #
-  # All events will be stored in this file in the csv format(See the errors code in the documentation)
-  open LOG, '>>'.$ENV{'OCS_LOGPATH'}.'/ocsinventory-NG.log' or die "Failed to open log file : $!\n";
-  # We don't want buffer, so we allways flush the handles
-  select(LOG);
-  $|=1;
+  
+  # No buffer for STDOUT
   select(STDOUT);
   $|=1;
   

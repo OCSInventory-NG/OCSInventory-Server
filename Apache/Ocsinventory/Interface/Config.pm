@@ -87,19 +87,20 @@ sub ocs_config_write{
   
   if( ocs_config_is_supported( $key ) ){
     if( !ocs_config_is_valid( $key, $ivalue, $tvalue ) ){
-      return (1,ocs_config_error( 'VALUE_NOT_VALID' ));
+      return (1, ocs_config_error( 'VALUE_NOT_VALID' ));
     }
     my $sth = get_sth("SELECT * FROM config WHERE NAME=?", $key);
     if( !$sth->rows ){
       do_sql("INSERT INTO config(NAME) VALUES(?)", $key);
     }
     $sth->finish();
-    get_sth("UPDATE config SET IVALUE=? WHERE NAME=?", $ivalue, $key )->finish() if defined $ivalue;
-    get_sth("UPDATE config SET TVALUE=? WHERE NAME=?", $tvalue, $key )->finish() if defined $tvalue;
+    do_sql("UPDATE config SET IVALUE=? WHERE NAME=?", $ivalue, $key ) if defined $ivalue;
+    do_sql("UPDATE config SET TVALUE=? WHERE NAME=?", $tvalue, $key ) if defined $tvalue;
   }
   else{
     return ( 1, ocs_config_error( 'KEY_NOT_SUPPORTED' ) );
   }
+  0;
 }
 
 1;

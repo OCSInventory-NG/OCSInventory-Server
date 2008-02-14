@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added XML::Entities dependency on SOAP service (as SOAP::Lite may not decode CDATA)
 	* Web service upgrade ( bug fixes, and many improvements)
 	* New configuration system using Apache::Ocsinventory::Server::System::Config
 	* Groups are now computed using DB Slae if available
