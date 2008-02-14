@@ -24,9 +24,12 @@ our @EXPORT = qw /
 /;
 
 sub get_history_events {
-  my( $begin, $num ) = @_;
+  my( $begin, $offset ) = @_;
   my @tmp;
-  my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE LIMIT $begin,$num" );
+  
+  $offset = $offset * $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+  
+  my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE LIMIT $begin,$offset" );
     
   while( my $row = $sth->fetchrow_hashref() ){
     push @tmp, {

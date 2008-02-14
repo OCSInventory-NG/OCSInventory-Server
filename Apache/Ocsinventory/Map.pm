@@ -354,5 +354,23 @@ our %DATA_MAP= (
        SOURCE => {}
    },
   },
+  
+  netmap => {
+   mask => 0,
+   multi => 1,
+   auto => 0,
+   delOnReplace => 1,
+   sortBy => 'DATE',
+   writeDiff => 0,
+   cache => 0,
+   fields =>  {
+       IP => {},
+       MAC => {},
+       MASK => {},
+       NETID => {},
+       DATE => {},
+       NAME => {}
+   },
+  },
 ); 
 1;

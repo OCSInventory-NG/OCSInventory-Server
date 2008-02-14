@@ -18,6 +18,8 @@ use Apache::Ocsinventory::Interface::Extensions;
 
 use strict;
 
+$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT} = 100 if !defined $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+
 sub get_computers_V1{
   my $class = shift;
 # Xml request
@@ -33,20 +35,27 @@ sub get_computers_V1{
 # First xml parsing 
   my $parsed_request = XML::Simple::XMLin( $request ) or die($!);
 # Max number of responses sent back to client
-  my $max_responses = 100;
+  my $max_responses = $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
   my @ids;
+  # Generate boundaries
+  my $begin;
+  if( defined $parsed_request->{'OFFSET'} ){
+    $begin = $parsed_request->{'OFFSET'}*$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+  }
+  elsif( defined $parsed_request->{'BEGIN'}){
+    $begin = $parsed_request->{'BEGIN'};
+  }
+  else{
+    $begin = 0;
+  }
 # Call search_engine stub
-  Apache::Ocsinventory::Interface::Internals::search_engine($request, $parsed_request, \@ids);
-# Generate boundaries
-  my $begin = $parsed_request->{'BEGIN'} > @ids ? return undef : $parsed_request->{'BEGIN'};
-  my $end = $#ids;
-  $end = $begin + ($max_responses-1) if ($end-$begin)>$max_responses;
+  Apache::Ocsinventory::Interface::Internals::search_engine($request, $parsed_request, \@ids, $begin);
 # Type of requested data (meta datas, inventories, special features..
   my $type=$parsed_request->{'ASKING_FOR'}||'INVENTORY';
   $type =~ s/^(.+)$/\U$1/;
   
 # Generate xml responses
-  for(@ids[$begin..$end]){
+  for(@ids){
       push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM}, $parsed_request->{WANTED});#Wanted=>special sections bitmap
   }
 # Send
@@ -113,7 +122,7 @@ sub reset_checksum_V1 {
 
 sub get_ipdiscover_devices_V1{
   my $class = shift;
-  my $offset = shift;
-  return Apache::Ocsinventory::Interface::Ipdiscover::get_ipdiscover_devices_V1( $offset );
+  my ( $date, $offset ) = @_;
+  return Apache::Ocsinventory::Interface::Ipdiscover::get_ipdiscover_devices_V1( $date, $offset );
 }
 1;
