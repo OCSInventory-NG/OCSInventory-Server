@@ -3,6 +3,20 @@
 use SOAP::Lite;
 use XML::Entities;
 
+# Parameters
+# -s='' 			: server to query
+# -u=''				: user to authenticate
+# -pw=''			: user's password
+# -params='...,...,...,...' 	: Method's args															 
+# -proto='http|https'		: Transport protocol
+#
+# get_computers V1 secific parameters (enable you to easily modify XML values)
+# -o=''				: offset value (to iterate if whome result is upper than OCS_OPT_WEB_SERVICE_RESULTS_LIMIT (see ocsinventory-server.conf)
+# -c=''				: checksum to compare with
+# -w=''				: same principle than checksum but for other sections (dico_soft and accountinfos for the moment)
+# -t=''				: type (META || INVENTORY)) See web service documentation
+#
+# Checksum decimal values
 #'hardware'      => 1,
 #'bios'          => 2,
 #'memories'      => 4,
@@ -20,20 +34,12 @@ use XML::Entities;
 #'sounds'        => 16384,
 #'videos'        => 32768,
 #'softwares'     => 65536
-																 
+
 $s = $s||'localhost';
 $u = $u||'';
 $pw = $pw||'';
 $proto = $proto||'http';
-
-# Method arguments
-$p1 = $p1;
-$p2 = $p2;
-$p3 = $p3;
-$p4 = $p4;
-$p5 = $p5;
-
-# By default, get computers
+@params = split ',', $params;
 $f = $f||get_computers_V1;
 
 # You can modify some XML tags
@@ -42,8 +48,8 @@ $t=$t||"META";
 $o=$o||0;
 $w=defined $w?$w:131071;
 
-if( !defined($p1) && $f eq 'get_computers_V1' ){
-  $p1=<<EOF;
+if( !defined(@params) && $f eq 'get_computers_V1' ){
+  @params=(<<EOF);
 
 <REQUEST>
   <ENGINE>FIRST</ENGINE>
@@ -54,10 +60,6 @@ if( !defined($p1) && $f eq 'get_computers_V1' ){
 </REQUEST>
 
 EOF
-}
-
-for($p1,$p2,$p3,$p4,$p5){
-  push @params, $_ if defined($_);
 }
 
 print "Launching soap request to proxy:\n";
