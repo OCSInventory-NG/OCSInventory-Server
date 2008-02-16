@@ -61,6 +61,7 @@ sub handler{
     'APACHE_OBJECT' => undef,
     'RAW_DATA'  => undef,
     #'DBI_HANDLE'   => undef,
+    # DBI_SL_HANDLE => undef
     'DEVICEID'   => undef,
     'DATABASE_ID'   => undef,
     'DATA'     => undef,
@@ -97,6 +98,11 @@ sub handler{
   
   if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect( $dbMode ))){
     &_log(505,'handler','Database connection');
+    return &_end(APACHE_SERVER_ERROR);
+  }
+
+  if(!($CURRENT_CONTEXT{'DBI_SL_HANDLE'} = &_database_connect( 'read' ))){
+    &_log(505,'handler','Database Slave connection');
     return &_end(APACHE_SERVER_ERROR);
   }
   

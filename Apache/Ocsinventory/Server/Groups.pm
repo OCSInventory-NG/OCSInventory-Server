@@ -48,11 +48,11 @@ sub _validate_groups_cache{
   # Test cache validity
   my $request = $dbh->prepare('
     SELECT g.HARDWARE_ID
-  FROM groups 
-  g LEFT OUTER JOIN locks l
-  ON l.HARDWARE_ID=g.HARDWARE_ID
-  WHERE UNIX_TIMESTAMP()-CREATE_TIME > ?
-  AND l.HARDWARE_ID IS NULL'
+    FROM groups 
+    g LEFT OUTER JOIN locks l
+    ON l.HARDWARE_ID=g.HARDWARE_ID
+    WHERE UNIX_TIMESTAMP()-CREATE_TIME > ?
+    AND l.HARDWARE_ID IS NULL'
   );
   # Updating cache when needed
   return unless $request->execute( $ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'} );
@@ -64,8 +64,8 @@ sub _validate_groups_cache{
       $check_request->execute($ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'}, $row->{'HARDWARE_ID'});
       if(!$check_request->rows()){
         &_unlock($row->{'HARDWARE_ID'});  
-  $check_request->finish();
-  next;
+        $check_request->finish();
+        next;
       }
 
       &_log(306,'groups','cache out-of-date('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -83,6 +83,7 @@ sub _validate_groups_cache{
 sub _build_group_cache{
   my $group_id = shift;
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+  my $dbh_sl = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_SL_HANDLE'};
   my $offset = int rand($ENV{OCS_OPT_GROUPS_CACHE_OFFSET});
   
   # Retrieving the group request. It must be a SELECT statement on ID(hardware)
@@ -90,7 +91,7 @@ sub _build_group_cache{
   $get_request->execute( $group_id );
   my $row = $get_request->fetchrow_hashref();
   if($row->{'REQUEST'} ne ''){
-    my $group_request = $dbh->prepare( $row->{'REQUEST'} );
+    my $group_request = $dbh_sl->prepare( $row->{'REQUEST'} );
     if($group_request->execute()){
             # Build cache request
         my $build_cache = $dbh->prepare('INSERT INTO groups_cache(GROUP_ID, HARDWARE_ID, STATIC) VALUES(?,?,0)');

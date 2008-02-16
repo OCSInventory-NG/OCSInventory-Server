@@ -137,24 +137,24 @@ sub _database_connect{
   elsif($mode eq 'local'){
     ($host, $port, $user, $password) = ( $ENV{'OCS_DB_HOST'}, $ENV{'OCS_DB_PORT'}, 
       $ENV{'OCS_DB_USER'}, $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD') );
-      $database = $ENV{'OCS_DB_LOCAL'}||$ENV{'OCS_DB_NAME'};
+    $database = $ENV{'OCS_DB_LOCAL'}||$ENV{'OCS_DB_NAME'};
   }
   # Slave mode
   elsif($mode eq 'read'){
     if($ENV{'OCS_DB_SL_HOST'}){
-    $host = $ENV{'OCS_DB_SL_HOST'};
-    $database = $ENV{'OCS_DB_SL_NAME'}||'ocsweb';
-    $port = $ENV{'OCS_DB_SL_PORT'}||'3306';
-    $user = $ENV{'OCS_DB_SL_USER'};
-    $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_SL_PWD');
-  }
-  else{
+      $host = $ENV{'OCS_DB_SL_HOST'};
+      $database = $ENV{'OCS_DB_SL_NAME'}||'ocsweb';
+      $port = $ENV{'OCS_DB_SL_PORT'}||'3306';
+      $user = $ENV{'OCS_DB_SL_USER'};
+      $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_SL_PWD');
+    }
+    else{
       $host = $ENV{'OCS_DB_HOST'};
-    $database = $ENV{'OCS_DB_NAME'}||'ocsweb';
-    $port = $ENV{'OCS_DB_PORT'}||'3306';
-    $user = $ENV{'OCS_DB_USER'};
-    $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
-  }
+      $database = $ENV{'OCS_DB_NAME'}||'ocsweb';
+      $port = $ENV{'OCS_DB_PORT'}||'3306';
+      $user = $ENV{'OCS_DB_USER'};
+      $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD');
+    }
   }
   else{
     &_log(521,'database_connect', 'invalid mode') if $ENV{'OCS_OPT_LOGLEVEL'};
