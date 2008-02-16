@@ -18,7 +18,7 @@ eval {
   require XML::Entities;
 };
 if($@){
-  print STDERR "OCS SOAP Service : Canot find XML::Entities\n";
+  print STDERR "[".localtime()."] OCSINVENTORY: (SOAP): Cannot find XML::Entities\n";
 }
 
 use Apache::Ocsinventory::Interface::Database;

@@ -25,6 +25,9 @@ BEGIN{
 			our $server = SOAP::Transport::HTTP2::Apache->dispatch_to('Apache::Ocsinventory::Interface');
 		}
 		require Apache::Ocsinventory::Interface;
+	};
+	if($@){
+	  print STDERR "[".localtime()."] OCSINVENTORY: (SOAP): Can't load SOAP::Transport::HTTP* - Web service will be unavailable\n";
 	}
 }
 
