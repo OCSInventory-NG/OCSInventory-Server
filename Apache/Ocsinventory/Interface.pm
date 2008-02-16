@@ -109,6 +109,7 @@ sub ocs_config_V2{
 # Get a software dictionnary word
 sub get_dico_soft_element_V1{
   my( $class, $word ) = @_;
+  $word = decode_xml( $word );
   return Apache::Ocsinventory::Interface::Inventory::get_dico_soft_extracted( $word );
 }
 
@@ -155,6 +156,9 @@ sub get_ipdiscover_devices_V1{
 sub ipdiscover_tag_V1 {
   my $class = shift;
   my ( $device, $description, $type, $user ) = @_;
+  $description = decode_xml( $description );
+  $type = decode_xml( $type );
+  $user = decode_xml( $user );
   return send_error('BAD_MAC') unless $device =~ /^\w\w(.\w\w){5}$/;
   return Apache::Ocsinventory::Interface::Ipdiscover::ipdiscover_tag( $device, $description, $type, $user );
 }
@@ -176,12 +180,14 @@ sub ipdiscover_remove_V1{
 sub ipdiscover_create_type_V1{
   my $class = shift;
   my $type = shift;
+  $type = decode_xml( $type );
   return Apache::Ocsinventory::Interface::Ipdiscover::ipdiscover_add_type( $type );
 }
 
 sub ipdiscover_delete_type_V1{
   my $class = shift;
   my $type = shift;
+  $type = decode_xml( $type );
   return Apache::Ocsinventory::Interface::Ipdiscover::ipdiscover_del_type( $type );
 }
 1;
