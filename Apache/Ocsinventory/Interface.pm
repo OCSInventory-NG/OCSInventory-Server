@@ -22,8 +22,14 @@ use strict;
 
 $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT} = 100 if !defined $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
 
-require $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} 
-  if $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF};
+eval{
+  require $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} 
+    if -f $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF};
+};
+if($@){
+  print STDERR "[".localtime()."] OCSINVENTORY: (SOAP): Can't load $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} - Web service Private extensions will be unavailable\n";
+};
+
 
 # ===== ACCESSOR TO COMPUTER'S DATA =====
 
