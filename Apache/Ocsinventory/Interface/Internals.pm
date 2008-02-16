@@ -75,7 +75,7 @@ sub engine_first {
     $userid .= ' hardware.USERID IN('.join(',', @{ $parsed_request->{USERID} } ).')';
   }
 # Generate sql string
-  my $search_string = "SELECT DISTINCT hardware.ID FROM hardware,accountinfo WHERE hardware.DEVICEID NOT LIKE '\\_%' AND hardware.ID=accountinfo.HARDWARE_ID $id $name $userid $checksum $tag ORDER BY LASTDATE LIMIT $begin,$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
+  my $search_string = "SELECT DISTINCT hardware.ID FROM hardware,accountinfo WHERE hardware.DEVICEID NOT LIKE '\\_%' AND hardware.ID=accountinfo.HARDWARE_ID $id $name $userid $checksum $tag ORDER BY LASTDATE limit $begin,$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
 # Play it  
   my $sth = get_sth($search_string);
 # Get ids
