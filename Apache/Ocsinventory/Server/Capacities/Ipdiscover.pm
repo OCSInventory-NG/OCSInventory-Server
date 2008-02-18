@@ -45,13 +45,6 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   }
 };
 
-# Default
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER'} = 1;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} = 100;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_MAX_ALIVE'} = 14;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_USE_GROUPS'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_BETTER_THRESHOLD'} = 1;
-
 sub _ipdiscover_prolog_resp{
 
   return unless $ENV{'OCS_OPT_IPDISCOVER'};

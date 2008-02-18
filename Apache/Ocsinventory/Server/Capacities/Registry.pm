@@ -42,9 +42,6 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   }
 };
 
-# Default
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_REGISTRY'} = 1;
-
 sub _registry_prolog_resp{
 
   return unless $ENV{'OCS_OPT_REGISTRY'};

@@ -42,15 +42,6 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   }
 };
 
-# Default
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_CYCLE_LATENCY'} = 60;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_FRAG_LATENCY'} = 10;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} = 10;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_TIMEOUT'} = 31;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_DOWNLOAD_GROUPS_TRACE_EVENTS'} = 0;
-
 sub download_prolog_resp{
   
   my $current_context = shift;

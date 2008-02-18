@@ -43,12 +43,6 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   }
 };
 
-# Default
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_PROLOG_FILTER_ON'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_ON'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_IP'} = 0;
-$Apache::Ocsinventory::OPTIONS{'OCS_OPT_INVENTORY_FILTER_FLOOD_IP_CACHE_TIME'} = 0;
-
 sub filter_prolog{
   # ON/OFF
   return PROLOG_CONTINUE unless $ENV{'OCS_OPT_PROLOG_FILTER_ON'};
