@@ -249,7 +249,7 @@ sub _end{
   }else{
     $dbh->commit;
   }
-  close(our $LOG) && undef $LOG;
+  close(our $LOG) && undef $LOG if defined $LOG;
   $dbh->disconnect;
   return $ret;
 }
