@@ -51,7 +51,7 @@ sub _validate_groups_cache{
     FROM groups 
     g LEFT OUTER JOIN locks l
     ON l.HARDWARE_ID=g.HARDWARE_ID
-    WHERE UNIX_TIMESTAMP()-CREATE_TIME > ?
+    WHERE UNIX_TIMESTAMP()-REVALIDATE_FROM > ?
     AND l.HARDWARE_ID IS NULL'
   );
   # Updating cache when needed
@@ -60,7 +60,7 @@ sub _validate_groups_cache{
     # We lock it like a computer
     if( !&_lock($row->{'HARDWARE_ID'}) ){
       # Check if the group has already been computed
-      my $check_request = $dbh->prepare('SELECT HARDWARE_ID, (UNIX_TIMESTAMP()-CREATE_TIME) AS OFF FROM groups WHERE UNIX_TIMESTAMP()-CREATE_TIME > ? AND HARDWARE_ID=?'); 
+      my $check_request = $dbh->prepare('SELECT HARDWARE_ID, (UNIX_TIMESTAMP()-REVALIDATE_FROM) AS OFF FROM groups WHERE UNIX_TIMESTAMP()-REVALIDATE_FROM > ? AND HARDWARE_ID=?'); 
       $check_request->execute($ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'}, $row->{'HARDWARE_ID'});
       if(!$check_request->rows()){
         &_unlock($row->{'HARDWARE_ID'});  
@@ -107,7 +107,7 @@ sub _build_group_cache{
     }
   }
 # Updating cache time
-  $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
+  $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(), REVALIDATE_FROM=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
   &_log(307,'groups', "revalidate cache($group_id)") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 1;
