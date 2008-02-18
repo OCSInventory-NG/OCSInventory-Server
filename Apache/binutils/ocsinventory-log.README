@@ -1,0 +1,16 @@
+OCS Inventory-NG
+
+ocsinventory-log.pl is a sample that enables you to see your ocs server's activity.
+You have to rotate your logs daily at 00:00, using the "compressed" option to have a day level visibility
+(use the provided logrotate)
+This kind of scripts may help you to adjust server's settings, especially FREQUENCY and PROLOG_FREQ parameter.
+
+Theses are the supported parameters :
+
+-f='log file'	The log file to read
+-a=day_before	Look for a 'log_file_name.gz' according to logrotate naming system
+-r		Summary per hour of the activity
+-s		General summary for the day
+-h="hour_num"	See a specific hour
+	=> -m in minutes
+	=> -d group by ten minutes
