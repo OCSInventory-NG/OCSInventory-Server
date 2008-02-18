@@ -192,7 +192,7 @@ sub _duplicate_replace{
     return(1);
   }
   my $row = $request->fetchrow_hashref;
-  my $quality = $row->{'QUALITY'};
+  my $quality = $row->{'QUALITY'}?$row->{'QUALITY'}:0;
   my $fidelity = $row->{'FIDELITY'};
   my $checksum = $row->{'CHECKSUM'};
   my $userid = $row->{'USERID'};
@@ -226,7 +226,7 @@ sub _duplicate_replace{
   
   # Drop old computer
   for (keys(%DATA_MAP)){
-    next unless $DATA_MAP{$_}->{delOnReplace};
+    next if !$DATA_MAP{$_}->{delOnReplace} || !$DATA_MAP{$_}->{auto};
     unless($dbh->do("DELETE FROM $_ WHERE HARDWARE_ID=?", {}, $device)){
       &_unlock($device);
       return(1);
