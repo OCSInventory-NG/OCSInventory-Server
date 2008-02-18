@@ -42,37 +42,43 @@ sub decode_xml{
 
 sub search_engine{
 # Available search engines
+  my $engine = shift;
   my %search_engines = (
     'first'  => \&engine_first
   );
-  &{ $search_engines{ (lc $_[1]->{ENGINE}) } }( @_ );
+  &{ $search_engines{ (lc $engine) } }( @_ );
 }
 
 sub engine_first {
-  my ($request, $parsed_request, $computers, $begin) = @_;
+  my ($request, $computers, $begin) = @_;
   my $parsed_request = XML::Simple::XMLin( $request, ForceArray => ['ID', 'TAG', 'USERID'], SuppressEmpty => 1 ) or die;
   my ($id, $name, $userid, $checksum, $tag);
     
 # Database ids criteria
   if( $parsed_request->{ID} ){
-    $id .= ' AND';
-    $id .= ' hardware.ID IN('.join(',', @{ $parsed_request->{ID} }).')';
+    if( my @ids = untaint_int_lst( @{ $parsed_request->{ID} } )){
+      $id .= ' AND';
+      $id .= ' hardware.ID IN('.join(',', @ids ).')';
+    }
   }
 # Tag criteria
   if( $parsed_request->{TAG} ){
-    s/^(.*)$/\"$1\"/ for @{ $parsed_request->{TAG} };
-    $tag .= ' AND';
-    $tag .= ' accountinfo.TAG IN('.join(',', @{ $parsed_request->{TAG} }).')';
+    if( my @tags = untaint_dbstring_lst( @{ $parsed_request->{TAG} } )){
+      $tag .= ' AND';
+      $tag .= ' accountinfo.TAG IN("'.join('","', @tags ).'")';
+    }
   }
 # Checksum criteria (only positive "&" will match
   if( $parsed_request->{CHECKSUM} ){
+    die("BAD_CHECKSUM") if !untaint_int( $parsed_request->{CHECKSUM} );
     $checksum = ' AND ('.$parsed_request->{CHECKSUM}.' & hardware.CHECKSUM)';
   }
 # Associated user criteria
   if( $parsed_request->{USERID} ){
-    s/^(.*)$/\"$1\"/ for @{ $parsed_request->{USERID} };
-    $userid .= ' AND';
-    $userid .= ' hardware.USERID IN('.join(',', @{ $parsed_request->{USERID} } ).')';
+    if( my @users_id =  untaint_dbstring_lst( @{ $parsed_request->{USERID} } ) ){
+      $userid .= ' AND';
+      $userid .= ' hardware.USERID IN("'.join('","', @users_id ).'")';
+    }
   }
 # Generate sql string
   my $search_string = "SELECT DISTINCT hardware.ID FROM hardware,accountinfo WHERE hardware.DEVICEID NOT LIKE '\\_%' AND hardware.ID=accountinfo.HARDWARE_ID $id $name $userid $checksum $tag ORDER BY LASTDATE limit $begin,$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
@@ -97,5 +103,19 @@ sub send_error{
     { 'ERROR' => [ $error ] }, 
     RootName => 'RESULT'
   );
+}
+
+sub untaint_int_lst{
+  my @list = @_;
+  my @cleared;
+  for (@list){
+    push @cleared, $_ if untaint_int($_);
+  }
+  return @cleared;
+}
+
+sub untaint_int{
+  my $int = shift;
+  return $int =~ /^\d+$/;
 }
 1;

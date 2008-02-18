@@ -20,6 +20,8 @@ our @EXPORT = qw /
   get_sth
   do_sql
   get_table_pk
+  untaint_dbstring
+  untaint_dbstring_lst
 /;
 
 # Database connection
@@ -52,7 +54,7 @@ sub get_sth {
   my ($sql, @values) = @_;
   my $dbh = database_connect();
   my $request = $dbh->prepare( $sql );
-  $request->execute( @values ) or die;
+  $request->execute( @values ) or die("==Bad request==\nSQL:$sql\nDATAS:".join "> <", @values, "\n");
   return $request;
 }
 
@@ -67,5 +69,21 @@ sub do_sql {
 sub get_table_pk{
   my $section = shift;
   return ($section eq 'hardware')?'ID':'HARDWARE_ID';
+}
+
+sub untaint_dbstring{
+  my $string = shift;
+  $string =~ s/"/\\"/g;
+  $string =~ s/'/\\'/g;
+  return $string;
+}
+
+sub untaint_dbstring_lst{
+  my @list = @_;
+  my @quoted;
+  for (@list){
+    push @quoted, untaint_dbstring($_);
+  }
+  return @quoted;
 }
 1;

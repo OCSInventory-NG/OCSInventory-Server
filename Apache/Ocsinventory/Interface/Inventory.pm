@@ -12,6 +12,7 @@ package Apache::Ocsinventory::Interface::Inventory;
 use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Interface::Database;
+use Apache::Ocsinventory::Interface::Internals;
 
 use strict;
 
@@ -21,6 +22,48 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / 
 /;
+
+sub get_computers {
+  my $request = decode_xml( shift );
+  
+  my %build_functions = (
+    'INVENTORY' => \&Apache::Ocsinventory::Interface::Inventory::build_xml_inventory,
+    'META' => \&Apache::Ocsinventory::Interface::Inventory::build_xml_meta
+  );
+    
+# Returned values
+  my @result;
+# First xml parsing 
+  my $parsed_request = XML::Simple::XMLin( $request ) or die($!);
+# Max number of responses sent back to client
+  my $max_responses = $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+  my @ids;
+  # Generate boundaries
+  my $begin;
+  if( defined $parsed_request->{'OFFSET'} ){
+    return send_error('BAD_OFFSET') unless $parsed_request->{'OFFSET'} =~ /^\d+$/;
+    $begin = $parsed_request->{'OFFSET'}*$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
+  }
+  elsif( defined $parsed_request->{'BEGIN'}){
+    return send_error('BAD_BEGIN_VALUE') unless $begin =~ /^\d+$/;
+    $begin = $parsed_request->{'BEGIN'};
+  }
+  else{
+    $begin = 0;
+  }
+# Call search_engine stub
+  Apache::Ocsinventory::Interface::Internals::search_engine($parsed_request->{ENGINE}, $request, \@ids, $begin);
+# Type of requested data (meta datas, inventories, special features..
+  my $type=$parsed_request->{'ASKING_FOR'}||'INVENTORY';
+  $type =~ s/^(.+)$/\U$1/;
+  
+# Generate xml responses
+  for(@ids){
+      push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM}, $parsed_request->{WANTED});#Wanted=>special sections bitmap
+  }
+# Send
+  return "<COMPUTERS>\n", @result, "</COMPUTERS>\n";
+}
 
 # Build whole inventory (sections specified using checksum)
 sub build_xml_inventory {
@@ -123,7 +166,7 @@ sub build_xml_special_section {
   }
   elsif($section eq 'dico_soft'){
     my @tmp;
-    my $sth = get_sth('SELECT dico_soft.FORMATTED AS FORMAT FROM softwares,dico_soft WHERE HARDWARE_ID=? AND EXTRACTED=NAME', $id);
+    my $sth = get_sth('SELECT DISTINCT dico_soft.FORMATTED AS FORMAT FROM softwares,dico_soft WHERE HARDWARE_ID=? AND EXTRACTED=NAME', $id);
     while( my $row = $sth->fetchrow_hashref() ){
       push @tmp, $row->{FORMAT};
     }
@@ -135,7 +178,7 @@ sub build_xml_special_section {
 # Return software name alias
 sub get_dico_soft_extracted{
   my $extracted = shift;
-  my $sth = get_sth('SELECT FORMATTED FROM dico_soft WHERE EXTRACTED=?', $extracted);
+  my $sth = get_sth('SELECT DISTINCT FORMATTED FROM dico_soft WHERE EXTRACTED=?', $extracted);
   unless($sth->rows){
     $sth->finish();
     return undef;  

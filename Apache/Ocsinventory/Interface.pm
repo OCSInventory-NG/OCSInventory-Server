@@ -37,42 +37,7 @@ sub get_computers_V1{
   my $class = shift;
 # Xml request
   my $request = shift;
-  $request = decode_xml( $request );
-  my %build_functions = (
-    'INVENTORY' => \&Apache::Ocsinventory::Interface::Inventory::build_xml_inventory,
-    'META' => \&Apache::Ocsinventory::Interface::Inventory::build_xml_meta
-  );
-    
-# Returned values
-  my @result;
-# First xml parsing 
-  my $parsed_request = XML::Simple::XMLin( $request ) or die($!);
-# Max number of responses sent back to client
-  my $max_responses = $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
-  my @ids;
-  # Generate boundaries
-  my $begin;
-  if( defined $parsed_request->{'OFFSET'} ){
-    $begin = $parsed_request->{'OFFSET'}*$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
-  }
-  elsif( defined $parsed_request->{'BEGIN'}){
-    $begin = $parsed_request->{'BEGIN'};
-  }
-  else{
-    $begin = 0;
-  }
-# Call search_engine stub
-  Apache::Ocsinventory::Interface::Internals::search_engine($request, $parsed_request, \@ids, $begin);
-# Type of requested data (meta datas, inventories, special features..
-  my $type=$parsed_request->{'ASKING_FOR'}||'INVENTORY';
-  $type =~ s/^(.+)$/\U$1/;
-  
-# Generate xml responses
-  for(@ids){
-      push @result, &{ $build_functions{ $type } }($_, $parsed_request->{CHECKSUM}, $parsed_request->{WANTED});#Wanted=>special sections bitmap
-  }
-# Send
-  return "<COMPUTERS>\n", @result, "</COMPUTERS>\n";
+  return Apache::Ocsinventory::Interface::Inventory::get_computers( $request );
 }
 
 # ===== CONFIGURATION METHODS =====
