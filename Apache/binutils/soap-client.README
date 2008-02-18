@@ -1,0 +1,20 @@
+OCS Inventory-NG
+
+soap-client is a sample that enable you to discover the ocs web service.
+By default, it calls get_computer_V1 method that takes XML as argument.
+You can configure this XML using script parameters.
+To use other methods, (see Apache::Ocsinventory::Interface) , call it with -f=method_name and -params='comma separated args'
+
+# Parameters
+# -s=''                         : server to query
+# -u=''                         : user to authenticate
+# -pw=''                        : user's password
+# -params='...,...,...,...'     : Method's args                                                                                                                  
+# -proto='http|https'           : Transport protocol
+#
+# get_computers V1 secific parameters (enable you to easily modify XML values)
+# -o=''                         : offset value (to iterate if whome result is upper than OCS_OPT_WEB_SERVICE_RESULTS_LIMIT (see ocsinventory-server.conf)
+# -c=''                         : checksum to compare with
+# -w=''                         : same principle than checksum but for other sections (dico_soft and accountinfos for the moment)
+# -t=''                         : type (META || INVENTORY)) See web service documentation
+

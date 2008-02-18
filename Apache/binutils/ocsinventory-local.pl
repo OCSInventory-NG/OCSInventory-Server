@@ -3,13 +3,13 @@
 ##OCS inventory-NG Version 1.0 Beta
 ##Copyleft Pascal DANEK 2005
 ##Copyleft Goneri Le Bouder 2006
-##Web : http://ocsinventory.sourceforge.net
+##Web : http://www.ocsinventory-ng.org
 ##
 ##This code is open source and may be copied and modified as long as the source
 ##code is always made freely available.
 ##Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-#Last modification : $Id: ocsinventory-local.pl,v 1.2 2007-06-15 13:53:13 hunal Exp $
+#Last modification : $Id: ocsinventory-local.pl,v 1.3 2008-02-18 07:17:52 hunal Exp $
 #Local insertion script
 use Fcntl qw/:flock/;
 use LWP::UserAgent;

@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: Makefile.PL,v 1.3 2007-07-26 22:05:01 dliroulet Exp $
+# $Id: Makefile.PL,v 1.4 2008-02-18 07:17:51 hunal Exp $
 #
 #-------------------------------------------------------
 
@@ -9,7 +9,7 @@
 # OCS Inventory NG Communication Server Perl Module Setup
 #
 # Copyleft 2006 Pascal DANEK
-# Web: http://ocsinventory.sourceforge.net
+# Web: http://www.ocsinventory-ng.org
 #
 # This code is open source and may be copied and modified as long as the source
 # code is always made freely available.
