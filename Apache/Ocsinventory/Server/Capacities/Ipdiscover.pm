@@ -100,9 +100,10 @@ sub _ipdiscover_prolog_resp{
             or !$ipdiscoverLatency;
         }
       }
-      # Protection against arp flood
-      $ipdiscoverLatency = $Apache::Ocsinventory::OPTIONS{'OCS_OPT_IPDISCOVER_LATENCY'} if 
-        $ipdiscoverLatency == 0;
+      
+      unless( $ipdiscoverLatency ){
+        $ipdiscoverLatency = $ENV{'OCS_OPT_IPDISCOVER_LATENCY'}?$ENV{'OCS_OPT_IPDISCOVER_LATENCY'}:100;
+      }
             
       push @{$$resp{'OPTION'}}, { 
             'NAME' => [ 'IPDISCOVER' ], 
