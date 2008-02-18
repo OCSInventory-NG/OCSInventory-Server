@@ -224,7 +224,7 @@ sub _log{
   our $LOG;
   
   if(!$LOG){
-    open LOG, '>>'.$ENV{'OCS_OPT_LOGPATH'}.'/ocsinventory-NG.log' or die "Failed to open log file : $! ($ENV{'OCS_LOGPATH'})\n";
+    open LOG, '>>'.$ENV{'OCS_OPT_LOGPATH'}.'/activity.log' or die "Failed to open log file : $! ($ENV{'OCS_LOGPATH'})\n";
     # We don't want buffer, so we allways flush the handles
     select(LOG);
     $|=1;
