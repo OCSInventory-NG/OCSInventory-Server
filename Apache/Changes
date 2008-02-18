@@ -1,6 +1,8 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added ocsinventory-log.pl sample and associated README
+	* A few improvements and fixes on web service
 	* Added groups.REVALIDATE_FROM field : groups.CREATE_TIME is now the real groups computation date
 	* Added a minimal system to load external methods in web service (OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF)
 	* Added ipdiscover_delete_type_V1() to web service
