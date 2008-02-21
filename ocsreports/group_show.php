@@ -8,15 +8,17 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.2 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.3 $)
+
+
+
 require('fichierConf.class.php');
 require('req.class.php');
-
+require('require/function_opt_param.php');
 if( $_SESSION["lvluser"]!=LADMIN && $_SESSION["lvluser"]!=SADMIN  )
 	die("FORBIDDEN");
 //$_GET["multi"] = 24; // To avoid storing systemid in querystring
 require_once("preferences.php");
-
 if (isset($_GET['systemid'])) {
 	$systemid = $_GET['systemid'];
 	if ($systemid == "")
@@ -58,7 +60,21 @@ if( isset($_POST["actshowgroup"]) && $_SESSION["lvluser"] == SADMIN ) {
 		}
 	}	
 }
-
+//update values if user want modify groups' values
+if ($_POST['Valid_modif_x'])
+{
+	if (trim($_POST['NAME'])!= '' and trim($_POST['DESCR'])!=''){
+		$req = "UPDATE hardware SET ".	
+			"NAME='".$_POST['NAME']."',".
+			"DESCRIPTION='".$_POST['DESCR']."' ".
+			"where ID='".$systemid."' and deviceid = '_SYSTEMGROUP_'";
+		$result = mysql_query($req, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+	}
+	else{
+		
+		echo "<script>alert('".$l->g(627)."')</script>";
+	}
+}
 $queryMachine   = "SELECT * FROM hardware, groups WHERE ID=$systemid AND hardware_id=$systemid";
 $result   = mysql_query( $queryMachine, $_SESSION["readServer"] ) or mysql_error($_SESSION["readServer"]);
 $item     = mysql_fetch_object($result);
@@ -110,24 +126,46 @@ $tdhdpb = "<td  align='left' width='20%'>";
 $tdhfpb = "</td>";
 $tdhd = "<td  align='left' width='20%'><b>";
 $tdhf = ":</b></td>";
-//printEnTete("Groupe ".textDecode($item->NAME));
-echo "<br><br><table align='center' width='65%' border='0' cellspacing=20 bgcolor='#C7D9F5' style='border: solid thin; border-color:#A1B1F9'>";
-echo "<tr>".$tdhd.$l->g(577).$tdhf.$tdhdpb.textDecode($item->NAME).$tdhfpb;
-echo $tdhd.$l->g(593).$tdhf.$tdhdpb.dateTimeFromMysql(textDecode($item->LASTDATE)).$tdhfpb;
+$tdpopup = "<td align='left' width='20%' onclick=\"javascript: OuvrirPopup('group_chang_value.php', '', 'resizable=no, location=no, width=400, height=200, menubar=no, status=no, scrollbars=no, menubar=no')\">";
 
+//if user clic on modify
+if($_POST['MODIF_x']){
+	//don't show the botton modify
+	$img_modif="";
+	//list of input we can modify
+	$name=show_modif($item->NAME,'NAME',0);
+	$description=show_modif($item->DESCRIPTION,'DESCR',1);
+	//show new bottons
+	$button_valid="<input title='".$l->g(625)."' type='image'  src='image/modif_valid_v2.png' name='Valid_modif'>";
+	$button_reset="<input title='".$l->g(626)."' type='image'  src='image/modif_anul_v2.png' name='Reset_modif'>";
+}
+else{ //only show the botton for modify
+	$img_modif="<input title='".$l->g(115)."' type='image' src='image/modif.png' name='MODIF'>";
+	$name=textDecode($item->NAME);
+	$description=textDecode($item->DESCRIPTION);
+	$button_valid="";
+	$button_reset="";
+}
+//form for modify values of group's
+echo "<form name='CHANGE' action='' method='POST'>";
+echo "<br><br><table align='center' width='65%' border='0' cellspacing=20 bgcolor='#C7D9F5' style='border: solid thin; border-color:#A1B1F9'>";
+echo "<tr>".$tdhd.$l->g(577).$tdhf.$tdhdpb.$name.$tdhfpb;
+echo $tdhd.$l->g(593).$tdhf.$tdhdpb.dateTimeFromMysql(textDecode($item->LASTDATE)).$tdhfpb;
 if( ! $pureStat  )
 	echo "</tr><tr>".$tdhd.$l->g(594).$tdhf.$tdhdpb.date("F j, Y, g:i a",$item->CREATE_TIME ).$tdhfpb;
-
 echo "</tr><tr><td>&nbsp;</td></tr>";
 echo $tdhd.$l->g(615).$tdhf."<td  align='left' width='20%' colspan='3'>";
-
 if( ! $pureStat  )
 	echo textDecode($item->REQUEST);
 else {
 	echo $l->g(595);
 }
-echo "</tr><tr>".$tdhd.$l->g(53).$tdhf.$tdhdpb.textDecode($item->DESCRIPTION).$tdhfpb;
+
+echo "</tr><tr>".$tdhd.$l->g(53).$tdhf.$tdhdpb.$description.$tdhfpb;
+echo "<tr><td align='left' colspan=4>".$button_valid."&nbsp&nbsp".$button_reset."&nbsp&nbsp".$img_modif."</td></tr>";
 echo "$tdhfpb</table>";
+echo "</form>";
+
 //*/// END COMPUTER SUMMARY
 
 if( isset($_GET["action"]) || isset($_POST["action_form"]) ) {
@@ -193,7 +231,7 @@ function print_computers_real($systemid) {
 		$valGroup["request"] = "''";
 
 	$lbl=$l->g(2);		//Nom de la requete	
-	$sql = " deviceid<>'_SYSTEMGROUP_' AND h.id IN (".$valGroup["request"].")";
+	$sql = " deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' AND h.id IN (".$valGroup["request"].")";
 	$whereId = "h.id";
 	$linkId = "h.id";
 	$select = array_merge( array("h.id"=>"h.id" ,"deviceid"=>"deviceid"), $_SESSION["currentFieldList"] );	
@@ -217,7 +255,7 @@ function print_computers_cached($systemid) {
 	
 	//Need all hardware ids in cache table
 	$reqIds = "SELECT DISTINCT hardware_id FROM groups_cache WHERE group_id='$systemid'"; 
-	$sql = " deviceid<>'_SYSTEMGROUP_' AND h.id IN ('".getGluedIds($reqIds)."')";
+	$sql = " deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' AND h.id IN ('".getGluedIds($reqIds)."')";
 
 	$lbl=$l->g(2);		//Nom de la requete
 	$whereId = "h.id";
@@ -263,11 +301,27 @@ function print_perso($systemid) {
 	else {
 		echo $td3.$l->g(493)."</td>";
 	}
-	if( $_SESSION["lvluser"]==SADMIN )
-		echo "$td3<a href='index.php?multi=23&systemid=$systemid'>".$l->g(115)."</a></td>";
+	if( $_SESSION["lvluser"]==SADMIN ){
+	echo "<form name='modif_param' id='modif_param' method='POST' action='index.php?multi=22'>";
+	echo "<td align=center rowspan=8><a OnClick='recharge(\"$systemid\",\"group\")'><img src='image/modif_a.png' title='".$l->g(285)."'></a></td>";
 	echo "</tr>";
+	echo "<input type='hidden' id='systemid' name='systemid' value=''>";
+	echo "<input type='hidden' id='origine' name='origine' value=''>"; 
+	echo "</form>";
+	}
 	
 	$ii++; $td3 = $ii%2==0?$td2:$td4;
+	$sql_default_value="select NAME,IVALUE from config where NAME	in ('DOWNLOAD',
+															'DOWNLOAD_CYCLE_LATENCY',
+															'DOWNLOAD_PERIOD_LENGTH',
+															'DOWNLOAD_FRAG_LATENCY',
+															'DOWNLOAD_PERIOD_LATENCY',	
+															'DOWNLOAD_TIMEOUT',
+															'PROLOG_FREQ')";
+	$result_default_value = mysql_query($sql_default_value, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	while($default=mysql_fetch_array($result_default_value)) {
+		$optdefault[$default["NAME"] ] = $default["IVALUE"];
+	}	
 	//FREQUENCY
 	echo "<tr><td bgcolor='white' align='center' valign='center'>".(isset($optPerso["FREQUENCY"])?"<img width='15px' src='image/red.png'>":"&nbsp;")."</td>";
 	echo $td3.$l->g(494)."</td>";
@@ -279,10 +333,41 @@ function print_perso($systemid) {
 	else {
 		echo $td3.$l->g(497)."</td>";
 	}
-	if( $_SESSION["lvluser"]==SADMIN )
-		echo "$td3<a href='index.php?multi=22&systemid=$systemid'>".$l->g(115)."</a></td>";		
+	
 	echo "</tr>";
 	
+	//DOWNLOAD_SWITCH
+	echo "<tr><td bgcolor='white' align='center' valign='center'>".(isset($optPerso["DOWNLOAD_SWITCH"])?"<img width='15px' src='image/red.png'>":"&nbsp;")."</td>";
+	echo $td3.$l->g(417)." <font color=green size=1><i>DOWNLOAD</i></font> </td>";
+	if( isset( $optPerso["DOWNLOAD_SWITCH"] )) {
+		if( $optPerso["DOWNLOAD_SWITCH"]["IVALUE"]==0 ) echo $td3.$l->g(733)."</td>";
+		else if( $optPerso["DOWNLOAD_SWITCH"]["IVALUE"]==1 ) echo $td3.$l->g(205)."</td>";
+		else echo $td3."</td>";
+	}
+	else {
+		echo $td3.$l->g(488)."(";
+		if ($optdefault["DOWNLOAD"] == 1) echo $l->g(205); else echo $l->g(733);
+		echo ")</td>";
+	}
+		
+	echo "</tr>";
+	
+	//DOWNLOAD_CYCLE_LATENCY
+	optperso("DOWNLOAD_CYCLE_LATENCY",$l->g(720)." <font color=green size=1><i>DOWNLOAD_CYCLE_LATENCY</i></font>",$optPerso,1,$optdefault["DOWNLOAD_CYCLE_LATENCY"],$l->g(511));
+	
+	//DOWNLOAD_FRAG_LATENCY
+	optperso("DOWNLOAD_FRAG_LATENCY",$l->g(721)." <font color=green size=1><i>DOWNLOAD_FRAG_LATENCY</i></font>",$optPerso,1,$optdefault["DOWNLOAD_FRAG_LATENCY"],$l->g(511));
+
+	
+	//DOWNLOAD_PERIOD_LATENCY
+	optperso("DOWNLOAD_PERIOD_LATENCY",$l->g(722)." <font color=green size=1><i>DOWNLOAD_PERIOD_LATENCY</i></font>",$optPerso,1,$optdefault["DOWNLOAD_PERIOD_LATENCY"],$l->g(511));
+	
+	//DOWNLOAD_PERIOD_LENGTH
+	optperso("DOWNLOAD_PERIOD_LENGTH",$l->g(723)." <font color=green size=1><i>DOWNLOAD_PERIOD_LENGTH</i></font>",$optPerso,1,$optdefault["DOWNLOAD_PERIOD_LENGTH"]);
+
+	//PROLOG_FREQ
+	optperso("PROLOG_FREQ",$l->g(724)." <font color=green size=1><i>PROLOG_FREQ</i></font>",$optPerso,1,$optdefault["PROLOG_FREQ"],$l->g(730));
+
 	//TELEDEPLOY
 	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc  FROM devices d, download_enable e LEFT JOIN download_available a 
 	ON e.fileid=a.fileid WHERE d.name='DOWNLOAD' AND e.id=d.ivalue AND d.hardware_id=$systemid"); 
@@ -385,5 +470,13 @@ function isAvail($lbl) {
 	$valAvail = mysql_num_rows( $resAv );
 	return ($valAvail>0);
 }
+function show_modif($name,$input_name,$input_type)
+{
+	if ($input_type == 1)
+	return "<textarea name='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
+	else
+	return "<input type='text' name='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
+}
+
 
 ?>

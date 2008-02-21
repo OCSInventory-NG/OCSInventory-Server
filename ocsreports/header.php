@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.13 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.14 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @set_time_limit(0);
@@ -85,15 +85,15 @@ if( $_GET["multi"] ==3 && $_GET["mode"] == 1) {
 		echo " OnMouseMove='javascript:scrollHeaders()'";
 }
 echo ">";
-
 if( !isset($_GET["popup"] )) {
 ?>
-<table class='headfoot' border='0'>
+<table class='headfoot' border='0' <?if ($ban_head=='no') echo "style='display:none;'"?>>
 <tr height=25px>
 	<td><a href='index.php?first'><img src='image/logo OCS-ng-48.png'></a></td>
 	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
 	<b>Ver. <?php echo GUI_VER?>&nbsp&nbsp&nbsp;</b>	
 <?php 
+
 if($_SESSION["debug"]==1)
 	echo "<br><font color='black'><b>CACHE:&nbsp;<font color='".($_SESSION["usecache"]?"green'><b>ON</b>":"red'><b>OFF</b>")."</font><div id='tps'>Calcul...</div>";
 }
@@ -172,8 +172,8 @@ if($_SESSION["debug"]==1)
 		require ("footer.php");
 		die();
 	}
-	//TODO: relister
-	$limitedAccess = array(2,3,4,5,6,7,8,9,14,13,22,23,24,27,20,21,26,28,31);
+
+	$limitedAccess = array(2,3,4,5,6,7,8,9,10,12,13,14,20,21,22,23,24,25,26,27,28,30,31,32,33,34,35,36);
 	if( in_array($_GET["multi"],$limitedAccess) && $_SESSION["lvluser"]!=1) {
 		echo "<br><br><center><b><font color=red>ACCESS DENIED</font></b></center><br>";
 		unset($_GET["multi"]);

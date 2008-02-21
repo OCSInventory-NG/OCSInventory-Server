@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-08-20 14:57:36 $$Author: hunal $($Revision: 1.30 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.31 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -19,7 +19,7 @@ define("MAX_CACHED_REGISTRY", 200 );	// Max number of registry that may be retur
 define("USE_CACHE", 0 );				//Do we use cache tables ?
 define("UPDATE_CHECKSUM", 1 );			// do we need to update software checksum when using dictionnary ?
 define("UTF8_DEGREE", 0 );				// 0 For non utf8 database, 1 for utf8
-define("GUI_VER", "4500");				// Version of the GUI
+define("GUI_VER", "5000");				// Version of the GUI
 define("MAC_FILE", "files/oui.txt");	// File containing MAC database
 define("TAG_LBL", "Tag");				// Name of the tag information
 define("DB_NAME", "ocsweb");			// Database name
@@ -84,6 +84,7 @@ if( ! isset( $_SESSION["fichLang"] ) ) {
 $l = $_SESSION["fichLang"];
 
 dbconnect();
+
 if(!isset($_SESSION["rangCookie"])) $_SESSION["rangCookie"] = 0;
 
 // available columns
@@ -318,12 +319,12 @@ function createGroup( $name,$description="", $staticOnly=false, $alreadyExists =
 function dbconnect() {
 	$db = DB_NAME;
 	
-	$link=@mysql_connect($_SESSION["SERVER_READ"],$_SESSION["COMPTE_BASE"],$_SESSION["PSWD_BASE"]);
+	$link=mysql_connect($_SESSION["SERVER_READ"],$_SESSION["COMPTE_BASE"],$_SESSION["PSWD_BASE"]);
 	if(!$link) {
 		echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error()."</b></font></center>";
 		die();
 	}
-	if( ! @mysql_select_db($db,$link)) {
+	if( ! mysql_select_db($db,$link)) {
 		require('install.php');
 		die();
 	}
@@ -349,7 +350,6 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		global $l, $_GET;				
 		$deletable = ($_SESSION["lvluser"]==SADMIN) && $_GET["multi"]!=2 && $deletableP;
 		$allowCheckBoxes = ($_SESSION["lvluser"]==SADMIN) && $allowCheckBoxes;
-		
 		global $pcparpage;
 		$columneditable = $req->columnEdit;		
 		
@@ -471,7 +471,8 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			
 			$posts .= "<input type='hidden' name='$gk' value='".$gv."'>\n";
 		}
-		
+		if ($_GET['multi'] == 24 and !isset($_GET['affect']))
+		$prefG.="&affect=mach";
 		$prefGssPage = $prefG;
 		$hiddensssPage = $hiddens;
 		
@@ -633,6 +634,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			echo "<td align='center' width='50px'><b>".$l->g(432)."</b></td>
 			<td width='50px' align='center'><b>".$l->g(572)."</b></td>
 			<td width='50px' align='center'><b>".$l->g(573)."</b></td>
+			<td align='center'><b>Archives</b></td>
 			<td align='center'><b>".$l->g(574)."</b></td>
 			<td align='center'><b>".$l->g(431)."</b></td>
 			<td>&nbsp;</td>";	
@@ -662,13 +664,24 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				}
 			}
 			</script>
-			<td><b><a href=# OnClick='actForm("checked","true")'><?php echo $l->g(383); ?></a>/<a href=# OnClick='actForm("checked","false")'><?php echo $l->g(389); ?></a></b></font></td></td>
+			<td><b><a href=# OnClick='actForm("checked","true")'><?php echo $l->g(383); ?></a>/
+			<a href=# OnClick='actForm("checked","false")'><?php echo $l->g(389); ?></a></b></font></td></td>
 		<?}
 
 		echo "</tr>";
 		$x=-1; $nb=0;
 		$uneMachine=false;
-
+		
+		//recherche de tous les ID des groupes (pour les retirer des statistiques)
+		$sqlIdGroup="SELECT ID 
+							FROM hardware 
+							WHERE deviceid = '_SYSTEMGROUP_' OR deviceid = '_DOWNLOADGROUP_'";
+		$resIdGroup = mysql_query( $sqlIdGroup, $_SESSION["readServer"] );
+		$listIdGroup="";
+			while( $valIdGroup = mysql_fetch_array( $resIdGroup ) ) {
+				$listIdGroup .= $valIdGroup['ID'].",";
+			}
+			$listIdGroup=substr($listIdGroup,0,-1);
 		while($item = mysql_fetch_array($result)) // Parcour de toutes les lignes résultat
 		{	
 			flush();
@@ -724,7 +737,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					$uneMachine=true;
 				}
 				else if($chmp==$l->g(577)&& isset($item["h.id"]))
-				{					
+				{
 					echo "<a href=\"index.php?multi=29&popup=1&systemid=".urlencode($item["h.id"])."\" target=\"_new\" onmouseout=\"this.style.color = 'blue';\" onmouseover=\"this.style.color = '#ff0000';\">";
 					$uneMachine=true;
 				}
@@ -732,7 +745,15 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				{
 					echo "<a href='?cuaff=$leCuPrec'>";
 				}
-				
+				else if ($chmp == $l->g(49) and $_GET['multi'] == 21)
+				{
+                                        $sql="select id from download_enable where fileid='".urlencode($item["Timestamp"])."'";
+                                        $resGetId = mysql_query( $sql, $_SESSION["readServer"]);
+    	                                if( $valGetId = mysql_fetch_array( $resGetId ) )
+    	                                    echo "<a href=\"index.php?multi=26&popup=1&timestamp=".urlencode($item["Timestamp"])."\" target=\"_new\" onmouseout=\"this.style.color = 'blue';\" onmouseover=\"this.style.color = '#ff0000';\">";
+
+				}
+
 				if( $isDate[$chmp] )
 					echo dateFromMysql($item[$chmp])."</span></a></font></td>\n";
 				else if( $isDateTime[$chmp] )
@@ -740,35 +761,108 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 
 				else if(!$toutAffiche)
 					echo $item[$chmp]."</span></a></font></td>\n";
-				
+
 			}
-			
-			if( $deletable && isset($item["h.id"]) ) {				
+
+			if( $deletable && isset($item["h.id"]) ) {
 				echo "<td align=center><a href='#' OnClick='confirme(\"".$item["h.id"]."\",0,".(isset($item[$l->g(23)])?"\"".htmlentities($item[$l->g(23)])."\"":"\"\"").",".($_GET["lareq"]==$l->g(583)?2:1).");'><img src=image/supp.png></a></td>";
 			}
 			else if( $deletable && isset($item[$l->g(95)]) ) {
 				echo "<td align=center><a href='#' OnClick='confirme(\"".$item[$l->g(95)]."\",1,\"\",1);'><img src=image/supp.png></a></td>";
 			}
-			
-			if( $teledeploy ) {
-				$resNot = mysql_query("SELECT COUNT(e.id) as 'nb' FROM devices d, download_enable e,hardware h WHERE e.fileid='".$item["Timestamp"]."'
- AND e.id=d.ivalue AND d.name='DOWNLOAD' AND tvalue IS NULL AND h.id=d.hardware_id AND h.deviceid<>'_SYSTEMGROUP_'", $_SESSION["readServer"]);
-				$resSucc = mysql_query("SELECT COUNT(e.id) as 'nb' FROM devices d, download_enable e,hardware h WHERE e.fileid='".$item["Timestamp"]."'
- AND e.id=d.ivalue AND d.name='DOWNLOAD' AND tvalue LIKE 'SUCCESS%' AND h.id=d.hardware_id AND h.deviceid<>'_SYSTEMGROUP_'", $_SESSION["readServer"]);
-				$resErr = mysql_query("SELECT COUNT(e.id) as 'nb' FROM devices d, download_enable e,hardware h WHERE e.fileid='".$item["Timestamp"]."'
- AND e.id=d.ivalue AND d.name='DOWNLOAD' AND tvalue LIKE 'ERR_%' AND h.id=d.hardware_id AND h.deviceid<>'_SYSTEMGROUP_'", $_SESSION["readServer"]);
- 
-				$resTot = mysql_query("SELECT COUNT(e.id) as 'nb' FROM devices d, download_enable e,hardware h WHERE e.fileid='".$item["Timestamp"]."'
- AND e.id=d.ivalue AND d.name='DOWNLOAD' AND h.id=d.hardware_id AND h.deviceid<>'_SYSTEMGROUP_'", $_SESSION["readServer"]);
 
-				$valNot = mysql_fetch_array( $resNot );
-				$valSucc = mysql_fetch_array( $resSucc );
-				$valErr = mysql_fetch_array( $resErr );
-				$valTot = mysql_fetch_array( $resTot );
+//affichage des statistiques pour l'activation de paquet
+			if( $teledeploy ) {
+				$statResult="";
+				//recherche tous les ID dans download_enable qui correspondent à ce timestamp
+				$sqlStat="SELECT ID 
+							FROM download_enable 
+							WHERE fileid='".$item["Timestamp"]."'";
+				$resStat = mysql_query( $sqlStat, $_SESSION["readServer"] );
+				$listIdstat="";
+				while( $valStat = mysql_fetch_array( $resStat ) ) {
+					//création de la list pour effectuer un "in"
+					$listIdstat .= $valStat["ID"].",";
+				}
+				$listIdstat=substr($listIdstat,0,-1);
+				if ($listIdstat != ""){
+					$sqlStatnb="select count(*) as nb, substring(tvalue, 1, 4) as design
+								 from devices 
+								where ivalue in (".$listIdstat.") 
+									and hardware_id not in (".$listIdGroup.")
+									and name='DOWNLOAD' 
+									and (tvalue IS NULL or tvalue LIKE 'SUCCESS%' or tvalue LIKE 'ERR_%')
+								group by design";
+					$resStatnb = mysql_query($sqlStatnb, $_SESSION["readServer"]);
+					if ($resStatnb != ""){
+						while ($valStatnb = mysql_fetch_array( $resStatnb)){
+							$statResult[$valStatnb['design']] = $valStatnb['nb'];
+						}
+					}
+				}
+				if ($statResult[""] == ""){
+				$statResult[""] = 0;		
+				}
 				
-				echo "<td align='center'>".$valNot["nb"]."</td><td align='center'><font color='green'>".$valSucc["nb"]."</font></td><td align='center'><font color='red'>".$valErr["nb"]."</font></td>";
+				if ($statResult["SUCC"] == ""){
+				$statResult["SUCC"] = 0;		
+				}
+					
+				if ($statResult["ERR_"] == ""){
+				$statResult["ERR_"] = 0;		
+				}
+				$statTotal=$statResult[""]+$statResult["SUCC"]+$statResult["ERR_"];
+//				echo $sqlStatnb;
+//				$sqlNot="SELECT COUNT(e.id) as 'nb' 
+//							FROM devices d, download_enable e,hardware h 
+//						WHERE e.fileid='".$item["Timestamp"]."'
+// 							AND e.id=d.ivalue 
+//							AND d.name='DOWNLOAD' 
+//							AND tvalue IS NULL 
+//							AND h.id=d.hardware_id 
+//							AND h.deviceid<>'_SYSTEMGROUP_' 
+//							AND deviceid <> '_DOWNLOADGROUP_'";
+//							
+//				$resNot = mysql_query($sqlNot, $_SESSION["readServer"]);
+//				$sqlSucc="SELECT COUNT(e.id) as 'nb' 
+//							FROM devices d, download_enable e,hardware h 
+//						WHERE e.fileid='".$item["Timestamp"]."'
+// 							AND e.id=d.ivalue 
+//							AND d.name='DOWNLOAD' 
+//							AND tvalue LIKE 'SUCCESS%' 
+//							AND h.id=d.hardware_id 
+//							AND h.deviceid<>'_SYSTEMGROUP_' 
+//							AND deviceid <> '_DOWNLOADGROUP_'";
+//				$resSucc = mysql_query($sqlSucc, $_SESSION["readServer"]);
+//				$sqlErr="SELECT COUNT(e.id) as 'nb' 
+//							FROM devices d, download_enable e,hardware h 
+//						WHERE e.fileid='".$item["Timestamp"]."'
+// 							AND e.id=d.ivalue 
+//							AND d.name='DOWNLOAD' 
+//							AND tvalue LIKE 'ERR_%' 
+//							AND h.id=d.hardware_id 
+//							AND h.deviceid<>'_SYSTEMGROUP_' 
+//							AND deviceid <> '_DOWNLOADGROUP_'";
+//				$resErr = mysql_query($sqlErr, $_SESSION["readServer"]);
+// 				$sqlTot="SELECT COUNT(e.id) as 'nb' 
+//							FROM devices d, download_enable e,hardware h 
+//						WHERE e.fileid='".$item["Timestamp"]."'
+// 							AND e.id=d.ivalue 
+//							AND d.name='DOWNLOAD' 
+//							AND h.id=d.hardware_id 
+//							AND h.deviceid<>'_SYSTEMGROUP_' 
+//							AND deviceid <> '_DOWNLOADGROUP_'";
+//				$resTot = mysql_query($sqlTot, $_SESSION["readServer"]);
+//
+//				$valNot = mysql_fetch_array( $resNot );
+//				$valSucc = mysql_fetch_array( $resSucc );
+//				$valErr = mysql_fetch_array( $resErr );
+//				$valTot = mysql_fetch_array( $resTot );
+				
+				echo "<td align='center'>".$statResult[""]."</td><td align='center'><font color='green'>".$statResult["SUCC"]."</font></td><td align='center'><font color='red'>".$statResult["ERR_"]."</font></td>";
+				echo "<td align='center'><a href=\"tele_compress.php?timestamp=".$item[0]."\" target=_blank><img src='image/compress.png'></a></td>";
 				echo "<td align='center'>";
-				if( $valTot["nb"] > 0 )
+				if( $statTotal > 0 )
 					echo "<a href=\"tele_stats.php?stat=".$item[0]."\" target=_blank><img src='image/cal.gif'></a>";
 				else
 					echo "<b>-</b>";
@@ -779,7 +873,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			else if( $affect ) {
 			
 				if( $affect == 2 ) {
-					echo "<td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?multi=".($affect==2?26:24)."&suppack=".$item[0]."\")'><img src=image/supp.png></a></td>";
+					echo "<td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?multi=26&popup=1&timestamp=".$_GET['timestamp']."&suppack=".$item[0]."\")'><img src=image/supp.png></a></td>";
 					echo "<td align='center'><a href='index.php?multi=30&id=".$item[0]."' target='_top'><img src=image/Gest_admin1.png></a></td>";
 					//echo "<td align='center'><a href=# OnClick='javascript:ruSure(\"index.php?multi=".($affect==2?26:24)."&suppack=".$item[0]."&nonnot=1\")'><img src=image/suppv.png></a></td>";
 				}
@@ -848,23 +942,57 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 
 			if( $_SESSION["lvluser"]==SADMIN && $massProcessing && $req->label != $l->g(583) && $req->label != $l->g(2) ) {
 				echo "<br><center><b>".$l->g(430).":</b>";			
-				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=22\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(429)."</a></b>";
+				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=22\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(107)."</a></b> |";
 				//echo "&nbsp;&nbsp;<b><a href='index.php?multi=23' target=_top>".$l->g(312)."</a></b>";
-				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&frompref=1&multi=24&isgroup=0\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(428)."</a></b>";
-				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=27\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(122)."</a></b>";
+				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&frompref=1&multi=24&isgroup=0\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(428)."</a></b> |";
+				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=27\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(122)."</a></b> |";
 
 				//GROUP BAR
 				if( $_GET["multi"] == 1 ) {
 					// get values for coming back from group_create page
 					//$_SESSION["hiddens"] = $hiddens;
-					echo "&nbsp;&nbsp;<b><a href='#' target='_top' onclick='document.getElementById(\"groups\").style.display=\"block\"; return false;'>".$l->g(583)."</a></b>";
-				
+					echo "&nbsp;&nbsp;<b><a href='#' target='_top'
+						 onclick='document.getElementById(\"server\").style.display=\"none\";
+						 		  document.getElementById(\"add_serv\").style.display=\"none\";
+						 		  document.getElementById(\"new_serv\").style.display=\"none\";
+						 		  document.getElementById(\"replace_serv\").style.display=\"none\";
+						 		  document.getElementById(\"groups\").style.display=\"block\"; return false;'>".$l->g(583)."</a></b> |";
+					
+					echo "&nbsp;&nbsp;<b><a href='#' target='_top' onclick='document.getElementById(\"groups\").style.display=\"none\"; document.getElementById(\"server\").style.display=\"block\"; return false;'>".$l->g(628)."</a></b>";
+					//find all group
 					$reqGroups = "SELECT DISTINCT name FROM hardware WHERE deviceid='_SYSTEMGROUP_'";
 					$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
+					//list of choise
+					$actionServer['0']=$l->g(32);
+					$actionServer['new_serv']=$l->g(629);
+					$actionServer['add_serv']=$l->g(631)." ".$l->g(630);
+					$actionServer['replace_serv']=$l->g(632)." ".$l->g(630);
 					$first = true;
 					while( $valGroups = mysql_fetch_array( $resGroups ) ) {
 						$groupList .= "<option>".$valGroups["name"]."</option>";
 					}
+					//find all server
+					$reqGroupsServers = "SELECT DISTINCT name FROM hardware WHERE deviceid='_DOWNLOADGROUP_'";
+					$resGroupsServers = mysql_query( $reqGroupsServers, $_SESSION["readServer"] );
+					while( $valGroupsServers = mysql_fetch_array( $resGroupsServers ) ) {
+						$groupListServers .= "<option>".$valGroupsServers["name"]."</option>";
+					}
+					//function for show only one div
+					function show_only_me($show,$actionServer)
+					{
+						echo "<option value='".$show."' onclick='";
+						foreach ($actionServer as $key=>$value){
+							if ($key == $show and $key != '0')
+							echo "document.getElementById(\"".$key."\").style.display=\"block\";";
+							elseif ($key != '0')
+							echo "document.getElementById(\"".$key."\").style.display=\"none\";";
+							
+						}
+						echo "'>".$actionServer[$show]."</option>";
+						
+					}
+					
+					
 					?>
 					<br>
 					<br>				
@@ -892,6 +1020,42 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					<tr height='30px' bgcolor='white'><td align='center' colspan='5'><?php echo $l->g(53).": "; ?>
 					<input type='text' name='desc' id='desc' size='100'></td></tr>
 					<tr height='20px' bgcolor='white'><td align='right' colspan='5'><b><input type='submit'></b></td></tr>
+					</table>
+					</div>
+					
+					<div id='server' style='display:none'>
+		 			<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5' >
+					<tr>
+						<td align='center' colspan='2'><b><?php echo $l->g(585); ?></b></td></tr>
+					<tr>
+						<td><?php echo $l->g(634); ?> :</td><td><select id='action_server' name='action_server'><?php
+						show_only_me(0,$actionServer);
+						show_only_me("new_serv",$actionServer);
+						show_only_me("add_serv",$actionServer);
+						show_only_me("replace_serv",$actionServer);
+					?></select></td>
+					
+					</tr>						
+					</div>
+					</table>
+					</div>
+					<div id='new_serv' style='display:none'>
+					<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5'>
+					<tr><td><?php echo $l->g(635); ?> :</td><td><input type='text' name='name_server_new' onFocus="this.style.backgroundColor='white'" onBlur="this.style.backgroundColor='#C7D9F5'"></td></tr>
+					<tr><td><?php echo $l->g(636); ?> :</td><td><textarea  name='descr_server' cols='30' rows='5' onFocus="this.style.backgroundColor='white'" onBlur="this.style.backgroundColor='#C7D9F5'"></textarea></td></tr>
+					<tr><td colspan=2 align=center><b><input type='submit' name='valid_server'></b></td></tr>
+					</table>
+					</div>
+					<div id='add_serv' style='display:none'>
+					<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5'>
+					<tr><td><?php echo $l->g(589)." "; ?>:</td><td><select id='server' name='name_server_add' ><option value=''><? echo $l->g(32); ?></option><? echo $groupListServers; ?></select></td></tr>
+					<tr><td colspan=2 align=center><b><input type='submit' name='valid_server'></b></td></tr>
+					</table>
+					</div>
+					<div id='replace_serv' style='display:none'>
+					<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5'>
+					<tr><td><?php echo $l->g(637); ?> :</td><td><select id='server' name='name_server_replace' ><option value=''><? echo $l->g(32); ?></option><? echo $groupListServers; ?></select></td></tr>
+					<tr><td colspan=2 align=center><b><input type='submit' name='valid_server'></b></td></tr>
 					</table>
 					</div>
 					<?
@@ -929,7 +1093,6 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 }
 
 function getCount( $req ) {
-
 	$ech = $_SESSION["debug"];
 	//IF nor accountinfo and bios are needed, don't join them in count query.
 	if( strpos(" ".$req->where , " a.")===FALSE && strpos(" ".$req->where , " b.")===FALSE&&
@@ -944,7 +1107,7 @@ function getCount( $req ) {
 		$reqCount .= " WHERE ".$req->where;
 		
 	if($ech) echo "<br><font color='red'><b>$reqCount</b></font><br><br>";
-	$resCount = mysql_query($reqCount, $_SESSION["readServer"]);
+	$resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$valCount = mysql_fetch_array($resCount);
 	
 	return $valCount["cpt"];
@@ -1217,12 +1380,12 @@ function deleteDid($id, $checkLock = true, $traceDel = true, $silent=false) {
 				}		
 			}
 			//deleting a regular computer
-			if( $did != "_SYSTEMGROUP_" ) {
+			if( $did != "_SYSTEMGROUP_" and $did != '_DOWNLOADGROUP_') {
 				$tables=Array("accesslog","accountinfo","bios","controllers","drives",
 				"inputs","memories","modems","monitors","networks","ports","printers","registry",
 				"slots","softwares","sounds","storages","videos","devices","download_history");	
 			}
-			else {//Deleting a group
+			elseif($did == "_SYSTEMGROUP_"){//Deleting a group
 				$tables=Array("devices");
 				mysql_query("DELETE FROM groups WHERE hardware_id=$idHard", $_SESSION["writeServer"]) or die(mysql_error());
 				$resDelete = mysql_query("DELETE FROM groups_cache WHERE group_id=$idHard", $_SESSION["writeServer"]) or die(mysql_error());

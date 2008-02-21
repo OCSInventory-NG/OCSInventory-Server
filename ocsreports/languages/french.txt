@@ -72,7 +72,7 @@
 117 Reg
 119 Voulez-vous vraiment supprimer la machine 
 122 Supprimer
-129 EGAL
+129 RESSEMBLE
 130 DIFFERENT
 134 Ajout d'un nouveau fichier dans la base
 135 Attention, vous allez supprimer ce fichier définitivement !
@@ -91,7 +91,7 @@
 180 Utilisateur non enregistré dans la base OCS
 182 Machines ayant un tag donné
 183 Telecharger
-184 Ce fichier ne contient pas \"use constant version\"
+184 Ce fichier ne contient pas "use constant version"
 185 La version doit être supérieure ou égale à 1
 186 Cette archive ne contient pas ver
 187 Ce fichier n'est pas une archive zip valide
@@ -161,7 +161,7 @@
 251 Deconnexion
 252 Nom (au choix)        	
 253 Ruche registre     	
-254 Chemin de la clé (Ex: SOFTWARE\Mozilla)  	
+254 Chemin de la clé (Ex: SOFTWAREMozilla)  	
 255 Nom de la clé à lire (* pour toutes)
 256 Selectionnez la requête registre à modifier
 257 Clé de registre
@@ -227,7 +227,7 @@
 317 ANALYSE
 318 Nom DNS
 319 Resultat d'analyse du reseau
-320 Cette analyse a déja été effectué le
+320 Cette analyse a déja été effectuée le
 321 voulez vous voir les données en cache ?
 322 Données issues du cache
 323 datent du
@@ -304,21 +304,21 @@
 398 Liste des categories
 410 EXACTEMENT
 411 Vous ne devez entrer que des chiffres !
-412 Activer/désactiver la fonctionnalité de recherche dans le registre
-413 Activer/désactiver la fonctionnalité de mise à jour automatique
-414 Activer/désactiver la fonctionnalité de déploiement automatique
-415 Activer/désactiver la fonctionnalité d'enregistrement des supressions (nécessaire pour GLPI).
-416 Activer/désactiver la fonctionnalité de log sur le serveur.
-417 Activer/désactiver la fonctionnalité de télédéploiement (non encore implémentée).
-418 Activer/désactiver la fonctionnalité d'inventaires différentiels.
+412 Fonctionnalité de recherche dans le registre
+413 Fonctionnalité de mise à jour automatique
+414 Fonctionnalité de déploiement automatique de l'agent
+415 Fonctionnalité d'enregistrement des suppressions (outils tiers, ex: GLPI).
+416 Fonctionnalité de log sur le serveur.
+417 Fonctionnalité de télédéploiement (agent et serveur).
+418 Fonctionnalité d'inventaires différentiels.
 419 Nombre de jour maximal avant qu'une machine ipdiscover ne soit remplacée.
 420 Télédéploiement: voir documentation.
 421 Télédéploiement: voir documentation.
 422 Télédéploiement: voir documentation.
 423 Télédéploiement: voir documentation (Les paquets ayant une valeur supérieure ou égale ne seront plus téléchargés).
-424 Nombre de jour maximal de validité d'un paquet à télécharger sur une machine.
+424 Validité d'un paquet à compter de sa prise en compte par l'agent.
 425 Nombre d'ordinateurs remontants les machines de leurs réseaux.
-426 Nombre de jour avant lequel le serveur demande à nouveau à une machine d'envoyer son inventaire.
+426 Validité d'un inventaire.<br>(ALWAYS: toujours inventorié, NEVER:inventaires désactivés)
 427 Défini les critères devant être indentiques pour qu'une fusion automatique ait lieu.
 428 Télédéployer
 429 Fréquence
@@ -376,7 +376,7 @@
 481 Paquets activés
 482 ATTENTE NOTIFICATION
 483 Valider SUCCES
-484 Affecter une fréquence personnalisée
+484 Fréquence personnalisée
 485 Toujours inventorié
 486 Jamais inventorié
 487 Personnalisé
@@ -393,7 +393,7 @@
 498 Paquet
 499 serveur
 500 Traitements personnalisés
-501 Ajouter paquet
+501 ajouter paquet
 502 élu
 503 élu forcé
 504 non élu
@@ -479,7 +479,7 @@
 586 Créer groupe
 587 Créer groupe statique
 588 Ecraser groupe
-589 ajouter statiquement au groupe
+589 Ajouter statiquement à
 590 Reinitialiser état
 591 Inclure statiquement
 592 Exclure statiquement
@@ -515,3 +515,153 @@
 622 En cache
 623 L'information que vous essayez de voir n'existe pas.
 624 Voulez-vous vraiment supprimer le groupe 
+625 Valider les modifications
+626 Annuler les modifications
+627 Au moins un des champs est vide... Mise à jour non effectuée.
+628 Serveurs de redistribution
+629 Nouveau groupe de serveurs de redistribution
+630 un groupe de serveurs existants
+631 Ajouter à
+632 Ecraser
+633 Gestion des groupes serveurs
+634 Action désirée
+635 Nouveau nom
+636 Description
+637 Remplacer
+638 LE NOM DU GROUPE NE PEUT ETRE VIDE
+639 CE GROUPE DE SERVEUR N EXISTE PAS
+640 Etes-vous sûr de vouloir supprimer
+641 Administration des serveurs de redistribution
+642 le groupe
+643 TOUTES les machines
+644 la machine
+645 DETAILS DU GROUPE
+646 URL
+647 NUMERO DU PORT
+648 REPERTOIRE STORE
+649 ACTIVATION AUTOMATIQUE
+650 ACTIVATION MANUELLE
+651 Groupe de serveurs
+652 Machine(s)
+653 Blacklist d'adresse MAC
+654 Entrez une nouvelle adresse MAC à blacklister
+655 Insertion effectuée
+656 Cette donnée existe déjà dans la liste
+657 Les champs en rouge sont en erreur!!! (champs vides ou taille <2)
+658 machines n'ont pas de serveurs de redistribution. <br>Il faut donc affecter ce paquet individuellement.
+659 machines ont déjà ce paquet teledeployé. Le statut de ce paquet pour ces machines est donc à nouveau  
+660 GROUPE DE SERVEUR INEXISTANT
+661 PAQUETS POUR SERVEUR DE REDISTRIBUTION
+662 Règles d'affectation
+663 PROBLEME INTERNE
+664 Action effectuée
+665 AUCUNE MACHINE SELECTIONNEE. GROUPE DE SERVEUR NON CREE
+666 Groupe de serveur créé
+667 POUR LE PAQUET
+668 Affecter avec quelle règle?
+669 ATTENTION: il existe des doublons de priorité<br>Une seule règle sera retenue!
+670 Une règle porte déjà ce nom
+671 Le nom de la règle ne peut être vide
+672 Cette règle n'existe pas!!!
+673 Administration des règles d'affectation
+674 NOM DE LA REGLE
+675 PRIORITE
+676 VALEUR MACHINE
+677 OPERATEUR
+678 VALEUR SERVEUR
+679 NOM
+680 DOMAINE
+681 UTILISATEUR
+682 Ajouter une condition supplémentaire
+683 Valider la régle
+684 Les champs suivants doivent être saisis
+685 Ajouter une régle
+686 La condition
+687 Vous ne pouvez pas le supprimer.
+688 Des paquets sont affectés sur ce goupe! 
+689 Des paquets sont affectés sur ce serveur!
+690 Vous ne pouvez pas supprimer toutes les machines.
+691 Valeurs génériques: $IP$ et $NAME$
+692 Vous modifiez TOUTES les valeurs des serveurs
+693 Vous modifiez les valeurs du serveur suivant:
+694 Pour retrouver les valeurs par défault, valider les champs à vide
+695 Vous modifiez le groupe de serveurs
+696 Visualiser les paquets activés à affecter sur
+697 une machine
+698 un groupe de serveurs
+699 Etes-vous sûr de vouloir affecter ce paquet à ces machines?
+700 Choix Blacklist
+701 Blacklist de numéro de série
+702 Entrez un nouveau numéro de série à blacklister
+703 Blacklist
+704 Etes-vous sûr de vouloir blacklister 
+705 Etes-vous sûr de vouloir déblacklister 
+706 Déblacklister
+707 ce numéro de série
+708 cette adresse mac
+709 Cycles de latence personnalisés
+710 Paramètres de téléchargements personnalisés
+711 Modifications prises en compte
+712 Fichier langue
+713 Etes-vous sûr de vouloir remplacer le fichier de langue
+714 Fichier de langue de référence
+715 Choisir le fichier de langue à modifier
+716 Remplacer le fichier de langue
+717 personnalisé
+718 Ignorer
+719 (en seconde)
+720 Temps d'attente entre 2 cycles de télédéploiement
+721 Temps d'attente entre 2 fragments téléchargés
+722 Temps d'attente entre 2 périodes de télédéploiement
+723 Priorité maximum des paquets téléchargés<br>(Les paquets d'une priorité supérieure sont ignorés)
+724 Temps entre 2 prises de contacts entre l'agent et le serveur
+725 (en heure)
+726 URI des serveurs de redistribution ($IP$ et $NAME$ sont les valeurs génériques)
+727 Répertoire de destination des paquets.
+728 Inventaire
+729 ordinateurs
+730 heures
+731 Fonctionnalité de commit sur la base à chaque section d'inventaire.
+732 miliseconde(s)
+733 Inactif
+734 Fichiers inventaire
+735 Filtres
+736 Permet la fonction de groupes
+737 Nombre aléatoire calculé dans la gamme définie. Conçu pour éviter de calculer tous les groupes en même temps
+738 Spécifie la validité d'un groupe (par défaut : calculé une fois par jour - voir offset)
+739 Amélioration futur de la sécurité
+740 Validité du lock d'un ordinateur
+741 Configuration du moteur pour mettre à jour les sections d'inventaire en fonction du CHECKSUM (pour baisser la charge de DB backend )
+742 Faire que le moteur considère un inventaire comme une transaction (accès concurrentiel plus bas, meilleure utilisation du disque)
+743 Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load
+744 Enable some stuff to improve DB queries, especially for GUI multicriteria searching system
+745 Specify when the engine will clean the inventory cache structures
+746 Specify the minimal difference to replace an ipdiscover agent
+747 Disable the time before a first election (not recommended)
+748 Enable groups for ipdiscover (for example, you might want to prevent some groups to be ipdiscover agents)
+749 Use with ocsinventory-local, enable the multi entities feature
+750 Generate either compressed file or clear XML text
+751 Specify if you want to keep trace of all inventory between to synchronisation with the higher level server
+752 Path to ocs files directory (must be writeable)
+753 Enable prolog filter stack
+754 Enable core filter system to modify some things "on the fly"
+755 Enable inventory flooding filter. A dedicated ipaddress ia allowed to send a new computer only once in this period
+756 Définition de la période pour INVENTORY_FILTER_FLOOD_IP
+757 Permettre la pile de filtre d'inventaire
+758 Specify if you want to track packages affected to a group on computer's level
+759 Doit être supérieur ou égal à  
+760 Webservice
+761 Activer/désactiver le webservice
+762 Taille de la page de résultats (a des conséquences sur les performances)
+763 Fichiers d'inclusion de vos propres extensions
+764 Ces options ne sont pas modifiables par la GUI.<br>(modifier directement dans ocsinventory-server.conf)
+765 Tous les logiciels
+766 AUCUN RESULTAT
+767 ATTENTION: RESULTATS AVEC FILTRE
+768 Nombre d'enregistrement
+769 Tranfert effectué
+770 MISE A JOUR DE 
+771 Cette catégorie existe déjà
+772 Le nom de la nouvelle catégorie ne peut être nul
+773 Vous devez sélectionner un nom de catégorie
+774 Vous essayer de faire un transfert de la catégorie vers la même catégorie

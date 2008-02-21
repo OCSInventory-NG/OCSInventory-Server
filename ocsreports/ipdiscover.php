@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.12 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.13 $)
 
 @set_time_limit(0);
 $nbpop=0;
@@ -267,17 +267,16 @@ else if( $_GET["mode"] == 1 ) {
 			LEFT OUTER JOIN networks        ns ON ns.macaddr = mac 
 			LEFT OUTER JOIN network_devices nd ON nd.macaddr = mac
 			INNER      JOIN subnet          s  ON s.netid    = n.netid 
-			WHERE s.id='$dpt'
+			WHERE s.id $dpt
 			AND ns.macaddr IS NULL 
-			AND nd.macaddr IS NULL;
-		";
-
+			AND nd.macaddr IS NULL";
+			
 		$totNinvResLoc = mysql_query( $totNinvReqLoc, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		$totNinvValLoc = mysql_fetch_array( $totNinvResLoc );
 		
 		echo "<center><b></b></center><br>";
 		$reqGateway = "SELECT ipsubnet as nbrez, COUNT(hardware_id) AS nbc FROM networks n,subnet s
-		WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' AND n.ipsubnet=s.netid AND s.id = '$dpt' GROUP BY(ipsubnet) ";
+		WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' AND n.ipsubnet=s.netid AND s.id $dpt GROUP BY(ipsubnet) ";
 		
 		$strEnTete =  $l->g(562)." ".$dpt."<br>";
 		$strEnTete .= "<br>(<font color='red'>".$totNinvValLoc["total"]."</font> ".$l->g(219).")";

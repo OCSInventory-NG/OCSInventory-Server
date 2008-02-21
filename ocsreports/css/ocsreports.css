@@ -51,7 +51,7 @@ input
 	color: blue;
 }
 
-.bouton,input,select,textarea,option {
+.bouton,select,input,textarea,option {
 	background-color:#C7D9F5;
 	border-color:#A1B1F9; 
 	border-width:2px;	
@@ -237,3 +237,47 @@ display: block;
 #menu li a:hover {
 text-decoration: underline;
 }
+div.tableContainer {
+	overflow: auto;
+	margin: 0 auto;
+	}
+
+table.ta {
+	width: 99%;		/*100% of container produces horiz. scroll in Mozilla*/
+	border: solid 1px slategray;
+	}
+	
+tbody.ta	{  /* child selector syntax which IE6 and older do not support*/
+	overflow: auto; 
+	overflow-x: hidden;
+	}
+	
+th.ta	{
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	width: 50px;
+	background-color: #c7d9f5;
+	color: steelblue;
+	border: solid slategray thin;
+	position:relative; 
+	/*top: expression(document.getElementById('data').scrollTop-2); /*IE5+ only*/
+	}
+
+tr.ta {
+	text-align: center;
+}
+	
+td.ta	{
+	color: #000;
+	text-align: center;
+	padding-right: 2px;
+	font-size: 12px;
+	font-family: Arial,sans-serif;
+	border-bottom: solid 1px slategray;
+	border-left: solid 1px slategray;
+
+	}
+
+td.ta:last-child {padding-right: 20px;} /*prevent Mozilla scrollbar from hiding cell content*/
+

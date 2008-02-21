@@ -8,10 +8,43 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.15 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.16 $)
+
+require_once('require/function_server.php');
+
+//cas of add new server's diff
+if (isset($_POST['action_server']) and $_POST['action_server'] != '0')
+{
+
+	$i=1;
+	foreach ($_POST as $key=>$value){
+		if (substr($key, 0, 9) == "checkmass"){
+			$mach[$i]=$value;
+			$i++;
+		}
+	}
+	if ($mach == "")
+	{
+		$sql="select h.id ".$_SESSION['groupReq'];
+		$res = mysql_query( $sql, $_SESSION["readServer"]);
+		while( $valallid = mysql_fetch_array( $res ) ){
+			$mach[$i] = $valallid['id'];
+			$i++;
+		}
+
+	}
+	if ($_POST['name_server_new'] != "")
+	$name=$_POST['name_server_new'];
+	elseif ($_POST['name_server_add'] != "")
+	$name=$_POST['name_server_add'];
+	elseif ($_POST['name_server_replace'] != "")
+	$name=$_POST['name_server_replace'];
+	$msg=admin_serveur($_POST['action_server'],$name,$_POST['descr_server'],$mach) ;
+	echo "<script>alert('".$msg."');</script>";
+}
 
 	if( isset( $_GET["nme"] ) && isset( $_GET["stat"] ) ) {
-		$_POST["act_0"] = "on";		
+		$_POST["act_0"] = "on";
 		$_POST["chm_0"] = "tele";
 		$_POST["lbl_0"] = $l->g(512);
 		$_POST["ega_0"] = "ayant";
@@ -22,9 +55,9 @@
 		if( $_POST["val2_0"] == $l->g(482) ) {
 			$_POST["val2_0"] = "stats";
 		}
-		$_SESSION["OPT"][] = $l->g(512);		
+		$_SESSION["OPT"][] = $l->g(512);
 	}
-	
+
 	if($_POST["sub"]==$l->g(30)) {
 		unset($_SESSION["selectSofts"]);
 		unset($_SESSION["selectRegistry"]);
@@ -33,30 +66,30 @@
 
 	printEnTete($l->g(9));
 	$req = NULL;
-	
+
 	if( !isset($_SESSION["optCol"]) ) {
 		$reqCol = "SHOW COLUMNS FROM accountinfo";
 		$resCol = mysql_query($reqCol, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		while($colname=mysql_fetch_array($resCol)) {
 			if( strcasecmp($colname["Field"], TAG_NAME) != 0 )
-				$_SESSION["optCol"][] = $colname["Field"] ;	
+				$_SESSION["optCol"][] = $colname["Field"] ;
 		}
-	}	
-	
+	}
+
 	require("req.class.php");
 	$indLigne=0;
 	$softPresent = false;
 	$cuPresent = -1;
 	$leSelect = array_merge( array("h.id"=>"h.id", "deviceid"=>"deviceid"), $_SESSION["currentFieldList"] );
-	
-	if( is_array($_SESSION["selectSofts"]) && $_POST["sub"]!=$l->g(30)) 
+
+	if( is_array($_SESSION["selectSofts"]) && $_POST["sub"]!=$l->g(30))
 		$leSelect = array_merge( $leSelect, $_SESSION["selectSofts"] );
-	
+
 	if( is_array($_SESSION["selectRegistry"]) )
-		$leSelect = array_merge( $leSelect, $_SESSION["selectRegistry"] );	
-		
+		$leSelect = array_merge( $leSelect, $_SESSION["selectRegistry"] );
+
 	$selFinal ="";
-	
+
 	if($_POST["reset"]==$l->g(41))
 	{
 		unset($_SESSION["OPT"]);
@@ -69,7 +102,7 @@
 		if( $_POST["selOpt"]==$l->g(20) ||  ((! is_array($_SESSION["OPT"]))  ||   ( !in_array($_POST["selOpt"],$_SESSION["OPT"])))) {
 			$_SESSION["OPT"][]=stripslashes($_POST["selOpt"]);
 		}
-	}	
+	}
 	else if($_POST["sub"]==$l->g(30))
 	{
 		/* Creates a description of the generated query in $_SESSION["queryDescription"]
@@ -95,64 +128,64 @@
 		$laRequete="";				
 
 		for($i=0;$i<$_POST["max"];$i++)	{
-		
+
 			if( urldecode($_POST["lbl_".$i]) == $l->g(20))
-				$_SESSION["softs"][] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i], 
-				strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] ); 
-			
-			$_SESSION["reqs"][ urldecode($_POST["lbl_".$i]) ] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i], 
-			strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] ); 
-							
+				$_SESSION["softs"][] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i],
+				strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] );
+
+			$_SESSION["reqs"][ urldecode($_POST["lbl_".$i]) ] = array( $_POST["act_".$i], urldecode($_POST["chm_".$i]), $_POST["ega_".$i],
+			strtr($_POST["val_".$i],"\"","'"), strtr($_POST["val2_".$i],"\"","'"), $_POST["valreg_".$i] );
+
 			if(!isset($_POST["act_".$i]))
 				continue;
 			$nb++;			
 		}
-		
+
 		$from = " hardware h LEFT JOIN accountinfo a ON a.hardware_id=h.id LEFT JOIN bios b ON b.hardware_id=h.id,";
-		//$laRequete.=" FROM hardware h,accountinfo a, bios b, ";		
-			
+		//$laRequete.=" FROM hardware h,accountinfo a, bios b, ";
+
 		$softTable = false ;
 		$logIndex = 1;
 		$fromPrelim  ="";
 		for($i=0;$i<$_POST["max"];$i++)
 		{
-			
+
 			if(!isset($_POST["act_".$i]))
 			continue;
-			
+
 			//jokers
 			if( $_POST["ega_".$i] != $l->g(410) )
 				$_POST["val_".$i] = strtr($_POST["val_".$i], "?*", "_%");
-						
+
 			if( isFieldDate($_POST["chm_".$i]) ) {
 				$_POST["val_".$i] = dateToMysql($_POST["val_".$i]);
 			}
-			
-			if( ($_POST["chm_".$i]=="name") && ($_POST["ega_".$i]==$l->g(129) || $_POST["ega_".$i]==$l->g(410))) {		
+
+			if( ($_POST["chm_".$i]=="name") && ($_POST["ega_".$i]==$l->g(129) || $_POST["ega_".$i]==$l->g(410))) {
 				$leSelect["s".$logIndex.".name"] = $l->g(20)." $logIndex";
 				$_SESSION["selectSofts"]["s".$logIndex.".name"] = $l->g(20)." $logIndex";
 			}
-			
-			if( ($_POST["chm_".$i]=="regval" || $_POST["chm_".$i]=="regname")&& 
+
+			if( ($_POST["chm_".$i]=="regval" || $_POST["chm_".$i]=="regname")&&
 				($_POST["ega_".$i]==$l->g(129) || $_POST["ega_".$i]==$l->g(410))) {
 				$leSelect["r.regvalue"] = $_POST["val_".$i];
 				$from = substr ( $from, 0 , strlen( $from)-1 );
 				$from .= " LEFT JOIN registry r ON r.hardware_id=h.id AND r.name='".$_POST["val_".$i]."',";
 				$_SESSION["selectRegistry"]["r.regvalue"] = $_POST["val_".$i];
 			}
-			
+
 			$regRes = null;
 			if( ($_POST["ega_".$i]==$l->g(129)||$_POST["ega_".$i]==$l->g(410)) && $_POST["chm_".$i]=="name" ) {
 				//$fromPrelim.=" softwares s".$logIndex.",";
 				$from .= " softwares s".$logIndex.",";
 				$logIndex++;
 			}
-			
+
 			if( ($_POST["chm_".$i]=="smonitor" || $_POST["chm_".$i]=="fmonitor" || $_POST["chm_".$i]=="lmonitor") && ! $monitorTable ) {
 				$fromPrelim.=" monitors m,";
 				$monitorTable = true;
 			}
-			
+
 			if($_POST["chm_".$i]=="free") {
 				$fromPrelim.=" drives dr,";
 			}
@@ -160,9 +193,9 @@
 			if(($_POST["chm_".$i]=="ipmask"||$_POST["chm_".$i]=="ipgateway"||$_POST["chm_".$i]=="ipaddr"||$_POST["chm_".$i]=="ipsubnet"||$_POST["chm_".$i]=="macaddr") && !$netTable) {
 				$fromPrelim.=" networks n,";
 				$netTable=true;
-			}		
+			}
 		}
-		
+
 		if($fromPrelim[strlen($fromPrelim)-1]==",")
 			$fromPrelim[strlen($fromPrelim)-1]=" ";
 		if($from[strlen($from)-1]==",")
@@ -170,7 +203,7 @@
 		$groupReqBegin = "FROM ".$from;
 		if( $fromPrelim != "" )
 			$groupReqBegin .= ",".$fromPrelim;
-			
+
 		$groupReqBegin .= " WHERE ";
 		for($i=0;$i<$_POST["max"];$i++)
 		{				
@@ -389,7 +422,7 @@
 					case "processors": $reqCondition.="h.processors";break;
 					case "memory": $reqCondition.="h.memory";break;
 					case "osname": $reqCondition.="h.osname";$forceEgal=false;break;
-					case "oscomments": $laRequete.="h.oscomments";$forceEgal=false;break;
+					case "oscomments": $reqCondition.="h.oscomments";$forceEgal=false;break;
 					case "userid": $reqCondition.="h.userid";break;
 					case "ipaddr": $reqCondition.="n.hardware_id=h.id AND n.ipaddress";break;
 					case "macaddr": $reqCondition.="n.hardware_id=h.id AND n.macaddr";break;
@@ -476,8 +509,14 @@
 				// If cache is used AND 'like' search is used
 				if( $_SESSION["usecache"] == true && $softsEg[$ii][2]==$l->g(129) ) {		
 					$gluedSofts = getCache( "softwares", "name", $softsEg[$ii][0], & $totSofts );
+					if ($gluedSofts != ''){
 					$laRequeteF .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name IN('$gluedSofts')";
 					$selFinal   .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name IN('$gluedSofts')";
+					}
+					else{
+					$laRequeteF .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name IN('SOFT NOT EXIST')";
+					$selFinal   .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name IN('SOFT NOT EXIST')";
+					}
 				}
 				else {
 					$laRequeteF .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name$comp".$softsEg[$ii][0]."$compFin";
@@ -534,16 +573,18 @@
 			}
 			
 			if(sizeof($regDiff)>=1) {
-				$valRegR = " rr.regvalue = '".$regDiff[1]."'";
+				$valRegR = " AND rr.regvalue like '%".$regDiff[1]."%'";
 				if(  ! empty($groupReq) ) $groupReq .= " AND";
 				$groupReq .= " h.id NOT IN(SELECT DISTINCT(rr.hardware_id) FROM registry rr WHERE rr.name = '".$regDiff[0]."' $valRegR)";
 			}
-			
+			//modif apportées pour résoudre bug des recherches qui renvoient toutes les machines
+			if( ! empty($laRequeteF))
+			$and=" AND ";
 
-			if( ! empty($laRequeteF) && ! empty($mesMachines) ) {
-				$laRequeteF .= " AND $mesMachines";
+			if( (! empty($laRequeteF) || ! empty($reqSid)) && ! empty($mesMachines) ) {
+				$laRequeteF .= $and.$mesMachines;
 			}
-
+			//fin des modifs
 			if( sizeof( $idNotIn ) > 0 ) {
 				if(  ! empty($laRequeteF) ) $laRequeteF .=" AND";
 				$idNotIn = @array_unique( $idNotIn );
@@ -552,13 +593,13 @@
 			}
 						
 			if( ! empty($laRequeteF) ) $laRequeteF .= " AND ";
-			$laRequeteF .= " deviceid<>'_SYSTEMGROUP_' ";
+			$laRequeteF .= " deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' ";
 
 			if( ! empty($groupReq) ) $groupReq .= " AND ";
-			$groupReq .= " deviceid<>'_SYSTEMGROUP_' ";
-			
-			$group =  " h.id";			
-			$lbl="Recherche multicritères";	
+			$groupReq .= " deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' ";
+
+			$group =  " h.id";
+			$lbl="Recherche multicritères";
 			$lblChmp[0]=NULL;
 			$selectPrelim = array("h.id"=>"h.id");
 			$linkId = "h.id";
@@ -735,7 +776,7 @@ function afficheLigne($ligne)
 		</td><td>$label</td><td>";
 		echo "<select OnClick='act$suff.checked=true' name='ega$suff'>";		
 		echo "<option".($_SESSION["softs"][$indLigneSoft][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>";
-		if( $allowExact ) echo "<option".($_SESSION["softs"][$indLigneSoft][2]==$l->g(410)?" selected":"").">".$l->g(410)."</option>";
+		if( $allowExact ) echo "<option".(($_SESSION["softs"][$indLigneSoft][2]==$l->g(410) or !isset($_SESSION["softs"][$indLigneSoft][2]))?" selected":"").">".$l->g(410)."</option>";
 		echo "<option".($_SESSION["softs"][$indLigneSoft][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option>";
 		echo "</select>&nbsp;&nbsp;";
 		echo "<input OnClick='act$suff.checked=true' name='val$suff' value=\"".stripslashes($_SESSION["softs"][$indLigneSoft][3])."\">";
@@ -810,10 +851,10 @@ function afficheLigne($ligne)
 	}
 		
 		if($type != 4 && $type != 6) {
-					
+					echo $_SESSION["reqs"][$label][2];
 			echo "<select OnClick='act$suff.checked=true' name='ega$suff'>			
 			<option".($_SESSION["reqs"][$label][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>";
-			if( $allowExact ) echo "<option".($_SESSION["reqs"][$label][2]==$l->g(410)?" selected":"").">".$l->g(410)."</option>";
+			if( $allowExact ) echo "<option".(($_SESSION["reqs"][$label][2]==$l->g(410) or !isset($_SESSION["reqs"][$label][2]))?" selected":"").">".$l->g(410)."</option>";
 			echo "<option".($_SESSION["reqs"][$label][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option>";
 	
 			if( $isDate) {
@@ -870,7 +911,7 @@ function afficheLigne($ligne)
 	if( $type == 6) {
 			echo "<select OnClick='act$suff.checked=true' name='ega$suff'>			
 			<option".($_SESSION["reqs"][$label][2]==$l->g(129)?" selected":"").">".$l->g(129)."</option>";
-			if( $allowExact ) echo "<option".($_SESSION["reqs"][$label][2]==$l->g(410)?" selected":"").">".$l->g(410)."</option>";
+			if( $allowExact ) echo "<option".(($_SESSION["reqs"][$label][2]==$l->g(410) or !isset($_SESSION["reqs"][$label][2]))?" selected":"").">".$l->g(410)."</option>";
 			echo "<option".($_SESSION["reqs"][$label][2]==$l->g(130)?" selected":"").">".$l->g(130)."</option></select>";
 			/*$reqRes = mysql_query("SELECT DISTINCT(regvalue) FROM registry", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"])); // mesmachines
 			echo "&nbsp;&nbsp;".$l->g(224).":&nbsp;&nbsp;*/

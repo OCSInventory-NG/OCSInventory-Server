@@ -8,10 +8,10 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.11 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.12 $)
 
 require("req.class.php");
-require("fichierconf.class.php");
+require("fichierConf.class.php");
 require_once("preferences.php");
 
 if( isset($_SESSION["forcedRequest"] )) {

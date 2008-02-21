@@ -1,192 +1,69 @@
 <?php 
-//====================================================================================
-// OCS INVENTORY REPORTS
-// Copyleft Pierre LEMMET 2005
-// Web: http://ocsinventory.sourceforge.net
-//
-// This code is open source and may be copied and modified as long as the source
-// code is always made freely available.
-// Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
-//====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.10 $)
+
+
 
 require ('fichierConf.class.php');
-printEnTete($l->g(107));
-
-$lesEdits = array("IPDISCOVER_MAX_ALIVE","DOWNLOAD_CYCLE_LATENCY","DOWNLOAD_FRAG_LATENCY","DOWNLOAD_PERIOD_LATENCY",
-"DOWNLOAD_PERIOD_LENGTH","DOWNLOAD_TIMEOUT","PROLOG_FREQ","IPDISCOVER_LATENCY","LOCAL_PORT");
-
-$lesOnOff = array("REGISTRY","UPDATE","DEPLOY","TRACE_DELETED","LOGLEVEL","DOWNLOAD","INVENTORY_DIFF","INVENTORY_TRANSACTION","ENABLE_GROUPS");
+require_once('require/function_table_html.php');
+require_once('require/function_config_generale.php');
+if( $_SESSION["lvluser"] != SADMIN )
+	die("FORBIDDEN");
+$def_onglets[$l->g(499)]=$l->g(499); //Serveur
+$def_onglets[$l->g(728)]=$l->g(728); //Inventaire
+$def_onglets[$l->g(312)]=$l->g(312); //IP Discover
+$def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+$def_onglets[$l->g(628)]=$l->g(628); //Serveur de redistribution
+$def_onglets[$l->g(583)]=$l->g(583); //Groupes
+$def_onglets[$l->g(211)]=$l->g(211); //Registre
+$def_onglets[$l->g(734)]=$l->g(734); //Fichiers d'inventaire
+$def_onglets[$l->g(735)]=$l->g(735); //Filtres
+$def_onglets[$l->g(760)]=$l->g(760); //Filtres
+if ($_POST['Valid'] == "Valid")
+$MAJ=update_default_value($_POST); //function in function_table_html.php
+echo "<font color=green ><center><b>".$MAJ."</b></center></font>";
+$form_name='modif_onglet';
+echo "<form name='".$form_name."' id='".$form_name."' method='POST' action='index.php?multi=4'>";
+onglet($def_onglets,$form_name,'onglet',7);
+echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td>";
+if ($_POST['onglet'] == $l->g(728) ){
 	
-$lesAutres = array("AUTO_DUPLICATE_LVL","IPDISCOVER","FREQUENCY","LOCAL_SERVER");
-
-if( isset($_POST["FREQUENCY"] ) ) {
-	switch($_POST["FREQUENCY"]) {
-		case "NEVER" : setOpt("FREQUENCY", -1); break;
-		case "ALWAYS": setOpt("FREQUENCY", 0); break;
-		default: setOpt("FREQUENCY", $_POST["FREQUENCY_edit"]);
-	}	
-
-	switch($_POST["IPDISCOVER"]) {
-		case "OFF": setOpt("IPDISCOVER", 0); break;
-		default: setOpt("IPDISCOVER", $_POST["IPDISCOVER_edit"]);
-	}
+	pageinventory($form_name);
 	
-	$autoDupLvl =  isset($_POST["AUTO_DUPLICATE_LVL_serial"])?$_POST["AUTO_DUPLICATE_LVL_serial"]:0;
-	$autoDupLvl += isset($_POST["AUTO_DUPLICATE_LVL_host"])?$_POST["AUTO_DUPLICATE_LVL_host"]:0;
-	$autoDupLvl += isset($_POST["AUTO_DUPLICATE_LVL_mac"])?$_POST["AUTO_DUPLICATE_LVL_mac"]:0;
-	setOpt("AUTO_DUPLICATE_LVL", $autoDupLvl);
-	
-	foreach($lesOnOff as $oo) 
-		setOpt($oo, ($_POST[$oo]=="ON"?1:0));
-		
-	foreach($lesEdits as $ee)
-		setOpt($ee, $_POST[$ee."_edit"]);
-		
-	setOptTxt("LOCAL_SERVER", $_POST["LOCAL_SERVER"]);
 }
-
-?>
-<script language='javascript'>
-	function modif(id, val, maxx) {
-		if( document.getElementById(id).disabled == true )
-			return;		
-		var curVal = parseFloat(document.getElementById(id).value);
-		curVal = curVal + parseFloat(val);
-		if( curVal < 1 || isNaN(curVal) || curVal > maxx )
-			curVal = 1;			
-		document.getElementById(id).value = curVal;		
-	}
+if ($_POST['onglet'] == $l->g(499) or $_POST['onglet'] == ""){
 	
-	function active(id, sens) {
-		var mstyle = document.getElementById(id).style.display	= (sens!=0?"block" :"none");
-	}
+ 	pageserveur($form_name);
 	
-	function checkNumbers() {
-		if ( 0 <?php foreach($lesEdits as $ee) echo "|| isNaN(document.getElementById('{$ee}_edit').value)"; ?> ) {
-			alert("<?php echo $l->g(411);?>");
-		}
-		else {
-			document.getElementById('formopt').submit();
-		}
-	}
-</script>
-<br><form name='formopt' id='formopt' action='index.php?multi=4' method='POST'><table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>
-<tr height=25px>
-<td width='27%' align='center'><b><?php echo $l->g(49); ?></b></td><td  width='22%' align='center'><b><?php echo $l->g(224); ?></b></td><td width='2%'>&nbsp;&nbsp;&nbsp;</td><td width='27%' align='center'><b><?php echo $l->g(49); ?></b></td><td  width='22%' align='center'><b><?php echo $l->g(224); ?></b></td>
-<?php 
-//><td  width='*' align='center'><b> echo $l->g(51); </b></td>
-$nbr = 0;
-$trad = array("REGISTRY"=>412,"UPDATE"=>413,"DEPLOY"=>414,"TRACE_DELETED"=>415,"LOGLEVEL"=>416,"DOWNLOAD"=>417,"INVENTORY_DIFF"=>418,
-"IPDISCOVER_MAX_ALIVE"=>419,"DOWNLOAD_CYCLE_LATENCY"=>420,"DOWNLOAD_FRAG_LATENCY"=>421,"DOWNLOAD_PERIOD_LATENCY"=>422,
-"DOWNLOAD_PERIOD_LENGTH"=>423,"DOWNLOAD_TIMEOUT"=>424,"IPDISCOVER"=>425,"FREQUENCY"=>426,"AUTO_DUPLICATE_LVL"=>427, "PROLOG_FREQ"=>564, 
-"LOCAL_SERVER"=>565, "LOCAL_PORT"=>566, "IPDISCOVER_LATENCY"=>567);
-
-$cond= "";
-if( !isset($_SESSION["debug"]) || !$_SESSION["debug"] ) {
-	$allConf = implode( "','", array_merge($lesEdits, $lesOnOff, $lesAutres) );
-	$cond = "WHERE NAME IN ('$allConf')";
 }
-
-$resConf = mysql_query("SELECT NAME,IVALUE,TVALUE FROM config $cond ORDER BY NAME", $_SESSION["readServer"]) or die(mysql_error());
-$decal = "&nbsp;&nbsp;&nbsp;";
-$ligne = 0;
-while( $conf = mysql_fetch_array($resConf) ) {
-
-	$title = " title=\"".htmlspecialchars($l->g($trad[$conf["NAME"]]))."\" ";
-	echo "<TR height=65px bgcolor='".($ligne%2==0 ? "#FFFFFF" : "#F2F2F2")."'>";
-	//case 1
-	echo "<td$title>$decal".$conf["NAME"]."</td>";
+if ($_POST['onglet'] == $l->g(312)){	
 	
-	//case 2
-	echo "<td$title align='left' width='150px'>";
-	showOption( $conf["NAME"], $conf["IVALUE"], $conf["TVALUE"]);
-	echo "</td>";
-
-	//separator
-	echo "<td bgcolor='#C7D9F5'>&nbsp;</td>";
-
-	if( ! $conf = mysql_fetch_array($resConf) )
-		break;
+	pageipdiscover($form_name);
+}
+if ($_POST['onglet'] == $l->g(512)){
 	
-	$title = " title=\"".strtr($l->g($trad[$conf["NAME"]]), "\"","'")."\" ";
-	//case 3
-	echo "<td$title>$decal".$conf["NAME"]."</td>";
+	pageteledeploy($form_name);
+}
+if ($_POST['onglet'] == $l->g(628)){
 	
-	//case 4
-	echo "<td$title align='left' width='150px'>";
-	showOption( $conf["NAME"], $conf["IVALUE"] , $conf["TVALUE"]);
-	echo "</td>";
-	$ligne++;
+	pageredistrib($form_name);
 }
-		
-echo "</tr></table>";
-echo "<p align='center'><input type='button' height='60px' value='".$l->g(103)."' OnClick='checkNumbers();'></p></form>";		
-
-function showOption($nme, $val, $txt) {
-	global $lesEdits,$lesOnOff;
-	if( @in_array($nme, $lesOnOff ) )  {
-		echo "<table><tr><td align='left'><input type='radio' name='$nme' value='ON' ".($val?"checked":"").">ON</td></tr>
-			<tr><td align='left'><input type='radio' name='$nme' value='OFF' ".($val?"":"checked").">OFF</td></tr></table>";
-	}
-	else if( @in_array($nme, $lesEdits ) )  {
-		echo edit($nme,$val);
-	}	
-	else switch($nme) {
-		case "AUTO_DUPLICATE_LVL":
-			echo "<table><tr><td align='left'><input type='checkbox' name='{$nme}_serial' value='2' ".(in_array($val,array(2,3,6,7))?"checked":"").">Serial</td></tr>
-			<tr><td align='left'><input type='checkbox' name='{$nme}_host' value='1' ".(in_array($val,array(1,3,5,7))?"checked":"").">hostname</td></tr>
-			<tr><td align='left'><input type='checkbox' name='{$nme}_mac' value='4' ".(in_array($val,array(4,5,6,7))?"checked":"").">macaddress</td></tr>
-					</table>";
-			break;
-		case "IPDISCOVER":
-			echo "<table><tr height='25px'><td width='90px' align='left'><input type='radio' name='$nme' value='ON' ".($val?"checked":"")." OnClick=\"active('{$nme}_div',1);\">ON</td></td><td rowspan='2'>".edit($nme,$val)."</td></tr>
-			<tr height='25px'><td align='left'><input type='radio' name='$nme' value='OFF' ".($val?"":"checked")." OnClick=\"active('{$nme}_div',0);\">OFF</td></tr></table>";
-			break;
-		case "FREQUENCY":
-			echo "<table><tr><td width='90px'><input ".($val==0?"checked":"")." type='radio' name='$nme' value='ALWAYS' OnClick=\"active('{$nme}_div',0);\">ALWAYS</td><td rowspan='3'>".edit($nme,$val)."</td></tr>
-			<tr><td><input ".($val==-1?"checked":"")." type='radio' name='$nme' value='NEVER' OnClick=\"active('{$nme}_div',0);\">NEVER</td></tr>
-			<tr><td><input ".($val>0?"checked":"")." type='radio' name='$nme' value='CUSTOM' OnClick=\"active('{$nme}_div',1);\">CUSTOM</td></tr></table>";			
-			break;
-		case "LOCAL_SERVER":
-			echo "<table><tr><td width='100%' rowspan='3'>http://<input name='$nme' size='15' maxlength='254' value='$txt'></td></tr></table>";
-			break;
-		default:
-			if( $val == "" || ! isset($val) )
-				$val = $txt;
-			echo "&nbsp;&nbsp;<b>$val</b>";
-			break;
-	}
+if ($_POST['onglet'] == $l->g(583)){
+	
+	pagegroups($form_name);
 }
-
-function edit($nme, $val) {
-	$enabled = true;
-	$valInit = $val;
-	if( $nme == "FREQUENCY" && $val < 1 ) {
-		$enabled = false;
-		$valInit = 1;
-	}
-	else if( $nme == "IPDISCOVER" && $val <= 0 )
-		$enabled = false;
-		
-	if( in_array($nme, array("LOCAL_PORT","IPDISCOVER_LATENCY","DOWNLOAD_FRAG_LATENCY","DOWNLOAD_CYCLE_LATENCY","DOWNLOAD_PERIOD_LATENCY") ) ) {
-		$maxx = 9999;
-		$sizee = 4;
-	}
-	else {
-		$maxx = 999;
-		$sizee = 3;
-	}
-
-	return "<div id='{$nme}_div' style='display:".($enabled?"block":"none")."'><table><tr><td rowspan='2'><input type='text' size='3' maxlength='$sizee' id='{$nme}_edit' name='{$nme}_edit' value='$valInit'></td><td align='center'>
-	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','1',$maxx);\"><b><font size='3'>+</font></b></a></td></tr><td align='center'>
-	<a href='javascript:void(0);' Onclick=\"modif('{$nme}_edit','-1',$maxx);\"><b><font size='3'>-</font></b></a></td></tr></table></div>";
+if ($_POST['onglet'] == $l->g(211)){
+	
+	pageregistry($form_name);
 }
-
-function setOpt($nme, $ivalue) {
-	mysql_query("UPDATE config SET IVALUE=$ivalue WHERE name='$nme'", $_SESSION["writeServer"]) or die(mysql_error());
+if ($_POST['onglet'] == $l->g(734)){
+	
+	pagefilesInventory($form_name);
 }
-
-function setOptTxt($nme, $tvalue) {
-	mysql_query("UPDATE config SET TVALUE='$tvalue' WHERE name='$nme'", $_SESSION["writeServer"]) or die(mysql_error());
+if ($_POST['onglet'] == $l->g(735)){
+	
+	pagefilter($form_name);
 }
+if ($_POST['onglet'] == $l->g(760)){
+	
+	pagewebservice($form_name);
+}
+echo "</table></form>";

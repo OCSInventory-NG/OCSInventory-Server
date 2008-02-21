@@ -693,36 +693,87 @@ ALTER TABLE softwares ADD INDEX `VERSION`(`VERSION`);
 ALTER TABLE subnet ADD INDEX ID(ID);
 ALTER TABLE hardware CHANGE QUALITY QUALITY DECIMAL(7,4) default NULL;
 
-DELETE FROM `config` WHERE name='GUI_VERSION';
-DELETE FROM `config` WHERE name='IP_MIN_QUALITY';
+DELETE FROM config WHERE name='GUI_VERSION';
+DELETE FROM config WHERE name='IP_MIN_QUALITY';
 
-INSERT INTO `config` VALUES ('FREQUENCY', 0, '', 'Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)');
-INSERT INTO `config` VALUES ('PROLOG_FREQ', 24, '', 'Specify the frequency (hours) of prolog, on agents');
-INSERT INTO `config` VALUES ('IPDISCOVER', 2, '', 'Max number of computers per gateway retrieving IP on the network');
-INSERT INTO `config` VALUES ('INVENTORY_DIFF', 1, '', 'Activate/Deactivate inventory incremental writing');
-INSERT INTO `config` VALUES ('IPDISCOVER_LATENCY', 100, '', 'Default latency between two arp requests');
-INSERT INTO `config` VALUES ('INVENTORY_TRANSACTION', 1, '', 'Enable/disable db commit at each inventory section');
-INSERT INTO `config` VALUES ('REGISTRY', 0, '', 'Activates or not the registry query function');
-INSERT INTO `config` VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
-INSERT INTO `config` VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
-INSERT INTO `config` VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
-INSERT INTO `config` VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
-INSERT INTO `config` VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
-INSERT INTO `config` VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
-INSERT INTO `config` VALUES ('DOWNLOAD', 0, '', 'Activate softwares auto deployment feature');
-INSERT INTO `config` VALUES ('DOWNLOAD_CYCLE_LATENCY', 60, '', 'Time between two cycles (seconds)');
-INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Number of cycles in a period');
-INSERT INTO `config` VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Time between two downloads (seconds)');
-INSERT INTO `config` VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Time between two periods (seconds)');
-INSERT INTO `config` VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Validity of a package (in days)');
-INSERT INTO `config` VALUES ('LOCAL_SERVER', 0, 'localhost', 'Server address used for local import');
-INSERT INTO `config` VALUES ('LOCAL_PORT', 80, '', 'Server port used for local import');
+INSERT INTO config VALUES ('FREQUENCY', 0, '', 'Specify the frequency (days) of inventories. (0: inventory at each login. -1: no inventory)');
+INSERT INTO config VALUES ('PROLOG_FREQ', 24, '', 'Specify the frequency (hours) of prolog, on agents');
+INSERT INTO config VALUES ('IPDISCOVER', 2, '', 'Max number of computers per gateway retrieving IP on the network');
+INSERT INTO config VALUES ('INVENTORY_DIFF', 1, '', 'Activate/Deactivate inventory incremental writing');
+INSERT INTO config VALUES ('IPDISCOVER_LATENCY', 100, '', 'Default latency between two arp requests');
+INSERT INTO config VALUES ('INVENTORY_TRANSACTION', 1, '', 'Enable/disable db commit at each inventory section');
+INSERT INTO config VALUES ('REGISTRY', 0, '', 'Activates or not the registry query function');
+INSERT INTO config VALUES ('IPDISCOVER_MAX_ALIVE', 7, '','Max number of days before an Ip Discover computer is replaced');
+INSERT INTO config VALUES ('DEPLOY', 1, '', 'Activates or not the automatic deployment option');
+INSERT INTO config VALUES ('UPDATE', 0, '', 'Activates or not the update feature');
+INSERT INTO config VALUES ('TRACE_DELETED', 0, '', 'Trace deleted/duplicated computers (Activated by GLPI)');
+INSERT INTO config VALUES ('LOGLEVEL', 0, '', 'ocs engine loglevel');
+INSERT INTO config VALUES ('AUTO_DUPLICATE_LVL', 7, '', 'Duplicates bitmap');
+INSERT INTO config VALUES ('DOWNLOAD', 0, '', 'Activate softwares auto deployment feature');
+INSERT INTO config VALUES ('DOWNLOAD_CYCLE_LATENCY', 60, '', 'Time between two cycles (seconds)');
+INSERT INTO config VALUES ('DOWNLOAD_PERIOD_LENGTH', 10, '', 'Number of cycles in a period');
+INSERT INTO config VALUES ('DOWNLOAD_FRAG_LATENCY', 10, '', 'Time between two downloads (seconds)');
+INSERT INTO config VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Time between two periods (seconds)');
+INSERT INTO config VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Validity of a package (in days)');
+INSERT INTO config VALUES ('LOCAL_SERVER', 0, 'localhost', 'Server address used for local import');
+INSERT INTO config VALUES ('LOCAL_PORT', 80, '', 'Server port used for local import');
 INSERT INTO blacklist_serials(SERIAL) VALUES ('N/A'),('(null string)'),('INVALID'),('SYS-1234567890'),('SYS-9876543210'),('SN-12345'),('SN-1234567890'),('1111111111'),('1111111'),('1'),('0123456789'),('12345'),('123456'),('1234567'),('12345678'),('123456789'),('1234567890'),('123456789000'),('12345678901234567'),('0000000000'),('000000000'),('00000000'),('0000000'),('000000'),('NNNNNNN'),('xxxxxxxxxxx'),('EVAL'),('IATPASS'),('none'),('To Be Filled By O.E.M.'),('Tulip Computers'),('Serial Number xxxxxx'),('SN-123456fvgv3i0b8o5n6n7k'),('');
 INSERT INTO blacklist_macaddresses(MACADDRESS) VALUES ('00:00:00:00:00:00'),('FF:FF:FF:FF:FF:FF'),('44:45:53:54:00:00'),('44:45:53:54:00:01'),('00:01:02:7D:9B:1C'),('00:08:A1:46:06:35'),('00:08:A1:66:E2:1A'),('00:09:DD:10:37:68'),('00:0F:EA:9A:E2:F0'),('00:10:5A:72:71:F3'),('00:11:11:85:08:8B'),('10:11:11:11:11:11'),('44:45:53:54:61:6F'),('');
 
-INSERT INTO `operators` VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
+INSERT INTO operators VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs IDENTIFIED BY 'ocs';
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs@localhost IDENTIFIED BY 'ocs';
 
-INSERT INTO `config` VALUES ('GUI_VERSION', 0, '4500', 'Version of the installed GUI and database');
+INSERT INTO config VALUES ('GUI_VERSION', 0, '5000', 'Version of the installed GUI and database');
+
+CREATE TABLE download_servers (
+  HARDWARE_ID int(11) NOT NULL,
+  URL varchar(250) collate latin1_general_ci NOT NULL,
+  ADD_PORT int(11) NOT NULL,
+  ADD_REP varchar(250) collate latin1_general_ci NOT NULL,
+  GROUP_ID int(11) NOT NULL,
+  PRIMARY KEY  (HARDWARE_ID)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+CREATE TABLE download_affect_rules (
+  ID int(11) NOT NULL auto_increment,
+  RULE int(11) NOT NULL,
+  PRIORITY int(11) NOT NULL,
+  CFIELD varchar(20) collate latin1_general_ci NOT NULL,
+  OP varchar(20) collate latin1_general_ci NOT NULL,
+  COMPTO varchar(20) collate latin1_general_ci NOT NULL,
+  SERV_VALUE varchar(20) collate latin1_general_ci default NULL,
+  RULE_NAME varchar(200) collate latin1_general_ci NOT NULL,
+  PRIMARY KEY  (ID)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_URI','','$IP$/local','Server url used for group of server');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_DOCROOT','','d:\\\\tele_ocs','Server directory used for group of server');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('LOCK_REUSE_TIME',600,'','Validity of a computer\'s lock');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_DIFF',1,'','Configure engine to update inventory regarding to CHECKSUM agent value (lower DB backend load)');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_TRANSACTION',1,'','Make engine consider an inventory as a transaction (lower concurency, better disk usage)');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_WRITE_DIFF',0,'','Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_CACHE_ENABLED',1,'','Enable some stuff to improve DB queries, especially for GUI multicriteria searching system');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_CACHE_REVALIDATE',7,'','Specify when the engine will clean the inventory cache structures');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_GROUPS_TRACE_EVENTS',1,'','Specify if you want to track packages affected to a group on computer\'s level');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('ENABLE_GROUPS',1,'','Enable the computer\'s groups feature');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GROUPS_CACHE_OFFSET',43200,'','Random number computed in the defined range. Designed to avoid computing many groups in the same process');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GROUPS_CACHE_REVALIDATE',43200,'','Specify the validity of computer\'s groups (default: compute it once a day - see offset)');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_BETTER_THRESHOLD',1,'','Specify the minimal difference to replace an ipdiscover agent');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_NO_POSTPONE',0,'','Disable the time before a first election (not recommended)');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_USE_GROUPS',1,'','Enable groups for ipdiscover (for example, you might want to prevent some groups');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GENERATE_OCS_FILES',0,'','Use with ocsinventory-local, enable the multi entities feature');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_FORMAT','','OCS','Generate either compressed file or clear XML text');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_OVERWRITE',0,'','Specify if you want to keep trace of all inventory between to synchronisation with the higher level server');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_PATH','','/tmp','Path to ocs files directory (must be writeable)');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('PROLOG_FILTER_ON',0,'','Enable prolog filter stack');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ENABLED',0,'','Enable core filter system to modify some things "on the fly"');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD_IP',0,'','Enable inventory flooding filter. A dedicated ipaddress ia allowed to send a new computer only once in this period');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD_IP_CACHE_TIME',300,'','Period definition for INVENTORY_FILTER_FLOOD_IP');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ON',0,'','Enable inventory filter stack');
+
+ALTER TABLE download_enable ADD SERVER_ID INT(11);
+ALTER TABLE download_enable ADD GROUP_ID INT(11);
+ALTER TABLE groups ADD REVALIDATE_FROM INT(11);

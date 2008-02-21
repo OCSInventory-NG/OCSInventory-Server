@@ -8,12 +8,14 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.18 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.19 $)
 
 require('fichierConf.class.php');
 @session_start();
 require_once("preferences.php");
-
+$ban_head='no';
+require_once("header.php");
+require('require/function_opt_param.php');
 if( ! in_array($_SESSION["lvluser"], array(SADMIN,LADMIN,ADMIN) )) {
 	die("FORBIDDEN");
 }
@@ -32,6 +34,8 @@ if (isset($_GET['systemid'])) {
 elseif (isset($_POST['systemid'])) {
 	$systemid = $_POST['systemid'];
 }
+//for update blacklist serial or mac
+update_blacklist();
 
 if (isset($_GET['state']))
 {
@@ -86,7 +90,7 @@ else
 	echo ";charset=ISO-8859-1;";
 
 echo "\"></head>\n";
-echo "<body style='font: Tahoma' alink='#000000' vlink='#000000' link='#000000' bgcolor='#ffffff' text='#000000'>\n";
+echo "<body alink='#000000' vlink='#000000' link='#000000' bgcolor='#ffffff' text='#000000'>\n";
 
 if( ! $item ) {
 	echo "<script language='javascript'>wait(0);</script>";
@@ -316,6 +320,19 @@ function print_perso($systemid) {
 	}	
 	
 	$ii++; $td3 = $ii%2==0?$td2:$td4;
+	$sql_default_value="select NAME,IVALUE from config where NAME	in ('DOWNLOAD',
+															'DOWNLOAD_CYCLE_LATENCY',
+															'DOWNLOAD_PERIOD_LENGTH',
+															'DOWNLOAD_FRAG_LATENCY',
+															'DOWNLOAD_PERIOD_LATENCY',	
+															'DOWNLOAD_TIMEOUT',
+															'PROLOG_FREQ')";
+	$result_default_value = mysql_query($sql_default_value, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	while($default=mysql_fetch_array($result_default_value)) {
+		$optdefault[$default["NAME"] ] = $default["IVALUE"];
+	}	
+	
+	
 	//IPDISCOVER
 	echo "<tr><td bgcolor='white' align='center' valign='center'>".(isset($optPerso["IPDISCOVER"])&&$optPerso["IPDISCOVER"]["IVALUE"]!=1?"<img width='15px' src='image/red.png'>":"&nbsp;")."</td>&nbsp;</td>";
 	echo $td3.$l->g(489)."</td>";	
@@ -327,10 +344,14 @@ function print_perso($systemid) {
 	else {
 		echo $td3.$l->g(493)."</td>";
 	}
-	if( $_SESSION["lvluser"]==SADMIN )
-		echo "$td3<a href='index.php?multi=23&systemid=$systemid'>".$l->g(115)."</a></td>";
+	if( $_SESSION["lvluser"]==SADMIN ){
+	echo "<form name='modif_param' id='modif_param' method='POST' action='index.php?multi=22'>";
+	echo "<td align=center rowspan=8><a OnClick='recharge(\"$systemid\",\"machine\")'><img src='image/modif_a.png' title='".$l->g(285)."'></a></td>";
 	echo "</tr>";
-	
+	echo "<input type='hidden' id='systemid' name='systemid' value=''>";
+	echo "<input type='hidden' id='origine' name='origine' value=''>"; 
+	echo "</form>";
+	}
 	$ii++; $td3 = $ii%2==0?$td2:$td4;
 	//FREQUENCY
 	echo "<tr><td bgcolor='white' align='center' valign='center'>".(isset($optPerso["FREQUENCY"])?"<img width='15px' src='image/red.png'>":"&nbsp;")."</td>";
@@ -343,10 +364,42 @@ function print_perso($systemid) {
 	else {
 		echo $td3.$l->g(497)."</td>";
 	}
-	if( $_SESSION["lvluser"]==SADMIN )
-		echo "$td3<a href='index.php?multi=22&systemid=$systemid'>".$l->g(115)."</a></td>";		
+//	if( $_SESSION["lvluser"]==SADMIN )
+//		echo "$td3<a href='index.php?multi=22&systemid=$systemid&update=FREQUENCY'>".$l->g(115)."</a></td>";		
 	echo "</tr>";
 	
+	//DOWNLOAD_SWITCH
+	echo "<tr><td bgcolor='white' align='center' valign='center'>".(isset($optPerso["DOWNLOAD_SWITCH"])?"<img width='15px' src='image/red.png'>":"&nbsp;")."</td>";
+	echo $td3.$l->g(417)." <font color=green size=1><i>DOWNLOAD</i></font></td>";
+	if( isset( $optPerso["DOWNLOAD_SWITCH"] )) {
+		if( $optPerso["DOWNLOAD_SWITCH"]["IVALUE"]==0 ) echo $td3.$l->g(733)."</td>";
+		else if( $optPerso["DOWNLOAD_SWITCH"]["IVALUE"]==1 ) echo $td3.$l->g(205)."</td>";
+		else echo $td3."</td>";
+	}
+	else {
+		echo $td3.$l->g(488)."(";
+		if ($optdefault["DOWNLOAD"] == 1) echo $l->g(205); else echo $l->g(733);
+		echo ")</td>";
+	}
+//	if( $_SESSION["lvluser"]==SADMIN )
+//		echo "$td3<a href='index.php?multi=22&systemid=$systemid&update=DOWNLOAD_SWITCH''>".$l->g(115)."</a></td>";		
+	echo "</tr>";
+	
+	//DOWNLOAD_CYCLE_LATENCY
+	optperso("DOWNLOAD_CYCLE_LATENCY",$l->g(720)." <font color=green size=1><i>DOWNLOAD_CYCLE_LATENCY</i></font>",$optPerso,0,$optdefault["DOWNLOAD_CYCLE_LATENCY"],$l->g(511));
+	
+	//DOWNLOAD_FRAG_LATENCY
+	optperso("DOWNLOAD_FRAG_LATENCY",$l->g(721)." <font color=green size=1><i>DOWNLOAD_FRAG_LATENCY</i></font>",$optPerso,0,$optdefault["DOWNLOAD_FRAG_LATENCY"],$l->g(511));
+
+	
+	//DOWNLOAD_PERIOD_LATENCY
+	optperso("DOWNLOAD_PERIOD_LATENCY",$l->g(722)." <font color=green size=1><i>DOWNLOAD_PERIOD_LATENCY</i></font>",$optPerso,0,$optdefault["DOWNLOAD_PERIOD_LATENCY"],$l->g(511));
+	
+	//DOWNLOAD_PERIOD_LENGTH
+	optperso("DOWNLOAD_PERIOD_LENGTH",$l->g(723)." <font color=green size=1><i>DOWNLOAD_PERIOD_LENGTH</i></font>",$optPerso,0,$optdefault["DOWNLOAD_PERIOD_LENGTH"]);
+
+	//PROLOG_FREQ
+	optperso("PROLOG_FREQ",$l->g(724)." <font color=green size=1><i>PROLOG_FREQ</i></font>",$optPerso,0,$optdefault["PROLOG_FREQ"],$l->g(730));
 	//GROUPS
 	$resGroups = @mysql_query("SELECT static, name, group_id  FROM groups_cache g, hardware h WHERE g.hardware_id=$systemid AND h.id=g.group_id"); 
 	
@@ -382,7 +435,7 @@ function print_perso($systemid) {
 	}
 	
 	//TELEDEPLOY
-	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc  FROM devices d, download_enable e LEFT JOIN download_available a 
+	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue,d.comments, e.pack_loc  FROM devices d, download_enable e LEFT JOIN download_available a 
 	ON e.fileid=a.fileid WHERE d.name='DOWNLOAD' AND e.id=d.ivalue AND d.hardware_id=$systemid"); 
 	 
 	if( mysql_num_rows( $resDeploy )>0 ) {
@@ -392,7 +445,9 @@ function print_perso($systemid) {
 			echo "<tr>";
 			echo "<td bgcolor='white' align='center' valign='center'><img width='15px' src='image/red.png'></td>";
 			echo $td3.$l->g(498)." <b>".$valDeploy["name"]."</b> (".$l->g(499).": ".$valDeploy["pack_loc"]." )</td>";			
-			echo $td3.$l->g(81).": ".($valDeploy["tvalue"]!=""?$valDeploy["tvalue"]:$l->g(482))."</td>";
+			echo $td3.$l->g(81).": ".($valDeploy["tvalue"]!=""?$valDeploy["tvalue"]:$l->g(482));
+			echo ($valDeploy["comments"]!=""?" (".$valDeploy["comments"].")":"");
+			echo "</td>";
 			if( $_SESSION["lvluser"]==SADMIN )	
 				echo "$td3 <a href='machine.php?suppack=".$valDeploy["ivalue"]."&systemid=".
 				urlencode($systemid)."&option=".urlencode($l->g(500))."'>".$l->g(122)."</a></td>";
@@ -424,6 +479,13 @@ function print_perso($systemid) {
 		echo "</td></tr>";		
 	}
 	echo "</table><br>";
+	
+	if ($_POST['modification_param'])
+	include ('opt_param.php');
+	
+	
+	
+	
 }
 
 function print_proc($systemid)
@@ -683,7 +745,6 @@ function print_ports($systemid)
 function print_networks($systemid)
 {	
 	global $l, $td1, $td2, $td3, $td4;
-	
 	$queryDetails  = "SELECT * FROM networks WHERE (hardware_id=$systemid)";
 	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	if ( mysql_num_rows($resultDetails) == 0 )	 return;
@@ -702,8 +763,10 @@ function print_networks($systemid)
 		<td width='20%' align='center' bgcolor='".($ii%2?"#F0F0F0":"white")."'><FONT FACE='tahoma'>".textDecode($item->DESCRIPTION)."</td>
 		$td3".textDecode($item->TYPE)."       </td>
 		$td3".textDecode($item->SPEED)."      </td>
-		$td3".textDecode($item->MACADDR).($const?"<br>($const)":"")."    </td>
-		$td3".textDecode($item->STATUS)."     </td>
+		$td3".textDecode($item->MACADDR).($const?"<br>($const)":"");
+		blacklist("select ID from blacklist_macaddresses where macaddress='".textDecode($item->MACADDR)."'",textDecode($item->MACADDR),$l->g(704)." ".$l->g(708),$l->g(705)." ".$l->g(708),"Réseau(x)");
+		echo "</td>";
+		echo "$td3".textDecode($item->STATUS)."     </td>
 		$td3".textDecode($item->IPADDRESS)."  </td>
 		$td3".textDecode($item->IPMASK)."     </td>
 		$td3".textDecode($item->IPGATEWAY)."  </td>
@@ -859,7 +922,6 @@ function print_drives($systemid)
 function print_bios($systemid)
 {	
 	global $l, $td1, $td2, $td3, $td4;
-	
 	$queryDetails  = "SELECT * FROM bios WHERE (hardware_id=$systemid)";
 	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	
@@ -873,8 +935,25 @@ function print_bios($systemid)
 		  
 	$item = mysql_fetch_object($resultDetails);	
 	echo "<tr>";
-	echo "$td3".textDecode($item->SSN)." </td>
-	$td3".textDecode($item->SMANUFACTURER)." </td>
+	echo "$td3".textDecode($item->SSN);
+	blacklist("select ID from blacklist_serials where SERIAL='".textDecode($item->SSN)."'",textDecode($item->SSN),$l->g(704)." ".$l->g(707),$l->g(705)." ".$l->g(707),"BIOS");
+//	if ($_SESSION["lvluser"]==SADMIN){
+//		$sql_verif_blacklist="select ID from blacklist_serials where SERIAL='".textDecode($item->SSN)."'";
+//		$result_blacklist = mysql_query($sql_verif_blacklist, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+//		if ( mysql_num_rows($result_blacklist) == 0 )
+//		//<a href='./machine.php?systemid=".$systemid."&option=BIOS&black=".textDecode($item->SSN)."'>
+//		
+//	   echo " <a href=# OnClick='confirme(\"".textDecode($item->SSN)."\",\"black\",\"".$l->g(704)."\");' title='".$l->g(703)."'><img height=10 src=image/interdit.jpg></a>";
+//	   else{
+//	   	$item_blacklist = mysql_fetch_object($result_blacklist);	
+//	   	// <a href='./machine.php?systemid=".$systemid."&option=BIOS&noblack=".$item_blacklist->ID."'>   		
+//	    echo "<a href=# OnClick='confirme(\"".$item_blacklist->ID."\",\"noblack\",\"".$l->g(705)."\");' title='".$l->g(706)."'><img height=12 src=image/suppv.png></a>";
+//	    
+//	   }
+//	
+//	}
+	echo "</td>";
+	echo "$td3".textDecode($item->SMANUFACTURER)." </td>
 	      $td3".textDecode($item->SMODEL)."        </td>
 		  $td3".textDecode($item->BMANUFACTURER)." </td>
 		  $td3".textDecode($item->BVERSION)."      </td>
@@ -1075,4 +1154,52 @@ function isAvail($lbl) {
 	$valAvail = mysql_num_rows( $resAv );
 	return ($valAvail>0);
 }
+
+
+function blacklist($sql_verif_blacklist,$serial_mac,$lblpopup_blacklist,$lblpopup_unblacklist,$direct){
+	global $l,$systemid;
+	//javascript 
+	?>
+	<script language=javascript>
+		function confirme(did,champ,lbl){
+			if(confirm(lbl+" ?"))
+				window.location="machine.php?systemid=<? echo $systemid ?>&option=<? echo $direct ?>&"+champ+"="+did;
+		}
+	</script>
+	<?php
+	if ($_SESSION["lvluser"]==SADMIN){
+		$result_blacklist = mysql_query($sql_verif_blacklist, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		if ( mysql_num_rows($result_blacklist) == 0 )
+		//<a href='./machine.php?systemid=".$systemid."&option=BIOS&black=".textDecode($item->SSN)."'>
+		
+	   echo " <a href=# OnClick='confirme(\"".$serial_mac."\",\"black\",\"".$lblpopup_blacklist."\");' title='".$l->g(703)."'><img height=10 src=image/interdit.jpg></a>";
+	   else{
+	   	$item_blacklist = mysql_fetch_object($result_blacklist);	
+	   	// <a href='./machine.php?systemid=".$systemid."&option=BIOS&noblack=".$item_blacklist->ID."'>   		
+	    echo "<a href=# OnClick='confirme(\"".$item_blacklist->ID."\",\"noblack\",\"".$lblpopup_unblacklist."\");' title='".$l->g(706)."'><img height=12 src=image/suppv.png></a>";
+	    
+	   }
+	
+	}
+}
+
+function update_blacklist(){
+	// blacklist serial
+	if (isset($_GET['black']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "BIOS")
+		@mysql_query("INSERT INTO blacklist_serials (SERIAL) value ('".$_GET['black']."')", $_SESSION["writeServer"]);
+
+	//blacklist mac
+	if (isset($_GET['black']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Réseau(x)")
+		@mysql_query("INSERT INTO blacklist_macaddresses (MACADDRESS) value ('".$_GET['black']."')", $_SESSION["writeServer"]);
+		
+	// unblacklist serial
+	if (isset($_GET['noblack']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "BIOS")	
+		@mysql_query("DELETE FROM blacklist_serials WHERE id=".$_GET['noblack'], $_SESSION["writeServer"]);
+		
+	// unblacklist mac 
+	if (isset($_GET['noblack']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Réseau(x)")	
+		@mysql_query("DELETE FROM blacklist_macaddresses WHERE id=".$_GET['noblack'], $_SESSION["writeServer"]);
+	
+}
+
 ?>

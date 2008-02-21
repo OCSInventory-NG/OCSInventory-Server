@@ -8,8 +8,8 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:25 $$Author: plemmet $($Revision: 1.15 $)
-
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.16 $)
+$sleep=1;
 function getmicrotime(){
     list($usec, $sec) = explode(" ",microtime());
     return ((float)$usec + (float)$sec);
@@ -120,8 +120,11 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 	
 	$countHl++;
 	//multicrit
-	echo "<a href=index.php?multi=1><img title=\"".htmlspecialchars($l->g(9))."\" src='image/".($_GET["multi"]==1||(!isset($_GET["multi"])&&$_GET["lareq"]==$l->g(9))?"recherche_a.png":"recherche.png")."'></a>";
+	echo "<a href=index.php?multi=36><img title=\"".htmlspecialchars($l->g(765))."\" src='image/".($_GET["multi"]==36?"ttlogiciels_a.png":"ttlogiciels.png")."'></a>";
 	$countHl++;
+	echo "<a href=index.php?multi=1><img title=\"".htmlspecialchars($l->g(9))."\" src='image/".($_GET["multi"]==1||(!isset($_GET["multi"])&&$_GET["lareq"]==$l->g(9))?"recherche_a.png":"recherche.png")."'></a>";
+	
+	
 	/*if(!isset($_GET["lareq"]) || ( isset( $_GET["multi"] ) && $_GET["multi"]!=1 && $_GET["multi"]!=2&& $_GET["multi"]!=15) || isset($_GET["cuaff"]) || isset($_GET["lang"]) )
 		echo "<option".($countHl%2==1?" class='hi'":""). " selected>".$l->g(32)."</option>\n";*/
 	/*if( @stat("composants.php"))
@@ -134,65 +137,60 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 	echo "<tr height=20px  bgcolor='white'>";
 	
 	flush();
-	if($_SESSION["lvluser"]==SADMIN) {
-?>
-<script language='javascript'>
+	?>
+		<script language='javascript'>
 	
-	function montre(id) {
+			function montre(id) {
 		
-		var d = document.getElementById(id);
-			for (var i = 1; i<=10; i++) {
-				if (document.getElementById('smenu'+i)) {document.getElementById('smenu'+i).style.display='none';}
+				var d = document.getElementById(id);
+				for (var i = 1; i<=10; i++) {
+					if (document.getElementById('smenu'+i)) {document.getElementById('smenu'+i).style.display='none';}
 			}
-		if (d) {d.style.display='block';}
+			if (d) {d.style.display='block';}
 		}
-</script>
-
-	<td onmouseover="javascript:montre('smenu1');">
-	<dl id="menu">
-		<dt onmouseover="javascript:montre('smenu1');">
-		<a href='javascript:void(0);'>
-	<img src='image/pack<?php 
-	$packAct = array(22,23,24,27,20,21,26);
-	if( in_array($_GET["multi"],$packAct) )
-		echo "_a";?>.png'></a></dt>
-			<dd id="smenu1" onmouseover="javascript:montre('smenu1');" onmouseout="javascript:montre();">
-				<ul>
-					<li><b><?php echo $l->g(512); ?></b></li>
-					
-					<li><a href="index.php?multi=20"><?php echo $l->g(513); ?></a></li>
-					<li><a href="index.php?multi=21"><?php echo $l->g(514); ?></a></li>
-					<li><a href="index.php?multi=26"><?php echo $l->g(515); ?></a></li>
-				</ul>
-			</dd>
-	</dl>
-	</td>
-<script language='javascript'>montre();</script>	
-<?php 
-	
-			if( @stat("ipdiscover.php"))
-				tab($l->g(174), 3);
- 
+		</script>
+	<?
+	if($_SESSION["lvluser"]==SADMIN) { 
+			$name_menu="smenu1";
+			$packAct = array(22,23,24,27,20,21,26);
+			$nam_img="pack";
+			$title=$l->g(512);
+			$data_list_deploy[20]=$l->g(513);
+			$data_list_deploy[21]=$l->g(514);
+		//	$data_list_deploy[40]="TEST";
+			$data_list_deploy[33]=$l->g(633);
+			$data_list_deploy[34]=$l->g(662);
+			menu_list($name_menu,$packAct,$nam_img,$title,$data_list_deploy);
+			if( DB_NAME == "ocsweb") 	
+ 				tab($l->g(174), 3);
 			if( @stat("dico.php"))
 				tab($l->g(380),14);
-			
 			tab($l->g(17) , 8);
-			tab($l->g(107), 4);
+			$name_menu="smenu2";
+			$packAct = array(4,32,35);
+			$nam_img="configuration";
+			$title="Configuration";
+			$data_list_config[4]=$l->g(107);
+			$data_list_config[32]=$l->g(703);
+			$data_list_config[35]=$l->g(712);
+			menu_list($name_menu,$packAct,$nam_img,$title,$data_list_config);	
 			tab($l->g(211), 5);
-		
-		tab($l->g(225), 9);
-		tab($l->g(175), 6);
-		tab($l->g(263), 12);
-		tab($l->g(235), 10);
-		tab($l->g(287), 13);
-	}	
-		tab($l->g(570), 28);
-		
-}	
-
+			tab($l->g(225), 9);
+			if( DB_NAME == "ocsweb")	
+	 			tab($l->g(175), 6);
+			tab($l->g(263), 12);
+			tab($l->g(235), 10);
+			if( ($_SESSION["lvluser"]==SADMIN && DB_NAME == "ocsweb") || (DB_NAME != "ocsweb") )
+ 				tab($l->g(287), 13);
+	}
+	tab($l->g(570), 28);
+	?><script language='javascript'>montre();</script>	<?	
 	echo "</tr></table>";
 	echo "</td></tr></table>";
 	flush();
+	}
+	
+	
 	
 	if(isset($_POST["subPass"])) {
 		if(!$_POST["pass1"] || !$_POST["pass2"]) {
@@ -262,7 +260,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 15: require ('composants.php'); break;
 		case 20: require ('tele_package.php'); break; 
 		case 21: require ('tele_activate.php'); break; 
-		case 22: require ('opt_frequency.php'); break; 
+		case 22: require ('opt_param.php'); break; 
 		case 23: require ('opt_ipdiscover.php'); break; 
 		case 24: require ('tele_affect.php'); break; 
 		case 25: require ('tele_stats.php'); break;
@@ -271,14 +269,64 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 29: require ('group_show.php'); break;
 		case 30: require ('tele_massaffect.php'); break; 
 		case 31: require ('admin_attrib.php'); break; 
- 		default: require ('resultats.php');		
+		case 32: require ('blacklist.php');break;
+		case 33: require ('server_redistrib.php');break;
+		case 34: require ('rules_redistrib.php');break;
+		case 35: require ('admin_language.php');break;
+		case 36: require ('all_soft.php');break;
+	//case 40: require ('serv_data_redistrib.php');break;
+		default:require ('resultats.php');
+ 		//default: require ('console.php');		
  	}
 
 if( !isset($_GET["popup"] ))
 	require ('footer.php');
 	
 echo "<script language='javascript'>wait(0);</script>";
+//Function for add drop-down menu for icone
+//$name_menu= (varchar) unique name of menu like smenu1, smenu2,smenu3...smenu10
+//$packAct = (tab) list of number's pag where icon is active
+//$nam_img = (varchar)image's name 
+//$title = (varchar) title of drop-down menu 
+//$data_list= (tab[$index]['name']) $index = page's index; name=page's name
+//before using this function, you must include the javascript's function
+//<script language='javascript'>	
+//	function montre(id) {		
+//		var d = document.getElementById(id);
+//			for (var i = 1; i<=10; i++) {
+//				if (document.getElementById('smenu'+i)) {document.getElementById('smenu'+i).style.display='none';}
+//			}
+//		if (d) {d.style.display='block';}
+//		}
+//</script>
+//after all menu_list, include the javascript's function
+//<script language='javascript'>montre();</script>	
+function menu_list($name_menu,$packAct,$nam_img,$title,$data_list)
+{
+	global $_GET;
 	
+	echo "<td onmouseover=\"javascript:montre('".$name_menu."');\">
+	<dl id=\"menu\">
+		<dt onmouseover=\"javascript:montre('".$name_menu."');\">
+		<a href='javascript:void(0);'>
+	<img src='image/".$nam_img;
+	if( in_array($_GET["multi"],$packAct) )
+		echo "_a";
+		echo ".png'></a></dt>
+			<dd id=\"".$name_menu."\" onmouseover=\"javascript:montre('".$name_menu."');\" onmouseout=\"javascript:montre();\">
+				<ul>
+					<li><b>".$title."</b></li>";
+					foreach ($data_list as $key=>$values){
+						echo "<li><a href=\"index.php?multi=".$key."\">".$values."</a></li>";						
+					}
+		echo "</ul>
+			</dd>
+	</dl>
+	</td> ";
+		
+}
+
+
 function tab( $label, $multi, $lien=null ) {
 	global $l, $_GET, $showingReq;
 	if( isset($lien))
@@ -298,7 +346,7 @@ function tab( $label, $multi, $lien=null ) {
 		case 13: $img = "local";	break;		
 		case 12: $img = "label";	break;
 		case 28: $img = "aide";		
-				$llink = "files/guide.pdf' target='_BLANK";
+				$llink = "http://wiki.ocs-ng.org' target='_BLANK";
 		        break;			
 		default: if( $label==$l->g(15) )
 					$img = "utilisateurs";

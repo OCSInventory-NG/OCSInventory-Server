@@ -8,12 +8,46 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2007-07-23 10:30:26 $$Author: plemmet $($Revision: 1.9 $)
+//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.10 $)
 
 PrintEnTete($l->g(465));
-
-if( isset( $_POST["actpack"] )) {
+//activate for server's group
+if(isset($_POST["actpack"]) and $_POST['activat_option'] == "for_server")
+{
+	//recherche de la liste des machines qui ont déjà ce paquet
+	$sqlDoub="select SERVER_ID from download_enable where FILEID= ".$_POST['actpack'];
+	$resDoub = mysql_query( $sqlDoub, $_SESSION["readServer"] );	
+	$listDoub="";
+	//création de la liste pour les exclure de la requete
+	while ($valDoub = mysql_fetch_array( $resDoub )){
+		if ($valDoub['SERVER_ID'] != "")
+		$listDoub.=$valDoub['SERVER_ID'].",";	
+	}
+	//si la liste est non null on crée la partie de la requete manquante
+	if ($listDoub != ""){
+	$listDoub = substr($listDoub,0,-1);
+	$listDoub = " AND HARDWARE_ID not in (".$listDoub.")";
+	}
+	//on insert l'activation du paquet pour les serveurs du groupe
+	$sql="insert into download_enable (FILEID,INFO_LOC,PACK_LOC,CERT_PATH,CERT_FILE,SERVER_ID,GROUP_ID)
+			select ".$_POST['actpack'].",
+			 '".$_POST['https_server']."',
+			 url,
+			 'INSTALL_PATH',
+			 'INSTALL_PATH/cacert.pem',
+			 HARDWARE_ID,
+			 GROUP_ID
+		 from download_servers
+		 where GROUP_ID=".$_POST['id_server_add'].$listDoub;
+	mysql_query( $sql, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+//POUR LA REPLICATION ENTRE BASE
+	sleep($sleep);
+//FIN
 	
+}
+
+if( isset( $_POST["actpack"] ) and $_POST['activat_option'] != "for_server") {
+
 	$proto = array("http://", "https://");
 	$rien   = array("", "");
 	$sub = array( $_POST["https"], $_POST["frag"] );
@@ -84,7 +118,13 @@ if( isset( $_POST["actpack"] )) {
 
 	}
 }
-else if( isset( $_GET["actpack"] )) {?>
+else if( isset( $_GET["actpack"] )) {
+	$reqGroupsServers = "SELECT DISTINCT name,id FROM hardware WHERE deviceid='_DOWNLOADGROUP_'";
+					$resGroupsServers = mysql_query( $reqGroupsServers, $_SESSION["readServer"] );
+					while( $valGroupsServers = mysql_fetch_array( $resGroupsServers ) ) {
+						$groupListServers .= "<option value='".$valGroupsServers["id"]."'>".$valGroupsServers["name"]."</option>";
+					}
+	?>
 <script language='javascript'>
 	function verifServ() {
 		if ( document.getElementById('https').value =="" || document.getElementById('frag').value ==""	)
@@ -93,16 +133,33 @@ else if( isset( $_GET["actpack"] )) {?>
 			
 	}
 </script>
-<br>
-	<form name='formserv' id='formserv' action='index.php?multi=21' method='POST'>
-	<input type='hidden' name='actpack' value='<?php echo $_GET["actpack"]; ?>'>
-	<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
-		<tr height='30px'><td align='center' colspan='10'><b><?php echo $l->g(465);?> <?php echo $_GET["actpack"]; ?></b></td></tr>
+<form name='formserv' id='formserv' action='index.php?multi=21' method='POST'>
+<input type='hidden' name='actpack' value='<?php echo $_GET["actpack"]; ?>'>
+<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
+<tr height='30px'><td align='center' colspan='10'><b><?php echo $l->g(465);?> <?php echo $_GET["actpack"]; ?></b></td></tr>
+<tr><td align='center' colspan='10'><?echo $l->g(649);?><input type='radio' name='activat_option' value='for_server' onclick="document.getElementById('DITRI_SERVER').style.display='block'; document.getElementById('activ').style.display='none';"></td></tr>
+<tr><td align='center' colspan='10'><?echo $l->g(650);?><input type='radio' name='activat_option' value='default' onclick="document.getElementById('DITRI_SERVER').style.display='none'; document.getElementById('activ').style.display='block';" checked></td></tr>
+</table>
+<div id='DITRI_SERVER' style='display:none'>
+<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
+	<tr height='30px' bgcolor='#FFFFFF'><td align='left'><?echo $l->g(651);?></td><td><select id='server' name='id_server_add' ><option value=''><? echo $l->g(32); ?></option><? echo $groupListServers; ?></select></td></tr>
+	<tr height='30px' bgcolor='#FFFFFF'><td align='left'><?php echo $l->g(470);?>:</td><td><input type='text' name='https_server' id='https_server'>/<?php echo $_GET["actpack"]; ?></td></tr>
+	
+	
+	<tr height='30px' bgcolor='#FFFFFF'><td colspan=2 align=center><b><input type='submit' name='valid_server'></b></td></tr>
+		
+</table>
+</div>
+
+<div id='activ' style='display:block'>
+<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
 		<tr height='30px' bgcolor='#FFFFFF'><td align='left'><?php echo $l->g(470);?>:</td><td><input type='text' name='https' id='https'>/<?php echo $_GET["actpack"]; ?></td></tr>
 		<tr height='30px' bgcolor='#F2F2F2'><td align='left'><?php echo $l->g(471);?>:</td><td><input type='text' name='frag' id='frag'>/<?php echo $_GET["actpack"]; ?></td></tr>
-		<tr height='30px' bgcolor='#FFFFFF'><td align='right' colspan='10'><input type='button' OnClick='javascript:verifServ();' id='envoyer' value='<?php echo $l->g(13);?>'></td></tr>
-	</table>
-	</form>	
+		<tr height='30px' bgcolor='#FFFFFF'><td align='center' colspan='10'><input type='button' OnClick='javascript:verifServ();' id='envoyer' value='<?php echo $l->g(13);?>'></td></tr>
+</table>
+</div>
+
+</form>	
 <?php }
 else if( isset( $_GET["suppack"] )) {	
 	$reqEnable = "SELECT id FROM download_enable WHERE FILEID='".$_GET["suppack"]."'";
