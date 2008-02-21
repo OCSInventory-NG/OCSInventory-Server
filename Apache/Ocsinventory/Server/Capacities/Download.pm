@@ -300,6 +300,8 @@ sub download_handler{
     WHERE FILEID=? 
     AND ID IN (SELECT IVALUE FROM devices WHERE NAME="download" AND HARDWARE_ID=?)');
   $request->execute( $result->{'ID'}, $hardware_id);
+
+  &_log(2001, 'download', "$result->{'ID'}(".($result->{'ERR'}?$result->{'ERR'}:'UNKNOWN_CODE').")");
   
   if(my $row = $request->fetchrow_hashref()){
     $dbh->do('UPDATE devices SET TVALUE=?, COMMENTS=?
@@ -312,7 +314,7 @@ sub download_handler{
     &_send_http_headers($r);
     return(APACHE_OK);
   }else{
-    &_log(2501, 'download');
+    &_log(2501, 'download', "$result->{'ID'}(".($result->{'ERR'}?$result->{'ERR'}:'UNKNOWN_CODE').")");
     &_set_http_header('content-length', 0, $r);
     &_send_http_headers($r);
     return(APACHE_OK);

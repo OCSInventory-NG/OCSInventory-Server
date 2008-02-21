@@ -109,7 +109,12 @@ sub _has_changed{
   
   # Check checksum to know if section has changed
   if( defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM}) ){
-    return $DATA_MAP{$section}->{mask} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM};
+    if( $DATA_MAP{$section}->{mask} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM} ){
+      &_log( 113, 'inventory', "$section changed");
+      return 1;
+    }else{
+      return 0;
+    }
   }
   else{
     return 1;

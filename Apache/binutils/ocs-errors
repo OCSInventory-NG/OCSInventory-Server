@@ -44,6 +44,7 @@ INVENTORY
 110--Inventory cache out of date
 111--Inventory cache already handled (lock fault)
 112--Inventory cache updated
+113--Inventory section has changed => write it
 
 MANAGEMENT
 ----------
@@ -71,3 +72,4 @@ DOWNLOAD
 2500--impossible to get config
 2501--message refers to an unexisting package
 2502--cannot retrieve package history (db error)
+2001--download agent event incoming
