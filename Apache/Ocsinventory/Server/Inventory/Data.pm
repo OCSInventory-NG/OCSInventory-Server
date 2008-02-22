@@ -46,6 +46,7 @@ sub _init_map{
     $sectionsMeta->{$section}->{delOnReplace} = 1 if $DATA_MAP{$section}->{delOnReplace};
     $sectionsMeta->{$section}->{writeDiff} = 1 if $DATA_MAP{$section}->{writeDiff};
     $sectionsMeta->{$section}->{cache} = 1 if $DATA_MAP{$section}->{cache};
+    # $sectionsMeta->{$section}->{hasChanged} is set while inventory update
      
     # Parse fields of the current section
     for $field ( keys(%{$DATA_MAP{$section}->{fields}} ) ){
@@ -110,7 +111,7 @@ sub _has_changed{
   # Check checksum to know if section has changed
   if( defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM}) ){
     if( $DATA_MAP{$section}->{mask} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM} ){
-      &_log( 113, 'inventory', "$section changed");
+      &_log( 113, 'inventory', "$section changed") if $ENV{'OCS_OPT_LOGLEVEL'};
       return 1;
     }else{
       return 0;

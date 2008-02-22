@@ -74,6 +74,8 @@ use Apache::Ocsinventory::Server::Constants;
 
 sub _get_sys_options{
 
+  return 0 if $ENV{OCS_OPT_OPTIONS_NOT_OVERLOADED};
+
   # Wich options enabled ?
   #############
   # We read the table config looking for the ivalues of these options

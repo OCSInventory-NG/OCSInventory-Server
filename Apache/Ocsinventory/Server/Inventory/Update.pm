@@ -54,7 +54,12 @@ sub _update_inventory_section{
   # We delete the previous entries
   if($Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'}){
     if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
-      return(0) unless _has_changed($section);
+      if( _has_changed($section) ){
+        $sectionMeta->{hasChanged} = 1;
+      }
+      else{
+        return 0;
+      }
     }
     if( $sectionMeta->{delOnReplace} && !($sectionMeta->{writeDiff} && $ENV{'OCS_OPT_INVENTORY_WRITE_DIFF'}) ){
       if(!$dbh->do("DELETE FROM $section WHERE HARDWARE_ID=?", {}, $deviceId)){

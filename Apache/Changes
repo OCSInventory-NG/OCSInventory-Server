@@ -1,6 +1,9 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Removed inventory cache checking for a section that has not changed since last inventory
+	* Added OCS_OPT_OPTIONS_NOT_OVERLOADED (configure engine to take its settings from file only)
+	* Higher server's verbosity
 	* Bug fix: Do not handle in Duplicates the "auto => 0" sections
 	* Bug fix: Replacement of a "one shot" computer generates an error  (QUALITY is NULL)
 	* Bug fix: do not close logfile if LOGLEVEL is off

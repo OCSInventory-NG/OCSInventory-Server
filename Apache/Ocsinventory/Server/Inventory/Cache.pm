@@ -68,7 +68,7 @@ sub _inventory_cache{
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   # A flag to know if there is some cache in the section
-  return unless $sectionsMeta->{$section}->{cache};
+  return if !$sectionsMeta->{$section}->{cache} || !$sectionsMeta->{$section}->{hasChanged};
   
   # From the current xml data
   my $base = $result->{CONTENT}->{uc $section};
