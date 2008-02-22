@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-22 16:39:02 $$Author: hunal $($Revision: 1.14 $)
+//Modified on $Date: 2008-02-22 16:58:27 $$Author: hunal $($Revision: 1.15 $)
 
 //find IPDISCOVER_IPD_DIR
 $sql_IPD_DIR="select tvalue from config where NAME='IPDISCOVER_IPD_DIR'";

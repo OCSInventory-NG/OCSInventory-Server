@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.16 $)
+//Modified on $Date: 2008-02-22 16:58:27 $$Author: hunal $($Revision: 1.17 $)
 $sleep=1;
 function getmicrotime(){
     list($usec, $sec) = explode(" ",microtime());
@@ -150,7 +150,9 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		}
 		</script>
 	<?
-	if($_SESSION["lvluser"]==SADMIN) { 
+
+	if($_SESSION["lvluser"]==SADMIN) {
+ 
 			$name_menu="smenu1";
 			$packAct = array(22,23,24,27,20,21,26);
 			$nam_img="pack";
@@ -245,17 +247,19 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		
 	switch($_GET["multi"]) {
 		case 1: require ('multicritere.php');	break;
-		
-		case 3: require ('ipdiscover.php');	break;
-		case 4:	require ('confiGale.php');	break;
-		case 5:	require ('reqRegistre.php');	break;
-		case 6:	require ('doublons.php');	break;
-		case 8:	require ('uploadfile.php');	break;
-		case 9:	require ('donAdmini.php');	break;
+
+
+ 		case 3: require ('ipdiscover.php');	break;
+ 		case 4:	require ('confiGale.php');	break;
+ 		case 5:	require ('reqRegistre.php');	break;
+ 		case 6:	require ('doublons.php');	break;
+ 		case 8:	require ('uploadfile.php');	break;
+ 		case 9:	require ('donAdmini.php');	break;
 		case 10: require ('users.php');	break;
 		case 11: require ('pass.php');	break;
 		case 12: require ('label.php');	break;
 		case 13: require ('local.php');	break;
+		case 13:	require ('local.php');	break;
 		case 14: require ('dico.php');	break;
 		case 15: require ('composants.php'); break;
 		case 20: require ('tele_package.php'); break; 
@@ -346,7 +350,7 @@ function tab( $label, $multi, $lien=null ) {
 		case 13: $img = "local";	break;		
 		case 12: $img = "label";	break;
 		case 28: $img = "aide";		
-				$llink = "http://wiki.ocs-ng.org' target='_BLANK";
+				$llink = "http://wiki.ocsinventory-ng.org' target='_BLANK";
 		        break;			
 		default: if( $label==$l->g(15) )
 					$img = "utilisateurs";

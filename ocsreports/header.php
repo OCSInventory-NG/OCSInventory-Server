@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.14 $)
+//Modified on $Date: 2008-02-22 16:58:27 $$Author: hunal $($Revision: 1.15 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @set_time_limit(0);
@@ -173,7 +173,7 @@ if($_SESSION["debug"]==1)
 		die();
 	}
 
-	$limitedAccess = array(2,3,4,5,6,7,8,9,10,12,13,14,20,21,22,23,24,25,26,27,28,30,31,32,33,34,35,36);
+	$limitedAccess = array(2,3,4,5,6,7,8,9,10,12,13,14,20,21,22,23,24,25,26,27,28,30,31,32,33,34,35);
 	if( in_array($_GET["multi"],$limitedAccess) && $_SESSION["lvluser"]!=1) {
 		echo "<br><br><center><b><font color=red>ACCESS DENIED</font></b></center><br>";
 		unset($_GET["multi"]);
