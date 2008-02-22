@@ -17,6 +17,7 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / 
   get_settings
+  check_config
   %CONFIG
   CRITICAL
   IMPORTANT
@@ -380,4 +381,17 @@ sub get_settings{
   }
 }
 
+sub check_config{
+  my $verbose = shift;
+  for my $name ( keys( %CONFIG ) ){
+    my $truename = 'OCS_OPT_'.$name;
+    if( $ENV{$truename}  !~ $CONFIG{$name}->{filter} ){
+      return ($truename, $ENV{$truename});  
+    }
+    else{
+      print "OCS_CHECK_CONFIG: Parameter `$truename` is ok\n" if $verbose;
+    }
+  }
+  return undef;
+}
 1;

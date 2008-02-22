@@ -44,6 +44,8 @@ sub _get_groups{
 
 sub _validate_groups_cache{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+  
+  return unless $ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'};
  
   # Test cache validity
   my $request = $dbh->prepare('

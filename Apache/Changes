@@ -1,6 +1,10 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added error 523
+	* Added OCS_OPT_* parameters checking to server starting
+	* Bug fix in inventory cache revalidate (lock fault)
+	* Added disable caches computation (group and inventory) feature (REVALIDATE* set to 0)
 	* Removed inventory cache checking for a section that has not changed since last inventory
 	* Added OCS_OPT_OPTIONS_NOT_OVERLOADED (configure engine to take its settings from file only)
 	* Higher server's verbosity

@@ -27,7 +27,8 @@ ERRORS
 519--A device try to add a new computer whereas it is forbidden by filter inventory rules
 520--The request for the group is not valid
 521--Invalid database connection mode
-522--Inventory Cache handling error
+522--Inventory Cache handling error (Creation)
+523--Inventory Cache handling error (Truncate)
 
 INVENTORY
 ---------

@@ -26,18 +26,21 @@ use Apache::Ocsinventory::Server::System qw / :server /;
 sub _init_inventory_cache{
   my ( $sectionsMeta, $sectionsList ) = @_;
   
+  return if !$ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE};
+  
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $check_cache = $dbh->prepare('SELECT UNIX_TIMESTAMP(NOW())-IVALUE AS IVALUE FROM engine_persistent WHERE NAME="INVENTORY_CACHE_CLEAN_DATE"');
   $check_cache->execute();
   if($check_cache->rows()){
     my $row = $check_cache->fetchrow_hashref();
-    if($row->{IVALUE}<($ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}?$ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}*86400:7*86400)){
+    if($row->{IVALUE}< $ENV{OCS_OPT_INVENTORY_CACHE_REVALIDATE}*86400 ){
       return;
     }
   }
   &_log(110,'inventory_cache',"Checking") if $ENV{'OCS_OPT_LOGLEVEL'};
-  if( !$dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('CACHE_REVALIDATE',?,'ALL')", {}, $$) ){
-    &_log(111,'inventory_cache',"Checking") if $ENV{'OCS_OPT_LOGLEVEL'};
+  if( !$dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('INVENTORY_CACHE_REVALIDATE',?,'ALL')", {}, $$) ){
+    &_log(111,'inventory_cache',"already handled") if $ENV{'OCS_OPT_LOGLEVEL'};
+    return;
   }
   for my $section ( @$sectionsList ){
     &_inventory_cache( $sectionsMeta, $section, 1 );
@@ -47,7 +50,7 @@ sub _init_inventory_cache{
     if($dbh->do('UPDATE engine_persistent SET IVALUE=UNIX_TIMESTAMP(NOW()) WHERE NAME="INVENTORY_CACHE_CLEAN_DATE"')==0E0);
     
   # We release our own mutex
-  $dbh->do("DELETE FROM engine_mutex WHERE NAME='CACHE_REVALIDATE' AND PID=?", {}, $$);
+  $dbh->do("DELETE FROM engine_mutex WHERE NAME='INVENTORY_CACHE_REVALIDATE' AND PID=?", {}, $$);
   &_log(112,'inventory_cache',"Checking") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 
@@ -84,14 +87,14 @@ sub _inventory_cache{
       my $src_table = lc $section;
       if( $dbh->do("TRUNCATE TABLE $table") ){
         if( $dbh->do("INSERT INTO $table($field) SELECT $field FROM $src_table") ){
-          &_log(109,'inventory_cache',"Cache($section.$field)") if $ENV{'OCS_OPT_LOGLEVEL'};
+          &_log(109,'inventory_cache',"ok:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
         }
         else{
-          &_log(522,'inventory_cache',"Cache($section.$field)") if $ENV{'OCS_OPT_LOGLEVEL'};
+          &_log(522,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
         }
       }
       else{
-        &_log(522,'inventory_cache',"Cache($section.$field)") if $ENV{'OCS_OPT_LOGLEVEL'};
+        &_log(523,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
       }
       next;
     }
