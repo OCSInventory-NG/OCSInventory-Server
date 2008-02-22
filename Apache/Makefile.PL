@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: Makefile.PL,v 1.4 2008-02-18 07:17:51 hunal Exp $
+# $Id: Makefile.PL,v 1.5 2008-02-22 15:03:32 dliroulet Exp $
 #
 #-------------------------------------------------------
 
@@ -31,7 +31,8 @@ WriteMakefile(
 			'DBD::mysql'      => 2.9004, # no DBD::mysql can never be any fun.
 			'XML::Simple'     => 2.12,   # no XML::Simple can never be any fun.
 			'Net::IP'         => 1.21,   # no Net::IP can never be any fun.
-#			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (not required).
+#			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
+#			'XML::Entities'   => 0.02,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
 		      },
     'EXE_FILES'         => ['binutils/ocsinventory-local.pl'],
     'INSTALLSCRIPT'     => "/usr/bin",

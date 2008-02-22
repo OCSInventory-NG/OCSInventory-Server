@@ -4,7 +4,7 @@
 # OCS Inventory NG Management Server Setup
 #
 # Copyleft 2006 Didier LIROULET
-# Web: http://ocsinventory.sourceforge.net
+# Web: http://www.ocsinventory-ng.org
 #
 # This code is open source and may be copied and modified as long as the source
 # code is always made freely available.
@@ -350,16 +350,16 @@ echo
 echo "Checking for PERL Interpreter" >> $SETUP_LOG
 if [ -z "$PERL_BIN" ]
 then
-	echo "PERL Interpreter not found !"
-	echo "PERL Interpreter not found" >> $SETUP_LOG
-	echo "OCS Inventory NG is not able to work without PERL Interpreter."
-	echo "Setup manually PERL first."
-	echo "Installation aborted !"
-	echo "installation aborted" >> $SETUP_LOG
-	exit 1
+    echo "PERL Interpreter not found !"
+    echo "PERL Interpreter not found" >> $SETUP_LOG
+    echo "OCS Inventory NG is not able to work without PERL Interpreter."
+    echo "Setup manually PERL first."
+    echo "Installation aborted !"
+    echo "installation aborted" >> $SETUP_LOG
+    exit 1
 else
-	echo "Found PERL Intrepreter at <$PERL_BIN> ;-)"
-	echo "Found PERL Intrepreter at <$PERL_BIN>" >> $SETUP_LOG
+    echo "Found PERL Intrepreter at <$PERL_BIN> ;-)"
+    echo "Found PERL Intrepreter at <$PERL_BIN>" >> $SETUP_LOG
 fi
 # Ask user's confirmation 
 res=0
@@ -401,25 +401,24 @@ then
     echo "Installing Communication server" >> $SETUP_LOG
     echo
     
-	echo
-	echo "+----------------------------------------------------------+"
-	echo "| Checking for Make utility...                             |"
-	echo "+----------------------------------------------------------+"
-	echo
-	echo "Checking for Make utility" >> $SETUP_LOG
-	if [ -z "$MAKE" ]
-	then
-		echo "Make utility not found !"
-		echo "Make utility not found" >> $SETUP_LOG
-		echo "Setup is not able to build Perl module."
-		echo "Unable to build Perl module !" >> $SETUP_LOG
-		exit 1
-	else
-		echo "OK, Make utility found at <$MAKE> ;-)"
-		echo "Make utility found at <$MAKE>" >> $SETUP_LOG
-	fi
-	echo
-
+    echo
+    echo "+----------------------------------------------------------+"
+    echo "| Checking for Make utility...                             |"
+    echo "+----------------------------------------------------------+"
+    echo
+    echo "Checking for Make utility" >> $SETUP_LOG
+    if [ -z "$MAKE" ]
+    then
+        echo "Make utility not found !"
+        echo "Make utility not found" >> $SETUP_LOG
+        echo "Setup is not able to build Perl module."
+        echo "Unable to build Perl module !" >> $SETUP_LOG
+        exit 1
+    else
+        echo "OK, Make utility found at <$MAKE> ;-)"
+        echo "Make utility found at <$MAKE>" >> $SETUP_LOG
+    fi
+    echo
 
     echo
     echo "+----------------------------------------------------------+"
@@ -596,7 +595,8 @@ then
     #    - Compress::Zlib 1.33 or higher
     #    - XML::Simple 2.12 or higher
     #    - Net::IP 1.21 or higher
-    #    - SOAP::Lite 0.65, not required.
+    #    - SOAP::Lite 0.65, not required, used only in web service
+    #    - XML::Entities 0.02, not required, used only in web service
     #
     echo
     echo "+----------------------------------------------------------+"
@@ -687,6 +687,18 @@ then
    	else
    		echo "Found that PERL module SOAP::Lite is available."
     fi
+    echo "Checking for XML::Entities PERL module..."
+    echo "Checking for XML::Entities PERL module" >> $SETUP_LOG
+    $PERL_BIN -mXML::Entities -e 'print "PERL module XML::Entities is available\n"' >> $SETUP_LOG 2>&1
+   if [ $? -ne 0 ]
+   then
+   	echo "*** ERROR: PERL module XML::Entities is not installed !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+   else
+   	echo "Found that PERL module XML::Entities is available."
+   fi
 	echo
 
 

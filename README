@@ -3,7 +3,7 @@
 # OCS Inventory NG Management Server Setup
 #
 # Copyleft 2006 Pascal DANEK
-# Web: http://ocsinventory.sourceforge.net
+# Web: http://www.ocsinventory-ng.org
 #
 # This code is open source and may be copied and modified as long as the source
 # code is always made freely available.
@@ -17,7 +17,7 @@ previous, please remove any Apache configuration for Communication Server !
 
 OCS Inventory NG Management Server needs the following components:
 - MySQL version 4.1 or higher
-- PERL 5.6 or higher
+- PERL 5.6 or higher (5.8 or higher recommended)
 - Apache version 1.3.33 or higher / Apache version 2.0.X or higher
 - Apache Mod_perl version 1.29 or higher
 - PHP 4.3.2 or higher, with ZIP support enabled.
@@ -28,7 +28,10 @@ OCS Inventory NG Management Server needs the following components:
 - Perl module DBD::Mysql version 2.9004 or higher
 - Perl module Apache::DBI version 0.93 or higher
 - Perl module Net::IP version 1.21 or higher
-- Perl module SOAP::Lite version 0.66 or higher, not required
+- Perl module SOAP::Lite version 0.66 or higher, not required, used only with
+  SOAP web service
+- Perl module XML::Entities version 0.02 or higher, not required, used only with
+  SOAP web service
 
 You must also know the following things (setup will try to found them, but
 no garanty):
