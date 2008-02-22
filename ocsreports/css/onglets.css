@@ -3,7 +3,7 @@ http://www.alistapart.com/articles/slidingdoors/
 */
 
 #header {
-      float:center;
+   /*   float:center;*/
       width:100%;
       font-size:93%;
       line-height:normal;

@@ -244,7 +244,7 @@ div.tableContainer {
 
 table.ta {
 	width: 99%;		/*100% of container produces horiz. scroll in Mozilla*/
-	border: solid 1px slategray;
+	border: 1px slategray;
 	}
 	
 tbody.ta	{  /* child selector syntax which IE6 and older do not support*/
@@ -259,25 +259,30 @@ th.ta	{
 	width: 50px;
 	background-color: #c7d9f5;
 	color: steelblue;
-	border: solid slategray thin;
+	/*border: solid slategray thin;*/
+/*border-left: solid 1px slategray;*/
+	border-bottom: solid 1px slategray;
+	border-top: solid 1px slategray;
+	border-left: solid 1px slategray;
 	position:relative; 
 	/*top: expression(document.getElementById('data').scrollTop-2); /*IE5+ only*/
 	}
 
 tr.ta {
 	text-align: center;
+	border-right:solid 1px slategray;
 }
 	
 td.ta	{
 	color: #000;
 	text-align: center;
-	padding-right: 2px;
+	/*padding-right: 2px;*/
 	font-size: 12px;
 	font-family: Arial,sans-serif;
 	border-bottom: solid 1px slategray;
 	border-left: solid 1px slategray;
-
+	
 	}
 
-td.ta:last-child {padding-right: 20px;} /*prevent Mozilla scrollbar from hiding cell content*/
-
+td.ta:last-child {border-right: solid 1px slategray;} /*prevent Mozilla scrollbar from hiding cell content*/
+th.ta:last-child {border-right: solid 1px slategray;} 

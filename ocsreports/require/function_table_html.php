@@ -85,7 +85,7 @@ function tri($sql)
 	<?
 	if ($titre != "")
 	printEnTete($titre);
-	echo "<br><div class='tableContainer' id='data' style=\"width:".$width."%; height:".$height."px;\"><table cellspacing='0' class='ta'><tr>";
+	echo "<br><div class='tableContainer' id='data' style=\"width:".$width."%;\"><table cellspacing='0' class='ta'><tr>";
 		//titre du tableau
 	$i=1;
 	foreach($entete_colonne as $k=>$v)
@@ -98,7 +98,7 @@ function tri($sql)
 	}
 	echo "
     </tr>
-    <tbody class='ta' style='height:".($height - 100)."px;'>";
+    <tbody class='ta'>";
 	
 	$i=0;
 	$j=0;
