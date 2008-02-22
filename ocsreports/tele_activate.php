@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.10 $)
+//Modified on $Date: 2008-02-22 16:39:02 $$Author: hunal $($Revision: 1.11 $)
 
 PrintEnTete($l->g(465));
 //activate for server's group
@@ -174,8 +174,19 @@ else if( isset( $_GET["suppack"] )) {
 	$reqDelAvailable = "DELETE FROM download_available WHERE FILEID='".$_GET["suppack"]."'";
 	@mysql_query($reqDelAvailable, $_SESSION["writeServer"]) or die(mysql_error());
 	
-	if( ! @recursive_remove_directory( $_SERVER["DOCUMENT_ROOT"]."/download/".$_GET["suppack"] ))  {
-		echo "<br><center><b><font color='red'>".$l->g(472)." ".$_SERVER["DOCUMENT_ROOT"]."/download/".$_GET["suppack"]."</font></b></center>";
+	//looking for the directory for pack
+	$sql_document_root="select tvalue from config where NAME='DOWNLOAD_PACK_DIR'";
+	$res_document_root = mysql_query( $sql_document_root, $_SESSION["readServer"] );
+	while( $val_document_root = mysql_fetch_array( $res_document_root ) ) {
+		$document_root = $val_document_root["tvalue"];
+	}
+	//if no directory in base, take $_SERVER["DOCUMENT_ROOT"]
+	if (!isset($document_root))
+	$document_root = $_SERVER["DOCUMENT_ROOT"];
+	
+	
+	if( ! @recursive_remove_directory( $document_root."/download/".$_GET["suppack"] ))  {
+		echo "<br><center><b><font color='red'>".$l->g(472)." ".$document_root."/download/".$_GET["suppack"]."</font></b></center>";
 	}
 }
 

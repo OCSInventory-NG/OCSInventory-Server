@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.13 $)
+//Modified on $Date: 2008-02-22 16:39:02 $$Author: hunal $($Revision: 1.14 $)
 ?>
 <script language='javascript'>
 
@@ -36,6 +36,18 @@
 </script>
 
 <?php 
+	//looking for the directory for pack
+	$sql_document_root="select tvalue from config where NAME='DOWNLOAD_PACK_DIR'";
+	$res_document_root = mysql_query( $sql_document_root, $_SESSION["readServer"] );
+	while( $val_document_root = mysql_fetch_array( $res_document_root ) ) {
+		$document_root = $val_document_root["tvalue"];
+	}
+	//if no directory in base, take $_SERVER["DOCUMENT_ROOT"]
+	if (!isset($document_root))
+	$document_root = $_SERVER["DOCUMENT_ROOT"];
+	else
+	@mkdir($document_root."/download/");
+	
 	@set_time_limit(0);
 	printEnTete($l->g(434));
 	
@@ -75,9 +87,9 @@
 					
 				$digName = $_POST["digest_algo"]. " / ".$_POST["digest_encod"];
 				
-				if((! @mkdir( $_SERVER["DOCUMENT_ROOT"]."/download/".$id)) ||
-				   (! copy( $_FILES["fichier"]["tmp_name"], $_SERVER["DOCUMENT_ROOT"]."/download/".$id."/tmp" ))) {
-					echo "<br><center><font color='red'><b>ERROR: can't create or write in ".$_SERVER["DOCUMENT_ROOT"]."/download/".$id." folder, please refresh when fixed. <br>
+				if((! @mkdir( $document_root."/download/".$id)) ||
+				   (! copy( $_FILES["fichier"]["tmp_name"], $document_root."/download/".$id."/tmp" ))) {
+					echo "<br><center><font color='red'><b>ERROR: can't create or write in ".$document_root."/download/".$id." folder, please refresh when fixed. <br>
 					<br>(or try disabling php safe mode)</b></font></center>";
 					die("<script language='javascript'>wait(0);</script>");
 				}			
@@ -139,8 +151,8 @@
 				}
 				else {
 					$id = time();
-					if( ! @mkdir( $_SERVER["DOCUMENT_ROOT"]."/download/".$id)) {
-						echo "<center><font color='red'><b>ERROR: can't write in ".$_SERVER["DOCUMENT_ROOT"]."/download/ folder, please refresh when corrected</b></font></center>";
+					if( ! @mkdir( $document_root."/download/".$id)) {
+						echo "<center><font color='red'><b>ERROR: can't write in ".$document_root."/download/ folder, please refresh when corrected</b></font></center>";
 						die("<script language='javascript'>wait(0);</script>");
 					}
 					?>
@@ -161,7 +173,7 @@
 	else if( isset( $_POST["nbfrags"] ) ) {
 		
 		//fragmenter
-		$fname = $_SERVER["DOCUMENT_ROOT"]."/download/".$_POST["id"]."/tmp";
+		$fname = $document_root."/download/".$_POST["id"]."/tmp";
 		if( $size = @filesize( $fname )) {
 			$handle = fopen ( $fname, "rb");
 			
@@ -169,7 +181,7 @@
 			for( $i=1; $i<$_POST["nbfrags"]; $i++ ) {
 				$contents = fread ($handle, $size / $_POST["nbfrags"] );
 				$read += strlen( $contents );
-				$handfrag = fopen( $_SERVER["DOCUMENT_ROOT"]."/download/".$_POST["id"]."/".$_POST["id"]."-".$i, "w+b" );
+				$handfrag = fopen( $document_root."/download/".$_POST["id"]."/".$_POST["id"]."-".$i, "w+b" );
 				fwrite( $handfrag, $contents );
 				fclose( $handfrag );
 				//echo "FRAG ".$i." lu ".strlen( $contents ). " (en tout " .$read.")<br>";
@@ -177,12 +189,12 @@
 			
 			$contents = fread ($handle, $size - $read);
 			$read += strlen( $contents );
-			$handfrag = fopen( $_SERVER["DOCUMENT_ROOT"]."/download/".$_POST["id"]."/".$_POST["id"]."-".$i, "w+b" );
+			$handfrag = fopen( $document_root."/download/".$_POST["id"]."/".$_POST["id"]."-".$i, "w+b" );
 			fwrite( $handfrag, $contents );
 			fclose( $handfrag );
 			fclose ($handle);
 	
-			unlink( $_SERVER["DOCUMENT_ROOT"]."/download/".$_POST["id"]."/tmp" );
+			unlink( $document_root."/download/".$_POST["id"]."/tmp" );
 		}
 		
 		//creation info
@@ -206,7 +218,7 @@
 		"NEED_DONE_ACTION_TEXT=\"".clean($_SESSION["down_NEED_DONE_ACTION_TEXT"])."\" ".		
 		"GARDEFOU=\"rien\" />\n";
 		
-		$handinfo = fopen( $_SERVER["DOCUMENT_ROOT"]."/download/".$_POST["id"]."/info", "w+" );
+		$handinfo = fopen( $document_root."/download/".$_POST["id"]."/info", "w+" );
 		fwrite( $handinfo, $info );
 		fclose( $handinfo );
 		
@@ -217,7 +229,7 @@
 		
 		mysql_query( $req, $_SESSION["writeServer"] );
 		echo mysql_error();
-		echo "<br><center><b><font color='green'>".$l->g(437)." ".$_SERVER["DOCUMENT_ROOT"]."/download/".$_POST["id"]."</font></b></center><br>";
+		echo "<br><center><b><font color='green'>".$l->g(437)." ".$document_root."/download/".$_POST["id"]."</font></b></center><br>";
 
 		unset( $_POST["nbfrags"] );	
 		//vider session

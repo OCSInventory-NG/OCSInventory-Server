@@ -757,3 +757,5 @@
 772 The category's name can't be null
 773 You must select category's name
 774 You try to make a transfer of the category towards the same category
+775 Directory of creation of packages
+776 Directory of stake in cache of the analyses of ipdiscover

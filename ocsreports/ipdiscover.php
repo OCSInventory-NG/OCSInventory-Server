@@ -8,7 +8,15 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.13 $)
+//Modified on $Date: 2008-02-22 16:39:02 $$Author: hunal $($Revision: 1.14 $)
+
+//find IPDISCOVER_IPD_DIR
+$sql_IPD_DIR="select tvalue from config where NAME='IPDISCOVER_IPD_DIR'";
+	$res_IPD_DIR = mysql_query( $sql_IPD_DIR, $_SESSION["readServer"] );
+	while( $val_IPD_DIR = mysql_fetch_array( $res_IPD_DIR ) ) {
+		$IPD_DIR = $val_IPD_DIR["tvalue"];
+	}
+
 
 @set_time_limit(0);
 $nbpop=0;
@@ -514,7 +522,7 @@ else  if( $_GET["mode"] == 6 ) {
 	$rez = $nomRez;
 	printEnTete($l->g(319)." $pas<br><br>$rez");
 	echo "<br><center><a href='index.php?popup=1&multi=3&mode=2&pas=$pas'><= ".$l->g(188)."</a></center>";
-	$fname = "ipd/$pas.ipd";
+	$fname = $IPD_DIR."ipd/$pas.ipd";
 	$buf = "";
 	if( $_GET["nocache"] != 1 || $_SESSION["fromEnreg"] )
 		if( $hndl = @fopen ( $fname , "r" ) ) {
@@ -866,8 +874,8 @@ function printTab($t ,$modeReg=false, $tailles=null, $unSurDeux=false, $scroll =
 }
 
 function runCommand($command="") {
-	global $l;
-	$command = "perl ipdiscover-util.pl $command -xml -h=".$_SESSION["SERVEUR_SQL"]." -u=".$_SESSION["COMPTE_BASE"]." -p=".$_SESSION["PSWD_BASE"];
+	global $l,$IPD_DIR;
+	$command = "perl ipdiscover-util.pl $command -xml -h=".$_SESSION["SERVEUR_SQL"]." -u=".$_SESSION["COMPTE_BASE"]." -p=".$_SESSION["PSWD_BASE"]." -path=".$IPD_DIR."/ipd";
 	//echo $command."<br>";
 	$fd = popen($command,"r");	
 	if($fd==FALSE) {

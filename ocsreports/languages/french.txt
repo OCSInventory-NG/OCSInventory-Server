@@ -665,3 +665,5 @@
 772 Le nom de la nouvelle catégorie ne peut être nul
 773 Vous devez sélectionner un nom de catégorie
 774 Vous essayer de faire un transfert de la catégorie vers la même catégorie
+775 Répertoire de création des paquets
+776 Répertoire de mise en cache des analyses d'ipdiscover

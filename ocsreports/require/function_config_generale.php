@@ -34,6 +34,7 @@
      		 var i=0;
      		 var txt1='';
      		 var txt10='';
+     		 
      		 supp1 = new Array();
      		 supp10 = new Array();
      		 
@@ -52,9 +53,8 @@
      		 supp1[12]="GROUPS_CACHE_OFFSET";
      		 supp1[13]="GROUPS_CACHE_REVALIDATE";
      		 supp1[14]="INVENTORY_FILTER_FLOOD_IP_CACHE_TIME";
-     		 
-     		 
-     		 supp10[0]="IPDISCOVER_LATENCY";
+   
+       		 supp10[0]="IPDISCOVER_LATENCY";
      		 
 			 while (supp1[i]){
 			 	if (document.getElementById(supp1[i]+"_div")){
@@ -82,7 +82,7 @@
 	     		 i++;
 			 	
 			 }		 
-			 
+						 
 			 
 	         if (txt1 != ''){
 	         		alert(txt1+"\n <?echo $l->g(759);?> 1");
@@ -181,7 +181,7 @@
 	 			echo "checked";
 	 			echo ">".$value; 
 	 			if ($data_hidden != '' and  $data_hidden['HIDDEN'] == $key){
-	 				echo "<div id='".$name."_div' style='display:".$display."'><input type='text' size='3' maxlength='2' id='".$name."_edit' name='".$name."_edit' value='".$data_hidden['HIDDEN_VALUE']."' ".$data_hidden['JAVASCRIPT'].">".$data_hidden['END']."</div>"; 	
+	 				echo "<div id='".$name."_div' style='display:".$display."'><input type='text' size='".($data_hidden['SIZE']?$data_hidden['SIZE']:"3")."' maxlength='".($data_hidden['SIZE']?$data_hidden['SIZE']:"2")."' id='".$name."_edit' name='".$name."_edit' value='".$data_hidden['HIDDEN_VALUE']."' ".$data_hidden['JAVASCRIPT'].">".$data_hidden['END']."</div>"; 	
 	 			}
 	 			echo "<br>";
  			}
@@ -292,13 +292,27 @@ function update_default_value($POST){
 					and $key != 'OCS_FILES_PATH'
 					and substr($key,0,18) != 'AUTO_DUPLICATE_LVL' 
 					and $key != 'FREQUENCY' and $key!= 'FREQUENCY_edit'
-					and $key != 'IPDISCOVER' and $key != 'IPDISCOVER_edit'){
+					and $key != 'IPDISCOVER' and $key != 'IPDISCOVER_edit'
+					and $key != 'DOWNLOAD_PACK_DIR' and $key != 'DOWNLOAD_PACK_DIR_edit'
+					and $key != 'IPDISCOVER_IPD_DIR' and $key != 'IPDISCOVER_IPD_DIR_edit'){
 						if (isset($optexist))
 						$sql="update config set IVALUE = ".$value." where NAME ='".$key."'";
 						else
 						$sql="insert into config (IVALUE, NAME) value (".$value.",'".$key."')";
 					
-					//echo $sql."<br>";
+				//echo $sql."<br>";
+					
+				}
+				elseif(($key == 'DOWNLOAD_PACK_DIR' and $value == 'CUSTOM')
+						or($key == 'IPDISCOVER_IPD_DIR' and $value == 'CUSTOM')){
+					if (isset($optexist) and trim($POST[$key."_edit"]) != '')
+					$sql="update config set TVALUE = '".$POST[$key."_edit"]."' where NAME ='".$key."'";
+					elseif(trim($POST[$key."_edit"]) != '')
+					$sql="insert into config (TVALUE, NAME) value ('".$POST[$key."_edit"]."','".$key."')";
+				}
+				elseif(($key == 'DOWNLOAD_PACK_DIR' or $key == 'IPDISCOVER_IPD_DIR')
+						and trim($POST[$key."_edit"]) != ''){
+					$sql="delete from config where NAME ='".$key."'";
 					
 				}
 				elseif ($key == 'OCS_FILES_FORMAT' or 
@@ -392,6 +406,41 @@ function auto_duplicate_lvl_poids($value,$entree_sortie){
  	
  return $check;
 }
+ function pageGUI($form_name){
+ 	global $l,$numeric,$sup1;
+ 		//what ligne we need?
+ 	$champs=array( 'LOCAL_PORT'=>'LOCAL_PORT',
+				  'LOCAL_SERVER'=>'LOCAL_SERVER',
+				  'DOWNLOAD_PACK_DIR'=>'DOWNLOAD_PACK_DIR',
+				  'IPDISCOVER_IPD_DIR'=>'IPDISCOVER_IPD_DIR');
+	$values=look_default_values($champs);
+	if (isset($values['tvalue']['DOWNLOAD_PACK_DIR']))
+	$select_pack='CUSTOM';
+	else
+	$select_pack='DEFAULT';
+	if (isset($values['tvalue']['IPDISCOVER_IPD_DIR']))
+	$select_ipd='CUSTOM';
+	else
+	$select_ipd='DEFAULT';
+ 	debut_tab(array('CELLSPACING'=>'5',
+					'WIDTH'=>'90%',
+					'BORDER'=>'0',
+					'ALIGN'=>'Center',
+					'CELLPADDING'=>'0',
+					'BGCOLOR'=>'#C7D9F5',
+					'BORDERCOLOR'=>'#9894B5'));
+	ligne('LOCAL_PORT',$l->g(566),'input',array('VALUE'=>$values['ivalue']['LOCAL_PORT'],'SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
+	ligne('LOCAL_SERVER',$l->g(565),'input',array('BEGIN'=>'HTTP://','VALUE'=>$values['tvalue']['LOCAL_SERVER'],'SIZE'=>50,'MAXLENGHT'=>254));
+	ligne('DOWNLOAD_PACK_DIR',$l->g(775),'radio',array('DEFAULT'=>"Par défaut(".$_SERVER["DOCUMENT_ROOT"]."/DOWNLOAD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_pack),
+		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['DOWNLOAD_PACK_DIR'],'SIZE'=>70,'END'=>"/DOWNLOAD"));
+	ligne('IPDISCOVER_IPD_DIR',$l->g(776),'radio',array('DEFAULT'=>"Par défaut(".$_SERVER["DOCUMENT_ROOT"]."/oscreport/IPD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_ipd),
+		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['IPDISCOVER_IPD_DIR'],'SIZE'=>70,'END'=>"/IPD"));
+		
+	fin_tab($form_name);
+ 	
+ }
+ 
+ 
  
  function pageteledeploy($form_name){
  	global $l,$numeric,$sup1; 
@@ -506,9 +555,7 @@ function pagegroups($form_name){
 				  'INVENTORY_TRANSACTION'=>'INVENTORY_TRANSACTION',
 				  'INVENTORY_WRITE_DIFF'=>'INVENTORY_WRITE_DIFF',
 				  'INVENTORY_CACHE_ENABLED'=>'INVENTORY_CACHE_ENABLED',
-				  'INVENTORY_CACHE_REVALIDATE'=>'INVENTORY_CACHE_REVALIDATE',
-				  'LOCAL_PORT'=>'LOCAL_PORT',
-				  'LOCAL_SERVER'=>'LOCAL_SERVER');
+				  'INVENTORY_CACHE_REVALIDATE'=>'INVENTORY_CACHE_REVALIDATE');
 	$values=look_default_values($champs);
 // 	//gestion du champ FREQUENCY
 // 	if (isset($champs['FREQUENCY'])){
@@ -536,11 +583,6 @@ function pagegroups($form_name){
 		ligne('INVENTORY_WRITE_DIFF',$l->g(743),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_WRITE_DIFF']));
 		ligne('INVENTORY_CACHE_ENABLED',$l->g(744),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_CACHE_ENABLED']));
 	 	ligne('INVENTORY_CACHE_REVALIDATE',$l->g(745),'input',array('END'=>$l->g(496).$sup1,'VALUE'=>$values['ivalue']['INVENTORY_CACHE_REVALIDATE'],'SIZE'=>1,'MAXLENGHT'=>3));
-
-		//ligne('FREQUENCY',$l->g(426),'radio',array(0=>'ALWAYS',-1=>'NEVER','CUSTOM'=>'CUSTOM','VALUE'=>$values['ivalue']['FREQUENCY']),array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$frequency,'END'=>$l->g(496),'JAVASCRIPT'=>$numeric));
-	  //	ligne('REGISTRY',$l->g(412),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['REGISTRY']));
-		ligne('LOCAL_PORT',$l->g(566),'input',array('VALUE'=>$values['ivalue']['LOCAL_PORT'],'SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
-	 	ligne('LOCAL_SERVER',$l->g(565),'input',array('BEGIN'=>'HTTP://','VALUE'=>$values['tvalue']['LOCAL_SERVER'],'SIZE'=>50,'MAXLENGHT'=>254));
 	fin_tab($form_name);
  	
  }

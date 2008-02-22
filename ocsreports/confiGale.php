@@ -16,7 +16,8 @@ $def_onglets[$l->g(583)]=$l->g(583); //Groupes
 $def_onglets[$l->g(211)]=$l->g(211); //Registre
 $def_onglets[$l->g(734)]=$l->g(734); //Fichiers d'inventaire
 $def_onglets[$l->g(735)]=$l->g(735); //Filtres
-$def_onglets[$l->g(760)]=$l->g(760); //Filtres
+$def_onglets[$l->g(760)]=$l->g(760); //Webservice
+$def_onglets[$l->g(84)]=$l->g(84); //GUI
 if ($_POST['Valid'] == "Valid")
 $MAJ=update_default_value($_POST); //function in function_table_html.php
 echo "<font color=green ><center><b>".$MAJ."</b></center></font>";
@@ -24,6 +25,11 @@ $form_name='modif_onglet';
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action='index.php?multi=4'>";
 onglet($def_onglets,$form_name,'onglet',7);
 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td>";
+if ($_POST['onglet'] == $l->g(84) ){
+	
+	pageGUI($form_name);
+	
+}
 if ($_POST['onglet'] == $l->g(728) ){
 	
 	pageinventory($form_name);
