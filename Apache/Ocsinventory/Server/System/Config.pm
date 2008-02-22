@@ -135,6 +135,14 @@ our %CONFIG = (
     level => CANSKIP,
     filter => qr '^(1|0)$'
   },
+  INVENTORY_SESSION_ONLY => { 
+    type => 'IVALUE',  
+    default => 0,
+    unit => 'NA',
+    description => 'Accept an inventory only if there is a prolog before',
+    level => CANSKIP,
+    filter => qr '^(1|0)$'
+  },
   PROXY_REVALIDATE_DELAY => { 
     type => 'IVALUE',  
     default => 3600,
@@ -364,6 +372,22 @@ our %CONFIG = (
     default => 300,
     unit => 'second',
     description => 'Period definition for INVENTORY_FILTER_FLOOD_IP',
+    level => CANSKIP,
+    filter => qr '^(\d+)$'
+  },
+  SESSION_VALIDITY_TIME => {
+    type => 'IVALUE',
+    default => 3600,
+    unit => 'second',
+    description => 'Set the validity of a session (prolog => end)',
+    level => CANSKIP,
+    filter => qr '^(\d+)$'
+  },
+  SESSION_CLEAN_TIME => {
+    type => 'IVALUE',
+    default => 86400,
+    unit => 'second',
+    description => 'Clean old sessions every <> seconds',
     level => CANSKIP,
     filter => qr '^(\d+)$'
   },

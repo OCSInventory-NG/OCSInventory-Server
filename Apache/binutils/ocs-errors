@@ -29,6 +29,10 @@ ERRORS
 521--Invalid database connection mode
 522--Inventory Cache handling error (Creation)
 523--Inventory Cache handling error (Truncate)
+524--No checksum
+525--Cannot reuse session
+526--Error while checking session
+527--Cannot end session (DB Fault)
 
 INVENTORY
 ---------
@@ -46,6 +50,8 @@ INVENTORY
 111--Inventory cache already handled (lock fault)
 112--Inventory cache updated
 113--Inventory section has changed => write it
+114--No prolog connection found
+115--Inventory refused (no session)
 
 MANAGEMENT
 ----------
@@ -56,21 +62,29 @@ MANAGEMENT
 305--Files transmitted
 306--Group out-of-date
 307--Revalidate group cache
-308--group is locked by another process
-309--group cache update problem
-310--trusted computer
+308--Group is locked by another process
+309--Group cache update problem
+310--Trusted computer
+311--Session started(prolog)
+314--Checking expired sessions 
+315--Checking is already handled by another process (skipping)
+316--Found old sessions (according to OCS_OPT_SESSION_CLEAN_TIME)
+317--Session validity undefined : check always succeed
+318--Session not found
+319--Valid session found
+320--End of session
 
 IPDISCOVER
 ----------
-1001--ipdiscover enabled
-1002--ipdiscover disabled
-1003--ipdiscover report error
-1004--ipdiscover incoming
-1005--ipdiscover conflict with group exception
+1001--Ipdiscover enabled
+1002--Ipdiscover disabled
+1003--Ipdiscover report error
+1004--Ipdiscover incoming
+1005--Ipdiscover conflict with group exception
 
 DOWNLOAD
 --------
-2500--impossible to get config
-2501--message refers to an unexisting package
-2502--cannot retrieve package history (db error)
-2001--download agent event incoming
+2500--Impossible to get config
+2501--Message refers to an unexisting package
+2502--Cannot retrieve package history (db error)
+2001--Download agent event incoming

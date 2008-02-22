@@ -41,6 +41,7 @@ my $ipd;
 my $list;
 my $xml;
 my $cache;
+my $path;
 #Default values for database connection
 #
 my $dbhost = 'localhost';
@@ -64,6 +65,8 @@ for $option (@ARGV){
     $cache = 1;
     $analyse = 1;
     $xml = 1;
+  }elsif($option=~/-path=(\S*)$/){
+    $path = $1;
   }elsif($option=~/-ipdiscover=(\d+)$/){
     $ipdiscover = 1;
     $ipd = $1;
@@ -165,7 +168,7 @@ if($auto){
   print "##################\n\n";
   for(keys(%subnet)){
     print "Processing $_ (".$subnet{$_}."). ".(keys(%subnet)-$i)." networks left.\n";
-    open OUT, ">ipd/".$subnet{$_}.".ipd" or die $!;
+    open OUT, ">$path/ipd/".$subnet{$_}.".ipd" or die $!;
     unless(flock(OUT, LOCK_EX|LOCK_NB)){
       if($xml){
         print "<ERROR><MESSAGE>345</MESSAGE></ERROR>";
@@ -174,7 +177,7 @@ if($auto){
         die "An other analyse is in progress\n";
       }
     }
-    system("./ipdiscover-util.pl -net=".$subnet{$_}.($xml?' -xml':'')." -a > ipd/'".$subnet{$_}.".ipd'");
+    system("./ipdiscover-util.pl -net=".$subnet{$_}.($xml?' -xml':'')." -a > $path/ipd/'".$subnet{$_}.".ipd'");
     $i++;
   }
   system ("rm -f ipdiscover-analyze.*");
@@ -518,7 +521,7 @@ my @PF;
 if($analyse){
   #directory creation for analyses file
   if($cache){
-    open CACHE, ">ipd/$filter.ipd" or die $!;
+    open CACHE, ">$path/ipd/$filter.ipd" or die $!;
     unless(flock(CACHE, LOCK_EX|LOCK_NB)){
       if($xml){
         print "<ERROR><MESSAGE>345</MESSAGE></ERROR>";

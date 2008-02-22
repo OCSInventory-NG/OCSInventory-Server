@@ -31,6 +31,7 @@ use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw / :server /;
 
 use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Communication::Session;
 use Apache::Ocsinventory::Server::Duplicate;
 
 use Apache::Ocsinventory::Server::Inventory::Data;
@@ -77,6 +78,15 @@ sub _inventory_handler{
     &_log( 516, 'inventory', 'device locked');
     return(APACHE_FORBIDDEN);
   }
+  
+  # Check prolog
+  if( !check_session( \%Apache::Ocsinventory::CURRENT_CONTEXT ) ){
+    &_log( 114, 'inventory', 'no session');
+    if( ($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} !~ /local/i) && $ENV{OCS_OPT_INVENTORY_SESSION_ONLY} ){
+      &_log( 115, 'inventory', 'refused');
+      return(APACHE_FORBIDDEN);
+    }
+  }
 
   #Inventory incoming
   &_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -121,6 +131,7 @@ sub _post_inventory{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
   &_generate_ocs_file();
+  &kill_session( \%Apache::Ocsinventory::CURRENT_CONTEXT );
   
   $red = &_duplicate_main();
   # We verify accountinfo diff if the machine was already in the database

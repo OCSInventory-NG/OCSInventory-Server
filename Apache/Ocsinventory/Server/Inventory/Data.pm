@@ -118,6 +118,7 @@ sub _has_changed{
     }
   }
   else{
+    &_log( 524, 'inventory', "$section (no checksum)") if $ENV{'OCS_OPT_LOGLEVEL'};
     return 1;
   }
 }

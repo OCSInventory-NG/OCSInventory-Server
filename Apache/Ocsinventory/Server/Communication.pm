@@ -25,7 +25,7 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / _send_response _prolog/;
+our @EXPORT = qw / _send_response _prolog /;
 
 use Apache::Ocsinventory::Server::Constants;
 
@@ -34,6 +34,8 @@ use Apache::Ocsinventory::Server::System(qw/
    _modules_get_prolog_readers
    _modules_get_prolog_writers
 /);
+
+use Apache::Ocsinventory::Server::Communication::Session;
 
 # Subroutine wich answer to client prolog
 sub _prolog{
@@ -48,8 +50,7 @@ sub _prolog{
   my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $info = $Apache::Ocsinventory::CURRENT_CONTEXT{'DETAILS'};
-  
-  
+   
   if( &_prolog_read() == PROLOG_STOP ){
     &_log(106,'prolog','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
     &_prolog_resp(PROLOG_RESP_BREAK);
@@ -142,13 +143,13 @@ sub _prolog{
 }
 
 sub _send_response{
-
+  my $response = shift;
   my( $xml, $message, $d, $status, $inflated );
   my $r = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'};
 
   # Generate the response
   # Generation of xml message
-  $message = XML::Simple::XMLout( $_[0], RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='ISO-8859-1'?>",
+  $message = XML::Simple::XMLout( $response, RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='ISO-8859-1'?>",
                    NoSort => 1, SuppressEmpty => undef);
   # send
   unless($inflated = &{$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'}}( $message )){
@@ -174,6 +175,7 @@ sub _prolog_resp{
     &_log(102,'prolog','Declined') if $ENV{'OCS_OPT_LOGLEVEL'};
   }elsif($resp{'RESPONSE'}[0] eq 'SEND'){
     &_log(100,'prolog','Accepted') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &start_session( \%Apache::Ocsinventory::CURRENT_CONTEXT );
   }elsif($resp{'RESPONSE'}[0] eq 'OTHER'){
     &_log(105,'prolog','') if $ENV{'OCS_OPT_LOGLEVEL'};
   }

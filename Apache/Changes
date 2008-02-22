@@ -1,6 +1,9 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added -path parameter to ipdiscover-util.pl (changes in GUI for FHS support)
+	* Added OCS_OPT_INVENTORY_SESSION_ONLY: An inventory is accepted only if it is required by server
+	* Added session (prolog=>post_inventory) Options: SESSION_VALIDITY_TIME, SESSION_CLEAN_TIME
 	* Added error 523
 	* Added OCS_OPT_* parameters checking to server starting
 	* Bug fix in inventory cache revalidate (lock fault)

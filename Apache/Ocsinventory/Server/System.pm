@@ -194,17 +194,25 @@ sub _lock{
    my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   
   if($dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NULL)', {} , $device, $$ )){
-    $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
+    $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 
+      if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
     return(0);
   }else{
     if( $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ){
-      if( $dbh->do( 'SELECT * FROM locks WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ) != '0E0' ) {
+      if( $dbh->do( 'SELECT * FROM locks  WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', 
+        {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ) != '0E0' ) {                      
         &_log(516,'lock', 'reuse lock') if $ENV{'OCS_OPT_LOGLEVEL'};
-        $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
-        return 0;
+        if( $dbh->do('UPDATE locks SET ID=? WHERE HARDWARE_ID=?', {}, $$, $device) ){
+          $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
+          return 0;
+        }
+        else{
+          &_log(516,'lock', 'failed') if $ENV{'OCS_OPT_LOGLEVEL'};
+          return 1;
+        }
       }
     }
-    return(1);
+    return 1;
   }
 }
 
