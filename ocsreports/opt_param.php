@@ -100,7 +100,7 @@ $def_onglets[$l->g(728)]=$l->g(728); //Inventaire
 $def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
 $form_name='admin_param';
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
-onglet($def_onglets,$form_name);
+onglet($def_onglets,$form_name,'onglet',7);
 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td>";
 if ($_POST['onglet'] == $l->g(728)){
 	include ('opt_frequency.php');

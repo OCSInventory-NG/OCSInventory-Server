@@ -276,6 +276,12 @@ function update_default_value($POST){
 	
 	foreach ($POST as $key=>$value){
 		unset($sql);
+		unset($optexist);
+		$sql_exist=" select NAME from config where NAME='".$key."'";
+		$result_exist = mysql_query($sql_exist, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		while($value_exist=mysql_fetch_array($result_exist)) {
+			$optexist[$value_exist["NAME"] ] = $value_exist["NAME"];
+		}
 		if ($value != ""){
 				if ($key != 'onglet' 
 					and $key != 'Valid' 
@@ -287,7 +293,12 @@ function update_default_value($POST){
 					and substr($key,0,18) != 'AUTO_DUPLICATE_LVL' 
 					and $key != 'FREQUENCY' and $key!= 'FREQUENCY_edit'
 					and $key != 'IPDISCOVER' and $key != 'IPDISCOVER_edit'){
-					$sql="update config set IVALUE = ".$value." where NAME ='".$key."'";
+						if (isset($optexist))
+						$sql="update config set IVALUE = ".$value." where NAME ='".$key."'";
+						else
+						$sql="insert into config (IVALUE, NAME) value (".$value.",'".$key."')";
+					
+					//echo $sql."<br>";
 					
 				}
 				elseif ($key == 'OCS_FILES_FORMAT' or 
@@ -295,28 +306,42 @@ function update_default_value($POST){
 						$key == 'DOWNLOAD_SERVER_URI' or 
 						$key == 'DOWNLOAD_SERVER_DOCROOT' or
 						$key == 'OCS_FILES_PATH'){
-					$sql="update config set TVALUE = '".$value."' where NAME ='".$key."'";
+							if (isset($optexist))
+							$sql="update config set TVALUE = '".$value."' where NAME ='".$key."'";
+							else
+							$sql="insert into config (TVALUE, NAME) value ('".$value."','".$key."')";
 				}
 				elseif(substr($key,0,18) == 'AUTO_DUPLICATE_LVL'){
 					$i+=auto_duplicate_lvl_poids($value,2);		
+					//if (isset($optexist))
 					$sql="update config set IVALUE = ".$i." where NAME ='AUTO_DUPLICATE_LVL'";	
-			
+					//else
+					//$sql="insert into config (IVALUE, NAME) value (".$i.",'AUTO_DUPLICATE_LVL')";
 				}
 				elseif($key == 'FREQUENCY' and $value != 'CUSTOM'){
 					if ($value == 'ALWAYS') $ivalue=0; else $ivalue=-1;
+						if (isset($optexist))
 						$sql="update config set IVALUE = ".$ivalue." where NAME ='".$key."'";
+						else
+						$sql="insert into config (IVALUE, NAME) value (".$ivalue.",'".$key."')";
 				}
 				elseif($key == 'FREQUENCY' and $value == 'CUSTOM'){
+					if (isset($optexist))
 					$sql="update config set IVALUE = ".$POST[$key."_edit"]." where NAME ='".$key."'";
-		
+					else
+					$sql="insert into config (IVALUE, NAME) value (".$POST[$key."_edit"].",'".$key."')";
 				}
 				elseif($key == 'IPDISCOVER' and $value == 'OFF'){
+					if (isset($optexist))
 					$sql="update config set IVALUE = 0 where NAME ='".$key."'";
-			
+					else
+					$sql="insert into config (IVALUE, NAME) value (0,'".$key."')";
 				}
 				elseif($key == 'IPDISCOVER' and $value == 'ON'){
+					if (isset($optexist))
 					$sql="update config set IVALUE = ".$POST[$key."_edit"]." where NAME ='".$key."'";	
-			
+					else
+					$sql="insert into config (IVALUE, NAME) value (".$POST[$key."_edit"].",'".$key."')";
 				}
 				
 				if (isset($sql)){
