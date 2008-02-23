@@ -391,6 +391,14 @@ our %CONFIG = (
     level => CANSKIP,
     filter => qr '^(\d+)$'
   },
+  COMPRESS_TRY_OTHERS => {
+    type => 'IVALUE',
+    default => 0,
+    unit => 'NA',
+    description => 'Configure engine to try other compress algorythm than raw zlib',
+    level => CANSKIP,
+    filter => qr '^(1|0)$'
+  }
 );
 
 sub get_settings{

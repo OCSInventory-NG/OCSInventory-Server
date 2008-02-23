@@ -169,7 +169,12 @@ sub handler{
     }
     ($inflated, $status) = $d->inflate($data);
     unless( $status == Z_OK or $status == Z_STREAM_END){
-      &_inflate(\$raw_data, \$inflated);
+      if( $ENV{OCS_OPT_COMPRESS_TRY_OTHERS} ){
+        &_inflate(\$raw_data, \$inflated);
+      }
+      else{
+        undef $inflated;
+      }
       if(!$inflated){
         &_log(506,'handler','Compress stage');
         return &_end(APACHE_SERVER_ERROR);
