@@ -21,8 +21,7 @@ BEGIN{
     require Apache::Ocsinventory::Server::Modperl2;
     Apache::Ocsinventory::Server::Modperl2->import();
   }
-  my ($param, $value) = &check_config();
-  die("OCS_CHECK_CONFIG: Bad setting for `$param`($value). Check your configuration file\n") if $param;
+  &check_config();
 }
 
 require Exporter;

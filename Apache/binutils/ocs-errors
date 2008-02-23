@@ -33,6 +33,7 @@ ERRORS
 525--Cannot reuse session
 526--Error while checking session
 527--Cannot end session (DB Fault)
+528--No account infos sent
 
 INVENTORY
 ---------

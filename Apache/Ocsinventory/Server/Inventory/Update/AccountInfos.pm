@@ -50,17 +50,21 @@ sub _accountinfo{
 # Now, we know what are the account info name fields
 # We can insert the client's data. This data will be kept only one time, in the first inventory
     for $accountkey (@accountFields){
-      my $array = $result->{CONTENT}->{ACCOUNTINFO};
-      for(@$array){
-        if($_->{KEYNAME} eq $accountkey){
-          if(!$dbh->do('UPDATE accountinfo SET '.$accountkey."=".$dbh->quote($_->{KEYVALUE}).' WHERE HARDWARE_ID='.$hardwareId)){
-	    return(1);
+      if( exists ($result->{CONTENT}->{ACCOUNTINFO}) ){
+        my $array = $result->{CONTENT}->{ACCOUNTINFO};
+        for(@$array){
+          if($_->{KEYNAME} eq $accountkey){
+            if(!$dbh->do('UPDATE accountinfo SET '.$accountkey."=".$dbh->quote($_->{KEYVALUE}).' WHERE HARDWARE_ID='.$hardwareId)){
+  	      return 1;
+	    }
 	  }
-	}
+        }
+      }
+      else{
+        &_log(528,'accountinfos','missing') if $ENV{'OCS_OPT_LOGLEVEL'};
       }
     }
   }
-  
   if($lost){
     if(!$dbh->do('UPDATE accountinfo SET TAG = "LOST" WHERE HARDWARE_ID=?', {}, $hardwareId)){
       return(1);

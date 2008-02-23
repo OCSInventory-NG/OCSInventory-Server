@@ -63,7 +63,7 @@ our %DATA_MAP= (
   
   accountinfo =>  {
    mask => 0,
-   multi => 0,
+   multi => 1,
    auto => 0,
    delOnReplace => 0,
    sortBy => 'TAG',

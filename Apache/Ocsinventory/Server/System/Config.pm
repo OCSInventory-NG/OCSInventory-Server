@@ -410,7 +410,8 @@ sub check_config{
   for my $name ( keys( %CONFIG ) ){
     my $truename = 'OCS_OPT_'.$name;
     if( $ENV{$truename}  !~ $CONFIG{$name}->{filter} ){
-      return ($truename, $ENV{$truename});  
+      print STDERR "OCS_CHECK_CONFIG: Bad setting. Will use default(`$name` was set to `$ENV{$truename}`. Default: `$CONFIG{$name}->{default}`)\n";
+      $ENV{$truename} = $CONFIG{$name}->{default};
     }
     else{
       print "OCS_CHECK_CONFIG: Parameter `$truename` is ok\n" if $verbose;
