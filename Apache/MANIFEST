@@ -11,6 +11,7 @@ Ocsinventory/Server/System/Config.pm
 Ocsinventory/Server/Modperl2.pm
 Ocsinventory/Server/Constants.pm
 Ocsinventory/Server/Communication.pm
+Ocsinventory/Server/Communication/Session.pm
 Ocsinventory/Server/Inventory/Update.pm
 Ocsinventory/Server/Inventory/Update/Hardware.pm
 Ocsinventory/Server/Inventory/Update/AccountInfos.pm

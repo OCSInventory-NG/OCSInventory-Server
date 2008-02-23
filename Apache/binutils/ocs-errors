@@ -34,6 +34,8 @@ ERRORS
 526--Error while checking session
 527--Cannot end session (DB Fault)
 528--No account infos sent
+529--Unknown notify type
+530--Cannot update ip address (notify handler)
 
 INVENTORY
 ---------
@@ -75,6 +77,10 @@ MANAGEMENT
 319--Valid session found
 320--End of session
 321--Compression used is not zlib
+322--Notify event
+323--Update ipaddress for device (Notify)
+324--No such mac address (notify) New iface ?
+325--The computer does not exist
 
 IPDISCOVER
 ----------

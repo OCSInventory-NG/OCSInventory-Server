@@ -1,6 +1,8 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Notify: Added IP address update event handling
+	* Added Notify.pm capacity
 	* Fix a bug in DATA_MAP: accountinfos is a "multi" section
 	* Added log when using compression different than raw ZLIB
 	* Added -path parameter to ipdiscover-util.pl (changes in GUI for FHS support)

@@ -141,13 +141,6 @@ sub handler{
 
   # Here is the post method management
   }elsif($r->method eq 'POST'){
-  
-    unless(&_get_http_header('Content-type', $r) =~ /Application\/x-compress/i){
-    # Our discussion is compressed stream, nothing else
-      &_log(510,'handler', 'Bad content type') if $ENV{'OCS_OPT_LOGLEVEL'};
-      return &_end(APACHE_FORBIDDEN);
-
-    }
     
     # Get the data
     if( !read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ){
