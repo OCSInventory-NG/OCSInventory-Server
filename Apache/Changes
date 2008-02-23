@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added OCS_OPT_COMPRESS_TRY_OTHERS setting
 	* Notify: Added IP address update event handling
 	* Added Notify.pm capacity
 	* Fix a bug in DATA_MAP: accountinfos is a "multi" section
