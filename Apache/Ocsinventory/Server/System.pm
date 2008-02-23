@@ -105,6 +105,7 @@ sub _inflate{
     sub {  my $data_ref = shift; 
       if(my $result = Compress::Zlib::memGunzip( ${$data_ref})){
         $Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = \&Compress::Zlib::memGzip;
+        &_log(321,'system', 'gzip') if $ENV{'OCS_OPT_LOGLEVEL'};
         return $result; 
       }
       undef;
@@ -113,6 +114,7 @@ sub _inflate{
       my $ref = shift;
       if($$ref =~ /^<\?xml/i){
         $Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'} = sub {return $_[0]};
+        &_log(321,'system', 'not_deflated') if $ENV{'OCS_OPT_LOGLEVEL'};
         return $$ref;
       }
       undef;

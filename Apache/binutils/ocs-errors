@@ -73,6 +73,7 @@ MANAGEMENT
 318--Session not found
 319--Valid session found
 320--End of session
+321--Compression used is not zlib
 
 IPDISCOVER
 ----------
