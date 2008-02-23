@@ -778,11 +778,11 @@ ALTER TABLE download_enable ADD SERVER_ID INT(11);
 ALTER TABLE download_enable ADD GROUP_ID INT(11);
 ALTER TABLE groups ADD REVALIDATE_FROM INT(11);
 
-Create Table: CREATE TABLE `prolog_conntrack` (
+CREATE TABLE `prolog_conntrack` (
   `ID` int(11) NOT NULL auto_increment,
   `DEVICEID` varchar(255) default NULL,
   `TIMESTAMP` int(11) default NULL,
   `PID` int(11) default NULL,
   KEY `ID` (`ID`),
   KEY `DEVICEID` (`DEVICEID`)
-) ENGINE=MEMORY
+) ENGINE=MEMORY;
