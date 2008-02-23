@@ -61,6 +61,9 @@ sub _update_inventory_section{
         return 0;
       }
     }
+    else{
+      $sectionMeta->{hasChanged} = 1;
+    }
     if( $sectionMeta->{delOnReplace} && !($sectionMeta->{writeDiff} && $ENV{'OCS_OPT_INVENTORY_WRITE_DIFF'}) ){
       if(!$dbh->do("DELETE FROM $section WHERE HARDWARE_ID=?", {}, $deviceId)){
         return(1);
