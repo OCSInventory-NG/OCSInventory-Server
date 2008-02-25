@@ -65,12 +65,12 @@ sub _ipdiscover_prolog_resp{
   return if !defined($behaviour) or $behaviour == IPD_NEVER;
 
   if($lanToDiscover){
-    &_log(1004,'ipdiscover','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(1004,'ipdiscover','incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
     # We can use groups to prevent some computers to be elected
     if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
       for(keys(%$groupsParams)){
         if(defined($$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'}) && $$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'} == IPD_NEVER){
-          &_log(1005,'ipdiscover','Conflict') if $ENV{'OCS_OPT_LOGLEVEL'};
+          &_log(1005,'ipdiscover','conflict') if $ENV{'OCS_OPT_LOGLEVEL'};
           return;
         }
       }
@@ -180,7 +180,7 @@ sub _ipdiscover_main{
         }elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
           # The computer is elected, we have to write it in devices
           $dbh->do('INSERT INTO devices(HARDWARE_ID, NAME, IVALUE, TVALUE, COMMENTS) VALUES(?,?,?,?,?)',{},$DeviceID,'IPDISCOVER',1,$subnet,'') or return 1;
-          &_log(1001,'ipdiscover','Elected'."($subnet)") if $ENV{'OCS_OPT_LOGLEVEL'};
+          &_log(1001,'ipdiscover','elected'."($subnet)") if $ENV{'OCS_OPT_LOGLEVEL'};
           return 0;
         }else{
           return 0;
@@ -199,7 +199,7 @@ sub _ipdiscover_main{
       return 1;
     }
     $dbh->commit;
-    &_log(1002,'ipdiscover','Removed') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(1002,'ipdiscover','removed') if $ENV{'OCS_OPT_LOGLEVEL'};
   }
   0;
 }
@@ -230,7 +230,7 @@ sub _ipdiscover_read_result{
     $base = $result->{CONTENT}->{IPDISCOVER}->{H};
     for(@$base){
       unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
-        &_log(1003,'ipdiscover','Bad result') if $ENV{'OCS_OPT_LOGLEVEL'};
+        &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
         next;
       }
       $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});

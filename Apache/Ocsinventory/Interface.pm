@@ -27,7 +27,7 @@ eval{
     if -f $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF};
 };
 if($@){
-  print STDERR "[".localtime()."] OCSINVENTORY: (SOAP): Can't load $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} - Web service Private extensions will be unavailable\n";
+  print STDERR "ocsinventory-server: Can't load $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} - Web service Private extensions will be unavailable\n";
 };
 
 

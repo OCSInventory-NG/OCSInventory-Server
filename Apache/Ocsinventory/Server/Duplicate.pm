@@ -65,7 +65,7 @@ sub _duplicate_main{
     for(sort keys(%exist)){
       if(&_duplicate_evaluate(\%exist, $_)){
         if(&_duplicate_replace($_)){
-          &_log(517,'duplicate','Replacing error') if $ENV{'OCS_OPT_LOGLEVEL'};
+          &_log(517,'duplicate','replacing_error') if $ENV{'OCS_OPT_LOGLEVEL'};
           $dbh->rollback;
         }else{
           $dbh->commit;

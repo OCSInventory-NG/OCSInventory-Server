@@ -70,14 +70,14 @@ sub _validate_groups_cache{
         next;
       }
 
-      &_log(306,'groups','cache out-of-date('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(306,'groups','cache_out-of-date('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
       # We build the new cache
       &_build_group_cache( $row->{'HARDWARE_ID'} );
       # Unlock group
       &_unlock($row->{'HARDWARE_ID'});
     }
     else{
-      &_log(306,'groups','cache in process('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(306,'groups','cache_in_process('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
 }
@@ -105,12 +105,12 @@ sub _build_group_cache{
       }
     }
     else{
-      &_log(520,'groups','Bad request('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(520,'groups','bad_request('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
 # Updating cache time
   $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(), REVALIDATE_FROM=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
-  &_log(307,'groups', "revalidate cache($group_id)") if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(307,'groups', "revalidate_cache($group_id)") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 1;
 

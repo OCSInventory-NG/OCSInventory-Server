@@ -62,7 +62,7 @@ sub _prolog{
   # If we do not have the default frequency
   unless(defined($frequency)){
     &_prolog_resp(PROLOG_RESP_STOP);
-    &_log(503,'prolog','No frequency') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(503,'prolog','no_frequency') if $ENV{'OCS_OPT_LOGLEVEL'};
     return APACHE_OK;
   }
 
@@ -134,7 +134,7 @@ sub _prolog{
       &_prolog_resp(PROLOG_RESP_BREAK);
       return APACHE_OK;
     }else{
-      &_log(103,'prolog','New deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(103,'prolog','new_deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
       &_prolog_resp(PROLOG_RESP_SEND);
       return APACHE_OK;
     }  
@@ -153,7 +153,7 @@ sub _send_response{
                    NoSort => 1, SuppressEmpty => undef);
   # send
   unless($inflated = &{$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'}}( $message )){
-    &_log(506,'send_response','Compress stage') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(506,'send_response','compress_stage') if $ENV{'OCS_OPT_LOGLEVEL'};
     #TODO: clean exit
   }
 
@@ -172,9 +172,9 @@ sub _prolog_resp{
   &_prolog_build_resp($decision, \%resp);
 
   if($resp{'RESPONSE'}[0] eq 'STOP'){
-    &_log(102,'prolog','Declined') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(102,'prolog','declined') if $ENV{'OCS_OPT_LOGLEVEL'};
   }elsif($resp{'RESPONSE'}[0] eq 'SEND'){
-    &_log(100,'prolog','Accepted') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(100,'prolog','accepted') if $ENV{'OCS_OPT_LOGLEVEL'};
     &start_session( \%Apache::Ocsinventory::CURRENT_CONTEXT );
   }elsif($resp{'RESPONSE'}[0] eq 'OTHER'){
     &_log(105,'prolog','') if $ENV{'OCS_OPT_LOGLEVEL'};

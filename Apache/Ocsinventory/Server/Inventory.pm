@@ -58,7 +58,7 @@ sub _context{
     $dbh->do('INSERT INTO hardware(DEVICEID) VALUES(?)', {}, $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}) or return(1);
     my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
     unless($request->execute($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
-      &_log(518,'inventory','ID error') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(518,'inventory','id_error') if $ENV{'OCS_OPT_LOGLEVEL'};
       return(1);
     }
     my $row = $request->fetchrow_hashref;
@@ -75,13 +75,13 @@ sub _inventory_handler{
   
   # Lock device
   if(&_lock($Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'})){
-    &_log( 516, 'inventory', 'device locked');
+    &_log( 516, 'inventory', 'device_locked');
     return(APACHE_FORBIDDEN);
   }
   
   # Check prolog
   if( !check_session( \%Apache::Ocsinventory::CURRENT_CONTEXT ) ){
-    &_log( 114, 'inventory', 'no session');
+    &_log( 114, 'inventory', 'no_session');
     if( ($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} !~ /local/i) && $ENV{OCS_OPT_INVENTORY_SESSION_ONLY} ){
       &_log( 115, 'inventory', 'refused');
       return(APACHE_FORBIDDEN);
@@ -89,11 +89,11 @@ sub _inventory_handler{
   }
 
   #Inventory incoming
-  &_log(104,'inventory','Incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(104,'inventory','incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
 
   # Call to preinventory handlers
   if( &_pre_options() == INVENTORY_STOP ){
-    &_log(107,'inventory','stopped by module') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(107,'inventory','stopped_by_module') if $ENV{'OCS_OPT_LOGLEVEL'};
     return APACHE_FORBIDDEN;
   }
   
@@ -113,7 +113,7 @@ sub _inventory_handler{
   &_post_inventory();
   
   # That's all
-  &_log(101,'inventory','Transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(101,'inventory','transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
   return APACHE_OK;
 }
 
@@ -170,7 +170,7 @@ sub _post_inventory{
       
     }else{
       # There is a problem. The device MUST be present in the table
-      &_log(509,'postinventory','No account infos') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(509,'postinventory','no_account_infos') if $ENV{'OCS_OPT_LOGLEVEL'};
       $request->finish;
       $elements{'RESPONSE'} = [ 'ACCOUNT_UPDATE' ];
       for(@{$result->{CONTENT}->{ACCOUNTINFO}}){

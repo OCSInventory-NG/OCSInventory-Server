@@ -162,7 +162,7 @@ sub _database_connect{
     }
   }
   else{
-    &_log(521,'database_connect', 'invalid mode') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(521,'database_connect', 'invalid_mode') if $ENV{'OCS_OPT_LOGLEVEL'};
     return undef;
   }
 
@@ -202,7 +202,7 @@ sub _lock{
     if( $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ){
       if( $dbh->do( 'SELECT * FROM locks  WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', 
         {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ) != '0E0' ) {                      
-        &_log(516,'lock', 'reuse lock') if $ENV{'OCS_OPT_LOGLEVEL'};
+        &_log(516,'lock', 'reuse_lock') if $ENV{'OCS_OPT_LOGLEVEL'};
         if( $dbh->do('UPDATE locks SET ID=? WHERE HARDWARE_ID=?', {}, $$, $device) ){
           $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
           return 0;
@@ -257,7 +257,7 @@ sub _end{
   &_unlock($DeviceID) if $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'};
   
   if( ($ret==APACHE_SERVER_ERROR) || ($ret==APACHE_BAD_REQUEST) ){
-    &_log(515,'end', 'Processing error') if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(515,'end', 'error') if $ENV{'OCS_OPT_LOGLEVEL'};
     $dbh->rollback;
   }else{
     $dbh->commit;
@@ -385,7 +385,7 @@ sub _send_file{
 
     # If not, we return a bad request and log the event
     unless($request->rows){
-      &_log(511,'deploy','No file') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(511,'deploy','no_file') if $ENV{'OCS_OPT_LOGLEVEL'};
       return APACHE_BAD_REQUEST;
     }else{
       # We extract the file and send it
@@ -398,42 +398,10 @@ sub _send_file{
       $r->print($row->{'CONTENT'});
 
       # We log it
-      &_log(302,'deploy','File transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log(302,'deploy','file_transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
       return APACHE_OK;
     }
 
-  }elsif($context eq 'update'){
-
-
-    my $platform = shift;
-    my $name = shift;
-    my $version = shift;
-
-    unless($platform and $name and $version){
-      &_log(512,'update','Bad version desc') if $ENV{'OCS_OPT_LOGLEVEL'};
-      return APACHE_BAD_REQUEST;
-    }
-
-    $request = $dbh->prepare('SELECT CONTENT FROM files WHERE OS=? AND NAME=? AND VERSION=?');
-    $request->execute($platform, $name, $version);
-
-    unless($request->rows){
-      $request->finish;
-      &_log(512,'update','No file') if $ENV{'OCS_OPT_LOGLEVEL'};
-      return APACHE_BAD_REQUEST;
-    }else{
-      $row=$request->fetchrow_hashref();
-      # Sending
-      $row->{'CONTENT'}=Compress::Zlib::compress($row->{'CONTENT'}) or &_log(506,'update','Compress stage'),return APACHE_BAD_REQUEST;
-      &_set_http_content_type('Application/octet-stream',$r);
-      &_set_http_header('Cache-control', $ENV{'OCS_OPT_PROXY_REVALIDATE_DELAY'},$r);
-      &_set_http_header('Content-length', length($row->{'CONTENT'}),$r);
-      &_send_http_headers($r);
-      $r->print($row->{'CONTENT'});
-      &_log(305,'update','File transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
-      $request->finish;
-      return APACHE_OK;
-    }
   }
 }
 

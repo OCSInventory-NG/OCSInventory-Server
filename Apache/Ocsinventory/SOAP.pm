@@ -26,7 +26,7 @@ BEGIN{
 		require Apache::Ocsinventory::Interface;
 	};
 	if($@){
-	  print STDERR "[".localtime()."] OCSINVENTORY: (SOAP): Can't load SOAP::Transport::HTTP* - Web service will be unavailable\n";
+	  print STDERR "ocsinventory-server: Can't load SOAP::Transport::HTTP* - Web service will be unavailable\n";
 	}
 }
 
