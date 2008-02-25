@@ -54,6 +54,7 @@ sub clean_sessions{
   if($check_clean->execute() && $check_clean->rows()){
     my $row = $check_clean->fetchrow_hashref();
     if($row->{IVALUE}< $ENV{OCS_OPT_SESSION_CLEAN_TIME} ){
+      $dbh->do('DELETE FROM engine_mutex WHERE PID=? AND NAME="SESSION" AND TAG="CLEAN"', {}, $$ );
       return;
     }
   }

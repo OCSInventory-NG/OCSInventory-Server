@@ -266,7 +266,7 @@ sub download_prolog_resp{
 sub download_pre_inventory{
   my $current_context = shift;
   
-  return if !$ENV{'OCS_OPT_DOWNLOAD'};
+  return INVENTORY_CONTINUE if !$ENV{'OCS_OPT_DOWNLOAD'};
   
   my $dbh = $current_context->{'DBI_HANDLE'};
   my $hardwareId = $current_context->{'DATABASE_ID'};
@@ -282,6 +282,7 @@ sub download_pre_inventory{
   else{
     &update_history_full( $hardwareId, $dbh, \@fromXml );
   }
+  return INVENTORY_CONTINUE;
 }
 
 sub download_handler{

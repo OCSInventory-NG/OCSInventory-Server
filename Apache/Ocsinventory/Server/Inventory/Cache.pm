@@ -37,13 +37,30 @@ sub _init_inventory_cache{
       return;
     }
   }
-  &_log(110,'inventory_cache',"Checking") if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(110,'inventory_cache','checking') if $ENV{'OCS_OPT_LOGLEVEL'};
   if( !$dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('INVENTORY_CACHE_REVALIDATE',?,'ALL')", {}, $$) ){
-    &_log(111,'inventory_cache',"already handled") if $ENV{'OCS_OPT_LOGLEVEL'};
+    &_log(111,'inventory_cache','already_handled') if $ENV{'OCS_OPT_LOGLEVEL'};
     return;
   }
+  
   for my $section ( @$sectionsList ){
-    &_inventory_cache( $sectionsMeta, $section, 1 );
+    my $fields_array = $sectionsMeta->{$section}->{field_cached};
+    for my $field (@$fields_array){
+      my $table = $section.'_'.lc $field.'_cache';
+      &_log(108,'inventory_cache',"Cache($section.$field)") if $ENV{'OCS_OPT_LOGLEVEL'};
+      my $src_table = lc $section;
+      if( $dbh->do("TRUNCATE TABLE $table") ){
+        if( $dbh->do("INSERT INTO $table($field) SELECT DISTINCT $field FROM $src_table") ){
+          &_log(109,'inventory_cache',"ok:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
+        }
+        else{
+          &_log(522,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
+        }
+      }
+      else{
+        &_log(523,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
+      }
+    }
   }
   
   $dbh->do('INSERT INTO engine_persistent(NAME,IVALUE) VALUES("INVENTORY_CACHE_CLEAN_DATE", UNIX_TIMESTAMP(NOW()))')
@@ -51,7 +68,7 @@ sub _init_inventory_cache{
     
   # We release our own mutex
   $dbh->do("DELETE FROM engine_mutex WHERE NAME='INVENTORY_CACHE_REVALIDATE' AND PID=?", {}, $$);
-  &_log(112,'inventory_cache',"Checking") if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(112,'inventory_cache','checking') if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 
 sub _update_inventory_cache{
@@ -82,22 +99,6 @@ sub _inventory_cache{
   for my $field (@$fields_array){
   # We lock the section
     my $table = $section.'_'.lc $field.'_cache';
-    if( $init ){
-      &_log(108,'inventory_cache',"Cache($section.$field)") if $ENV{'OCS_OPT_LOGLEVEL'};
-      my $src_table = lc $section;
-      if( $dbh->do("TRUNCATE TABLE $table") ){
-        if( $dbh->do("INSERT INTO $table($field) SELECT $field FROM $src_table") ){
-          &_log(109,'inventory_cache',"ok:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
-        }
-        else{
-          &_log(522,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
-        }
-      }
-      else{
-        &_log(523,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
-      }
-      next;
-    }
     # Prepare queries
     my $select = $dbh->prepare("SELECT $field FROM $table WHERE $field=?");
     my $insert = $dbh->prepare("INSERT INTO $table($field) VALUES(?)");
