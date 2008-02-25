@@ -417,12 +417,17 @@ sub check_config{
   my $verbose = shift;
   for my $name ( keys( %CONFIG ) ){
     my $truename = 'OCS_OPT_'.$name;
-    if( $ENV{$truename}  !~ $CONFIG{$name}->{filter} ){
-      print STDERR "OCS_CHECK_CONFIG: Bad setting. Will use default(`$name` was set to `$ENV{$truename}`. Default: `$CONFIG{$name}->{default}`)\n";
+    if( !defined($ENV{$truename}) ){
+      print STDERR "ocsinventory-server: Bad setting. Will use default(`$name` was not set. Default: `$CONFIG{$name}->{default}`)\n";
+      $ENV{$truename} = $CONFIG{$name}->{default};
+
+    }
+    elsif( $ENV{$truename}  !~ $CONFIG{$name}->{filter} ){
+      print STDERR "ocsinventory-server: Bad setting. Will use default(`$name` was set to `$ENV{$truename}`. Default: `$CONFIG{$name}->{default}`)\n";
       $ENV{$truename} = $CONFIG{$name}->{default};
     }
     else{
-      print "OCS_CHECK_CONFIG: Parameter `$truename` is ok\n" if $verbose;
+      print "ocsinventory-server: Parameter `$truename` is ok\n" if $verbose;
     }
   }
   return undef;
