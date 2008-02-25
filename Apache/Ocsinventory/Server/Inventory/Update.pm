@@ -55,6 +55,7 @@ sub _update_inventory_section{
   if($Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'}){
     if($ENV{'OCS_OPT_INVENTORY_DIFF'}){
       if( _has_changed($section) ){
+        &_log( 113, 'inventory', "u:$section") if $ENV{'OCS_OPT_LOGLEVEL'};
         $sectionMeta->{hasChanged} = 1;
       }
       else{
