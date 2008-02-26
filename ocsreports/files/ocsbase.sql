@@ -774,9 +774,9 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD_IP_CACHE_TIME',300,'','Period definition for INVENTORY_FILTER_FLOOD_IP');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ON',0,'','Enable inventory filter stack');
 
-ALTER TABLE download_enable ADD SERVER_ID INT(11);
-ALTER TABLE download_enable ADD GROUP_ID INT(11);
-ALTER TABLE groups ADD REVALIDATE_FROM INT(11);
+ALTER TABLE download_enable ADD SERVER_ID INT(11) NOT NULL;
+ALTER TABLE download_enable ADD GROUP_ID INT(11) NOT NULL;
+ALTER TABLE groups ADD REVALIDATE_FROM INT(11) default 0;
 
 CREATE TABLE `prolog_conntrack` (
   `ID` int(11) NOT NULL auto_increment,

@@ -277,11 +277,19 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	  		
 	  	}
 	  	echo "<li ";
-	  	if ($_POST[$post_name] == $key or (!isset($_POST[$post_name]) and $current != 1)){
-	 		 echo "id='current'";  
+	  	if (is_numeric($_POST[$post_name])){
+			if ($_POST[$post_name] == $key or (!isset($_POST[$post_name]) and $current != 1)){
+			 echo "id='current'";  
 	 		 $current=1;
-	  	}
-	  	echo "><a OnClick='recharge2(\"".$key."\",\"".$form_name."\",\"".$post_name."\")'>".$value."</a></li>";
+			}
+	  	}else{
+			if (str_replace('\"','"',$_POST[$post_name]) === $key or (!isset($_POST[$post_name]) and $current != 1)){
+				 echo "id='current'";  
+	 			 $current=1;
+			}
+		}
+
+	  	echo "><a OnClick='recharge2(\"".str_replace('"','\"',$key)."\",\"".$form_name."\",\"".$post_name."\")'>".$value."</a></li>";
 	  $i++;	
 	  }	
 	echo "</ul>

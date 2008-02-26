@@ -13,7 +13,7 @@ unset($_POST['search']);
 
 
 //search all onglet
-if( $_SESSION["lvluser"] == ADMIN ) {
+if( $_SESSION["lvluser"] == ADMIN) {
 	$sql_list_alpha ="select substr(trim(name),1,1) alpha from softwares,accountinfo a 
 						where ".$_SESSION["mesmachines"]."
 						and a.hardware_id=softwares.HARDWARE_ID ";
@@ -30,15 +30,21 @@ if( $_SESSION["lvluser"] == ADMIN ) {
 
 $result_list_alpha = mysql_query( $sql_list_alpha, $_SESSION["readServer"]);
  while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
-		if (!isset($_POST['onglet_bis']))
-			$_POST['onglet_bis']=strtoupper($item_list_alpha -> alpha);
+ 	if (strtoupper($item_list_alpha -> alpha) != "" 
+		and strtoupper($item_list_alpha -> alpha) != Ã
+		and strtoupper($item_list_alpha -> alpha) != Â
+		and strtoupper($item_list_alpha -> alpha) != Ä){
+			if (!isset($_POST['onglet_bis']))
+				$_POST['onglet_bis']=strtoupper($item_list_alpha -> alpha);
 			$list_alpha[strtoupper($item_list_alpha -> alpha)]=strtoupper($item_list_alpha -> alpha);
 			if (isset($first)){
 				$first=$list_alpha[strtoupper($item_list_alpha -> alpha)];				
 			}
-		 }
-if (!isset($list_alpha[$_POST['onglet_bis']]))
+ 	}
+}
+if (!isset($list_alpha[str_replace('\"','"',$_POST['onglet_bis'])])){
 $_POST['onglet_bis']=$first;
+}
 
 $form_name = "all_soft";
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
@@ -82,23 +88,29 @@ $sql.="	group by name
 	
 	
 }else{
-	$reqCount="select count(distinct cache.name) nb
-	from softwares,softwares_name_cache cache 
-	where softwares.NAME=cache.name
-	and cache.name like '".$_POST['onglet_bis']."%'";
-	if (isset($_POST['search']) and $_POST['search'] != "")
-	$reqCount.=" and cache.name like '%".$_POST['search']."%' ";
-
 	
-	$sql="select cache.name  name,count(cache.ID) nbre,cache.id
-	from softwares,softwares_name_cache cache 
-	where softwares.NAME=cache.name
-	and cache.name like '".$_POST['onglet_bis']."%'";
+	$search_soft="select name from softwares_name_cache 
+			where name like '".$_POST['onglet_bis']."%'";
 	if (isset($_POST['search']) and $_POST['search'] != "")
-		$sql.=" and cache.name like '%".$_POST['search']."%' ";
-	$sql.="	group by cache.name
-	order by 2 desc  limit ".$deb_limit.",".$fin_limit;
+	$search_soft.=" and name like '%".$_POST['search']."%' ";
+	$result_search_soft = mysql_query( $search_soft, $_SESSION["readServer"]);
+	$list_soft="'";
+ 	while($item_search_soft = mysql_fetch_object($result_search_soft)){
+ 		$list_soft.=str_replace("'","\'",$item_search_soft -> name)."','";
+ 	}
+ 	$list_soft=substr($list_soft,0,-2);
+ 	if ($list_soft == "")
+ 	$list_soft="''";
+	$reqCount="select count(distinct name) nb
+	from softwares
+	where NAME in (".$list_soft.")";
+	$sql="select name, count(name) nbre from softwares 
+			where name in (".$list_soft.")
+			group by name
+			order by 2 desc limit ".$deb_limit.",".$fin_limit;
+	
 }
+
 $resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 $valCount = mysql_fetch_array($resCount);
 
