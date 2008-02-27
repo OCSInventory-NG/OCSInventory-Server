@@ -19,7 +19,7 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / %DATA_MAP /;
 
-# Field's attributes : cache, filter, noXml, noSql
+# Field's attributes : cache, filter, noXml, noSql, fallback
 
 our %DATA_MAP= (
   hardware => {
@@ -105,7 +105,7 @@ our %DATA_MAP= (
        SPEED => {},
        CAPTION => {},
        DESCRIPTION => {},
-       NUMSLOTS => {},
+       NUMSLOTS => { fallback=>0 },
        TYPE => {},
        PURPOSE => {},
    }
@@ -125,7 +125,7 @@ our %DATA_MAP= (
        DESIGNATION => {},
        PURPOSE => {},
        STATUS => {},
-       PSHARE => {},
+       PSHARE => { fallback=>0 }
    }
   },
   
@@ -208,7 +208,7 @@ our %DATA_MAP= (
        MODEL => {},
        DESCRIPTION => {},
        TYPE => {},
-       DISKSIZE => {}
+       DISKSIZE => { fallback=>0 }
    }
   },
   
@@ -224,10 +224,10 @@ our %DATA_MAP= (
        LETTER => {},
        TYPE => {},
        FILESYSTEM => {},
-       TOTAL => {},
-       FREE => {},
+       TOTAL => { fallback=>0 },
+       FREE => { fallback=>0 },
        VOLUMN => {},
-       NUMFILES => {}
+       NUMFILES => { fallback=>0}
    }
   },
   
@@ -350,8 +350,8 @@ our %DATA_MAP= (
        FOLDER => {},
        COMMENTS => {},
        FILENAME => {},
-       FILESIZE => {},
-       SOURCE => {}
+       FILESIZE => { fallback=>0 },
+       SOURCE => { fallback=>0 }
    },
   },
   

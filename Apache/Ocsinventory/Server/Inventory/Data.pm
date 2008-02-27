@@ -64,6 +64,9 @@ sub _init_map{
         push @{$sectionsMeta->{$section}->{field_cached}}, $field;
         $sectionsMeta->{$section}->{cache} = 1 unless $sectionsMeta->{$section}->{cache};
       }
+      if(defined $DATA_MAP{$section}->{fields}->{$field}->{fallback}){
+        $sectionsMeta->{$section}->{fields}->{$field}->{fallback} = $DATA_MAP{$section}->{fields}->{$field}->{fallback};
+      }      
     }
     # Build the "DBI->prepare" sql insert string 
     $fields_string = join ',', ('HARDWARE_ID', @{$sectionsMeta->{$section}->{field_arrayref}});
@@ -87,11 +90,17 @@ sub _init_map{
 sub _get_bind_values{
   my ($refXml, $sectionMeta, $arrayToFeed) = @_;
   for ( @{ $sectionMeta->{field_arrayref} } ) {
-    if(defined($refXml->{$_})){
+    if(defined($refXml->{$_}) && $refXml->{$_} ne ''){
       push @$arrayToFeed, $refXml->{$_};
     }
     else{
-      push @$arrayToFeed, '';
+       if( defined $sectionMeta->{fields}->{$_}->{fallback} ){
+         push @$arrayToFeed, $sectionMeta->{fields}->{$_}->{fallback};
+         &_log( 000, 'fallback', "$_:".$sectionMeta->{fields}->{$_}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+       }
+       else{
+         push @$arrayToFeed, '';
+       }
     }
   }
 }

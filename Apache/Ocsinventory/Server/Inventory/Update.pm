@@ -88,14 +88,16 @@ sub _update_inventory_section{
       @bind_values = ();
     }
     #TODO: Sorting XML entries, to compare more quickly with DB elements
+    my $new=0;
+    my $del=0;
     for my $l_xml (@fromXml){
       my $found = 0;
       for my $i_db (0..$#fromDb){
         next unless $fromDb[$i_db];
         my @line = @{$fromDb[$i_db]};
-        my $dbdebug = join ';', @$l_xml;
-        my $xmldebug = join ';', @line[2..$#line];
-        if( sprintf("%s", @$l_xml) eq sprintf("%s", @line[2..$#line]) ){
+        my $comp_xml = join '', @$l_xml;
+        my $comp_db = join '', @line[2..$#line];
+        if( $comp_db eq $comp_xml ){
           $found = 1;
           # The value has been found, we have to delete it from the db list
           # (elements remaining will be deleted)
@@ -104,13 +106,18 @@ sub _update_inventory_section{
         }
       }
       if(!$found){
+        $new++;
         $dbh->do( $sectionMeta->{sql_insert_string}, {}, $deviceId, @$l_xml );
       }
     }
     # Now we have to delete from DB elements that still remain in fromDb
     for(@fromDb){
       next if !defined (${$_}[0]);
+      $del++;
       $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, ${$_}[0]);
+    }
+    if( $new||$del ){
+      &_log( 113, 'inventory', "ch:$section(+$new-$del)") if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
   else{
