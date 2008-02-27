@@ -101,12 +101,18 @@ sub kill_session{
   my $dbh = $current_context->{DBI_HANDLE};
   my $deviceId = $current_context->{DEVICEID};
   
-  if( !$dbh->do('DELETE FROM prolog_conntrack WHERE DEVICEID=?', {}, $deviceId)){
+  my $code = $dbh->do('DELETE FROM prolog_conntrack WHERE DEVICEID=?', {}, $deviceId);
+  if(!$code){
     &_log(527,'session', 'error') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 0;
   }
-  &_log(320,'session', 'end') if $ENV{'OCS_OPT_LOGLEVEL'};
-  return 1;
+  elsif( $code != 0E0 ){
+    &_log(320,'session', 'end') if $ENV{'OCS_OPT_LOGLEVEL'};
+    return 1;
+  }
+  else{
+    return 0;
+  }
 }
 
 1;

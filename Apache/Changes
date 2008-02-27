@@ -1,7 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
-	* Improved inventory_cache mechanisms
+	* Inventory_cache is now computed on row level
 	* Moved user agent update in prolog stage
 	* Added old_deviceid log
 	* Added "fallback" field's attribute to Map.pm
