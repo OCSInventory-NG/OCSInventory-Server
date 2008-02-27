@@ -31,13 +31,15 @@ sub _init_map{
   my @bind_num;
   my $field;
   my $fields_string;
+  my $field_index;
   
   # Parse every section
   for $section (keys(%DATA_MAP)){
+    $field_index = 0;
     # Field array (from data_map field hash keys), filtered fields and cached fields
     $sectionsMeta->{$section}->{field_arrayref} = [];
     $sectionsMeta->{$section}->{field_filtered} = [];
-    $sectionsMeta->{$section}->{field_cached} = [];
+    $sectionsMeta->{$section}->{field_cached} = {};
     ##############################################
     # Don't process the non-auto-generated sections
     next if !$DATA_MAP{$section}->{auto};
@@ -61,12 +63,13 @@ sub _init_map{
       }
       if($DATA_MAP{$section}->{fields}->{$field}->{cache}){
         next unless $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
-        push @{$sectionsMeta->{$section}->{field_cached}}, $field;
+        $sectionsMeta->{$section}->{field_cached}->{$field} = $field_index;
         $sectionsMeta->{$section}->{cache} = 1 unless $sectionsMeta->{$section}->{cache};
       }
       if(defined $DATA_MAP{$section}->{fields}->{$field}->{fallback}){
         $sectionsMeta->{$section}->{fields}->{$field}->{fallback} = $DATA_MAP{$section}->{fields}->{$field}->{fallback};
-      }      
+      }
+      $field_index++;      
     }
     # Build the "DBI->prepare" sql insert string 
     $fields_string = join ',', ('HARDWARE_ID', @{$sectionsMeta->{$section}->{field_arrayref}});

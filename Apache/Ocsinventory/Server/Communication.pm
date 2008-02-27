@@ -80,7 +80,8 @@ sub _prolog{
     }
     
     # We update device data
-    if(!$dbh->do('UPDATE hardware SET FIDELITY=FIDELITY+1,QUALITY=?,LASTCOME=NOW() WHERE DEVICEID=?', {}, $quality, $DeviceID)){
+    if(!$dbh->do('UPDATE hardware SET FIDELITY=FIDELITY+1,QUALITY=?,LASTCOME=NOW(),USERAGENT=? WHERE DEVICEID=?', 
+      {}, $quality, $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'}, $DeviceID)){
       return APACHE_SERVER_ERROR;
     }
 

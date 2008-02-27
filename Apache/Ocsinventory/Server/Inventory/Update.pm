@@ -9,6 +9,7 @@
 ################################################################################
 package Apache::Ocsinventory::Server::Inventory::Update;
 
+use Apache::Ocsinventory::Server::Inventory::Cache;
 use Apache::Ocsinventory::Server::Inventory::Update::Hardware;
 use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
 
@@ -24,9 +25,11 @@ use Apache::Ocsinventory::Server::System qw / :server /;
 use Apache::Ocsinventory::Server::Inventory::Data;
 
 sub _update_inventory{
-  my ($sectionsMeta, $sectionsList ) = @_;
+  my ( $sectionsMeta, $sectionsList ) = @_;
   
   my $section;
+  
+  &_reset_inventory_cache( $sectionsMeta, $sectionsList ) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
    
   # Call special sections update
   if(&_hardware() or &_accountinfo()){
@@ -108,6 +111,9 @@ sub _update_inventory_section{
       if(!$found){
         $new++;
         $dbh->do( $sectionMeta->{sql_insert_string}, {}, $deviceId, @$l_xml );
+        if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} ){
+          &_add_cache( $section, $sectionMeta, $l_xml );
+        }
       }
     }
     # Now we have to delete from DB elements that still remain in fromDb
@@ -117,7 +123,7 @@ sub _update_inventory_section{
       $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, ${$_}[0]);
     }
     if( $new||$del ){
-      &_log( 113, 'inventory', "ch:$section(+$new-$del)") if $ENV{'OCS_OPT_LOGLEVEL'};
+      &_log( 113, 'write_diff', "ch:$section(+$new-$del)") if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
   else{
@@ -140,6 +146,9 @@ sub _update_inventory_section{
       &_get_bind_values($refXml, $sectionMeta, \@bind_values);
       if( !$sth->execute($deviceId, @bind_values) ){
         return(1);
+      }
+      if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} ){
+        &_add_cache( $section, $sectionMeta, \@bind_values );
       }
     }
   }

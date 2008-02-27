@@ -35,7 +35,6 @@ use Apache::Ocsinventory::Server::Communication::Session;
 use Apache::Ocsinventory::Server::Duplicate;
 
 use Apache::Ocsinventory::Server::Inventory::Data;
-use Apache::Ocsinventory::Server::Inventory::Cache;
 use Apache::Ocsinventory::Server::Inventory::Capacities;
 use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Inventory::Update;
@@ -99,9 +98,6 @@ sub _inventory_handler{
   
   # Put the inventory in the database
   return APACHE_SERVER_ERROR if &_update_inventory( \%SECTIONS, \@SECTIONS );
-  
-  # Call the cache if needed
-  &_update_inventory_cache(\%SECTIONS, \@SECTIONS) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
   
   #Committing inventory
   $dbh->commit;
