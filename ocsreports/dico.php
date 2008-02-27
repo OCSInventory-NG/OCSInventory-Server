@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-21 17:01:48 $$Author: hunal $($Revision: 1.11 $)
+//Modified on $Date: 2008-02-27 09:29:39 $$Author: hunal $($Revision: 1.12 $)
 $form_name='admin_param';
 echo "<script language=javascript>
 		function confirme(did,form_name,hidden_name){
@@ -154,33 +154,50 @@ if ($_POST['onglet'] == 'NEW'){
 					where dico_ignored.extracted=cache.name)".$search_cache;
 	 $result_list_alpha = mysql_query( $sql_list_alpha, $_SESSION["readServer"]);
 	 $i=0;
+
 	 while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
-	 	$list_alpha[strtoupper($item_list_alpha -> alpha)]=strtoupper($item_list_alpha -> alpha);
-		if ($i==0)
-		$first_onglet=strtoupper($item_list_alpha -> alpha);
-		$i++;
-	 }
-	 if (!isset($list_alpha[$_POST['onglet_bis']]))
-	 $_POST['onglet_bis']=$first_onglet;
-	$reqCount="select count(distinct cache.name) nb
-	from softwares,softwares_name_cache cache 
-	where softwares.NAME=cache.name
-	and cache.name like '".$_POST['onglet_bis']."%'
-	and cache.id not in (select cache.id from dico_soft, softwares_name_cache cache
-	where dico_soft.extracted=cache.name)
-	and cache.id not in (select cache.id from dico_ignored, softwares_name_cache cache
-	where dico_ignored.extracted=cache.name)".$search_cache;
+	 	if (strtoupper($item_list_alpha -> alpha) != "" 
+			and strtoupper($item_list_alpha -> alpha) != Ã
+			and strtoupper($item_list_alpha -> alpha) != Â
+			and strtoupper($item_list_alpha -> alpha) != Ä){
+				if (!isset($_POST['onglet_bis']))
+					$_POST['onglet_bis']=strtoupper($item_list_alpha -> alpha);
+				$list_alpha[strtoupper($item_list_alpha -> alpha)]=strtoupper($item_list_alpha -> alpha);
+				if (isset($first)){
+					$first=$list_alpha[strtoupper($item_list_alpha -> alpha)];				
+				}
+	 	}
+	}
+	if (!isset($list_alpha[str_replace('\"','"',$_POST['onglet_bis'])]))
+	$_POST['onglet_bis']=$first;
+
+	$search_soft="select name from softwares_name_cache cache
+			where name like '".$_POST['onglet_bis']."%'
+			and name not in (select extracted from dico_soft)
+			and name not in (select extracted from dico_ignored) ".$search_cache;
+	$result_search_soft = mysql_query( $search_soft, $_SESSION["readServer"]);
+	$list_soft="'";
+ 	while($item_search_soft = mysql_fetch_object($result_search_soft)){
+ 		$list_soft.=str_replace("'","\'",$item_search_soft -> name)."','";
+ 	}
+ 	$list_soft=substr($list_soft,0,-2);
+ 	if ($list_soft == "")
+ 	$list_soft="''";
+	$reqCount="select count(distinct name) nb
+	from softwares
+	where NAME in (".$list_soft.")";
+	$sql="select name, count(name) nbre from softwares 
+			where name in (".$list_soft.")
+			group by name
+			order by 2 desc limit ".$deb_limit.",".$fin_limit;
 		
-	$sql="select cache.name  name,count(cache.ID) nbre,cache.id
-	from softwares,softwares_name_cache cache 
-	where softwares.NAME=cache.name
-	and cache.name like '".$_POST['onglet_bis']."%'
-	and cache.id not in (select cache.id from dico_soft, softwares_name_cache cache
-	where dico_soft.extracted=cache.name)
-	and cache.id not in (select cache.id from dico_ignored, softwares_name_cache cache
-	where dico_ignored.extracted=cache.name)".$search_cache."
+	$sql="select cache.name name,count(soft.name) nbre,cache.id
+	from softwares soft,softwares_name_cache cache
+	where soft.name in(".$list_soft.")
+	and soft.name=cache.name
 	group by cache.name
 	order by 2 desc  limit ".$deb_limit.",".$fin_limit;
+	
 }
 
 /*******************************************************CAS OF IGNORED*******************************************************/
