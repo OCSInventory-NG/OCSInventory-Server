@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added old_deviceid log
 	* Added "fallback" field's attribute to Map.pm
 	* Added OCS_OPT_COMPRESS_TRY_OTHERS setting
 	* Notify: Added IP address update event handling

@@ -42,6 +42,7 @@ sub _duplicate_main{
 
   # If the duplicate is specified
   if($result->{CONTENT}->{OLD_DEVICEID} and $result->{CONTENT}->{OLD_DEVICEID} ne $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}){
+    &_log(326,'duplicate',$result->{CONTENT}->{OLD_DEVICEID}) if $ENV{'OCS_OPT_LOGLEVEL'};
     # Looking for database id of old deviceid
     my $request = $dbh->prepare('SELECT ID FROM hardware WHERE DEVICEID=?');
     $request->execute($result->{CONTENT}->{OLD_DEVICEID});

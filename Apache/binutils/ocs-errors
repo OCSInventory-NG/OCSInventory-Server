@@ -81,6 +81,7 @@ MANAGEMENT
 323--Update ipaddress for device (Notify)
 324--No such mac address (notify) New iface ?
 325--The computer does not exist
+326--A old deviceid is present
 
 IPDISCOVER
 ----------
