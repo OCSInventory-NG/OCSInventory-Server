@@ -42,7 +42,10 @@ LOGROTATE_CONF_DIR="/etc/logrotate.d"
 # ED_BIN=`which ed`
 # Where to store setup logs
 SETUP_LOG=`pwd`/ocs_server_setup.log
- 
+# Communication Server Apache configuration file
+COM_SERVER_APACHE_CONF_FILE="ocsinventory-server.conf" 
+# Communication Server logrotate configuration file
+COM_SERVER_LOGROTATE_CONF_FILE="ocsinventory-server" 
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -680,10 +683,19 @@ then
   	$PERL_BIN -mSOAP::Lite -e 'print "PERL module SOAP::Lite is available\n"' >> $SETUP_LOG 2>&1
    	if [ $? -ne 0 ]
    	then
-   		echo "*** ERROR: PERL module SOAP::Lite is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
+   	 echo "*** Warning: PERL module SOAP::Lite is not installed !"
+        echo "This module is only required by OCS Inventory NG SOAP Web Service."
+        echo -n "Do you wish to continue ([y]/n] ?"
+        read ligne
+        if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+        then
+            echo "User choose to continue setup without PERL module SOAP::Lite" >> $SETUP_LOG
+        else
+            echo
+            echo "Installation aborted !"
+            echo "User choose to abort installation !" >> $SETUP_LOG
+            exit 1
+        fi
    	else
    		echo "Found that PERL module SOAP::Lite is available."
     fi
@@ -692,10 +704,19 @@ then
     $PERL_BIN -mXML::Entities -e 'print "PERL module XML::Entities is available\n"' >> $SETUP_LOG 2>&1
    if [ $? -ne 0 ]
    then
-   	echo "*** ERROR: PERL module XML::Entities is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
+   	echo "*** Warning: PERL module XML::Entities is not installed !"
+        echo "This module is only required by OCS Inventory NG SOAP Web Service."
+        echo -n "Do you wish to continue ([y]/n] ?"
+        read ligne
+        if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+        then
+            echo "User choose to continue setup without PERL module XML::Entities" >> $SETUP_LOG
+        else
+            echo
+            echo "Installation aborted !"
+            echo "User choose to abort installation !" >> $SETUP_LOG
+            exit 1
+        fi
    else
    	echo "Found that PERL module XML::Entities is available."
    fi
@@ -804,22 +825,17 @@ then
     fi
     echo "Configuring logrotate for Communication server."
     echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> $SETUP_LOG
-    cp logrotate.ocsinventory-NG logrotate.ocsinventory-NG.local
-#
-# Now using perl to replace string in file instead of ed, not available by default in Mandriva Linux
-#
-#    $ED_BIN logrotate.ocsinventory-NG.local << EOF >> $SETUP_LOG 2>&1
-#        1,$ g/^ *PATH_TO_LOG_DIRECTORY*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
-#        w
-#        q
-#EOF
-    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" logrotate.ocsinventory-NG.local
-    echo "******** Begin updated logrotate.ocsinventory-NG ***********" >> $SETUP_LOG
-    cat logrotate.ocsinventory-NG.local >> $SETUP_LOG
-    echo "******** End updated logrotate.ocsinventory-NG ***********" >> $SETUP_LOG
-    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/ocsinventory-NG"
-    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/ocsinventory-NG" >> $SETUP_LOG
-    cp -f logrotate.ocsinventory-NG.local $LOGROTATE_CONF_DIR/ocsinventory-NG >> $SETUP_LOG 2>&1
+    cp etc/logrotate.d/$COM_SERVER_LOGROTATE_CONF_FILE logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
+    echo "******** Begin updated logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
+    cat logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local >> $SETUP_LOG
+    echo "******** End updated logrotate.COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
+    echo "Removing old communication server logrotate file $LOGROTATE_CONF_DIR/ocsinventory-NG"
+    echo "Removing old communication server logrotate file $LOGROTATE_CONF_DIR/ocsinventory-NG" >> $SETUP_LOG
+    rm -f "$LOGROTATE_CONF_DIR/ocsinventory-NG"
+    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE"
+    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE" >> $SETUP_LOG
+    cp -f logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to configure log rotation, please look at error in $SETUP_LOG and fix !"
@@ -837,25 +853,14 @@ then
     echo "+----------------------------------------------------------+"
     echo
     echo "Configuring Apache web server (ed ocsinventory.conf)" >> $SETUP_LOG
-    cp ocsinventory.conf ocsinventory.conf.local
-#
-# Now using perl to replace string in file instead of ed, not available by default in Mandriva Linux
-#
-#    $ED_BIN ocsinventory.conf.local << EOF >> $SETUP_LOG 2>&1
-#        1,$ g/^ *PerlSetEnv OCS_DB_HOST*/s#DATABASE_SERVER#$DB_SERVER_HOST#
-#        1,$ g/^ *PerlSetEnv OCS_DB_PORT*/s#DATABASE_PORT#$DB_SERVER_PORT#
-#        1,$ g/^ *PerlSetEnv OCS_MODPERL_VERSION*/s#VERSION_MP#$APACHE_MOD_PERL_VERSION#
-#        1,$ g/^ *PerlSetEnv OCS_LOGPATH*/s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#
-#        w
-#        q
-#EOF
-    $PERL_BIN -pi -e "s#DATABASE_SERVER#$DB_SERVER_HOST#g" ocsinventory.conf.local
-    $PERL_BIN -pi -e "s#DATABASE_PORT#$DB_SERVER_PORT#g" ocsinventory.conf.local
-    $PERL_BIN -pi -e "s#VERSION_MP#$APACHE_MOD_PERL_VERSION#g" ocsinventory.conf.local
-    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" ocsinventory.conf.local
-    echo "******** Begin updated ocsinventory.conf ***********" >> $SETUP_LOG
-    cat ocsinventory.conf.local >> $SETUP_LOG
-    echo "******** End updated ocsinventory.conf ***********" >> $SETUP_LOG
+    cp etc/ocsinventory/$COM_SERVER_APACHE_CONF_FILE $COM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#DATABASE_SERVER#$DB_SERVER_HOST#g" $COM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#DATABASE_PORT#$DB_SERVER_PORT#g" $COM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#VERSION_MP#$APACHE_MOD_PERL_VERSION#g" $COM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" $COM_SERVER_APACHE_CONF_FILE.local
+    echo "******** Begin updated $COM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
+    cat $COM_SERVER_APACHE_CONF_FILE.local >> $SETUP_LOG
+    echo "******** End updated $COM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
     if [ -z "$APACHE_CONFIG_DIRECTORY" ]
     then
         echo "Setup is not able to replace existing configuration in file"
@@ -868,7 +873,7 @@ then
         then
             echo "Communication server configuration manually added to file $APACHE_CONFIG_FILE" >> $SETUP_LOG
             echo "Setup has prepared configuration in file"
-            echo "ocsinventory-NG/ocsinventory.conf.local."
+            echo "Apache/$COM_SERVER_APACHE_CONF_FILE.local."
             echo "You must review file content to ensure all is good."
             echo "Then paste file content (at the end generally) into"
             echo "$APACHE_CONFIG_FILE and restart Apache daemon."
@@ -876,7 +881,7 @@ then
             echo "Adding Communication server configuration to end of file $APACHE_CONFIG_FILE..."
             echo "Adding Communication server configuration to end of file $APACHE_CONFIG_FILE" >> $SETUP_LOG
             echo >> $APACHE_CONFIG_FILE
-            cat ocsinventory.conf.local >> $APACHE_CONFIG_FILE
+            cat $COM_SERVER_APACHE_CONF_FILE.local >> $APACHE_CONFIG_FILE
             echo
             echo "+----------------------------------------------------------+"
             echo "| OK, Communication server setup sucessfully finished ;-)  |"
@@ -886,12 +891,15 @@ then
             echo "+----------------------------------------------------------+"
         fi
     else
-        echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
-        echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf" >> $SETUP_LOG
-        cp -f ocsinventory.conf.local $APACHE_CONFIG_DIRECTORY/ocsinventory.conf >> $SETUP_LOG 2>&1
+        echo "Removing old communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
+        echo "Removing old communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf" >> $SETUP_LOG
+        rm -f "$APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
+        echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
+        echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
+        cp -f $COM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
         if [ $? -ne 0 ]
         then
-            echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/ocsinventory.conf, please look at error in $SETUP_LOG and fix !"
+            echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
             echo
             echo "Installation aborted !"
             exit 1
@@ -900,12 +908,12 @@ then
         echo "+----------------------------------------------------------+"
         echo "| OK, Communication server setup sucessfully finished ;-)  |"
         echo "|                                                          |"
-        echo "| Please, review $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
+        echo "| Please, review $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
         echo "| to ensure all is good. Then restart Apache daemon.       |"
         echo "+----------------------------------------------------------+"
     fi
     echo
-    echo "Leaving ocsinventory-NG directory" >> $SETUP_LOG
+    echo "Leaving Apache directory" >> $SETUP_LOG
     cd ".."
     echo "Communication server installation successfull" >> $SETUP_LOG
 fi
@@ -1138,25 +1146,16 @@ then
     echo
     echo "Configuring IPDISCOVER-UTIL Perl script."
     echo "Configuring IPDISCOVER-UTIL Perl script (ed ipdiscover-util.pl)" >> $SETUP_LOG
-    cp ipdiscover-util/ipdiscover-util.pl ipdiscover-util/ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
-#
-# Now using perl to replace string in file instead of ed, not available by default in Mandriva Linux
-#
-#    $ED_BIN ipdiscover-util/ipdiscover-util.pl.local << EOF >> $SETUP_LOG 2>&1
-#        1,$ g/^ *my $dbhost*/s#localhost#$DB_SERVER_HOST#
-#        1,$ g/^ *my $dbp*/s#3306#$DB_SERVER_PORT#
-#        w
-#        q
-#EOF
-    $PERL_BIN -pi -e "s#localhost#$DB_SERVER_HOST#g" ipdiscover-util/ipdiscover-util.pl.local
-    $PERL_BIN -pi -e "s#3306#$DB_SERVER_PORT#g" ipdiscover-util/ipdiscover-util.pl.local
-#    echo "******** Begin updated ipdiscover-util.pl script ***********" >> $SETUP_LOG
-#    cat ipdiscover-util/ipdiscover-util.pl.local >> $SETUP_LOG
-#    echo "******** End updated ipdiscover-util.pl script ***********" >> $SETUP_LOG
+    cp Apache/binutils//ipdiscover-util.pl ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
+    $PERL_BIN -pi -e "s#localhost#$DB_SERVER_HOST#g" ipdiscover-util.pl.local
+    $PERL_BIN -pi -e "s#3306#$DB_SERVER_PORT#g" ipdiscover-util.pl.local
+#    echo "******** Begin updated ipdiscover-util.pl.local script ***********" >> $SETUP_LOG
+#    cat ipdiscover-util.pl.local >> $SETUP_LOG
+#    echo "******** End updated ipdiscover-util.pl.local script ***********" >> $SETUP_LOG
     echo
     echo "Installing IPDISCOVER-UTIL Perl script."
     echo "Installing IPDISCOVER-UTIL Perl script" >> $SETUP_LOG
-    cp ipdiscover-util/ipdiscover-util.pl.local $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> $SETUP_LOG 2>&1
+    cp ipdiscover-util.pl.local $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"

@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: Makefile.PL,v 1.5 2008-02-22 15:03:32 dliroulet Exp $
+# $Id: Makefile.PL,v 1.6 2008-02-27 21:26:27 dliroulet Exp $
 #
 #-------------------------------------------------------
 
@@ -34,9 +34,9 @@ WriteMakefile(
 #			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
 #			'XML::Entities'   => 0.02,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
 		      },
-    'EXE_FILES'         => ['binutils/ocsinventory-local.pl'],
-    'INSTALLSCRIPT'     => "/usr/bin",
-    'INSTALLSITESCRIPT' => "/usr/bin",
+#    'EXE_FILES'         => ['binutils/ocsinventory-local.pl'],
+#    'INSTALLSCRIPT'     => "/usr/bin",
+#    'INSTALLSITESCRIPT' => "/usr/bin",
     ($] >= 5.005 ?      ## Add these new keywords supported since 5.005
       (AUTHOR           => 'Pascal DANEK <hunal@users.sourceforge.net>') : ()),
 );
