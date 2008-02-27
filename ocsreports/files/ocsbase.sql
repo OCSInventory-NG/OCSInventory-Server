@@ -734,7 +734,7 @@ CREATE TABLE download_servers (
   ADD_REP varchar(250) collate latin1_general_ci NOT NULL,
   GROUP_ID int(11) NOT NULL,
   PRIMARY KEY  (HARDWARE_ID)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=MyISAM;
 
 CREATE TABLE download_affect_rules (
   ID int(11) NOT NULL auto_increment,
@@ -746,7 +746,7 @@ CREATE TABLE download_affect_rules (
   SERV_VALUE varchar(20) collate latin1_general_ci default NULL,
   RULE_NAME varchar(200) collate latin1_general_ci NOT NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=MyISAM;
 
 
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_URI','','$IP$/local','Server url used for group of server');
@@ -778,11 +778,11 @@ ALTER TABLE download_enable ADD SERVER_ID INT(11);
 ALTER TABLE download_enable ADD GROUP_ID INT(11);
 ALTER TABLE groups ADD REVALIDATE_FROM INT(11);
 
-CREATE TABLE `prolog_conntrack` (
-  `ID` int(11) NOT NULL auto_increment,
-  `DEVICEID` varchar(255) default NULL,
-  `TIMESTAMP` int(11) default NULL,
-  `PID` int(11) default NULL,
-  KEY `ID` (`ID`),
-  KEY `DEVICEID` (`DEVICEID`)
-) ENGINE=MEMORY 
+CREATE TABLE prolog_conntrack (
+  ID int(11) NOT NULL auto_increment,
+  DEVICEID varchar(255) default NULL,
+  TIMESTAMP int(11) default NULL,
+  PID int(11) default NULL,
+  KEY ID (ID),
+  KEY DEVICEID (DEVICEID)
+) ENGINE=MEMORY; 
