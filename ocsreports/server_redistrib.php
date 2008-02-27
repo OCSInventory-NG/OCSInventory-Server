@@ -214,4 +214,5 @@ if (isset($_GET['modifmachgroupserver']) and !isset($_POST['Valid_modif_x']) and
         tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title,$comment);
 
 }
+
 ?>

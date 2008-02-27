@@ -7,8 +7,9 @@ require_once('require/function_table_html.php');
 require_once('require/function_config_generale.php');
 if( $_SESSION["lvluser"] != SADMIN )
 	die("FORBIDDEN");
-$def_onglets[$l->g(499)]=$l->g(499); //Serveur
+
 $def_onglets[$l->g(728)]=$l->g(728); //Inventaire
+$def_onglets[$l->g(499)]=$l->g(499); //Serveur
 $def_onglets[$l->g(312)]=$l->g(312); //IP Discover
 $def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
 $def_onglets[$l->g(628)]=$l->g(628); //Serveur de redistribution
@@ -30,12 +31,12 @@ if ($_POST['onglet'] == $l->g(84) ){
 	pageGUI($form_name);
 	
 }
-if ($_POST['onglet'] == $l->g(728) ){
+if ($_POST['onglet'] == $l->g(728) or $_POST['onglet'] == ""){
 	
 	pageinventory($form_name);
 	
 }
-if ($_POST['onglet'] == $l->g(499) or $_POST['onglet'] == ""){
+if ($_POST['onglet'] == $l->g(499) ){
 	
  	pageserveur($form_name);
 	

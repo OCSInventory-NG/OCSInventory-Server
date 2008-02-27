@@ -729,28 +729,28 @@ INSERT INTO config VALUES ('GUI_VERSION', 0, '5000', 'Version of the installed G
 
 CREATE TABLE download_servers (
   HARDWARE_ID int(11) NOT NULL,
-  URL varchar(250) NOT NULL,
+  URL varchar(250) collate latin1_general_ci NOT NULL,
   ADD_PORT int(11) NOT NULL,
-  ADD_REP varchar(250) NOT NULL,
+  ADD_REP varchar(250) collate latin1_general_ci NOT NULL,
   GROUP_ID int(11) NOT NULL,
   PRIMARY KEY  (HARDWARE_ID)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 CREATE TABLE download_affect_rules (
   ID int(11) NOT NULL auto_increment,
   RULE int(11) NOT NULL,
   PRIORITY int(11) NOT NULL,
-  CFIELD varchar(20) NOT NULL,
-  OP varchar(20) NOT NULL,
-  COMPTO varchar(20) NOT NULL,
-  SERV_VALUE varchar(20) default NULL,
-  RULE_NAME varchar(200) NOT NULL,
+  CFIELD varchar(20) collate latin1_general_ci NOT NULL,
+  OP varchar(20) collate latin1_general_ci NOT NULL,
+  COMPTO varchar(20) collate latin1_general_ci NOT NULL,
+  SERV_VALUE varchar(20) collate latin1_general_ci default NULL,
+  RULE_NAME varchar(200) collate latin1_general_ci NOT NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_URI','','$IP$/local','Server url used for group of server');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_DOCROOT','','','Server directory used for group of server');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_DOCROOT','','d:\\\\tele_ocs','Server directory used for group of server');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('LOCK_REUSE_TIME',600,'','Validity of a computer\'s lock');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_DIFF',1,'','Configure engine to update inventory regarding to CHECKSUM agent value (lower DB backend load)');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_TRANSACTION',1,'','Make engine consider an inventory as a transaction (lower concurency, better disk usage)');
@@ -774,9 +774,9 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD_IP_CACHE_TIME',300,'','Period definition for INVENTORY_FILTER_FLOOD_IP');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ON',0,'','Enable inventory filter stack');
 
-ALTER TABLE download_enable ADD SERVER_ID INT(11) NOT NULL;
-ALTER TABLE download_enable ADD GROUP_ID INT(11) NOT NULL;
-ALTER TABLE groups ADD REVALIDATE_FROM INT(11) default 0;
+ALTER TABLE download_enable ADD SERVER_ID INT(11);
+ALTER TABLE download_enable ADD GROUP_ID INT(11);
+ALTER TABLE groups ADD REVALIDATE_FROM INT(11);
 
 CREATE TABLE `prolog_conntrack` (
   `ID` int(11) NOT NULL auto_increment,
@@ -785,4 +785,4 @@ CREATE TABLE `prolog_conntrack` (
   `PID` int(11) default NULL,
   KEY `ID` (`ID`),
   KEY `DEVICEID` (`DEVICEID`)
-) ENGINE=MEMORY;
+) ENGINE=MEMORY 

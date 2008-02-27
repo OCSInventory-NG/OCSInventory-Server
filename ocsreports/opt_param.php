@@ -25,9 +25,10 @@ if ($_POST['Valid']=="Valid"){
 		$nbMach = getCount($_SESSION["storedRequest"]);
 		$add_lbl=" (".$nbMach." ".$l->g(652).")";
 	}
+	//print_r($_POST);
 	 foreach ($_POST as $key => $value){
 	 	if ($key != "systemid" and $key != "origine"){
-		 	if ($value == "SERVER DEFAULT")
+		 	if ($value == "SERVER DEFAULT" or $value == "des")
 		 		erase($key);
 		 	elseif ($value == "CUSTOM"){
 		 		insert($key,$_POST[$key.'_edit']);	 	
@@ -43,7 +44,10 @@ if ($_POST['Valid']=="Valid"){
 		 	} 
 		 	elseif ($value == "OFF"){
 		 		insert($key,0);	 
-		 	} 
+		 	}elseif ($key == "IPDISCOVER" and $value != "des" and $value != "OFF"){
+		 		insert($key,2,$value);	
+		 	}
+		 	
 	 	}
  	}
  	$MAJ=$l->g(711);
@@ -75,6 +79,7 @@ $sql_value_idhardware="select * from devices where name != 'DOWNLOAD' and hardwa
 $result_value = mysql_query($sql_value_idhardware, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 while($value=mysql_fetch_array($result_value)) {
 	$optvalue[$value["NAME"] ] = $value["IVALUE"];
+	$optvalueTvalue[$value["NAME"]]=$value["TVALUE"];
 	}
 $champ_ignored=0;
 }else{
@@ -98,6 +103,7 @@ $champ_ignored=0;
 $def_onglets[$l->g(499)]=$l->g(499); //Serveur
 $def_onglets[$l->g(728)]=$l->g(728); //Inventaire
 $def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+$def_onglets[$l->g(312)]=$l->g(312); //ipdiscover
 $form_name='admin_param';
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
 onglet($def_onglets,$form_name,'onglet',7);
@@ -110,6 +116,10 @@ if ($_POST['onglet'] == $l->g(499) or $_POST['onglet'] == ""){
 }
 if ($_POST['onglet'] == $l->g(512)){
 	include ('opt_download.php');
+
+}
+if ($_POST['onglet'] == $l->g(312)){
+	include ('opt_ipdiscover.php');
 
 }
 if (isset($_POST['origine'])){

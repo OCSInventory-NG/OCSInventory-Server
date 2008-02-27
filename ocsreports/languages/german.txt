@@ -725,7 +725,7 @@
 741 Configure engine to update inventory regarding to CHECKSUM agent value (lower DB backend load)
 742 Make engine consider an inventory as a transaction (lower concurency, better disk usage)
 743 Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load
-744 Enable some stuff to improve DB queries, especially for GUI multicriteria searching system
+744 Accept an inventory only if required by server ( Refuse "forced" inventory)
 745 Specify when the engine will clean the inventory cache structures
 746 Specify the minimal difference to replace an ipdiscover agent
 747 Disable the time before a first election (not recommended)
@@ -758,3 +758,4 @@
 774 You try to make a transfer of the category towards the same category
 775 Directory of creation of packages
 776 Directory of stake in cache of the analyses of ipdiscover
+777 Validity of a session

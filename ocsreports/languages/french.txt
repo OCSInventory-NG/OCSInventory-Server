@@ -634,7 +634,7 @@
 741 Configuration du moteur pour mettre à jour les sections d'inventaire en fonction du CHECKSUM (pour baisser la charge de DB backend )
 742 Faire que le moteur considère un inventaire comme une transaction (accès concurrentiel plus bas, meilleure utilisation du disque)
 743 Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load
-744 Enable some stuff to improve DB queries, especially for GUI multicriteria searching system
+744 N'accepter un inventaire que si une session est active (refus du /FORCE)
 745 Specify when the engine will clean the inventory cache structures
 746 Specify the minimal difference to replace an ipdiscover agent
 747 Disable the time before a first election (not recommended)
@@ -667,3 +667,4 @@
 774 Vous essayer de faire un transfert de la catégorie vers la même catégorie
 775 Répertoire de création des paquets
 776 Répertoire de mise en cache des analyses d'ipdiscover
+777 Durée de validité d'une session

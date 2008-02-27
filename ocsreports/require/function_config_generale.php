@@ -53,7 +53,8 @@
      		 supp1[12]="GROUPS_CACHE_OFFSET";
      		 supp1[13]="GROUPS_CACHE_REVALIDATE";
      		 supp1[14]="INVENTORY_FILTER_FLOOD_IP_CACHE_TIME";
-   
+   			 supp1[15]="SESSION_VALIDITY_TIME";
+   			 
        		 supp10[0]="IPDISCOVER_LATENCY";
      		 
 			 while (supp1[i]){
@@ -339,7 +340,7 @@ function update_default_value($POST){
 						else
 						$sql="insert into config (IVALUE, NAME) value (".$ivalue.",'".$key."')";
 				}
-				elseif($key == 'FREQUENCY' and $value == 'CUSTOM'){
+				elseif($key == 'FREQUENCY' and $value == 'CUSTOM' and $POST[$key."_edit"] != ""){
 					if (isset($optexist))
 					$sql="update config set IVALUE = ".$POST[$key."_edit"]." where NAME ='".$key."'";
 					else
@@ -351,7 +352,7 @@ function update_default_value($POST){
 					else
 					$sql="insert into config (IVALUE, NAME) value (0,'".$key."')";
 				}
-				elseif($key == 'IPDISCOVER' and $value == 'ON'){
+				elseif($key == 'IPDISCOVER' and $value == 'ON' and $POST[$key."_edit"] != ""){
 					if (isset($optexist))
 					$sql="update config set IVALUE = ".$POST[$key."_edit"]." where NAME ='".$key."'";	
 					else
@@ -513,7 +514,8 @@ function pagegroups($form_name){
 				  'AUTO_DUPLICATE_LVL'=>'AUTO_DUPLICATE_LVL',
 				  'SECURITY_LEVEL'=>'SECURITY_LEVEL',
 				  'LOCK_REUSE_TIME'=>'LOCK_REUSE_TIME',
-				  'TRACE_DELETED'=>'TRACE_DELETED');
+				  'TRACE_DELETED'=>'TRACE_DELETED',
+				  'SESSION_VALIDITY_TIME'=>'SESSION_VALIDITY_TIME');
  	$values=look_default_values($champs);
  	if (isset($champs['AUTO_DUPLICATE_LVL']))
  	//on utilise la fonction pour connaître les cases cochées correspondantes au chiffre en base de AUTO_DUPLICATE_LVL
@@ -526,23 +528,12 @@ function pagegroups($form_name){
 					'BGCOLOR'=>'#C7D9F5',
 					'BORDERCOLOR'=>'#9894B5'));
 	ligne('LOGLEVEL',$l->g(416),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['LOGLEVEL']));
-	//ligne('LOGPATH','Path to log directory (must be writeable)','input',array('VALUE'=>$values['tvalue']['LOGPATH'],'SIZE'=>40,'MAXLENGHT'=>50));
 	ligne('PROLOG_FREQ',$l->g(564),'input',array('END'=>$l->g(730).$sup1,'VALUE'=>$values['ivalue']['PROLOG_FREQ'],'SIZE'=>1,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));	
 	ligne('AUTO_DUPLICATE_LVL',$l->g(427),'checkbox',array('HOSTNAME'=>'hostname','SERIAL'=>'Serial','MACADRESSE'=>'macaddress','MODEL'=>'model','CHECK'=>$check));
-	ligne('SECURITY_LEVEL',$l->g(739),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['SECURITY_LEVEL']));
+	ligne('SECURITY_LEVEL',$l->g(739),'input',array('VALUE'=>$values['ivalue']['SECURITY_LEVEL'],'SIZE'=>1,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric),'',"readonly");	
 	ligne('LOCK_REUSE_TIME',$l->g(740),'input',array('END'=>$l->g(511).$sup1,'VALUE'=>$values['ivalue']['LOCK_REUSE_TIME'],'SIZE'=>1,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));	
 	ligne('TRACE_DELETED',$l->g(415),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['TRACE_DELETED']));
-
-	 	//ligne('DEPLOY',$l->g(414),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['DEPLOY']));
-
-//	 	ligne('INVENTORY_DIFF',$l->g(418),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_DIFF']));
-//	 	ligne('INVENTORY_TRANSACTION',$l->g(731),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_TRANSACTION']));
-//	 	ligne('ENABLE_GROUPS','','radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['ENABLE_GROUPS']));
-//	 	ligne('GENERATE_OCS_FILES','','radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['GENERATE_OCS_FILES']));
-//	 	ligne('OCS_FILES_OVERWRITE','','radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['OCS_FILES_OVERWRITE']));
-//	 	ligne('INVENTORY_WRITE_DIFF','','radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_RIGHT_DIFF']));
-//	 	ligne('GROUPS_CACHE_REVALIDATE','','input',array('END'=>$l->g(511),'VALUE'=>$values['ivalue']['GROUPS_CACHE_REVALIDATE'],'SIZE'=>1,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));	
-//	 	ligne('GROUPS_CACHE_OFFSET','','input',array('END'=>$l->g(511),'VALUE'=>$values['ivalue']['GROUPS_CACHE_OFFSET'],'SIZE'=>1,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));	
+	ligne('SESSION_VALIDITY_TIME',$l->g(777),'input',array('END'=>$l->g(511).$sup1,'VALUE'=>$values['ivalue']['SESSION_VALIDITY_TIME'],'SIZE'=>1,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));	
 	 	
 	fin_tab($form_name);
  	
@@ -554,7 +545,7 @@ function pagegroups($form_name){
 				  'INVENTORY_DIFF'=>'INVENTORY_DIFF',
 				  'INVENTORY_TRANSACTION'=>'INVENTORY_TRANSACTION',
 				  'INVENTORY_WRITE_DIFF'=>'INVENTORY_WRITE_DIFF',
-				  'INVENTORY_CACHE_ENABLED'=>'INVENTORY_CACHE_ENABLED',
+				  'INVENTORY_SESSION_ONLY'=>'INVENTORY_SESSION_ONLY',
 				  'INVENTORY_CACHE_REVALIDATE'=>'INVENTORY_CACHE_REVALIDATE');
 	$values=look_default_values($champs);
 // 	//gestion du champ FREQUENCY
@@ -581,7 +572,7 @@ function pagegroups($form_name){
 		ligne('INVENTORY_DIFF',$l->g(741),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_DIFF']));
 		ligne('INVENTORY_TRANSACTION',$l->g(742),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_TRANSACTION']));
 		ligne('INVENTORY_WRITE_DIFF',$l->g(743),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_WRITE_DIFF']));
-		ligne('INVENTORY_CACHE_ENABLED',$l->g(744),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_CACHE_ENABLED']));
+		ligne('INVENTORY_SESSION_ONLY',$l->g(744),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_SESSION_ONLY']));
 	 	ligne('INVENTORY_CACHE_REVALIDATE',$l->g(745),'input',array('END'=>$l->g(496).$sup1,'VALUE'=>$values['ivalue']['INVENTORY_CACHE_REVALIDATE'],'SIZE'=>1,'MAXLENGHT'=>3));
 	fin_tab($form_name);
  	

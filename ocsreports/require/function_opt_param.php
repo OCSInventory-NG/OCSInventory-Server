@@ -9,14 +9,14 @@ function recharge(modif,origine){
 </script>
 <?php
  
- 
+
  
  //function for erase param values 
  function erase($NAME){
  	global $_GET,$_POST,$list_hardware_id;
 	// if it's for group or a machine
  	if( isset($_POST["systemid"])) {
-		if( ! @mysql_query( "DELETE FROM devices WHERE name='".$NAME."' AND hardware_id='".$_POST["systemid"]."'", $_SESSION["writeServer"] )) {
+ 		if( ! @mysql_query( "DELETE FROM devices WHERE name='".$NAME."' AND hardware_id='".$_POST["systemid"]."'", $_SESSION["writeServer"] )) {
 				echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
 				return false;
 			}
@@ -33,14 +33,18 @@ function recharge(modif,origine){
 }
  
  //function for insert param values
- function insert($NAME,$IVALUE){
+ function insert($NAME,$IVALUE,$TVALUE = ""){
  	global $_GET, $_POST,$tab_hadware_id; 		
  	//delete old value before insert new 
  	
  	erase($NAME);
  	// if it's for group or a machine
 	if( isset($_POST["systemid"])) {
-			if( ! @mysql_query( "INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES('".$_POST["systemid"]."', '".$NAME."', '".$IVALUE."')", $_SESSION["writeServer"] )) {
+			if ($TVALUE != "")
+				$sql="INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES ('".$_POST["systemid"]."', '".$NAME."', '".$IVALUE."', '".$TVALUE."')";
+			else
+				$sql="INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES('".$_POST["systemid"]."', '".$NAME."', '".$IVALUE."')";
+			if( ! @mysql_query( $sql, $_SESSION["writeServer"] )) {
 				echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
 				return false;
 			}
@@ -48,7 +52,12 @@ function recharge(modif,origine){
 	else {//else : request 
 		$i=0;
 		while( $tab_hadware_id[$i]) {
-			if( ! @mysql_query( "INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES(".$tab_hadware_id[$i].", '".$NAME."', $IVALUE)", $_SESSION["writeServer"] )) {
+			if ($TVALUE != "")
+				$sql="INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES ('".$tab_hadware_id[$i]."', '".$NAME."', '".$IVALUE."', '".$TVALUE."')";
+			else
+				$sql="INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES(".$tab_hadware_id[$i].", '".$NAME."', $IVALUE)";
+			
+			if( ! @mysql_query( $sql, $_SESSION["writeServer"] )) {
 					echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
 					return false;
 				}

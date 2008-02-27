@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-22 16:39:02 $$Author: hunal $($Revision: 1.11 $)
+//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.12 $)
 
 PrintEnTete($l->g(465));
 //activate for server's group
