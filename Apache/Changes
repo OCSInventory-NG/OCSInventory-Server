@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added IS_TRUSTED test if INVENTORY_SESSION_ONLY
 	* Inventory_cache is now computed on row level
 	* Moved user agent update in prolog stage
 	* Added old_deviceid log

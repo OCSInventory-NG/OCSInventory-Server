@@ -81,7 +81,7 @@ sub _inventory_handler{
   # Check prolog
   if( !check_session( \%Apache::Ocsinventory::CURRENT_CONTEXT ) ){
     &_log( 114, 'inventory', 'no_session');
-    if( ($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} !~ /local/i) && $ENV{OCS_OPT_INVENTORY_SESSION_ONLY} ){
+    if( !$Apache::Ocsinventory::CURRENT_CONTEXT{'IS_TRUSTED'} && $ENV{OCS_OPT_INVENTORY_SESSION_ONLY} ){
       &_log( 115, 'inventory', 'refused');
       return(APACHE_FORBIDDEN);
     }
