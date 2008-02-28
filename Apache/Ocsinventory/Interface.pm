@@ -23,9 +23,10 @@ use strict;
 $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT} = 100 if !defined $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
 
 eval{
-  require $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} or die();
+  require $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} or die($!);
 };
 if($@){
+  print STDERR "ocsinventory-server: $@\n";
   print STDERR "ocsinventory-server: Can't load $ENV{OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF} - Web service Private extensions will be unavailable\n";
 };
 
