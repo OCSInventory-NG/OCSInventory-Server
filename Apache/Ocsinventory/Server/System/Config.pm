@@ -418,13 +418,10 @@ sub check_config{
   for my $name ( keys( %CONFIG ) ){
     my $truename = 'OCS_OPT_'.$name;
     if( !defined($ENV{$truename}) ){
-      print STDERR "ocsinventory-server: Bad setting. Will use default(`$name` was not set. Default: `$CONFIG{$name}->{default}`)\n";
-      $ENV{$truename} = $CONFIG{$name}->{default};
-
+      print STDERR "ocsinventory-server: Bad setting. `$name` is not set. Default: `$CONFIG{$name}->{default}`\n";
     }
     elsif( $ENV{$truename}  !~ $CONFIG{$name}->{filter} ){
-      print STDERR "ocsinventory-server: Bad setting. Will use default(`$name` was set to `$ENV{$truename}`. Default: `$CONFIG{$name}->{default}`)\n";
-      $ENV{$truename} = $CONFIG{$name}->{default};
+      print STDERR "ocsinventory-server: Bad setting. `$name` is set to `$ENV{$truename}`. Default: `$CONFIG{$name}->{default}`\n";
     }
     else{
       print "ocsinventory-server: Parameter `$truename` is ok\n" if $verbose;
