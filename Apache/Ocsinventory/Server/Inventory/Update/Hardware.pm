@@ -30,6 +30,8 @@ sub _hardware{
   my $userid = '';	
   $userid = "USERID=".$dbh->quote($base->{USERID})."," if( $base->{USERID}!~/(system|localsystem)/i );
 
+  my $ipAddress = &_get_default_iface();
+
   $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
 	LASTDATE=NOW(), 
 	LASTCOME=NOW(),
@@ -45,7 +47,7 @@ sub _hardware{
 	PROCESSORN=".(defined($base->{PROCESSORN})?$base->{PROCESSORN}:0).", 
 	MEMORY=".(defined($base->{MEMORY})?$base->{MEMORY}:0).",
 	SWAP=".(defined($base->{SWAP})?$base->{SWAP}:0).",
-	IPADDR=".$dbh->quote($base->{IPADDR}).",
+	IPADDR=".$dbh->quote($ipAddress).",
 	ETIME=".$dbh->quote($base->{ETIME}).",
 	$userid
 	TYPE=".(defined($base->{TYPE})?$base->{TYPE}:0).",
@@ -61,4 +63,14 @@ sub _hardware{
   0;
 }
 
+sub _get_default_iface{
+  return undef if !defined $Apache::Ocsinventory::CURRENT_CONTEXT{XML_ENTRY}->{CONTENT}->{NETWORKS};
+  my $networks = $Apache::Ocsinventory::CURRENT_CONTEXT{XML_ENTRY}->{CONTENT}->{NETWORKS};
+  for( @$networks ){
+    if( $_->{IPADDRESS} eq $Apache::Ocsinventory::CURRENT_CONTEXT{IPADDRESS}){
+      return $_->{IPADDRESS};
+    }
+  }
+  return $Apache::Ocsinventory::CURRENT_CONTEXT{XML_ENTRY}->{CONTENT}->{HARDWARE}->{IPADDR};
+}
 1;

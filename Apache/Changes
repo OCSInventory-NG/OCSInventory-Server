@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* The default Ip(hardware.IPADDR) is now based on REMOTE_ADDR (or HTTP_X_FORWARDED_FOR)
 	* Added IS_TRUSTED test if INVENTORY_SESSION_ONLY
 	* Inventory_cache is now computed on row level
 	* Moved user agent update in prolog stage
