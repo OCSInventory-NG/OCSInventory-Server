@@ -49,8 +49,8 @@ sub _accountinfo{
     $dbh->do('INSERT INTO accountinfo(HARDWARE_ID) VALUES(?)', {}, $hardwareId);
 # Now, we know what are the account info name fields
 # We can insert the client's data. This data will be kept only one time, in the first inventory
-    for $accountkey (@accountFields){
-      if( exists ($result->{CONTENT}->{ACCOUNTINFO}) ){
+    if( exists ($result->{CONTENT}->{ACCOUNTINFO}) ){
+      for $accountkey (@accountFields){
         my $array = $result->{CONTENT}->{ACCOUNTINFO};
         for(@$array){
           if($_->{KEYNAME} eq $accountkey){
@@ -60,9 +60,9 @@ sub _accountinfo{
 	  }
         }
       }
-      else{
-        &_log(528,'accountinfos','missing') if $ENV{'OCS_OPT_LOGLEVEL'};
-      }
+    }
+    else{
+      &_log(528,'accountinfos','missing') if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
   if($lost){
