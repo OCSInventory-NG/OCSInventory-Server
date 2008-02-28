@@ -61,10 +61,12 @@ sub _reset_inventory_cache{
             }
             else{
               &_log(522,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
+              return;
             }
           }
           else{
             &_log(523,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
+            return;
           }
         }
       }
