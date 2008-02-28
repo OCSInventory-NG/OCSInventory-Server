@@ -1,6 +1,8 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Inventory cache clean now retry on fault
+	* Inventory cache clean is now off by default
 	* IPDISCOVER: Do not evaluate if mode is local
 	* Added LOCAL_FL to CURRENT_CONTEXT
 	* The default Ip(hardware.IPADDR) is now based on REMOTE_ADDR (or HTTP_X_FORWARDED_FOR)
