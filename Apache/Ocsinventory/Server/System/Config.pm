@@ -121,7 +121,7 @@ our %CONFIG = (
   },
   INVENTORY_CACHE_REVALIDATE => { 
     type => 'IVALUE',
-    default => 7,
+    default => 0,
     unit => 'day',
     description => 'Specify when the engine will clean the inventory cache structures',
     level => CRITICAL,
