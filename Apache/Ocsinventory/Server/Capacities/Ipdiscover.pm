@@ -131,6 +131,8 @@ sub _ipdiscover_main{
   return unless $ENV{'OCS_OPT_IPDISCOVER'};
   
   my $current_context = shift;
+
+  return if $current_context->{'LOCAL_FL'};
   
   my $DeviceID = $current_context->{'DATABASE_ID'};
   my $dbh = $current_context->{'DBI_HANDLE'};

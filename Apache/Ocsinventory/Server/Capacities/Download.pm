@@ -46,7 +46,7 @@ sub download_prolog_resp{
   
   my $current_context = shift;
   my $resp = shift;
-  
+
   my $dbh = $current_context->{'DBI_HANDLE'};
   my $groups = $current_context->{'MEMBER_OF'};
   my $hardware_id = $current_context->{'DATABASE_ID'};

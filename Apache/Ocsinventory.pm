@@ -77,7 +77,8 @@ sub handler{
     'PARAMS_G'  => undef,
     'MEMBER_OF'  => undef,
     'IPADDRESS'  => $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'},
-    'USER_AGENT'  => undef
+    'USER_AGENT'  => undef,
+    'LOCAL_FL' => undef
   );
   
   # No buffer for STDOUT
@@ -94,7 +95,10 @@ sub handler{
   
   #Connect to database
   $dbMode = 'write';
-  $dbMode = 'local' if($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ /local/i);
+  if($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ /local/i){
+    $CURRENT_CONTEXT{'LOCAL_FL'}=1;
+    $dbMode = 'local';
+  }
   
   if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect( $dbMode ))){
     &_log(505,'handler','Database connection');
