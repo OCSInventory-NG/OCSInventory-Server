@@ -97,7 +97,7 @@ our %CONFIG = (
   },
   INVENTORY_WRITE_DIFF => { 
     type => 'IVALUE',
-    default => 0,
+    default => 1,
     unit => 'NA',
     description => 'Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load',
     level => CRITICAL,
