@@ -17,22 +17,29 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / 
   _reset_inventory_cache 
-  _add_cache
+  _cache
 /;
 
 use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Server::System qw / :server /;
 
-sub _add_cache{
-  my ($section, $sectionMeta, $values ) = @_;
+sub _cache{
+  my ($op, $section, $sectionMeta, $values ) = @_;
   
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my @fields_array = keys %{ $sectionMeta->{field_cached} };
   
   for my $field ( @fields_array ){
     my $table = $section.'_'.lc $field.'_cache';
-    if( $dbh->do("SELECT $field FROM $table WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]) == 0E0){
+    my $err = $dbh->do("SELECT $field FROM $table WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
+    if( $err && $err == 0E0 && $op eq 'add'){
       $dbh->do("INSERT INTO $table($field) VALUES(?)", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
+    }
+    elsif( $err != 0E0 && $op eq 'del'){
+      my $err2 = $dbh->do("SELECT * FROM $section WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
+      if( $err2 && $err2 == 0E0 ){
+        $dbh->do("DELETE FROM $table WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
+      }
     }
   }
 }

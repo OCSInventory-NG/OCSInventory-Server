@@ -125,7 +125,15 @@ our %CONFIG = (
     unit => 'day',
     description => 'Specify when the engine will clean the inventory cache structures',
     level => CRITICAL,
-    filter => qr '^([1-9]\d*)$'
+    filter => qr '^(\d+)$'
+  },
+  INVENTORY_CACHE_KEEP => { 
+    type => 'IVALUE',
+    default => 1,
+    unit => 'NA',
+    description => 'Specify if ou want to keep trace of every elements encountered in the db life',
+    level => IMPORTANT,
+    filter => qr '^(1|0)$'
   },
   INVENTORY_FILTER_ENABLED => { 
     type => 'IVALUE',  
@@ -419,9 +427,11 @@ sub check_config{
     my $truename = 'OCS_OPT_'.$name;
     if( !defined($ENV{$truename}) ){
       print STDERR "ocsinventory-server: Bad setting. `$name` is not set. Default: `$CONFIG{$name}->{default}`\n";
+      $ENV{$truename} = $CONFIG{$name}->{default};
     }
     elsif( $ENV{$truename}  !~ $CONFIG{$name}->{filter} ){
       print STDERR "ocsinventory-server: Bad setting. `$name` is set to `$ENV{$truename}`. Default: `$CONFIG{$name}->{default}`\n";
+      $ENV{$truename} = $CONFIG{$name}->{default};
     }
     else{
       print "ocsinventory-server: Parameter `$truename` is ok\n" if $verbose;

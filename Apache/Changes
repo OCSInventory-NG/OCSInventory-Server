@@ -1,6 +1,9 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* Added fallback values for '??' (unix agents prior than 0.8)
+	* Added OCS_OPT_INVENTORY_CACHE_KEEP setting
+	* Inventory_cache deletion is handled "on the fly"
 	* Inventory cache clean now retry on fault
 	* Inventory cache clean is now off by default
 	* IPDISCOVER: Do not evaluate if mode is local

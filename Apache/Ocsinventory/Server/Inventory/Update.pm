@@ -110,17 +110,22 @@ sub _update_inventory_section{
       }
       if(!$found){
         $new++;
-        $dbh->do( $sectionMeta->{sql_insert_string}, {}, $deviceId, @$l_xml );
+        $dbh->do( $sectionMeta->{sql_insert_string}, {}, $deviceId, @$l_xml ) or return 1;
         if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} ){
-          &_add_cache( $section, $sectionMeta, $l_xml );
+          &_cache( 'add', $section, $sectionMeta, $l_xml );
         }
       }
     }
     # Now we have to delete from DB elements that still remain in fromDb
-    for(@fromDb){
+    for (@fromDb){
       next if !defined (${$_}[0]);
       $del++;
-      $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, ${$_}[0]);
+      $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, ${$_}[0]) or return 1;
+      my @ldb = @$_;
+      @ldb = @ldb[ 2..$#ldb ];
+      if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} && !$ENV{OCS_OPT_INVENTORY_CACHE_KEEP}){
+        &_cache( 'del', $section, $sectionMeta, \@ldb );
+      }
     }
     if( $new||$del ){
       &_log( 113, 'write_diff', "ch:$section(+$new-$del)") if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -148,7 +153,7 @@ sub _update_inventory_section{
         return(1);
       }
       if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} ){
-        &_add_cache( $section, $sectionMeta, \@bind_values );
+        &_cache( 'add', $section, $sectionMeta, \@bind_values );
       }
     }
   }
