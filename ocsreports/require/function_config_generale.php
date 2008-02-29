@@ -48,12 +48,11 @@
      		 supp1[7]="GROUPS_CACHE_REVALIDATE";
      		 supp1[8]="GROUPS_CACHE_OFFSET";
      		 supp1[9]="LOCK_REUSE_TIME";
-     		 supp1[10]="INVENTORY_CACHE_REVALIDATE";
-     		 supp1[11]="IPDISCOVER_BETTER_THRESHOLD";
-     		 supp1[12]="GROUPS_CACHE_OFFSET";
-     		 supp1[13]="GROUPS_CACHE_REVALIDATE";
-     		 supp1[14]="INVENTORY_FILTER_FLOOD_IP_CACHE_TIME";
-   			 supp1[15]="SESSION_VALIDITY_TIME";
+     		 supp1[10]="IPDISCOVER_BETTER_THRESHOLD";
+     		 supp1[11]="GROUPS_CACHE_OFFSET";
+     		 supp1[12]="GROUPS_CACHE_REVALIDATE";
+     		 supp1[13]="INVENTORY_FILTER_FLOOD_IP_CACHE_TIME";
+   			 supp1[14]="SESSION_VALIDITY_TIME";
    			 
        		 supp10[0]="IPDISCOVER_LATENCY";
      		 
@@ -545,8 +544,7 @@ function pagegroups($form_name){
 				  'INVENTORY_DIFF'=>'INVENTORY_DIFF',
 				  'INVENTORY_TRANSACTION'=>'INVENTORY_TRANSACTION',
 				  'INVENTORY_WRITE_DIFF'=>'INVENTORY_WRITE_DIFF',
-				  'INVENTORY_SESSION_ONLY'=>'INVENTORY_SESSION_ONLY',
-				  'INVENTORY_CACHE_REVALIDATE'=>'INVENTORY_CACHE_REVALIDATE');
+				  'INVENTORY_SESSION_ONLY'=>'INVENTORY_SESSION_ONLY');
 	$values=look_default_values($champs);
 // 	//gestion du champ FREQUENCY
 // 	if (isset($champs['FREQUENCY'])){
@@ -573,7 +571,6 @@ function pagegroups($form_name){
 		ligne('INVENTORY_TRANSACTION',$l->g(742),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_TRANSACTION']));
 		ligne('INVENTORY_WRITE_DIFF',$l->g(743),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_WRITE_DIFF']));
 		ligne('INVENTORY_SESSION_ONLY',$l->g(744),'radio',array(1=>'ON',0=>'OFF','VALUE'=>$values['ivalue']['INVENTORY_SESSION_ONLY']));
-	 	ligne('INVENTORY_CACHE_REVALIDATE',$l->g(745),'input',array('END'=>$l->g(496).$sup1,'VALUE'=>$values['ivalue']['INVENTORY_CACHE_REVALIDATE'],'SIZE'=>1,'MAXLENGHT'=>3));
 	fin_tab($form_name);
  	
  }

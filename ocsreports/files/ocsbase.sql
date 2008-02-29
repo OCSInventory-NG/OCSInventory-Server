@@ -756,7 +756,6 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_DIFF',1,'','
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_TRANSACTION',1,'','Make engine consider an inventory as a transaction (lower concurency, better disk usage)');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_WRITE_DIFF',0,'','Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_CACHE_ENABLED',1,'','Enable some stuff to improve DB queries, especially for GUI multicriteria searching system');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_CACHE_REVALIDATE',7,'','Specify when the engine will clean the inventory cache structures');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_GROUPS_TRACE_EVENTS',1,'','Specify if you want to track packages affected to a group on computer\'s level');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('ENABLE_GROUPS',1,'','Enable the computer\'s groups feature');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GROUPS_CACHE_OFFSET',43200,'','Random number computed in the defined range. Designed to avoid computing many groups in the same process');
