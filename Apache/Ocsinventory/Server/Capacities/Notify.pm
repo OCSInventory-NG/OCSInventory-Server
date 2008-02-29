@@ -66,7 +66,7 @@ sub update_ip{
   my $result  = $current_context->{'XML_ENTRY'};
   my $hardwareId = $current_context->{'DATABASE_ID'};
   
-  my $select_h_sql = 'SELECT IPADDR,MACADDR FROM hardware,networks WHERE IPADDR=IPADDRESS AND ID=?';
+  my $select_h_sql = 'SELECT IPADDR,MACADDR FROM hardware h,networks n WHERE IPADDR=IPADDRESS AND h.ID=?';
   my $updateIp_sql = 'UPDATE networks SET IPADDRESS=?,IPMASK=? WHERE MACADDR=? AND HARDWARE_ID=?';
   my $updateMainIp_sql = 'UPDATE hardware SET IPADDR=? WHERE ID=?';
   
