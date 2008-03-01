@@ -256,10 +256,14 @@ sub _end{
   #Non-transactionnal table
   &_unlock($DeviceID) if $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'};
   
-  if( ($ret==APACHE_SERVER_ERROR) || ($ret==APACHE_BAD_REQUEST) ){
+  if( $ret==APACHE_SERVER_ERROR ){ 
     &_log(515,'end', 'error') if $ENV{'OCS_OPT_LOGLEVEL'};
     $dbh->rollback;
-  }else{
+  }
+  elsif( $ret eq APACHE_BAD_REQUEST ){
+    &_log(515,'end', 'bad_request') if $ENV{'OCS_OPT_LOGLEVEL'};
+  }
+  else{
     $dbh->commit;
   }
   close(our $LOG) && undef $LOG if defined $LOG;
