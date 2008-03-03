@@ -36,7 +36,7 @@ sub _cache{
       $dbh->do("INSERT INTO $table($field) VALUES(?)", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
     }
     elsif( $err != 0E0 && $op eq 'del'){
-      my $err2 = $dbh->do("SELECT * FROM $section WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
+      my $err2 = $dbh->do("SELECT $field FROM $section WHERE $field=? LIMIT 1,1", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
       if( $err2 && $err2 == 0E0 ){
         $dbh->do("DELETE FROM $table WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
       }
@@ -124,21 +124,5 @@ sub _lock_cache{
 sub _lock_cache_release{
   return $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}->do("DELETE FROM engine_mutex WHERE NAME='INVENTORY_CACHE_REVALIDATE' AND PID=?", {}, $$);
 }
+
 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
