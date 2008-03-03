@@ -31,8 +31,10 @@ sub database_connect{
   my $dbPort;
   my $dbUser;
   my $dbPwd;
+
+  my $mode = shift;
   
-  if($ENV{'OCS_DB_SL_HOST'}){
+  if( $mode eq 'read' && $ENV{'OCS_DB_SL_HOST'} ){
     $dbHost = $ENV{'OCS_DB_SL_HOST'};
     $dbName = $ENV{'OCS_DB_SL_NAME'}||'ocsweb';
     $dbPort = $ENV{'OCS_DB_SL_PORT'}||'3306';
@@ -52,7 +54,7 @@ sub database_connect{
 # Process the sql requests (prepare)
 sub get_sth {
   my ($sql, @values) = @_;
-  my $dbh = database_connect();
+  my $dbh = database_connect( get_db_mode( $sql ) );
   my $request = $dbh->prepare( $sql );
   $request->execute( @values ) or die("==Bad request==\nSQL:$sql\nDATAS:".join "> <", @values, "\n");
   return $request;
@@ -61,7 +63,7 @@ sub get_sth {
 # Process the sql requests (do)
 sub do_sql {
   my ($sql, @values) = @_;
-  my $dbh = database_connect();
+  my $dbh = database_connect( get_db_mode($sql) );
   return $dbh->do( $sql, {}, @values );
 }
 
@@ -86,4 +88,15 @@ sub untaint_dbstring_lst{
   }
   return @quoted;
 }
+
+sub get_db_mode {
+  my $sql = shift;
+  if( $sql =~ /select|show/i ){
+    return 'read';
+  }
+  else{
+    return 'write';
+  }
+}
+
 1;
