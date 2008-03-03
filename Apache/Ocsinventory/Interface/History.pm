@@ -29,7 +29,7 @@ sub get_history_events {
   
   $offset = $offset * $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
   
-  my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE LIMIT $offset, $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}" );
+  my $sth = get_sth( "SELECT DATE,DELETED,EQUIVALENT FROM deleted_equiv ORDER BY DATE,DELETED LIMIT $offset, $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}" );
     
   while( my $row = $sth->fetchrow_hashref() ){
     push @tmp, {
@@ -44,12 +44,17 @@ sub get_history_events {
 
 sub clear_history_events {
   my $offset = shift;
-  
-  $offset = $offset * $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
-  
-  my $sth = get_sth( "SELECT * FROM deleted_equiv ORDER BY DATE LIMIT $offset, $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}" );
+  my $ok = 0;
+
+  my $sth = get_sth( "SELECT * FROM deleted_equiv ORDER BY DATE,DELETED LIMIT 0,$offset" );
   while( my $row = $sth->fetchrow_hashref() ) {
-    do_sql('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT=?', $row->{'DELETED'}, $row->{'DATE'}, $row->{'EQUIVALENT'}) or die;
+    if( defined $row->{'EQUIVALENT'} ){
+      do_sql('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT=?', $row->{'DELETED'}, $row->{'DATE'}, $row->{'EQUIVALENT'}) or die;
+    }
+    else{
+      do_sql('DELETE FROM deleted_equiv WHERE DELETED=? AND DATE=? AND EQUIVALENT IS NULL', $row->{'DELETED'}, $row->{'DATE'}) or die;
+    }
+    $ok++;
   }
-  return 1;
+  return $ok;
 }
