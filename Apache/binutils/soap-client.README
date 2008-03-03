@@ -18,7 +18,7 @@ To use other methods, (see Apache::Ocsinventory::Interface) , call it with -f=me
 # -w=''                         : same principle than checksum but for other sections (dico_soft and accountinfos for the moment)
 # -t=''                         : type (META || INVENTORY)) See web service documentation
 
-n addition to CHECKSUM (&), you can also request on :
+In addition to CHECKSUM (&), you can also request on :
 => userid list
 => tag list
 => database id list. 
@@ -42,6 +42,74 @@ For example:
   <ID>36</ID>			 <= ...or 36
 </REQUEST>
 
+
+
+SOAP methods available :
+
+Name : get_computers_V1
+Args : XML string
+Returns : XML
+Description : Main function to deal with ocsinventory computer's data (see above)
+
+Name : reset_checksum_V1
+Args : a checksum, a list of Databases IDs
+Returns : undef on system error, "0E0" if no computers matched or the number of computers on success
+Description : The checksum is a bitmap used to know which inventory section has changed since last come. See Apache::Ocsinventory::Map to know the different values. For example, "hardware" section is the first bit (1). if 1 & checksum are true, you know that hardware changed since the last check.
+
+Name : ocs_config_V1
+Args : option name, value
+Returns : value (if ok, ==value arg) or XML error (<RESULT><ERROR>LABEL</ERROR></RESULT>)
+Description : Configure ocs with an external tool
+
+Name : ocs_config_V2
+Args : option name, integer value, string value
+Returns : XML. In case of success : <RESULT><IVALUE></IVALUE><TVALUE></TVALUE></RESULT>, in case of error, the same as above.
+Description : Handle the new ocs config sytem (see Apache::Ocsinventory::Server::System::Config)
+
+Name : get_dico_soft_element_V1
+Args : a word to look for
+Returns : The "formatted" name (also known as category)
+Description : Get the ditionnary entry of an extracted software name
+
+Name : get_history_V1
+Args : page number
+Returns : XML.  <EVENT><DATE>AAAA-MM-DD HH:MM:SS</DATE><DELETED>DEVICEID</DELETED><EQUIVALENT>DEVICEID</EQUIVALENT></EVENT> ordered by date.
+Description : useful to know which computers has been deleted or merges (duplicates). If a "DELETED" has no "EQUIVALENT", it is a deletion.
+
+# Clear computer's history
+Name : clear_history_V1
+Args : A number of events (the former)
+Returns : The number of events deleted
+Description : Clear computer's history
+
+Name : get_ipdiscover_devices_V1
+Args : Date, Page, ninv flag
+Returns : XML. On error : <RESULT><ERROR>LABEL</ERROR></RESULT>, on success <RESULT><IFACE><DATE>AAAA-MM-DD HH:MM:SS</DATE><IP>IPADDRESS</IP><MAC>MACADDRESS</MAC><MASK>IPMASK</MASK><NAME>hostname</NAME></IFACE>...<IFACE/>...</RESULT>
+Description : Enable you to query ipdiscover results. The nInv flags ask to the method to only send the uninventories devices
+
+Name : ipdiscover_tag_V1
+Args : macaddress, description, type, user
+Returns : XML
+Description : Register a macaddress as you can do in GUI. The type and the user must be valid in ocs database.
+
+Name : ipdiscover_untag_V1
+Args : macaddress
+Returns : XML
+Description : Unregister a device
+
+Name : ipdiscover_remove_V1
+Args : macaddress
+Returns : XML
+Description : Delete a device from ipdiscover results
+
+Name : ipdiscover_create_type_V1
+Args : type name
+Returns : XML
+Description : Enable you to create a type remotely
+
+Name : ipdiscover_delete_type_V1
+Args : type name
+Returns : XML
+Description :  Remove a type
+
 For further details, see http://www.ocsinventory-ng.org/index.php?mact=News,cntnt01,detail,0&cntnt01articleid=98&cntnt01returnid=80
-
-
