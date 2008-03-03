@@ -62,7 +62,7 @@ sub _reset_inventory_cache{
           my $table = $section.'_'.lc $field.'_cache';
           &_log(108,'inventory_cache',"cache($section.$field)") if $ENV{'OCS_OPT_LOGLEVEL'};
           my $src_table = lc $section;
-          if( $dbh->do("TRUNCATE TABLE $table") ){
+          if( $dbh->do("DELETE FROM $table") ){
             if( $dbh->do("INSERT INTO $table($field) SELECT DISTINCT $field FROM $src_table") ){
               &_log(109,'inventory_cache',"ok:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
             }
