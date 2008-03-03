@@ -36,7 +36,7 @@ sub _cache{
       $dbh->do("INSERT INTO $table($field) VALUES(?)", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
     }
     elsif( $err != 0E0 && $op eq 'del'){
-      my $err2 = $dbh->do("SELECT $field FROM $section WHERE $field=? LIMIT 1,1", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
+      my $err2 = $dbh->do("SELECT $field FROM $section WHERE $field=? LIMIT 0,1", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
       if( $err2 && $err2 == 0E0 ){
         $dbh->do("DELETE FROM $table WHERE $field=?", {}, $values->[ $sectionMeta->{field_cached}->{$field} ]);
       }
