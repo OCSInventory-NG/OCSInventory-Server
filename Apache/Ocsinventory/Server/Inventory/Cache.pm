@@ -76,6 +76,7 @@ sub _reset_inventory_cache{
             }
           }
           else{
+            $dbh->do('UNLOCK TABLES');
             &_log(523,'inventory_cache',"fault:$section.$field") if $ENV{'OCS_OPT_LOGLEVEL'};
             &_lock_cache_release();
             return;
