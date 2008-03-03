@@ -184,7 +184,7 @@ sub _check_deviceid{
   }
 
   # If it is not conform
-  unless($DeviceID=~/.+-\d{4}(?:-\d{2}){5}/){
+  unless($DeviceID=~/^.+-\d{4}(?:-\d{2}){5}$/){
     return(1);
   }
   0;
