@@ -31,21 +31,33 @@ APACHE_ROOT_DOCUMENT=""
 # Which version of mod_perl is apache using,  1 for <= 1.999_21 and 2 for >= 1.999_22 (if empty, user will be asked for)
 APACHE_MOD_PERL_VERSION=""
 # Where are located OCS Communication server log files
-OCS_COM_SRV_LOG="/var/log/ocsinventory-NG"
+OCS_COM_SRV_LOG="/var/log/ocsinventory-server"
 # Where is located perl interpreter
 PERL_BIN=`which perl 2>/dev/null`
 # Where is located make utility
 MAKE=`which make 2>/dev/null`
 # Where is located logrotate configuration directory
 LOGROTATE_CONF_DIR="/etc/logrotate.d"
-# Where is located ed simple editor (not used, because now using perl to replace string in file)
-# ED_BIN=`which ed`
 # Where to store setup logs
 SETUP_LOG=`pwd`/ocs_server_setup.log
 # Communication Server Apache configuration file
 COM_SERVER_APACHE_CONF_FILE="ocsinventory-server.conf" 
 # Communication Server logrotate configuration file
 COM_SERVER_LOGROTATE_CONF_FILE="ocsinventory-server" 
+# Administration Console Apache configuration file
+ADM_SERVER_APACHE_CONF_FILE="ocsinventory-reports.conf"
+# Administration console read only files directory
+ADM_SERVER_STATIC_DIR="/usr/share/ocsinventory-server"
+ADM_SERVER_STATIC_REPORTS_DIR="ocsreports"
+ADM_SERVER_REPORTS_ALIAS="/ocsreports"
+# Administration console read/write files dir
+ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-server"
+# Administration default packages directory and Apache alias
+ADM_SERVER_VAR_PACKAGES_DIR="download"
+ADM_SERVER_PACKAGES_ALIAS="/download"
+# Administration console default ipdsicover-util.pl cache dir and Apache alias
+ADM_SERVER_VAR_IPD_DIR="ocsreports/ipd"
+ADM_SERVER_IPD_ALIAS="/ocsreports/ipd"
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -62,7 +74,7 @@ echo "previous, please remove any Apache configuration for Communication Server!
 echo
 echo -n "Do you wish to continue ([y]/n)?"
 read ligne
-if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 then
     echo "Assuming Communication server 1.0 RC2 or previous is not installed"
     echo "on this computer."
@@ -347,6 +359,77 @@ echo
 
 echo
 echo "+----------------------------------------------------------+"
+echo "| Checking for Apache Include configuration directory...   |"
+echo "+----------------------------------------------------------+"
+echo
+# Try to find Apache includes configuration directory
+echo "Checking for Apache Include configuration directory" >> $SETUP_LOG
+if [ -z "$APACHE_CONFIG_DIRECTORY" ]
+then
+    # Works on RH/Fedora/CentOS
+    CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'*' -f1`
+    if [ -n "$CONFIG_DIRECTORY_FOUND" ]
+    then
+        APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
+        echo "Redhat compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
+    else
+        APACHE_CONFIG_DIRECTORY_FOUND=""
+        echo "Not found Redhat compliant Apache Include configuration directory" >> $SETUP_LOG
+    fi
+    if ! [ -d $APACHE_CONFIG_DIRECTORY_FOUND ]
+    then
+        # Works on Debian/Ubuntu
+        CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'[' -f1`
+        if [ -n "$CONFIG_DIRECTORY_FOUND" ]
+        then
+            APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
+            echo "Debian compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
+        else
+            APACHE_CONFIG_DIRECTORY_FOUND=""
+            echo "Not found Debian compliant Apache Include configuration directory" >> $SETUP_LOG
+        fi
+    fi
+fi
+echo "Found Apache Include configuration directory $APACHE_CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
+# Ask user's confirmation 
+echo "Setup found Apache Include configuration directory in"
+echo "$APACHE_CONFIG_DIRECTORY_FOUND."
+echo "Setup will put OCS Inventory NG Apache configuration in this directory."
+res=0
+while [ $res -eq 0 ]
+do
+    echo -n "Where is Apache Include configuration directory [$APACHE_CONFIG_DIRECTORY_FOUND] ?"
+    read ligne
+    if [ -z "$ligne" ]
+    then
+        APACHE_CONFIG_DIRECTORY=$APACHE_CONFIG_DIRECTORY_FOUND
+    else
+        APACHE_CONFIG_DIRECTORY="$ligne"
+    fi
+    # Ensure file is a directory
+    if [ -d $APACHE_CONFIG_DIRECTORY ]
+    then
+        res=1
+    else
+        echo "*** ERROR: $APACHE_CONFIG_DIRECTORY is not a directory !"
+        res=0
+    fi
+    # Ensure directory exists and is writable
+    if [ -w $APACHE_CONFIG_DIRECTORY ]
+    then
+        res=1
+    else
+        echo "*** ERROR: $APACHE_CONFIG_DIRECTORY is not writable !"
+        res=0
+    fi
+done
+echo "OK, Apache Include configuration directory $APACHE_CONFIG_DIRECTORY found ;-)"
+echo "Using Apache Include configuration directory $APACHE_CONFIG_DIRECTORY" >> $SETUP_LOG
+echo
+
+
+echo
+echo "+----------------------------------------------------------+"
 echo "| Checking for PERL Interpreter...                         |"
 echo "+----------------------------------------------------------+"
 echo
@@ -397,7 +480,7 @@ echo
 echo
 echo -n "Do you wish to setup Communication server on this computer ([y]/n)?"
 read ligne
-if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 then
     # Setting up Communication server
     echo >> $SETUP_LOG
@@ -414,96 +497,12 @@ then
     then
         echo "Make utility not found !"
         echo "Make utility not found" >> $SETUP_LOG
-        echo "Setup is not able to build Perl module."
-        echo "Unable to build Perl module !" >> $SETUP_LOG
+        echo "Setup is not able to build OCS Inventory NG Perl module."
+        echo "Unable to build OCS Inventory NG Perl module !" >> $SETUP_LOG
         exit 1
     else
         echo "OK, Make utility found at <$MAKE> ;-)"
         echo "Make utility found at <$MAKE>" >> $SETUP_LOG
-    fi
-    echo
-
-    echo
-    echo "+----------------------------------------------------------+"
-    echo "| Checking for Apache Include configuration directory...   |"
-    echo "+----------------------------------------------------------+"
-    echo
-    # Try to find Apache includes configuration directory
-    echo "Checking for Apache Include configuration directory" >> $SETUP_LOG
-    if [ -z "$APACHE_CONFIG_DIRECTORY" ]
-    then
-        # Works on RH/Fedora/CentOS
-        CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'*' -f1`
-        if [ -n "$CONFIG_DIRECTORY_FOUND" ]
-        then
-            APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
-            echo "Redhat compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-        else
-            APACHE_CONFIG_DIRECTORY_FOUND=""
-            echo "Not found Redhat compliant Apache Include configuration directory" >> $SETUP_LOG
-        fi
-        if ! [ -d $APACHE_CONFIG_DIRECTORY_FOUND ]
-        then
-            # Works on Debian/Ubuntu
-            CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'[' -f1`
-            if [ -n "$CONFIG_DIRECTORY_FOUND" ]
-            then
-                APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
-                echo "Debian compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-            else
-                APACHE_CONFIG_DIRECTORY_FOUND=""
-                echo "Not found Debian compliant Apache Include configuration directory" >> $SETUP_LOG
-            fi
-        fi
-    fi
-    echo "Found Apache Include configuration directory $APACHE_CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-    # Ask user's confirmation 
-    res=0
-    while [ $res -eq 0 ]
-    do
-        echo "Setup has found Apache Include configuration directory in"
-        echo "$APACHE_CONFIG_DIRECTORY_FOUND."
-        echo "If you are not using Include directive, please enter 'no'."
-        echo -n "Where is Apache Include configuration directory [$APACHE_CONFIG_DIRECTORY_FOUND] ?"
-        read ligne
-        if [ "$ligne" = "no" ]
-        then
-            APACHE_CONFIG_DIRECTORY=""
-            res=1
-        else
-            if [ -z "$ligne" ]
-            then
-                APACHE_CONFIG_DIRECTORY=$APACHE_CONFIG_DIRECTORY_FOUND
-            else
-                APACHE_CONFIG_DIRECTORY="$ligne"
-            fi
-            # Ensure file is not a directory
-            if [ -d $APACHE_CONFIG_DIRECTORY ]
-            then
-                res=1
-            else
-                echo "*** ERROR: $APACHE_CONFIG_DIRECTORY is not a directory !"
-                res=0
-            fi
-            # Ensure file exists and is writable
-            if [ -w $APACHE_CONFIG_DIRECTORY ]
-            then
-                res=1
-            else
-                echo "*** ERROR: $APACHE_CONFIG_DIRECTORY is not writable !"
-                res=0
-            fi
-        fi
-    done
-    if [ -z "$APACHE_CONFIG_DIRECTORY" ]
-    then
-        echo "Not using Apache Include configuration directory."
-        echo "Configuration will be written to Apache main configuration file"
-        echo "$APACHE_CONFIG_FILE."
-        echo "Not using Apache Include configuration directory, using file Apache main configuration file $APACHE_CONFIG_FILE." >> $SETUP_LOG
-    else
-        echo "OK, Apache Include configuration directory $APACHE_CONFIG_DIRECTORY found ;-)"
-        echo "Using Apache Include configuration directory $APACHE_CONFIG_DIRECTORY" >> $SETUP_LOG
     fi
     echo
 
@@ -513,55 +512,55 @@ then
     echo
     echo "Checking for Apache mod_perl version 1.99_22 or higher"
     echo "Checking for Apache mod_perl version 1.99_22 or higher" >> $SETUP_LOG
-	$PERL_BIN -mmod_perl2 -e 'print "mod_perl 1.99_22 or higher is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		# mod_perl 2 not found !
-		echo "Checking for Apache mod_perl version 1.99_21 or previous"
-		echo "Checking for Apache mod_perl version 1.99_21 or previous" >> $SETUP_LOG
-		$PERL_BIN -mmod_perl -e 'print "mod_perl 1.99_21 or previous is available\n"' >> $SETUP_LOG 2>&1
-		if [ $? -ne 0 ]
-		then
-			# mod_perl 1 not found => Ask user 
-			res=0
-			while [ $res -eq 0 ]
-			do
-				echo "Setup is unable to determine your Apache mod_perl version."
-				echo "Apache must have module mod_perl enabled. As configuration differs from"
-				echo "mod_perl 1.99_21 or previous AND mod_perl 1.99_22 or higher, Setup must"
-				echo "know which release Apache is using."
-				echo "You can find which release you are using by running the following command"
-				echo "  - On RPM enabled OS, rpm -q mod_perl"
-				echo "  - On DPKG enabled OS, dpkg -l libapache*-mod-perl*"
-				echo "Enter 1 for mod_perl 1.99_21 or previous."
-				echo "Enter 2 for mod_perl 1.99_22 and higher."
-				echo -n "Which version of Apache mod_perl the computer is running ([1]/2) ?"
-				read ligne
-				if [ -z "$ligne" ]
-				then
-					APACHE_MOD_PERL_VERSION=1
-				else
-					APACHE_MOD_PERL_VERSION=$ligne
-				fi
-				res=1
-			done
-		else
-		    echo "Found that mod_perl version 1.99_21 or previous is available."
-			APACHE_MOD_PERL_VERSION=1
-		fi
-	else
-	    echo "Found that mod_perl version 1.99_22 or higher is available."
-		APACHE_MOD_PERL_VERSION=2
-	fi
+    $PERL_BIN -mmod_perl2 -e 'print "mod_perl 1.99_22 or higher is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        # mod_perl 2 not found !
+        echo "Checking for Apache mod_perl version 1.99_21 or previous"
+        echo "Checking for Apache mod_perl version 1.99_21 or previous" >> $SETUP_LOG
+        $PERL_BIN -mmod_perl -e 'print "mod_perl 1.99_21 or previous is available\n"' >> $SETUP_LOG 2>&1
+        if [ $? -ne 0 ]
+        then
+            # mod_perl 1 not found => Ask user 
+            res=0
+            while [ $res -eq 0 ]
+            do
+                echo "Setup is unable to determine your Apache mod_perl version."
+                echo "Apache must have module mod_perl enabled. As configuration differs from"
+                echo "mod_perl 1.99_21 or previous AND mod_perl 1.99_22 or higher, Setup must"
+                echo "know which release Apache is using."
+                echo "You can find which release you are using by running the following command"
+                echo "  - On RPM enabled OS, rpm -q mod_perl"
+                echo "  - On DPKG enabled OS, dpkg -l libapache*-mod-perl*"
+                echo "Enter 1 for mod_perl 1.99_21 or previous."
+                echo "Enter 2 for mod_perl 1.99_22 and higher."
+                echo -n "Which version of Apache mod_perl the computer is running ([1]/2) ?"
+                read ligne
+                if [ -z "$ligne" ]
+                then
+                    APACHE_MOD_PERL_VERSION=1
+                else
+                    APACHE_MOD_PERL_VERSION=$ligne
+                fi
+                res=1
+            done
+        else
+            echo "Found that mod_perl version 1.99_21 or previous is available."
+            APACHE_MOD_PERL_VERSION=1
+        fi
+    else
+        echo "Found that mod_perl version 1.99_22 or higher is available."
+        APACHE_MOD_PERL_VERSION=2
+    fi
     if [ $APACHE_MOD_PERL_VERSION -eq 1 ]
     then
         echo "OK, Apache is using mod_perl version 1.99_21 or previous ;-)"
         echo "Using mod_perl version 1.99_21 or previous" >> $SETUP_LOG
-	else
+    else
         echo "OK, Apache is using mod_perl version 1.99_22 or higher ;-)"
         echo "Using mod_perl version 1.99_22 or higher" >> $SETUP_LOG
-	fi
-	echo
+    fi
+    echo
 
     echo "+----------------------------------------------------------+"
     echo "| Checking for Communication server log directory...       |"
@@ -585,8 +584,8 @@ then
     done
     echo "OK, Communication server will put logs into directory $OCS_COM_SRV_LOG ;-)"
     echo "Using $OCS_COM_SRV_LOG as Communication server log directory" >> $SETUP_LOG
-	echo
-	
+    echo
+    
     # jump to communication server directory
     echo "Entering Apache sub directory" >> $SETUP_LOG
     cd "Apache"
@@ -598,92 +597,98 @@ then
     #    - Compress::Zlib 1.33 or higher
     #    - XML::Simple 2.12 or higher
     #    - Net::IP 1.21 or higher
-    #    - SOAP::Lite 0.65, not required, used only in web service
-    #    - XML::Entities 0.02, not required, used only in web service
     #
     echo
     echo "+----------------------------------------------------------+"
     echo "| Checking for required Perl Modules...                    |"
     echo "+----------------------------------------------------------+"
     echo
-	echo "Checking for DBI PERL module..."
-	echo "Checking for DBI PERL module" >> $SETUP_LOG
-	$PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module DBI is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module DBI is available."
+    REQUIRED_PERL_MODULE_MISSING=0
+    echo "Checking for DBI PERL module..."
+    echo "Checking for DBI PERL module" >> $SETUP_LOG
+    $PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module DBI is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module DBI is available."
     fi
-	echo "Checking for Apache::DBI PERL module..."
-	echo "Checking for Apache::DBI PERL module" >> $SETUP_LOG
-	$PERL_BIN -mApache::DBI -e 'print "PERL module Apache::DBI is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module Apache::DBI is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module Apache::DBI is available."
+    echo "Checking for Apache::DBI PERL module..."
+    echo "Checking for Apache::DBI PERL module" >> $SETUP_LOG
+    $PERL_BIN -mApache::DBI -e 'print "PERL module Apache::DBI is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module Apache::DBI is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module Apache::DBI is available."
     fi
-	echo "Checking for DBD::mysql PERL module..."
-	echo "Checking for DBD::mysql PERL module" >> $SETUP_LOG
-	$PERL_BIN -mDBD::mysql -e 'print "PERL module DBD::mysql is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module DBD::mysql is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module DBD::mysql is available."
+    echo "Checking for DBD::mysql PERL module..."
+    echo "Checking for DBD::mysql PERL module" >> $SETUP_LOG
+    $PERL_BIN -mDBD::mysql -e 'print "PERL module DBD::mysql is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module DBD::mysql is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module DBD::mysql is available."
     fi
-	echo "Checking for Compress::Zlib PERL module..."
-	echo "Checking for Compress::Zlib PERL module" >> $SETUP_LOG
-	$PERL_BIN -mCompress::Zlib -e 'print "PERL module Compress::Zlib is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module Compress::Zlib is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module Compress::Zlib is available."
+    echo "Checking for Compress::Zlib PERL module..."
+    echo "Checking for Compress::Zlib PERL module" >> $SETUP_LOG
+    $PERL_BIN -mCompress::Zlib -e 'print "PERL module Compress::Zlib is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module Compress::Zlib is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module Compress::Zlib is available."
     fi
-	echo "Checking for XML::Simple PERL module..."
-	echo "Checking for XML::Simple PERL module" >> $SETUP_LOG
-	$PERL_BIN -mXML::Simple -e 'print "PERL module XML::Simple is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module XML::Simple is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module XML::Simple is available."
+    echo "Checking for XML::Simple PERL module..."
+    echo "Checking for XML::Simple PERL module" >> $SETUP_LOG
+    $PERL_BIN -mXML::Simple -e 'print "PERL module XML::Simple is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module XML::Simple is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module XML::Simple is available."
     fi
-	echo "Checking for Net::IP PERL module..."
-	echo "Checking for Net::IP PERL module" >> $SETUP_LOG
-	$PERL_BIN -mNet::IP -e 'print "PERL module Net::IP is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module Net::IP is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module Net::IP is available."
+    echo "Checking for Net::IP PERL module..."
+    echo "Checking for Net::IP PERL module" >> $SETUP_LOG
+    $PERL_BIN -mNet::IP -e 'print "PERL module Net::IP is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module Net::IP is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module Net::IP is available."
     fi
+    if [ $REQUIRED_PERL_MODULE_MISSING -neq 0 ]
+    then
+        echo "*** ERROR: There is one or more required PERL modules missing on your computer !"
+        echo "Please, install missing PERL modules first."
+        echo "Installation aborted !"
+        echo "One or more required PERL modules missing !" >> $SETUP_LOG
+        echo "Installation aborted" >> $SETUP_LOG
+        exit 1
+    fi
+
+    # Check for optional Perl Modules
+    #    - SOAP::Lite 0.65, not required, used only in web service
+    #    - XML::Entities 0.02, not required, used only in web service
+    #
+    echo
+    echo "+----------------------------------------------------------+"
+    echo "| Checking for optional Perl Modules...                    |"
+    echo "+----------------------------------------------------------+"
+    echo
     echo "Checking for SOAP::Lite PERL module..."
     echo "Checking for SOAP::Lite PERL module" >> $SETUP_LOG
-  	$PERL_BIN -mSOAP::Lite -e 'print "PERL module SOAP::Lite is available\n"' >> $SETUP_LOG 2>&1
-   	if [ $? -ne 0 ]
-   	then
-   	 echo "*** Warning: PERL module SOAP::Lite is not installed !"
+    $PERL_BIN -mSOAP::Lite -e 'print "PERL module SOAP::Lite is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** Warning: PERL module SOAP::Lite is not installed !"
         echo "This module is only required by OCS Inventory NG SOAP Web Service."
         echo -n "Do you wish to continue ([y]/n] ?"
         read ligne
@@ -696,15 +701,15 @@ then
             echo "User choose to abort installation !" >> $SETUP_LOG
             exit 1
         fi
-   	else
-   		echo "Found that PERL module SOAP::Lite is available."
+    else
+        echo "Found that PERL module SOAP::Lite is available."
     fi
     echo "Checking for XML::Entities PERL module..."
     echo "Checking for XML::Entities PERL module" >> $SETUP_LOG
     $PERL_BIN -mXML::Entities -e 'print "PERL module XML::Entities is available\n"' >> $SETUP_LOG 2>&1
-   if [ $? -ne 0 ]
-   then
-   	echo "*** Warning: PERL module XML::Entities is not installed !"
+    if [ $? -ne 0 ]
+    then
+        echo "*** Warning: PERL module XML::Entities is not installed !"
         echo "This module is only required by OCS Inventory NG SOAP Web Service."
         echo -n "Do you wish to continue ([y]/n] ?"
         read ligne
@@ -717,10 +722,10 @@ then
             echo "User choose to abort installation !" >> $SETUP_LOG
             exit 1
         fi
-   else
-   	echo "Found that PERL module XML::Entities is available."
-   fi
-	echo
+    else
+        echo "Found that PERL module XML::Entities is available."
+    fi
+    echo
 
 
     echo
@@ -852,7 +857,23 @@ then
     echo "| Now configuring Apache web server...                     |"
     echo "+----------------------------------------------------------+"
     echo
-    echo "Configuring Apache web server (ed ocsinventory.conf)" >> $SETUP_LOG
+    echo "To ensure Apache loads mod_perl before OCS Inventory NG Communication Server,"
+    echo "Setup can name Communication Server Apache configuration file"
+    echo "'z-$COM_SERVER_APACHE_CONF_FILE' instead of '$COM_SERVER_APACHE_CONF_FILE'."
+    echo "Do you allow Setup renaming Communication Server Apache configuration file"
+    echo -n "to 'z-$COM_SERVER_APACHE_CONF_FILE' ([y]/n) ?"
+    read ligne
+    if [ -z $ligne ] || [ "$ligne" -eq "y" ] || [ "$ligne" -eq "Y" ]
+    then
+        echo "OK, using 'z-$COM_SERVER_APACHE_CONF_FILE' as Communication Server Apache configuration file"
+        echo "OK, using 'z-$COM_SERVER_APACHE_CONF_FILE' as Communication Server Apache configuration file" >> $SETUP_LOG
+        FORCE_LOAD_AFTER_PERL_CONF=1
+    else
+        echo "OK, using '$COM_SERVER_APACHE_CONF_FILE' as Communication Server Apache configuration file"
+        echo "OK, using '$COM_SERVER_APACHE_CONF_FILE' as Communication Server Apache configuration file" >> $SETUP_LOG
+        FORCE_LOAD_AFTER_PERL_CONF=0
+    fi
+    echo "Configuring Apache web server (file $COM_SERVER_APACHE_CONF_FILE)" >> $SETUP_LOG
     cp etc/ocsinventory/$COM_SERVER_APACHE_CONF_FILE $COM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#DATABASE_SERVER#$DB_SERVER_HOST#g" $COM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#DATABASE_PORT#$DB_SERVER_PORT#g" $COM_SERVER_APACHE_CONF_FILE.local
@@ -861,57 +882,37 @@ then
     echo "******** Begin updated $COM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
     cat $COM_SERVER_APACHE_CONF_FILE.local >> $SETUP_LOG
     echo "******** End updated $COM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
-    if [ -z "$APACHE_CONFIG_DIRECTORY" ]
+    echo "Removing old communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
+    echo "Removing old communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf" >> $SETUP_LOG
+    rm -f "$APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
+    if [ $FORCE_LOAD_AFTER_PERL_CONF -eq 1 ]
     then
-        echo "Setup is not able to replace existing configuration in file"
-        echo "$APACHE_CONFIG_FILE."
-        echo "But for a fresh install, setup is able to add this configuration."
-        echo "Do you wish setup add Communication server configuration to file"
-        echo -n "$APACHE_CONFIG_FILE (y/[n]) ?"
-        read ligne
-        if [ -z "$ligne" ] || [ "$ligne" = "n" ]
-        then
-            echo "Communication server configuration manually added to file $APACHE_CONFIG_FILE" >> $SETUP_LOG
-            echo "Setup has prepared configuration in file"
-            echo "Apache/$COM_SERVER_APACHE_CONF_FILE.local."
-            echo "You must review file content to ensure all is good."
-            echo "Then paste file content (at the end generally) into"
-            echo "$APACHE_CONFIG_FILE and restart Apache daemon."
-        else
-            echo "Adding Communication server configuration to end of file $APACHE_CONFIG_FILE..."
-            echo "Adding Communication server configuration to end of file $APACHE_CONFIG_FILE" >> $SETUP_LOG
-            echo >> $APACHE_CONFIG_FILE
-            cat $COM_SERVER_APACHE_CONF_FILE.local >> $APACHE_CONFIG_FILE
-            echo
-            echo "+----------------------------------------------------------+"
-            echo "| OK, Communication server setup sucessfully finished ;-)  |"
-            echo "|                                                          |"
-            echo "| Please, review $APACHE_CONFIG_FILE"
-            echo "| to ensure all is good. Then restart Apache daemon.       |"
-            echo "+----------------------------------------------------------+"
-        fi
+        rm -f "$APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
+        echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/z-$COM_SERVER_APACHE_CONF_FILE"
+        echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/z-$COM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
+        cp -f $COM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/z-$COM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
+        res=$?
+        COM_SERVER_APACHE_CONF_FILE="z-$COM_SERVER_APACHE_CONF_FILE"
     else
-        echo "Removing old communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
-        echo "Removing old communication server configuration to file $APACHE_CONFIG_DIRECTORY/ocsinventory.conf" >> $SETUP_LOG
-        rm -f "$APACHE_CONFIG_DIRECTORY/ocsinventory.conf"
         echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
         echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
         cp -f $COM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
-        if [ $? -ne 0 ]
-        then
-            echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
-            echo
-            echo "Installation aborted !"
-            exit 1
-        fi
-        echo
-        echo "+----------------------------------------------------------+"
-        echo "| OK, Communication server setup sucessfully finished ;-)  |"
-        echo "|                                                          |"
-        echo "| Please, review $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
-        echo "| to ensure all is good. Then restart Apache daemon.       |"
-        echo "+----------------------------------------------------------+"
+        res=$?
     fi
+    if [ $res -ne 0 ]
+    then
+        echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo
+    echo "+----------------------------------------------------------+"
+    echo "| OK, Communication server setup sucessfully finished ;-)  |"
+    echo "|                                                          |"
+    echo "| Please, review $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
+    echo "| to ensure all is good. Then restart Apache daemon.       |"
+    echo "+----------------------------------------------------------+"
     echo
     echo "Leaving Apache directory" >> $SETUP_LOG
     cd ".."
@@ -919,10 +920,10 @@ then
 fi
 
 echo
-echo "Do you wish to setup Administration server (web administration console)"
+echo "Do you wish to setup Administration Server (Web Administration Console)"
 echo -n "on this computer ([y]/n)?"
 read ligne
-if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 then
     # Install Administration server
     echo >> $SETUP_LOG
@@ -935,25 +936,25 @@ then
     echo
     echo "Checking for Apache root document directory" >> $SETUP_LOG
     # Try to find Apache root document directory
-    if [ -z "$APACHE_ROOT_DOCUMENT" ]
+    if test -z $APACHE_ROOT_DOCUMENT
     then
         APACHE_ROOT_DOCUMENT_FOUND=`cat $APACHE_CONFIG_FILE | grep "DocumentRoot" | tail -1 | cut -d' ' -f2 | tr -d '"'`
     fi
     echo "Found Apache document root $APACHE_ROOT_DOCUMENT_FOUND" >> $SETUP_LOG
     # Ask user's confirmation 
     res=0
-    while [ $res -eq 0 ]
+    while test $res -eq 0
     do
         echo -n "Where is Apache root document directory [$APACHE_ROOT_DOCUMENT_FOUND] ?"
         read ligne
-        if [ -z "$ligne" ]
+        if test -z $ligne
         then
             APACHE_ROOT_DOCUMENT=$APACHE_ROOT_DOCUMENT_FOUND
         else
             APACHE_ROOT_DOCUMENT="$ligne"
         fi
-        # Ensure group exist in /etc/group
-        if [ -d $APACHE_ROOT_DOCUMENT ]
+        # Ensure directory exists
+        if test -d $APACHE_ROOT_DOCUMENT
         then
             res=1
         else
@@ -963,6 +964,12 @@ then
     echo "OK, Apache root document directory is $APACHE_ROOT_DOCUMENT ;-)"
     echo "Using Apache root document directory $APACHE_ROOT_DOCUMENT" >> $SETUP_LOG
     echo
+
+    #
+    # Admin console not yet FHS compliant, so put static and var files into the same directory
+    #
+    ADM_SERVER_STATIC_DIR=$APACHE_ROOT_DOCUMENT
+    ADM_SERVER_VAR_DIR=$APACHE_ROOT_DOCUMENT
     
     # Check for required Perl Modules (if missing, please install before)
     #    - DBI 1.40 or higher
@@ -975,53 +982,55 @@ then
     echo "| Checking for required Perl Modules...                    |"
     echo "+----------------------------------------------------------+"
     echo
-	echo "Checking for DBI PERL module..."
-	echo "Checking for DBI PERL module" >> $SETUP_LOG
-	$PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module DBI is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module DBI is available."
+    REQUIRED_PERL_MODULE_MISSING=0
+    echo "Checking for DBI PERL module..."
+    echo "Checking for DBI PERL module" >> $SETUP_LOG
+    $PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module DBI is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module DBI is available."
     fi
-	echo "Checking for DBD::mysql PERL module..."
-	echo "Checking for DBD::mysql PERL module" >> $SETUP_LOG
-	$PERL_BIN -mDBD::mysql -e 'print "PERL module DBD::mysql is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module DBD::mysql is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module DBD::mysql is available."
+    echo "Checking for DBD::mysql PERL module..."
+    echo "Checking for DBD::mysql PERL module" >> $SETUP_LOG
+    $PERL_BIN -mDBD::mysql -e 'print "PERL module DBD::mysql is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module DBD::mysql is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module DBD::mysql is available."
     fi
-	echo "Checking for XML::Simple PERL module..."
-	echo "Checking for XML::Simple PERL module" >> $SETUP_LOG
-	$PERL_BIN -mXML::Simple -e 'print "PERL module XML::Simple is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module XML::Simple is not installed !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-	else
-		echo "Found that PERL module XML::Simple is available."
+    echo "Checking for XML::Simple PERL module..."
+    echo "Checking for XML::Simple PERL module" >> $SETUP_LOG
+    $PERL_BIN -mXML::Simple -e 'print "PERL module XML::Simple is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module XML::Simple is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module XML::Simple is available."
     fi
-	echo "Checking for Net::IP PERL module..."
-	echo "Checking for Net::IP PERL module" >> $SETUP_LOG
-	$PERL_BIN -mNet::IP -e 'print "PERL module Net::IP is available\n"' >> $SETUP_LOG 2>&1
-	if [ $? -ne 0 ]
-	then
-		echo "*** ERROR: PERL module Net::IP is not installed !"
-        echo
+    echo "Checking for Net::IP PERL module..."
+    echo "Checking for Net::IP PERL module" >> $SETUP_LOG
+    $PERL_BIN -mNet::IP -e 'print "PERL module Net::IP is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module Net::IP is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+    else
+        echo "Found that PERL module Net::IP is available."
+    fi
+    if [ $REQUIRED_PERL_MODULE_MISSING -neq 0 ]
+    then
+        echo "*** ERROR: There is one or more required PERL modules missing on your computer !"
+        echo "Please, install missing PERL modules first."
         echo "Installation aborted !"
+        echo "One or more required PERL modules missing !" >> $SETUP_LOG
+        echo "Installation aborted" >> $SETUP_LOG
         exit 1
-	else
-		echo "Found that PERL module Net::IP is available."
     fi
 
 
@@ -1030,117 +1039,138 @@ then
     echo "| Installing files for Administration server...            |"
     echo "+----------------------------------------------------------+"
     echo
-    echo "Creating directory $APACHE_ROOT_DOCUMENT/download."
-    echo "Creating directory $APACHE_ROOT_DOCUMENT/download" >> $SETUP_LOG
-    mkdir -p $APACHE_ROOT_DOCUMENT/download >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
+    echo "Creating PHP directory $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR."
+    echo "Creating PHP directory $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
     then
-        echo "*** ERROR: Unable to create $APACHE_ROOT_DOCUMENT/download, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to create ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    echo
-    echo "Creating directory $APACHE_ROOT_DOCUMENT/ocsreports."
-    echo "Creating directory $APACHE_ROOT_DOCUMENT/ocsreports" >> $SETUP_LOG
-    mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports >> $SETUP_LOG 2>&1
+    echo "Copying PHP files to $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR."
+    echo "Copying PHP files to $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR" >> $SETUP_LOG
+    cp -Rf ocsreports/* $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/ >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to copy files in $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    mkdir -p $APACHE_ROOT_DOCUMENT/ocsreports/ipd >> $SETUP_LOG 2>&1
+    # Set PHP pages directory owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to create $APACHE_ROOT_DOCUMENT/ocsreports/ipd, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    
-    echo
-    echo "Copying files to $APACHE_ROOT_DOCUMENT/ocsreports."
-    echo "Copying files to $APACHE_ROOT_DOCUMENT/ocsreports" >> $SETUP_LOG
-    cp -Rf ocsreports/* $APACHE_ROOT_DOCUMENT/ocsreports/ >> $SETUP_LOG 2>&1
+    # Set PHP pages writable by root only
+    chmod -R go-w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to set permissions on ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    
-    echo
-    echo "Fixing directories and files permissions."
-    echo "Fixing directories and files permissions" >> $SETUP_LOG
-    chown -R root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/ocsreports >> $SETUP_LOG 2>&1
+    # Set only console directory writable by Apache, to allow creating dbconfig.inc.php
+    chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    chown -R root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/download >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
+    # Set database configuration file dbconfig.inc.php writable by Apache
+    if [ -r $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php ]
     then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/download, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-    fi
-    chmod -R go-w $APACHE_ROOT_DOCUMENT/ocsreports >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-    fi
-    chmod -R go-w $APACHE_ROOT_DOCUMENT/download >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/download, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-    fi
-    chmod g+w $APACHE_ROOT_DOCUMENT/ocsreports >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-    fi
-    chmod g+w $APACHE_ROOT_DOCUMENT/download >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/download, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-    fi
-    chmod -R g+w $APACHE_ROOT_DOCUMENT/ocsreports/ipd >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
-    fi
-    if [ -r $APACHE_ROOT_DOCUMENT/ocsreports/dbconfig.inc.php ]
-    then
-        chmod g+w $APACHE_ROOT_DOCUMENT/ocsreports/dbconfig.inc.php >> $SETUP_LOG 2>&1
+        chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php >> $SETUP_LOG 2>&1
         if [ $? -ne 0 ]
         then
-            echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports/dbconfig.inc.php, please look at error in $SETUP_LOG and fix !"
+            echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php, please look at error in $SETUP_LOG and fix !"
             echo
             echo "Installation aborted !"
             exit 1
         fi
+    fi
+    echo "Creating IPDiscover directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR."
+    echo "Creating IPDiscover directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to create $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set IPD area owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set IPD area writable by root only
+    chmod -R go-w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set IPD area writable by Apache group
+    chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Creating packages directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR."
+    echo "Creating packages directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set package area owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set package area writable by root only
+    chmod -R go-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set package area writable by Apache group
+    chmod g+w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
     fi
     
     echo
@@ -1155,10 +1185,10 @@ then
     echo
     echo "Installing IPDISCOVER-UTIL Perl script."
     echo "Installing IPDISCOVER-UTIL Perl script" >> $SETUP_LOG
-    cp ipdiscover-util.pl.local $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> $SETUP_LOG 2>&1
+    cp ipdiscover-util.pl.local $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/ipdiscover-util.pl >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to copy files in $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to copy files in $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
@@ -1166,29 +1196,53 @@ then
     echo
     echo "Fixing permissions on IPDISCOVER-UTIL Perl script."
     echo "Fixing permissions on IPDISCOVER-UTIL Perl script" >> $SETUP_LOG
-    chown root:$APACHE_GROUP $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> $SETUP_LOG 2>&1
+    chown root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/ipdiscover-util.pl >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    chmod gou+x $APACHE_ROOT_DOCUMENT/ocsreports/ipdiscover-util.pl >> $SETUP_LOG 2>&1
+    chmod gou+x $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/ipdiscover-util.pl >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to set permissions on $APACHE_ROOT_DOCUMENT/ocsreports, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
     
+    echo "Configuring Apache web server (file $ADM_SERVER_APACHE_CONF_FILE)" >> $SETUP_LOG
+    cp Apache/etc/ocsinventory/$ADM_SERVER_APACHE_CONF_FILE $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#OCSREPORTS_ALIAS#$ADM_SERVER_REPORTS_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_OCSREPORTS_DIR#$ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#IPD_ALIAS#$ADM_SERVER_IPD_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_IPD_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PACKAGES_ALIAS#$ADM_SERVER_PACKAGES_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_PACKAGES_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    echo "******** Begin updated $ADM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
+    cat $ADM_SERVER_APACHE_CONF_FILE.local >> $SETUP_LOG
+    echo "******** End updated $ADM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
+    echo "Writing Administration server configuration to file $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE"
+    echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
+    cp -f $ADM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
     echo
     echo "+----------------------------------------------------------+"
     echo "| OK, Administration server installation finished ;-)      |"
     echo "|                                                          |"
-    echo "| Point your browser to http://server/ocsreports to        |"
-    echo "| configure database server and create/update schema.      |"
+    echo "| Please, review $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE"
+    echo "| to ensure all is good and restart Apache daemon.         |"
+    echo "|                                                          |"
+    echo "| Then, point your browser to http://server/$ADM_SERVER_REPORTS_ALIAS"
+    echo "| to configure database server and create/update schema.   |"
     echo "+----------------------------------------------------------+"
     echo
     echo "Administration server installation successfull" >> $SETUP_LOG
