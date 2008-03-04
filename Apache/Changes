@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
 
 1.02
+	* As the dictionnary and "all softs" are inventory cache dependant = INVENTORY_CACHE_REVALIDATE default => 7
 	* Fixed the DEVICEID checking
 	* Important fix in "on the fly deletion" in inventory cache
 	* Added fallback values for '??' (unix agents prior than 0.8)
