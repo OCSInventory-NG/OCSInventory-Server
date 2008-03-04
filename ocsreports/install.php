@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.18 $)
+//Modified on $Date: 2008-03-04 17:07:55 $$Author: dliroulet $($Revision: 1.19 $)
 
 @set_time_limit(0); 
 error_reporting(E_ALL & ~E_NOTICE);
@@ -79,8 +79,8 @@ if( $valBumf>$valBpms )
 else
 	$MaxAvail = $valTumf;
 
-echo "<br><center><font color=orange><b>WARNING: You will not be able to build any auto deployment package with size 
-greater than $MaxAvail.<br>You must raise both post_max_size and upload_max_filesize in your php.ini to correct this.</b></font></center>";
+echo "<br><center><font color=orange><b>NOTICE: You will not be able to build any deployment package with size 
+greater than $MaxAvail.<br>You must raise both post_max_size and upload_max_filesize in your php.ini to encrease this limit.</b></font></center>";
 
 require ('fichierConf.class.php');
 
