@@ -16,6 +16,9 @@
 DB_SERVER_HOST="localhost"
 # On which port run database server
 DB_SERVER_PORT="3306"
+# Database server credentials
+DB_SERVER_USER="ocs"
+DB_SERVER_PWD="ocs"
 # Where is Apache daemon binary (if empty, will try to find it)
 APACHE_BIN=""
 # Where is Apache configuration file (if empty, will try to find it)
@@ -55,9 +58,8 @@ ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-server"
 # Administration default packages directory and Apache alias
 ADM_SERVER_VAR_PACKAGES_DIR="download"
 ADM_SERVER_PACKAGES_ALIAS="/download"
-# Administration console default ipdsicover-util.pl cache dir and Apache alias
-ADM_SERVER_VAR_IPD_DIR="ocsreports/ipd"
-ADM_SERVER_IPD_ALIAS="/ocsreports/ipd"
+# Administration console default ipdsicover-util.pl cache dir
+ADM_SERVER_VAR_IPD_DIR="ipd"
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -96,6 +98,9 @@ echo "Storing log in file $SETUP_LOG" >> $SETUP_LOG
 echo "Storing log in file $SETUP_LOG"
 echo >> $SETUP_LOG
 
+echo "============================================================" >> $SETUP_LOG
+echo "Checking OCS Inventory NG Management Server requirements..." >> $SETUP_LOG 
+echo "============================================================" >> $SETUP_LOG
 echo
 echo "+----------------------------------------------------------+"
 echo "| Checking for database server properties...               |"
@@ -484,7 +489,9 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 then
     # Setting up Communication server
     echo >> $SETUP_LOG
+    echo "============================================================" >> $SETUP_LOG
     echo "Installing Communication server" >> $SETUP_LOG
+    echo "============================================================" >> $SETUP_LOG
     echo
     
     echo
@@ -927,50 +934,64 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 then
     # Install Administration server
     echo >> $SETUP_LOG
+    echo "============================================================" >> $SETUP_LOG
     echo "Installing Administration server" >> $SETUP_LOG
+    echo "============================================================" >> $SETUP_LOG
     
     echo
     echo "+----------------------------------------------------------+"
-    echo "| Checking for Apache root document directory...           |"
+    echo "| Checking for Administration Server directories...        |"
     echo "+----------------------------------------------------------+"
     echo
-    echo "Checking for Apache root document directory" >> $SETUP_LOG
-    # Try to find Apache root document directory
-    if test -z $APACHE_ROOT_DOCUMENT
+    echo "CAUTION: Setup now install files in accordance with Filesystem Hierarchy"
+    echo "Standard. So, no file is installed under Apache root document directory"
+    echo "(Refer to Apache configuration files to locate it)."
+    echo "If you're upgrading from OCS Inventory NG Server 1.01 and previous, YOU"
+    echo "MUST REMOVE (or move) directories 'ocsreports' and 'download' from Apache"
+    echo "root document directory."
+    echo "If you choose to move directory, YOU MUST MOVE 'download' directory to"
+    echo "Administration Server variable/cache directory (by default"
+    echo "$ADM_SERVER_VAR_DIR), especialy if you use deployement feature."
+    echo
+    echo -n "Do you wish to continue ([y]/n)?"
+    read ligne
+    if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
     then
-        APACHE_ROOT_DOCUMENT_FOUND=`cat $APACHE_CONFIG_FILE | grep "DocumentRoot" | tail -1 | cut -d' ' -f2 | tr -d '"'`
+        echo "Assuming directories 'ocsreports' and 'download' removed from"
+        echo "Apache root document directory."
+        echo
+    else
+        echo "Installation aborted !"
+        echo
+        exit 1
     fi
-    echo "Found Apache document root $APACHE_ROOT_DOCUMENT_FOUND" >> $SETUP_LOG
-    # Ask user's confirmation 
-    res=0
-    while test $res -eq 0
-    do
-        echo -n "Where is Apache root document directory [$APACHE_ROOT_DOCUMENT_FOUND] ?"
-        read ligne
-        if test -z $ligne
-        then
-            APACHE_ROOT_DOCUMENT=$APACHE_ROOT_DOCUMENT_FOUND
-        else
-            APACHE_ROOT_DOCUMENT="$ligne"
-        fi
-        # Ensure directory exists
-        if test -d $APACHE_ROOT_DOCUMENT
-        then
-            res=1
-        else
-            echo "*** ERROR: $APACHE_ROOT_DOCUMENT is not a directory !"
-        fi
-    done
-    echo "OK, Apache root document directory is $APACHE_ROOT_DOCUMENT ;-)"
-    echo "Using Apache root document directory $APACHE_ROOT_DOCUMENT" >> $SETUP_LOG
+
+    echo "Checking for Administration Server directories..." >> $SETUP_LOG
+    echo "Where to copy Administration Server static files for PHP Web Console"
+    echo -n "[$ADM_SERVER_STATIC_DIR] ?"
+    read ligne
+    if test -z $ligne
+    then
+       ADM_SERVER_STATIC_DIR=$ADM_SERVER_STATIC_DIR
+    else
+       ADM_SERVER_STATIC_DIR="$ligne"
+    fi
+    echo "OK, PHP files copied into $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR ;-)"
+    echo "Using directory $ADM_SERVER_STATIC_DIR for static files" >> $SETUP_LOG
+
+    echo "Where to create variable/cache directories for deployement packages and"
+    echo -n "IPDiscover [$ADM_SERVER_VAR_DIR] ?"
+    read ligne
+    if test -z $ligne
+    then
+       ADM_SERVER_VAR_DIR=$ADM_SERVER_VAR_DIR
+    else
+       ADM_SERVER_VAR_DIR="$ligne"
+    fi
+    echo "OK, variable/cache directory is $ADM_SERVER_VAR_DIR ;-)"
+    echo "Using $ADM_SERVER_VAR_DIR for static variable/cache directory" >> $SETUP_LOG
     echo
 
-    #
-    # Admin console not yet FHS compliant, so put static and var files into the same directory
-    #
-    ADM_SERVER_STATIC_DIR=$APACHE_ROOT_DOCUMENT
-    ADM_SERVER_VAR_DIR=$APACHE_ROOT_DOCUMENT
-    
     # Check for required Perl Modules (if missing, please install before)
     #    - DBI 1.40 or higher
     #    - DBD::mysql 2.9004 or higher
@@ -1059,6 +1080,8 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    echo "Fixing permissions on directory $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR" >> $SETUP_LOG
     # Set PHP pages directory owned by root, group Apache
     chown -R root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
@@ -1077,26 +1100,29 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    # Set only console directory writable by Apache, to allow creating dbconfig.inc.php
-    chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
+    # Set database configuration file dbconfig.inc.php writable by Apache
+    echo "Creating database configuration file $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php."
+    echo "Creating database configuration file $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php" >> $SETUP_LOG
+    rm -f $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo "<?php" >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo -n '$_SESSION["SERVEUR_SQL"]="' >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo -n "$DB_SERVER_HOST" >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo '";' >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo -n '$_SESSION["COMPTE_BASE"]="' >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo -n "$DB_SERVER_USER" >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo '";' >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo -n '$_SESSION["PSWD_BASE"]="' >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo -n "$DB_SERVER_PWD" >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo '";' >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    echo "?>" >> $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    chown root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php
+    chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
-        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
-    fi
-    # Set database configuration file dbconfig.inc.php writable by Apache
-    if [ -r $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php ]
-    then
-        chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php >> $SETUP_LOG 2>&1
-        if [ $? -ne 0 ]
-        then
-            echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/dbconfig.inc.php, please look at error in $SETUP_LOG and fix !"
-            echo
-            echo "Installation aborted !"
-            exit 1
-        fi
     fi
     echo "Creating IPDiscover directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR."
     echo "Creating IPDiscover directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR" >> $SETUP_LOG
@@ -1108,8 +1134,10 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR" >> $SETUP_LOG
     # Set IPD area owned by root, group Apache
-    chown -R root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
@@ -1118,7 +1146,7 @@ then
         exit 1
     fi
     # Set IPD area writable by root only
-    chmod -R go-w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    chmod -R go-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
@@ -1127,7 +1155,7 @@ then
         exit 1
     fi
     # Set IPD area writable by Apache group
-    chmod g+w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
+    chmod g+w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR, please look at error in $SETUP_LOG and fix !"
@@ -1145,6 +1173,8 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR" >> $SETUP_LOG
     # Set package area owned by root, group Apache
     chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
@@ -1173,7 +1203,6 @@ then
         exit 1
     fi
     
-    echo
     echo "Configuring IPDISCOVER-UTIL Perl script."
     echo "Configuring IPDISCOVER-UTIL Perl script (ed ipdiscover-util.pl)" >> $SETUP_LOG
     cp Apache/binutils//ipdiscover-util.pl ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
@@ -1182,7 +1211,6 @@ then
 #    echo "******** Begin updated ipdiscover-util.pl.local script ***********" >> $SETUP_LOG
 #    cat ipdiscover-util.pl.local >> $SETUP_LOG
 #    echo "******** End updated ipdiscover-util.pl.local script ***********" >> $SETUP_LOG
-    echo
     echo "Installing IPDISCOVER-UTIL Perl script."
     echo "Installing IPDISCOVER-UTIL Perl script" >> $SETUP_LOG
     cp ipdiscover-util.pl.local $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/ipdiscover-util.pl >> $SETUP_LOG 2>&1
@@ -1193,7 +1221,6 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    echo
     echo "Fixing permissions on IPDISCOVER-UTIL Perl script."
     echo "Fixing permissions on IPDISCOVER-UTIL Perl script" >> $SETUP_LOG
     chown root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/ipdiscover-util.pl >> $SETUP_LOG 2>&1
