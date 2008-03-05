@@ -12,8 +12,22 @@
 
 How to setup OCS Inventory NG Management Server ?
 
-CAUTION: If upgrading Communication server from OCS Inventory NG 1.0 RC2 and
+================================================================================
+CAUTION: 
+If upgrading Communication server from OCS Inventory NG 1.0 RC2 and
 previous, please remove any Apache configuration for Communication Server !
+
+Setup now install files in accordance with Filesystem Hierarchy Standard. So,
+no file is installed under Apache root document directory (Refer to Apache
+configuration files to locate it).
+If you're upgrading from OCS Inventory NG Server 1.01 and previous, YOU MUST
+REMOVE (or move) directories 'ocsreports' and 'download' from Apache root
+document directory.
+If you choose to move directory, YOU MUST MOVE 'download' directory to 
+Administration Server variable/cache directory (by default 
+/var/lib/ocsinventpry-server), especialy if you use deployement feature.
+================================================================================
+
 
 OCS Inventory NG Management Server needs the following components:
 - MySQL version 4.1 or higher
@@ -37,21 +51,37 @@ You must also know the following things (setup will try to found them, but
 no garanty):
 - Host running MySQL server (generally localhost)
 - Port of MySQL server (generally 3306)
-- Path to Apache web server binary file (generally named httpd or apache or
+- Path to Apache web server binary file (usually named httpd or apache or
   apache2)
-- Path to Apache main configuration file (generally named httpd.conf or
+- Path to Apache main configuration file (usually named httpd.conf or
   apache.conf or apache2.conf)
-- Path to Apache configuration directory (generally named conf.d)
-- User account running Apache web server (generally apache or www-data)
-- Group of user account running Apache web server (generally the same as user
+- Path to Apache configuration directory (usually named conf.d)
+- User account running Apache web server (usually apache or www-data)
+- Group of user account running Apache web server (usually the same as user
   account)
 - Version of Apache mod_perl
-- Apache document root directory (generally /var/www/html or /var/www-data)
-- Where to put Communication server log directory (generally /var/log/ocsinventory-NG)
+- Where to put Communication server log directory (usually
+  /var/log/ocsinventory-server)
 
 Run "sh setup.sh" and follow the instructions. It will ask you if you want to
 setup Communication Server and/or Administration Server, and will do all
 configuration for you.
+
+Using default setup,
+- Communication Server is installed as standard PERL module
+- Communication Server configuration file ocsinventory-server.conf is installed
+  under Apache configuration directory, usually /etc/httpd/conf.d or
+  /etc/apache[2]/conf.d
+- Communication Server logs are stored under directory 
+  /var/log/ocsinventory-server
+- PHP files are installed under directory 
+  /usr/share/ocsinventory-server/ocsreports
+- Writable/cache directories "download" and "ipd" are created under directory 
+  /var/lib/ocsinventory-server
+- Administration Server configuration file ocsinventory-reports.conf is 
+  installed under Apache configuration directory, usually /etc/httpd/conf.d or
+  /etc/apache[2]/conf.d. It contains aliases for /ocsreports and /download URL.
+  
 
 Enjoy OCS Inventory NG ;-)
 

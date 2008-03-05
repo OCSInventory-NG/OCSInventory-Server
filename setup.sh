@@ -950,7 +950,7 @@ then
     echo "MUST REMOVE (or move) directories 'ocsreports' and 'download' from Apache"
     echo "root document directory."
     echo "If you choose to move directory, YOU MUST MOVE 'download' directory to"
-    echo "Administration Server variable/cache directory (by default"
+    echo "Administration Server writable/cache directory (by default"
     echo "$ADM_SERVER_VAR_DIR), especialy if you use deployement feature."
     echo
     echo -n "Do you wish to continue ([y]/n)?"
@@ -979,7 +979,7 @@ then
     echo "OK, PHP files copied into $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR ;-)"
     echo "Using directory $ADM_SERVER_STATIC_DIR for static files" >> $SETUP_LOG
 
-    echo "Where to create variable/cache directories for deployement packages and"
+    echo "Where to create writable/cache directories for deployement packages and"
     echo -n "IPDiscover [$ADM_SERVER_VAR_DIR] ?"
     read ligne
     if test -z $ligne
@@ -988,8 +988,8 @@ then
     else
        ADM_SERVER_VAR_DIR="$ligne"
     fi
-    echo "OK, variable/cache directory is $ADM_SERVER_VAR_DIR ;-)"
-    echo "Using $ADM_SERVER_VAR_DIR for static variable/cache directory" >> $SETUP_LOG
+    echo "OK, writable/cache directory is $ADM_SERVER_VAR_DIR ;-)"
+    echo "Using $ADM_SERVER_VAR_DIR as writable/cache directory" >> $SETUP_LOG
     echo
 
     # Check for required Perl Modules (if missing, please install before)
