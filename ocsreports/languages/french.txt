@@ -668,3 +668,34 @@
 775 Répertoire de création des paquets
 776 Répertoire de mise en cache des analyses d'ipdiscover
 777 Durée de validité d'une session
+778 Nombre de WORKGROUP différents
+779 TAG différents
+780 Sous-réseaux différents
+781 Machines ayant un paquet en cours de télédéployement
+782 Machines ayant un paquet en erreur
+783 Nombre d'OS différents
+784 Agents différents
+785 Processeurs différents
+786 Résolutions différentes
+787 Machine avec un processeur >
+788 Machine avec un processeur <
+789 Machine avec un processeur entre
+790 Machine avec RAM >
+791 Machine avec RAM <
+792 Machine avec RAM entre
+793 Machines en base
+794 Machines vues
+795 Machines ayant pris contact aujourd'hui
+796 Nombre d'inventaires aujourd'hui
+797 Machines absentes depuis plus de
+798 ACTIVITE
+799 MATERIEL
+800 DIVERS
+801 Ne plus afficher cette donnée
+802 Afficher cette donnée
+803 Nombre de jours depuis que la machine n\'a pas pris contact
+804 Vitesse processeur minimum
+805 Vitesse processeur maximum
+806 Taille RAM minimum
+807 Taille RAM maximum
+808 Répartition

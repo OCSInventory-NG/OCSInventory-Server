@@ -759,3 +759,34 @@
 775 Directory of creation of packages
 776 Directory of stake in cache of the analyses of ipdiscover
 777 Validity of a session
+778 Number of different WORKGROUP
+779 Different TAG
+780 Different IPSUBNET
+781 Machines having a software deployement pending
+782 Machines having a package in error
+783 Number of different OS
+784 Different agent
+785 Different processors
+786 Different resolutions
+787 Machines with a processor >
+788 Machines with a processor <
+789 Machines with a processor between
+790 Machines with RAM >
+791 Machines with RAM <
+792 Machines with RAM between
+793 Machines in base
+794 Seen machines
+795 Machines contact server today
+796 Number of inventory machine today
+797 Machines not see since more of
+798 ACTIVITY
+799 HARDWARE
+800 ELSE
+801 Don't show this field
+802 Show this fied
+803 Counts in the daytime since the machine don't contact server
+804 Minimum speed processor
+805 Maximum speed processor
+806 Minimum RAM amount
+807 Maximum RAM amount
+808 Repartition
