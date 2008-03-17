@@ -34,51 +34,98 @@ function choix_affect($nom_cat){
 
 function maj_trans($onglet,$nom_new_cat){
 	global $_POST,$l;
+	//var for update number
 	$nbr_maj=0;
 	foreach($_POST['check'] as $key=>$value){
+		//cas of we have an ID or a name of soft in chekbox (use cache or not?)
+		if (is_numeric($value)){
+			$search_name_begin="select NAME";
+			$search_name_end=" from softwares_name_cache where ID=".$value."";
+		
+		}else{
+			$search_name_begin="'".$value."'";
+			$search_name_end="";
+		}
+						
+					//cas of CATEGORY
 					if ($onglet == "CAT"){
+						//cas of custom category
 						if ($nom_new_cat != "IGNORED" and $nom_new_cat != "UNCHANGED")
-						$sql_cat="update dico_soft set formatted='".$nom_new_cat."' where extracted = (select NAME from softwares_name_cache where ID=".$value.")";
+							$sql_cat="update dico_soft set formatted='".$nom_new_cat."' where extracted = (".$search_name_begin.$search_name_end.")";
+						//cas of IGNORED category
 						elseif ($nom_new_cat == "IGNORED"){
-						$reqDelDico_soft="insert into dico_ignored (extracted) select NAME from softwares_name_cache where ID=".$value;
-						mysql_query($reqDelDico_soft, $_SESSION["writeServer"]);	
-						$sql_cat = "DELETE FROM dico_soft WHERE extracted = (select NAME from softwares_name_cache where ID=".$value.")";						
+							//first time, we insert into dico_ignored
+							$reqDelDico_soft="insert into dico_ignored (extracted) ";
+							if (!is_numeric($value))
+							$reqDelDico_soft.= "values (".$search_name_begin.$search_name_end.")";
+							else
+							$reqDelDico_soft.= $search_name_begin.$search_name_end;
+							mysql_query($reqDelDico_soft, $_SESSION["writeServer"]);	
+							//second time, we delete from dico_soft
+							$sql_cat = "DELETE FROM dico_soft WHERE extracted = (".$search_name_begin.$search_name_end.")";					
 						}
+						//cas of UNCHANGED category
 						elseif ($nom_new_cat == "UNCHANGED")
-						$sql_cat="update dico_soft set formatted=extracted where extracted = (select NAME from softwares_name_cache where ID=".$value.")";
+						//we update dico_soft
+						$sql_cat="update dico_soft set formatted=extracted where extracted = (".$search_name_begin.$search_name_end.")";
 						mysql_query($sql_cat, $_SESSION["writeServer"]);	
 						$nbr_maj++;
-					}					
+					}		
+					//cas of NEW			
 					if ($onglet ==  "NEW"){
-						if ($nom_new_cat == "UNCHANGED")
-						$nom_champ = "NAME";
-						else
-						$nom_champ = "'".$nom_new_cat."'";				
-						if ($nom_new_cat != "IGNORED")
-						$sql_cat="insert into dico_soft (extracted,formatted) select NAME,".$nom_champ." from softwares_name_cache where ID=".$value;
-						elseif ($nom_new_cat == "IGNORED")
+						//if cat new category is UNCHANGED							
+						if ($nom_new_cat == "UNCHANGED"){							
+							$sql_cat="insert into dico_soft (extracted,formatted) ";
+							if (!is_numeric($value))
+							$sql_cat.= " values (".$search_name_begin.",".$search_name_begin.")";
+							else
+							$sql_cat.=$search_name_begin.",NAME ".$search_name_end;
+						//if cat new category is IGNORED		
+						}elseif ($nom_new_cat == "IGNORED")
 						$sql_cat="insert dico_ignored (extracted) select NAME from softwares_name_cache where ID=".$value;
+						//if it's custom category
+						else{
+							$sql_cat="insert into dico_soft (extracted,formatted) ";
+							if (!is_numeric($value))
+							$sql_cat.= " values (".$search_name_begin.",'".$nom_new_cat."')";
+							else
+							$sql_cat.=$search_name_begin.",'".$nom_new_cat."' ".$search_name_end;
+						}
 						mysql_query($sql_cat, $_SESSION["writeServer"]);	
 						$nbr_maj++;				
 					}
+					//cas of IGNORED
 					if ($onglet ==  "IGNORED"){
-						if ($nom_new_cat == "UNCHANGED")
-						$nom_champ = "NAME";
-						else
-						$nom_champ = "'".$nom_new_cat."'";							
-						$reqInsertDicoSoft="insert into dico_soft (extracted,formatted) select NAME,".$nom_champ." from softwares_name_cache where ID=".$value;
+						$reqInsertDicoSoft="insert into dico_soft (extracted,formatted) ";
+						//if cat new category is UNCHANGED							
+						if ($nom_new_cat == "UNCHANGED"){
+							if (!is_numeric($value))
+								$reqInsertDicoSoft.= " values (".$search_name_begin.",".$search_name_begin.")";
+							else
+								$reqInsertDicoSoft.=$search_name_begin.",NAME ".$search_name_end;
+						}else{
+							if (!is_numeric($value))
+								$reqInsertDicoSoft.= " values (".$search_name_begin.",'".$nom_new_cat."')";
+							else
+								$reqInsertDicoSoft.=$search_name_begin.",'".$nom_new_cat."' ".$search_name_end;
+						}
 						mysql_query($reqInsertDicoSoft, $_SESSION["writeServer"]);
-						$reqDelDico_ignored = "DELETE FROM dico_ignored WHERE extracted = (select NAME from softwares_name_cache where ID=".$value.")";
+						$reqDelDico_ignored = "DELETE FROM dico_ignored WHERE extracted = (".$search_name_begin.$search_name_end.")";
 						mysql_query($reqDelDico_ignored, $_SESSION["writeServer"]);	
 						$nbr_maj++;
 					}
+					//cas of UNCHANGED
 					if ($_POST['onglet'] ==  "UNCHANGED"){
 						if ($nom_new_cat != "IGNORED")
-							$sql_cat="update dico_soft set formatted='".$nom_new_cat."' where extracted = (select NAME from softwares_name_cache where ID=".$value.")";
+							$sql_cat="update dico_soft set formatted='".$nom_new_cat."' where extracted = (".$search_name_begin.$search_name_end.")";
 						else{
-							$reqInsertDicoIgnored="insert into dico_ignored (extracted) select NAME from softwares_name_cache where ID=".$value;
+							$reqInsertDicoIgnored="insert into dico_ignored (extracted) ";
+							if (!is_numeric($value))
+								$reqInsertDicoIgnored.= " values (".$search_name_begin.")";
+							else
+								$reqInsertDicoIgnored.=$search_name_begin.$search_name_end;
 							mysql_query($reqInsertDicoIgnored, $_SESSION["writeServer"]);
-							$sql_cat = "DELETE FROM dico_soft WHERE extracted = (select NAME from softwares_name_cache where ID=".$value.")";						
+							$sql_cat = "DELETE FROM dico_soft WHERE extracted = (".$search_name_begin.$search_name_end.")";						
 						}
 						mysql_query($sql_cat, $_SESSION["writeServer"]);	
 						$nbr_maj++;
@@ -86,23 +133,10 @@ function maj_trans($onglet,$nom_new_cat){
 	}
 	return $l->g(770)." ".$nbr_maj." ".$l->g(20)."(s)"; //mise à jour de XXX logiciel(s)
 }
-// $search_cache=" and cache.name like '%".$_POST['search']."%' ";
-//	$search_count=" and extracted like '%".$_POST['search']."%' ";
-//	}
-//	else{
-//		$search="";
-//		$search_count = "";
+
 function maj_trans_all($onglet,$nom_new_cat,$search_cache,$search_count){
 	global $_POST,$l;
-	//filtre
-//	if ($_POST['search']){
-//		$search_cache=" and cache.name like '%".$_POST['search']."%' ";
-//		$search_count=" and extracted like '%".$_POST['search']."%' ";
-//	}
-//	else{
-//		$search="";
-//		$search_count = "";
-//	}
+
 	if ($onglet == "CAT"){
 		if ($nom_new_cat != "IGNORED" and $nom_new_cat != "UNCHANGED")
 		$sql_cat="update dico_soft set formatted='".$nom_new_cat."' where formatted = '".$_POST['onglet_perso']."'".$search_count;
@@ -115,14 +149,19 @@ function maj_trans_all($onglet,$nom_new_cat,$search_cache,$search_count){
 		mysql_query($sql_cat, $_SESSION["writeServer"]);
 	}
 	if ($onglet == "NEW"){
+		if ($_SESSION["usecache"] == 1){
+			$table_cache="softwares_name_cache";
+		}else{ //non utilisation du cache
+			$table_cache="softwares";
+		}
 		if ($nom_new_cat == "UNCHANGED")
 			$nom_champ = "NAME";
 		else
 			$nom_champ = "'".$nom_new_cat."'";	
 		if ($nom_new_cat != "IGNORED")
-			$sql_cat="insert into dico_soft (extracted,formatted) select NAME,".$nom_champ." from softwares_name_cache cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;					
+			$sql_cat="insert into dico_soft (extracted,formatted) select NAME,".$nom_champ." from ".$table_cache." cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;					
 		elseif($nom_new_cat == "IGNORED")
-			$sql_cat="insert into dico_ignored (extracted) select NAME from softwares_name_cache cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;	
+			$sql_cat="insert into dico_ignored (extracted) select NAME from ".$table_cache." cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;	
 		mysql_query($sql_cat, $_SESSION["writeServer"]);		
 	}
 	if ($onglet == "IGNORED"){
