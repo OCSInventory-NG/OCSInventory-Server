@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.13 $)
+//Modified on $Date: 2008-03-17 13:48:56 $$Author: airoine $($Revision: 1.14 $)
 $form_name='admin_param';
 echo "<script language=javascript>
 		function confirme(did,form_name,hidden_name){
@@ -135,26 +135,57 @@ if ($_POST['onglet'] == 'CAT' or !isset($_POST['onglet'])){
 	
 	$reqCount="select count(extracted) nb from dico_soft where formatted='".$_POST['onglet_perso']."'".$search_count;
 	
-	$sql="select extracted name,id from dico_soft,softwares_name_cache cache
-			 where formatted='".$_POST['onglet_perso']."'
-			and dico_soft.extracted=cache.name ".$search_count."
+	$sql="select extracted name,id from dico_soft left join softwares_name_cache cache on dico_soft.extracted=cache.name
+			 where formatted='".$_POST['onglet_perso']."' ".$search_count."
 	order by 1 desc  limit ".$deb_limit.",".$fin_limit;
-	 
+	
  
  
 }
 
 /*******************************************************CAS OF NEW*******************************************************/
-if ($_POST['onglet'] == 'NEW'){	
+if ($_POST['onglet'] == 'NEW'){
+	//Search all first letter for all tab
+	
+	//first: create list of soft for sql request 
+	
+	$search_dico_soft="select extracted name from dico_soft";
+	$result_search_dico_soft = mysql_query( $search_dico_soft, $_SESSION["readServer"]);
+	$list_dico_soft="'";
+	while($item_search_dico_soft = mysql_fetch_object($result_search_dico_soft)){
+		$list_dico_soft.=str_replace("'","\'",$item_search_dico_soft -> name)."','";
+	}
+	$list_dico_soft=substr($list_dico_soft,0,-2);
+	
+	if($list_dico_soft == "")
+		$list_dico_soft="''";
+		
+	$search_ignored_soft="select extracted name from dico_ignored";
+	$result_search_ignored_soft = mysql_query( $search_ignored_soft, $_SESSION["readServer"]);
+	$list_ignored_soft="'";
+	while($item_search_ignored_soft = mysql_fetch_object($result_search_ignored_soft)){
+		$list_ignored_soft.=str_replace("'","\'",$item_search_ignored_soft -> name)."','";
+	}
+	$list_ignored_soft=substr($list_ignored_soft,0,-2);
+	
+	if($list_ignored_soft == "")
+	$list_ignored_soft="''";
+	
+	//utilisation du cache	
+	if ($_SESSION["usecache"] == 1){
+		$table_cache="softwares_name_cache";
+	}else{ //non utilisation du cache
+		$table_cache="softwares";
+	}
 	$sql_list_alpha="select substr(trim(name),1,1) alpha
-						 from softwares_name_cache cache 
-						 where substr(trim(name),1,1) is not null and cache.id not in (select cache.id from dico_soft, softwares_name_cache cache
-					where dico_soft.extracted=cache.name)
-					and cache.id not in (select cache.id from dico_ignored, softwares_name_cache cache
-					where dico_ignored.extracted=cache.name)".$search_cache;
+				 from ".$table_cache." cache 
+				 where substr(trim(name),1,1) is not null and name not in (".$list_dico_soft.")
+			and name not in (".$list_ignored_soft.")".$search_cache;	
 	 $result_list_alpha = mysql_query( $sql_list_alpha, $_SESSION["readServer"]);
 	 $i=0;
 
+//execute the query only if necessary 
+if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha or !isset($_POST['onglet_bis'])){
 	 while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
 	 	if (strtoupper($item_list_alpha -> alpha) != "" 
 			and strtoupper($item_list_alpha -> alpha) != Ã
@@ -163,18 +194,23 @@ if ($_POST['onglet'] == 'NEW'){
 				if (!isset($_POST['onglet_bis']))
 					$_POST['onglet_bis']=strtoupper($item_list_alpha -> alpha);
 				$list_alpha[strtoupper($item_list_alpha -> alpha)]=strtoupper($item_list_alpha -> alpha);
-				if (isset($first)){
+				if (!isset($first)){
 					$first=$list_alpha[strtoupper($item_list_alpha -> alpha)];				
 				}
 	 	}
 	}
 	if (!isset($list_alpha[str_replace('\"','"',$_POST['onglet_bis'])]))
 	$_POST['onglet_bis']=$first;
-
-	$search_soft="select name from softwares_name_cache cache
+	//execute the query only if necessary 
+	$_SESSION['REQ_ONGLET_SOFT']= $sql_list_alpha;
+	$_SESSION['ONGLET_SOFT']=$list_alpha;
+}
+	
+	//search all soft for the tab as selected 
+	$search_soft="select name from ".$table_cache." cache
 			where name like '".$_POST['onglet_bis']."%'
-			and name not in (select extracted from dico_soft)
-			and name not in (select extracted from dico_ignored) ".$search_cache;
+			and name not in (".$list_dico_soft.")
+			and name not in (".$list_ignored_soft.") ".$search_cache;
 	$result_search_soft = mysql_query( $search_soft, $_SESSION["readServer"]);
 	$list_soft="'";
  	while($item_search_soft = mysql_fetch_object($result_search_soft)){
@@ -186,17 +222,18 @@ if ($_POST['onglet'] == 'NEW'){
 	$reqCount="select count(distinct name) nb
 	from softwares
 	where NAME in (".$list_soft.")";
+	
 	$sql="select name, count(name) nbre from softwares 
 			where name in (".$list_soft.")
 			group by name
 			order by 2 desc limit ".$deb_limit.",".$fin_limit;
 		
-	$sql="select cache.name name,count(soft.name) nbre,cache.id
-	from softwares soft,softwares_name_cache cache
-	where soft.name in(".$list_soft.")
-	and soft.name=cache.name
-	group by cache.name
-	order by 2 desc  limit ".$deb_limit.",".$fin_limit;
+//	$sql="select cache.name name,count(soft.name) nbre,cache.id
+//	from softwares soft,softwares_name_cache cache
+//	where soft.name in(".$list_soft.")
+//	and soft.name=cache.name
+//	group by cache.name
+//	order by 2 desc  limit ".$deb_limit.",".$fin_limit;
 	
 }
 
@@ -205,21 +242,22 @@ if ($_POST['onglet'] == 'IGNORED'){
 	$reqCount="select count(extracted) nb from dico_ignored";
 	//on enlève le AND et on met le where devant
 	if ($search_count != "")
-	$reqCount.=" where ".substr($search_count,4);
+	$modif_search = " where ".substr($search_count,4);
+	$reqCount.=$modif_search;
 	$sql="select extracted name, cache.id 
-			from dico_ignored,softwares_name_cache cache 
-		where cache.name=dico_ignored.extracted".$search_cache."
-		group by id
+			from dico_ignored left join softwares_name_cache cache on cache.name=dico_ignored.extracted 
+			".$modif_search."
 		 limit ".$deb_limit.",".$fin_limit;
+
 }
 
 /*******************************************************CAS OF UNCHANGED*******************************************************/
 if ($_POST['onglet'] == 'UNCHANGED'){
 	$reqCount="select count(extracted) nb from dico_soft where extracted=formatted".$search_count;
 	$sql="select extracted name, cache.id
-		 from dico_soft,softwares_name_cache cache 
+		 from dico_soft left join softwares_name_cache cache on cache.name=dico_soft.extracted
 	 	where extracted=formatted ".$search_cache."
-		and cache.name=dico_soft.extracted limit ".$deb_limit.",".$fin_limit;
+		limit ".$deb_limit.",".$fin_limit;
 }
 
 $resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
@@ -237,14 +275,14 @@ $result = mysql_query( $sql, $_SESSION["readServer"]);
 		$data[$i][$entete[0]]=$item ->name;
 		if ($_POST['onglet'] == 'NEW' )
 		$data[$i][$entete[1]]=$item ->nbre;
-		$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".$item ->id."' id='".$i."'>";
+		$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".(isset($item ->id)?$item ->id:str_replace("'","\'",$item -> name))."' id='".$i."'>";
 		$i++;
 		}
 	$titre=$l->g(768)." ".$valCount['nb'];
 	$width=60;
 	$height=300;
 if ($_POST['onglet'] == 'NEW'){
-		 onglet($list_alpha,$form_name,"onglet_bis",20);
+		 onglet($_SESSION['ONGLET_SOFT'],$form_name,"onglet_bis",20);
 }
 	
 	tab_entete_fixe($entete,$data,$titre,$width,$height);
