@@ -8,7 +8,9 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.18 $)
+//Modified on $Date: 2008-03-17 13:48:10 $$Author: airoine $($Revision: 1.19 $)
+if (isset($_GET['first']) or ($_GET == null))
+$_GET['multi']="console";
 $sleep=1;
 function getmicrotime(){
     list($usec, $sec) = explode(" ",microtime());
@@ -278,7 +280,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 34: require ('rules_redistrib.php');break;
 		case 35: require ('admin_language.php');break;
 		case 36: require ('all_soft.php');break;
-	//case 40: require ('serv_data_redistrib.php');break;
+		case "console" : require ('console.php');break;	
 		default:require ('resultats.php');
  		//default: require ('console.php');		
  	}
