@@ -772,6 +772,11 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ENABL
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD_IP',0,'','Enable inventory flooding filter. A dedicated ipaddress ia allowed to send a new computer only once in this period');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_FLOOD_IP_CACHE_TIME',300,'','Period definition for INVENTORY_FILTER_FLOOD_IP');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ON',0,'','Enable inventory filter stack');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_RAM_MAX',512,'','Filter on RAM for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_RAM_MINI',128,'','Filter on RAM for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_NOT_VIEW',3,'','Filter on DAY for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_PROC_MINI',1000,'','Filter on PROCESSOR for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_PROC_MAX',4000,'','Filter on PROCESSOR for console page');
 
 ALTER TABLE download_enable ADD SERVER_ID INT(11);
 ALTER TABLE download_enable ADD GROUP_ID INT(11);
