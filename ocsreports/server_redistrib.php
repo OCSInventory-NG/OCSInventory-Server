@@ -52,7 +52,6 @@ if (isset($_POST['Valid_modif_x']) and $_POST['WHERE'] == "MODIFMACHGROUPSERVER"
 		mysql_query($sql, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 
 	}
-//	print_r($_POST);
 }
 
 
@@ -154,19 +153,31 @@ if (isset($_GET['modifgroupserver']) and !isset($_POST['Valid_modif_x']) and !is
 //view of all group's machin
 if (isset($_GET['viewmach']))
 {
-		$result = mysql_query("select hardware.ID,
-									  hardware.NAME,
-									  hardware.IPADDR,
-									  hardware.DESCRIPTION,
-									  download_servers.URL,
-				 					  download_servers.ADD_REP
-								from hardware left join download_servers on hardware.id=download_servers.hardware_id
-								where download_servers.GROUP_ID=".$data[$_GET['viewmach']]['ID'], $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	if (!(isset($_POST["pcparpage"])) and isset($_GET['res_pag']))
+	$_POST["pcparpage"]=$_GET['res_pag'];
+	if (!(isset($_POST["page"])) and isset($_GET['page']))
+	$_POST["page"]=$_GET['page'];
+	$form_name='nb_4_pag';
+	echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
+	$limit=nb_page($form_name);
+	$sql="select hardware.ID,
+			  hardware.NAME,
+			  hardware.IPADDR,
+			  hardware.DESCRIPTION,
+			  download_servers.URL,
+			  download_servers.ADD_REP
+		from hardware left join download_servers on hardware.id=download_servers.hardware_id
+		where download_servers.GROUP_ID=".$data[$_GET['viewmach']]['ID'];
+	$reqCount="select count(*) nb from (".$sql.") toto";
+	$resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	$valCount = mysql_fetch_array($resCount);
+	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
+		$result = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		$i=0;
 	while($colname = mysql_fetch_field($result))
 		$entete2[$i++]=$colname->name;
 		$entete2[$i++]="SUP <br><a href=# OnClick='confirme(\"".$data[$_GET['viewmach']]['ID']."\",\"".$l->g(643)."\",\"all_mach\",\"viewmach\",\"".$_GET['viewmach']."\");'><img src=image/delete_all.png></a>";
-		$entete2[$i]="MODIF <a href='index.php?multi=33&viewmach=".$_GET['viewmach']."&modifmachgroupserver=ALL'><img src=image/modif_all.png ></a>";
+		$entete2[$i]="MODIF <a href='index.php?multi=33&viewmach=".$_GET['viewmach']."&modifmachgroupserver=ALL&res_pag=".$_POST["pcparpage"]."&page=".$_POST['page']."'><img src=image/modif_all.png ></a>";
 
 	$i=0;
 	//" du groupe ".$data[$_GET['viewmach']]['ID'].
@@ -178,12 +189,13 @@ if (isset($_GET['viewmach']))
 			$data2[$i]['URL']="http://".$item ->URL;
 			$data2[$i]['REP_STORE']=$item ->ADD_REP;
 			$data2[$i]['SUP']="<a href=# OnClick='confirme(\"".$item ->ID."\",\"".$l->g(644)."\",\"mach\",\"viewmach\",\"".$_GET['viewmach']."\");'><img src=image/supp.png></a>";
-			$data2[$i]['MODIF']="<a href='index.php?multi=33&viewmach=".$_GET['viewmach']."&modifmachgroupserver=".$i."'><img src=image/modif_tab.png ></a>";
+			$data2[$i]['MODIF']="<a href='index.php?multi=33&viewmach=".$_GET['viewmach']."&modifmachgroupserver=".$i."&res_pag=".$_POST["pcparpage"]."&page=".$_POST['page']."'><img src=image/modif_tab.png ></a>";
 			$i++;
 	}
-	 $total="<font color=red> (<b>".$i." ".$l->g(652)."</b>)</font>";
+	 $total="<font color=red> (<b>".$valCount['nb']." ".$l->g(652)."</b>)</font>";
 	tab_entete_fixe($entete2,$data2,$l->g(645).$total,"95","300");
-
+	show_page($valCount['nb'],$form_name);
+	echo "</table></form>";
 }
 //detail of group's machin
 if (isset($_GET['modifmachgroupserver']) and !isset($_POST['Valid_modif_x']) and !isset($_POST['Reset_modif_x']))

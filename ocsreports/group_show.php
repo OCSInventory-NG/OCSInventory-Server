@@ -8,16 +8,14 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.4 $)
+//Modified on $Date: 2008-03-20 16:26:49 $$Author: airoine $($Revision: 1.5 $)
 
 
 
 require('fichierConf.class.php');
 require('req.class.php');
 require('require/function_opt_param.php');
-if( $_SESSION["lvluser"]!=LADMIN && $_SESSION["lvluser"]!=SADMIN  )
-	die("FORBIDDEN");
-//$_GET["multi"] = 24; // To avoid storing systemid in querystring
+
 require_once("preferences.php");
 if (isset($_GET['systemid'])) {
 	$systemid = $_GET['systemid'];
@@ -30,6 +28,13 @@ if (isset($_GET['systemid'])) {
 elseif (isset($_POST['systemid'])) {
 	$systemid = $_POST['systemid'];
 }
+if( $_SESSION["lvluser"]!=LADMIN && $_SESSION["lvluser"]!=SADMIN  ){
+	$sql_verif="select TAG from accountinfo where TAG='GROUP_4_ALL' and HARDWARE_ID='".$systemid."'";
+	$res_verif = mysql_query($sql_verif, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	$item_verif = mysql_fetch_object($res_verif);
+	if ($item_verif == "")
+	die("FORBIDDEN");
+}
 
 if (isset($_GET['state']))
 {
@@ -38,7 +43,7 @@ if (isset($_GET['state']))
 		echo "<script language='javascript'>window.location.reload();</script>\n";		
 }// fin if
 
-if( isset( $_GET["suppack"] ) && $_SESSION["lvluser"] == SADMIN ) {
+if( isset( $_GET["suppack"] ) ) {
 	if( $_SESSION["justAdded"] == false )
 		@mysql_query("DELETE FROM devices WHERE ivalue=".$_GET["suppack"]." AND hardware_id='$systemid' AND name='DOWNLOAD'", $_SESSION["writeServer"]);
 	else $_SESSION["justAdded"] = false;
@@ -46,13 +51,12 @@ if( isset( $_GET["suppack"] ) && $_SESSION["lvluser"] == SADMIN ) {
 else 
 	$_SESSION["justAdded"] = false;
 
-if( isset($_POST["actshowgroup"]) && $_SESSION["lvluser"] == SADMIN ) {
+if( isset($_POST["actshowgroup"])) {
 	foreach( $_POST as $key=>$val ) {
 		if( strpos ( $key, "checkmass" ) !== false ) {
 			
 			$resDelete = "DELETE FROM groups_cache WHERE hardware_id=$val AND group_id=".$systemid;
 			@mysql_query( $resDelete, $_SESSION["writeServer"] );
-			
 			if( $_POST["actshowgroup"] != 0 ) {
 				$reqInsert = "INSERT INTO groups_cache(hardware_id, group_id, static) VALUES ($val, ".$systemid.", ".$_POST["actshowgroup"].")";
 				$resInsert = mysql_query( $reqInsert, $_SESSION["writeServer"] );
@@ -162,6 +166,7 @@ else {
 }
 
 echo "</tr><tr>".$tdhd.$l->g(53).$tdhf.$tdhdpb.$description.$tdhfpb;
+if ($_SESSION["lvluser"]!=ADMIN)
 echo "<tr><td align='left' colspan=4>".$button_valid."&nbsp&nbsp".$button_reset."&nbsp&nbsp".$img_modif."</td></tr>";
 echo "$tdhfpb</table>";
 echo "</form>";
@@ -252,9 +257,18 @@ function print_computers_real($systemid) {
 function print_computers_cached($systemid) {
 
 	global $l;
-	
+	if ($_SESSION["lvluser"]==ADMIN){
+		$sql_mesMachines="select hardware_id from accountinfo a where ".$_SESSION["mesmachines"];
+		$res_mesMachines = mysql_query($sql_mesMachines, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		$mesmachines="(";
+		while ($item_mesMachines = mysql_fetch_object($res_mesMachines)){
+			$mesmachines.= $item_mesMachines->hardware_id.",";	
+		}
+		$mesmachines="and hardware_id IN ".substr($mesmachines,0,-1).")";
+			
+	}
 	//Need all hardware ids in cache table
-	$reqIds = "SELECT DISTINCT hardware_id FROM groups_cache WHERE group_id='$systemid'"; 
+	$reqIds = "SELECT DISTINCT hardware_id FROM groups_cache WHERE group_id='$systemid' ".$mesmachines; 
 	$sql = " deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' AND h.id IN ('".getGluedIds($reqIds)."')";
 
 	$lbl=$l->g(2);		//Nom de la requete

@@ -146,7 +146,7 @@ function insert_with_rules_opt($ID_HARDWARE,$cfield,$op,$compto,$serv_value){
 	$sql_servValues = "select a.".$compto.",a.".$id_server.",d.id as id_download_enable from ".$tablecompto." a,download_enable d
 						 where a.".$id_server." in (".implode(',',$list_serverId).") and d.server_id=a.".$id_server;
 	$res_servValues = mysql_query( $sql_servValues, $_SESSION["readServer"] ) or die(mysql_error($_SESSION["readServer"]));	
-
+	//echo $sql_servValues;
 	while( $val_servValues = mysql_fetch_array($res_servValues)) {
 		$tab_serValues[$val_servValues[$compto]]=$val_servValues[$id_server];
 		$correspond_servers[$val_servValues[$id_server]]=$val_servValues['id_download_enable'];
@@ -194,7 +194,7 @@ function insert_with_rules_opt($ID_HARDWARE,$cfield,$op,$compto,$serv_value){
 	}
 	if (isset($verif_idMach)){
 		//verification des doublons
-		$sql_verif="select d.hardware_id as hardware_id,ivalue
+		$sql_verif="select d.hardware_id as hardware_id
 			  from devices d,download_enable d_e 
 			  where d.ivalue=d_e.id and fileid=".$_POST['TIMESTAMP']."
 				AND d.HARDWARE_ID in (".implode(',',$verif_idMach).") and d.name='DOWNLOAD'";
@@ -205,14 +205,12 @@ function insert_with_rules_opt($ID_HARDWARE,$cfield,$op,$compto,$serv_value){
 	
 			//création du tableau de doublon
 			$exist[$nb_exist]=$val_verif['hardware_id'];
-
-			//remise à null du tvalue pour ces machines
-			$sql_update="update devices set tvalue=null where HARDWARE_ID=".$val_verif['hardware_id']." and ivalue=".$val_verif['ivalue'];
-			mysql_query( $sql_update, $_SESSION["writeServer"] ) or die(mysql_error($_SESSION["writeServer"]));	
+			
 			//suppression des doublons
 			unset($tab_final[$val_verif['hardware_id']]);
 			$nb_exist++;
 		}
+		//print_r($tab_final);
 		//insertion en base 
 		foreach ($tab_final as $key=>$value){
 		$query="INSERT INTO devices(HARDWARE_ID, NAME, IVALUE) VALUES('".$key."', 'DOWNLOAD','".$value."')";

@@ -5,17 +5,32 @@
  * 
  * 
  */
-//javascript for confirmation delete
-function confirm_supp($nom)
-{
-	global $l,$_GET;
-	echo "<script language=javascript>
-		function confirme(did){
-			if(confirm(\"".$l->g(640)." ".$nom." \"+did+\" ?\"))
-				window.location=\"index.php?multi=".$_GET['multi']."&suppAcc=\"+did;
+
+  echo "<script language=javascript>
+		function post(form_name){		
+			document.getElementById(form_name).submit();
 		}
-	</script> ";
-}
+		function tri(did,did2,form_name){
+				document.getElementById(\"tri\").value=did;
+				document.getElementById(\"sens\").value=did2;
+				post(form_name);
+		}
+		function confirme(aff,did,form_name,hidden_name,lbl){
+			if(confirm(lbl+aff+'?')){
+				garde_valeur(did,hidden_name);
+				post(form_name);
+			}
+		}
+		function garde_valeur(did,hidden_name){
+				document.getElementById(hidden_name).value=did;
+		}
+		function page(did,hidden_name,form_name){
+				garde_valeur(did,hidden_name);
+				post(form_name);
+		}
+
+</script>";
+
 //ascending and descending sort
 function tri($sql)
 {
@@ -125,6 +140,12 @@ function tri($sql)
 	}
 	
 }
+
+
+
+
+
+
 //variable pour la fonction champsform
 $num_lig=0;
 /* fonction liée à show_modif
@@ -238,6 +259,54 @@ function tab_list_error($data,$title)
 	
 }
 
+function nb_page($form_name){
+	global $_POST,$l;
+	if (!(isset($_POST["pcparpage"])))
+	 $_POST["pcparpage"]=20;
+	 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td align=center>";
+	$machNmb = array(5,10,15,20,50,100);
+	$pcParPageHtml = $l->g(340).": <select name='pcparpage' onChange='document.".$form_name.".submit();'>";
+	$countHl=0;
+	foreach( $machNmb as $nbm ) {
+		$pcParPageHtml .=  "<option".($_POST["pcparpage"] == $nbm ? " selected" : "").($countHl%2==1?" class='hi'":"").">$nbm</option>";
+		$countHl++;
+	}
+	$pcParPageHtml .=  "</select></td></tr><tr><td align=center>";
+	echo $pcParPageHtml;
+	if (isset($_POST["pcparpage"])){
+		$limit=$_POST["pcparpage"];
+		$deb_limit=$_POST['page']*$_POST["pcparpage"];
+	$fin_limit=$limit;		
+	}
+	return (array("BEGIN"=>$deb_limit,"END"=>$fin_limit));
+}
+
+function show_page($valCount,$form_name){
+	global $_POST;
+	if (isset($_POST["pcparpage"]) and $_POST["pcparpage"] != 0)
+	$nbpage= ceil($valCount/$_POST["pcparpage"]);
+	if ($nbpage >1){
+	$up=$_POST['page']+1;
+	$down=$_POST['page']-1;
+	echo "</tr><tr><td align=center>";
+	if ($_POST['page'] > 0)
+	echo "<img src='image/prec24.png' OnClick='page(\"".$down."\",\"page\",\"".$form_name."\")'>";
+	//if ($nbpage<10){
+		$i=0;
+		while ($i<$nbpage){
+			if ($_POST['page'] == $i)
+			echo "<font color=red>".$i."</font> ";
+			else
+			echo "<a OnClick='page(\"".$i."\",\"page\",\"".$form_name."\")'>".$i."</a> ";
+			$i++;
+		}
+
+	if ($_POST['page']< $nbpage-1)
+	echo "<img src='image/proch24.png' OnClick='page(\"".$up."\",\"page\",\"".$form_name."\")'>";
+	
+	}
+	echo "<input type='hidden' id='page' name='page' value=''>";
+}
 
 
 function onglet($def_onglets,$form_name,$post_name,$ligne)

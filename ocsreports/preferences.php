@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.32 $)
+//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.33 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -349,6 +349,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 {
 		global $l, $_GET;				
 		$deletable = ($_SESSION["lvluser"]==SADMIN) && $_GET["multi"]!=2 && $deletableP;
+	if ($_GET['multi']!=29 and $_GET['multi']!=1)
 		$allowCheckBoxes = ($_SESSION["lvluser"]==SADMIN) && $allowCheckBoxes;
 		global $pcparpage;
 		$columneditable = $req->columnEdit;		
@@ -940,27 +941,31 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		if( $uneMachine ) {
 			//Super user and not group query
 
-			if( $_SESSION["lvluser"]==SADMIN && $massProcessing && $req->label != $l->g(583) && $req->label != $l->g(2) ) {
-				echo "<br><center><b>".$l->g(430).":</b>";			
+			if($massProcessing && $req->label != $l->g(583) && $req->label != $l->g(2) ) {
+				echo "<br><center><b>".$l->g(430).":</b>";	
+				if ( $_SESSION["lvluser"]==SADMIN ){		
 				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=22\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(107)."</a></b> |";
 				//echo "&nbsp;&nbsp;<b><a href='index.php?multi=23' target=_top>".$l->g(312)."</a></b>";
 				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&frompref=1&multi=24&isgroup=0\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(428)."</a></b> |";
 				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=27\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(122)."</a></b> |";
-
+				}
 				//GROUP BAR
 				if( $_GET["multi"] == 1 ) {
 					// get values for coming back from group_create page
 					//$_SESSION["hiddens"] = $hiddens;
 					echo "&nbsp;&nbsp;<b><a href='#' target='_top'
-						 onclick='document.getElementById(\"server\").style.display=\"none\";
+						 onclick='document.getElementById(\"groups\").style.display=\"block\";";
+					if ( $_SESSION["lvluser"]==SADMIN ){	 
+							echo "	  document.getElementById(\"server\").style.display=\"none\";
 						 		  document.getElementById(\"add_serv\").style.display=\"none\";
 						 		  document.getElementById(\"new_serv\").style.display=\"none\";
-						 		  document.getElementById(\"replace_serv\").style.display=\"none\";
-						 		  document.getElementById(\"groups\").style.display=\"block\"; return false;'>".$l->g(583)."</a></b> |";
-					
-					echo "&nbsp;&nbsp;<b><a href='#' target='_top' onclick='document.getElementById(\"groups\").style.display=\"none\"; document.getElementById(\"server\").style.display=\"block\"; return false;'>".$l->g(628)."</a></b>";
-					//find all group
-					$reqGroups = "SELECT DISTINCT name FROM hardware WHERE deviceid='_SYSTEMGROUP_'";
+						 		  document.getElementById(\"replace_serv\").style.display=\"none\";";
+					}
+					echo "  return false;'>".$l->g(583)."</a></b> ";
+					if ( $_SESSION["lvluser"]==SADMIN ){
+					echo "|&nbsp;&nbsp;<b><a href='#' target='_top' onclick='document.getElementById(\"groups\").style.display=\"none\"; document.getElementById(\"server\").style.display=\"block\"; return false;'>".$l->g(628)."</a></b>";
+					}//find all group
+					$reqGroups = "SELECT DISTINCT name,TAG FROM hardware h left join accountinfo a on h.id=a.hardware_id WHERE deviceid='_SYSTEMGROUP_'";
 					$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 					//list of choise
 					$actionServer['0']=$l->g(32);
@@ -969,29 +974,31 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					$actionServer['replace_serv']=$l->g(632)." ".$l->g(630);
 					$first = true;
 					while( $valGroups = mysql_fetch_array( $resGroups ) ) {
+						if ($_SESSION["lvluser"] == SADMIN or $valGroups["TAG"] == "GROUP_4_ALL")
 						$groupList .= "<option>".$valGroups["name"]."</option>";
 					}
-					//find all server
-					$reqGroupsServers = "SELECT DISTINCT name FROM hardware WHERE deviceid='_DOWNLOADGROUP_'";
-					$resGroupsServers = mysql_query( $reqGroupsServers, $_SESSION["readServer"] );
-					while( $valGroupsServers = mysql_fetch_array( $resGroupsServers ) ) {
-						$groupListServers .= "<option>".$valGroupsServers["name"]."</option>";
-					}
-					//function for show only one div
-					function show_only_me($show,$actionServer)
-					{
-						echo "<option value='".$show."' onclick='";
-						foreach ($actionServer as $key=>$value){
-							if ($key == $show and $key != '0')
-							echo "document.getElementById(\"".$key."\").style.display=\"block\";";
-							elseif ($key != '0')
-							echo "document.getElementById(\"".$key."\").style.display=\"none\";";
+					if ( $_SESSION["lvluser"]==SADMIN ){
+						//find all server
+						$reqGroupsServers = "SELECT DISTINCT name FROM hardware WHERE deviceid='_DOWNLOADGROUP_'";
+						$resGroupsServers = mysql_query( $reqGroupsServers, $_SESSION["readServer"] );
+						while( $valGroupsServers = mysql_fetch_array( $resGroupsServers ) ) {
+							$groupListServers .= "<option>".$valGroupsServers["name"]."</option>";
+						}
+						//function for show only one div
+						function show_only_me($show,$actionServer)
+						{
+							echo "<option value='".$show."' onclick='";
+							foreach ($actionServer as $key=>$value){
+								if ($key == $show and $key != '0')
+								echo "document.getElementById(\"".$key."\").style.display=\"block\";";
+								elseif ($key != '0')
+								echo "document.getElementById(\"".$key."\").style.display=\"none\";";
+								
+							}
+							echo "'>".$actionServer[$show]."</option>";
 							
 						}
-						echo "'>".$actionServer[$show]."</option>";
-						
 					}
-					
 					
 					?>
 					<br>
@@ -1006,29 +1013,39 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 						
 					}
 					</script>
-					<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '60%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
+					<?
+					echo "<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '60%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
+					<tr height='20px' bgcolor='white'>";
+					if ( $_SESSION["lvluser"]==SADMIN ){  
+						echo "	<td align='center' colspan='2'><b>".$l->g(584)."</b></td>
+						<td align='center' colspan='10'><b>".$l->g(585)."</b></td></tr>
 					<tr height='20px' bgcolor='white'>
-						<td align='center' colspan='2'><b><?php echo $l->g(584); ?></b></td>
-						<td align='center' colspan='10'><b><?php echo $l->g(585); ?></b></td></tr>
-					<tr height='20px' bgcolor='white'>
-						<td width='25%'><?php echo $l->g(586)." "; ?>:</td><td width='25%'><input type='text' id='cg' name='cg' onfocus='cleanForm(this)'></td>
-						<td width='25%'><?php echo $l->g(587)." "; ?>:</td><td width='25%'><input type='text' id='cgs' name='cgs' onfocus='cleanForm(this)'></td>
+						<td width='25%'>".$l->g(586)." :</td><td width='25%'><input type='text' id='cg' name='cg' onfocus='cleanForm(this)'></td>
+					<td width='25%'>".$l->g(587)." :</td><td width='25%'><input type='text' id='cgs' name='cgs' onfocus='cleanForm(this)'></td>
 					</tr>
 					<tr height='20px' bgcolor='white'>
-						<td><?php echo $l->g(588)." "; ?>:</td><td><select id='eg' name='eg' onfocus='cleanForm(this)'><option value='_nothing_'><? echo $l->g(32); ?></option><? echo $groupList; ?></select></td>
-						<td><?php echo $l->g(589)." "; ?>:</td><td><select id='asg' name='asg' onfocus='cleanForm(this)'><option value='_nothing_'><? echo $l->g(32); ?></option><? echo $groupList; ?></select></td></tr>
-					<tr height='30px' bgcolor='white'><td align='center' colspan='5'><?php echo $l->g(53).": "; ?>
+						<td>".$l->g(588)." :</td><td><select id='eg' name='eg' onfocus='cleanForm(this)'><option value='_nothing_'>".$l->g(32)."</option>".$groupList."</select></td>";
+					}
+					echo "	<td>".$l->g(589)." :</td><td><select id='asg' name='asg'";
+					if ( $_SESSION["lvluser"]==SADMIN )
+					echo " onfocus='cleanForm(this)'";
+					echo "><option value='_nothing_'>".$l->g(32)."</option>".$groupList."</select></td></tr>";
+					if ( $_SESSION["lvluser"]==SADMIN ){ 
+					echo "<tr height='30px' bgcolor='white'><td align='center' colspan='5'>".$l->g(53).": 
 					<input type='text' name='desc' id='desc' size='100'></td></tr>
-					<tr height='20px' bgcolor='white'><td align='right' colspan='5'><b><input type='submit'></b></td></tr>
+					<tr height='20px' bgcolor='white'>";
+					}
+					echo "<td align='right' colspan='5'><b><input type='submit'></b></td></tr>
 					</table>
-					</div>
+					</div>";
+					if ( $_SESSION["lvluser"]==SADMIN ){
 					
-					<div id='server' style='display:none'>
+					echo "<div id='server' style='display:none'>
 		 			<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5' >
 					<tr>
-						<td align='center' colspan='2'><b><?php echo $l->g(585); ?></b></td></tr>
+						<td align='center' colspan='2'><b>".$l->g(585)."></b></td></tr>
 					<tr>
-						<td><?php echo $l->g(634); ?> :</td><td><select id='action_server' name='action_server'><?php
+						<td>".$l->g(634)." :</td><td><select id='action_server' name='action_server'>";
 						show_only_me(0,$actionServer);
 						show_only_me("new_serv",$actionServer);
 						show_only_me("add_serv",$actionServer);
@@ -1073,7 +1090,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 							echo "</select><br>";
 						echo "</div>";*/
 				}
-				
+				}
 				echo "</center>";
 			}			
 		}		

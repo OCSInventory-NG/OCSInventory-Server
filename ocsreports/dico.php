@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-17 13:48:56 $$Author: airoine $($Revision: 1.14 $)
+//Modified on $Date: 2008-03-20 16:26:49 $$Author: airoine $($Revision: 1.15 $)
 $form_name='admin_param';
 echo "<script language=javascript>
 		function confirme(did,form_name,hidden_name){

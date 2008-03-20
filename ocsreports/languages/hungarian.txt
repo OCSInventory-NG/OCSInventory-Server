@@ -770,11 +770,11 @@
 784 Different agent
 785 Different processors
 786 Different resolutions
-787 Machines with a processor >
-788 Machines with a processor <
+787 Machines with a processor >=
+788 Machines with a processor =<
 789 Machines with a processor between
-790 Machines with RAM >
-791 Machines with RAM <
+790 Machines with RAM >=
+791 Machines with RAM =<
 792 Machines with RAM between
 793 Machines in base
 794 Seen machines
@@ -792,3 +792,6 @@
 806 Minimum RAM amount
 807 Maximum RAM amount
 808 Repartition
+809 STATICS GROUPS 
+810 DYNAMICS GROUPS 
+811 Are you sure to want to modify the visibility of the group

@@ -677,11 +677,11 @@
 784 Agents différents
 785 Processeurs différents
 786 Résolutions différentes
-787 Machine avec un processeur >
-788 Machine avec un processeur <
+787 Machine avec un processeur >=
+788 Machine avec un processeur =<
 789 Machine avec un processeur entre
-790 Machine avec RAM >
-791 Machine avec RAM <
+790 Machine avec RAM >=
+791 Machine avec RAM =< 
 792 Machine avec RAM entre
 793 Machines en base
 794 Machines vues
@@ -699,3 +699,6 @@
 806 Taille RAM minimum
 807 Taille RAM maximum
 808 Répartition
+809 GROUPES STATIQUES
+810 GROUPES DYNAMIQUES
+811 Etes-vous sûr de vouloir modifier la visibilité du groupe

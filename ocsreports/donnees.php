@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.11 $)
+//Modified on $Date: 2008-03-20 16:26:49 $$Author: airoine $($Revision: 1.12 $)
 
 require ('req.class.php');
 
@@ -100,24 +100,25 @@ else {
 /**********************************************/
 
 /**********************************************/
-if($_SESSION["lvluser"]==SADMIN||$_SESSION["lvluser"]==LADMIN) {
-	$lbl=$l->g(583);		//Nom de la requete	
-	$sql = " deviceid='_SYSTEMGROUP_'"; 
-	if( $mesMachines != "" ) $sql .= " AND ";
-	$sql .= $mesMachines;
-	$whereId = "h.id";
-	$linkId = "h.id";
-	$select = array("h.id"=>"h.id" ,"deviceid"=>"deviceid","name"=>$l->g(577),"lastdate"=>"Creation",
-	"g.request<>''"=>ucfirst(strtolower($l->g(613))), "COUNT(gc.hardware_id)"=>$l->g(622), "CONCAT(LEFT(description,50),'...')"=>$l->g(53));	
-	$selectPrelim = array( "h.id"=>"h.id", "g.request<>''"=>ucfirst(strtolower($l->g(613))), "COUNT(gc.hardware_id)"=>$l->g(622), "CONCAT(LEFT(description,50),'...')"=>$l->g(53));
-	$from = "hardware h LEFT JOIN groups g ON g.hardware_id=h.id LEFT JOIN groups_cache gc ON gc.group_id=g.hardware_id";
-	$fromPrelim = "";
-	$group = "h.id";
-	$order = "h.lastdate DESC";
-	$countId = "h.id";
-	$pics = array("groups.png", "groups_a.png");
-	$req=new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,$pics); // Instanciation du nouvel objet de type "Req"
-	$requetes[]=$req;	// On l'ajoute au tableau $requetes contenant toutes les requêtes de l'application'
-}
+//if($_SESSION["lvluser"]==SADMIN||$_SESSION["lvluser"]==LADMIN) {
+//	
+//	$lbl=$l->g(583);		//Nom de la requete	
+//	$sql = " deviceid='_SYSTEMGROUP_'"; 
+////	if( $mesMachines != "" ) $sql .= " AND ";
+////	$sql .= $mesMachines;
+//	$whereId = "h.id";
+//	$linkId = "h.id";
+//	$select = array("h.id"=>"h.id" ,"deviceid"=>"deviceid","name"=>$l->g(577),"lastdate"=>"Creation",
+//	"g.request<>''"=>ucfirst(strtolower($l->g(613))), "COUNT(gc.hardware_id)"=>$l->g(622), "CONCAT(LEFT(description,50),'...')"=>$l->g(53));	
+//	$selectPrelim = array( "h.id"=>"h.id", "g.request<>''"=>ucfirst(strtolower($l->g(613))), "COUNT(gc.hardware_id)"=>$l->g(622), "CONCAT(LEFT(description,50),'...')"=>$l->g(53));
+//	$from = "hardware h LEFT JOIN groups g ON g.hardware_id=h.id LEFT JOIN groups_cache gc ON gc.group_id=g.hardware_id";
+//	$fromPrelim = "";
+//	$group = "h.id";
+//	$order = "h.lastdate DESC";
+//	$countId = "h.id";
+//	$pics = array("groups.png", "groups_a.png");
+//	$req=new Req($lbl,$whereId,$linkId,$sql,$select,$selectPrelim,$from,$fromPrelim,$group,$order,$countId,$pics); // Instanciation du nouvel objet de type "Req"
+//	$requetes[]=$req;	// On l'ajoute au tableau $requetes contenant toutes les requêtes de l'application'
+//}
 /**********************************************/
 ?>

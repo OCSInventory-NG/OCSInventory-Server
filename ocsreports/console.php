@@ -5,6 +5,8 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
+ $exlu_group=" deviceid != '_SYSTEMGROUP_' 
+									and deviceid != '_DOWNLOADGROUP_' ";
  require_once('require/function_table_html.php');
 echo "<script language=javascript>
 		function garde_valeur(form_name,did,hidden_name,did2,hidden_name2){
@@ -16,12 +18,16 @@ echo "<script language=javascript>
 </script>";
 //function for only count before show result
  function query_on_table_count($name,$lbl_data,$tablename="hardware"){
- 	global $list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show;
+ 	global $exlu_group,$list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show;
  	if (!isset($list_no_show[$name])){
 	 	$sql_on_hardware="select count(".$name.") c
 						from ".$tablename." h ";
-		if ($tablename=="hardware")
-		$sql_on_hardware.=$list_on_hardware;
+		if ($tablename=="hardware"){
+			if ($list_on_hardware == "")
+				$sql_on_hardware.=" where ".$exlu_group;
+			else
+			    $sql_on_hardware.=$list_on_hardware." and ".$exlu_group;
+		}
 		else
 		$sql_on_hardware.=$list_on_else;
 		$sql_on_hardware.="	group by ".$name;
@@ -35,13 +41,16 @@ echo "<script language=javascript>
  
 //function for show all result  
  function query_on_table($name,$lbl_data,$lbl_data_detail,$tablename="hardware"){
- 	global $list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show;
+ 	global $exlu_group,$list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show;
  	if (!isset($list_no_show[$name])){
 	 	$sql_on_hardware="select count(".$name.") c, ".$name." 
 						from ".$tablename." h ";
-		if ($tablename=="hardware")
-		$sql_on_hardware.=$list_on_hardware;
-		else
+		if ($tablename=="hardware"){
+			if ($list_on_hardware == "")
+				$sql_on_hardware.=" where ".$exlu_group;
+			else
+			    $sql_on_hardware.=$list_on_hardware." and ".$exlu_group;
+		}else
 		$sql_on_hardware.=$list_on_else;
 		$sql_on_hardware.="	group by ".$name."
 							order by 1 desc ";
@@ -59,11 +68,11 @@ echo "<script language=javascript>
  }
  //function for count result
  function query_with_condition($wherecondition,$lbl_data,$name_data,$tablename="hardware"){
- 	global $data,$titre,$list_hardware_id,$list_id,$list_no_show;
+ 	global $exlu_group,$data,$titre,$list_hardware_id,$list_id,$list_no_show;
  	if (!isset($list_no_show[$name_data])){
 	 	$sql_count="select count(*) c from ".$tablename." h ".$wherecondition." ";
 	 	if ($tablename=="hardware")
-	 	$sql_count.=$list_hardware_id;
+	 	$sql_count.=$list_hardware_id." and ".$exlu_group;
 	 	else
 	 	$sql_count.=$list_id;
 	 	$sql_count.=" order by 1 desc";
@@ -227,7 +236,8 @@ if (isset($default)){
 		
 		//count number of all computers
 		if (!isset($list_no_show['NB_ALL_COMPUTOR']) and !isset($list_no_show['NB_COMPUTOR'])){
-			$sql_count_computer="select count(*) c from accountinfo a ";
+			$sql_count_computer="select count(*) c from hardware h 
+								 where ".$exlu_group;
 			$result_count_computer = mysql_query( $sql_count_computer, $_SESSION["readServer"]);
 			$item_count_computer = mysql_fetch_object($result_count_computer);
 			if (!isset($list_no_show['NB_ALL_COMPUTOR'])){
@@ -242,11 +252,11 @@ if (isset($default)){
 		 		$data['NB_COMPUTOR']['lbl']=$lbl_field['NB_COMPUTOR'];
 			}
 		}
-	 	query_with_condition("where lastcome > date_format(sysdate(),'%Y-%m-%d 00:00:00')",
+	 	query_with_condition("where lastcome > date_format(sysdate(),'%Y-%m-%d 00:00:00') ",
 							 $lbl_field['NB_CONTACT'],'NB_CONTACT');
-		query_with_condition("where lastdate > date_format(sysdate(),'%Y-%m-%d 00:00:00')",
+		query_with_condition("where lastdate > date_format(sysdate(),'%Y-%m-%d 00:00:00') ",
 							 $lbl_field['NB_INV'],'NB_INV');
-		query_with_condition("where unix_timestamp(lastdate) < unix_timestamp(sysdate())-(".$list_option['NOT_VIEW']."*86400)",
+		query_with_condition("where unix_timestamp(lastdate) < unix_timestamp(sysdate())-(".$list_option['NOT_VIEW']."*86400) ",
 							 $lbl_field['NB_4_MOMENT']." ".$list_option['NOT_VIEW']." ".$l->g(496),'NB_4_MOMENT');
 	
 	}
@@ -267,11 +277,11 @@ if (isset($default)){
 	if ($_POST['onglet'] == "HARD"){
 		query_on_table_count("PROCESSORT",$lbl_field["PROCESSORT"]);
 		query_on_table_count("RESOLUTION",$lbl_field["RESOLUTION"],"videos");
-		query_with_condition("where processors>".$list_option['PROC_MAX'],$lbl_field['NB_LIMIT_FREQ_H']." ".$list_option['PROC_MAX']." Mhz",'NB_LIMIT_FREQ_H');
-		query_with_condition("where processors<".$list_option['PROC_MINI'],$lbl_field['NB_LIMIT_FREQ_M']." ".$list_option['PROC_MINI']." Mhz",'NB_LIMIT_FREQ_M');
+		query_with_condition("where processors>=".$list_option['PROC_MAX'],$lbl_field['NB_LIMIT_FREQ_H']." ".$list_option['PROC_MAX']." Mhz",'NB_LIMIT_FREQ_H');
+		query_with_condition("where processors<=".$list_option['PROC_MINI'],$lbl_field['NB_LIMIT_FREQ_M']." ".$list_option['PROC_MINI']." Mhz",'NB_LIMIT_FREQ_M');
 		query_with_condition("where processors>".$list_option['PROC_MINI']." and processors<".$list_option['PROC_MAX'],$lbl_field['NB_LIMIT_FREQ_B']." ".$list_option['PROC_MINI']." Mhz ".$l->g(582)." ".$list_option['PROC_MAX']." Mhz",'NB_LIMIT_FREQ_B');
-		query_with_condition("where memory>".$list_option['RAM_MAX'],$lbl_field['NB_LIMIT_MEM_H']." ".$list_option['RAM_MAX']." Mo",'NB_LIMIT_MEM_H');
-		query_with_condition("where memory<".$list_option['RAM_MINI'],$lbl_field['NB_LIMIT_MEM_M']." ".$list_option['RAM_MINI']." Mo",'NB_LIMIT_MEM_M');
+		query_with_condition("where memory>=".$list_option['RAM_MAX'],$lbl_field['NB_LIMIT_MEM_H']." ".$list_option['RAM_MAX']." Mo",'NB_LIMIT_MEM_H');
+		query_with_condition("where memory<=".$list_option['RAM_MINI'],$lbl_field['NB_LIMIT_MEM_M']." ".$list_option['RAM_MINI']." Mo",'NB_LIMIT_MEM_M');
 		query_with_condition("where memory>".$list_option['RAM_MINI']." and memory <".$list_option['RAM_MAX'],$lbl_field['NB_LIMIT_MEM_B']." ".$list_option['RAM_MINI']." Mo ".$l->g(582)." ".$list_option['RAM_MAX']." Mo",'NB_LIMIT_MEM_B');
 	}
 	

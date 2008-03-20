@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.16 $)
+//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.17 $)
 
 //find IPDISCOVER_IPD_DIR
 $sql_IPD_DIR="select tvalue from config where NAME='IPDISCOVER_IPD_DIR'";
@@ -323,7 +323,10 @@ else if( $_GET["mode"] == 1 ) {
 		$resSubnet = mysql_query($reqSubnet, $_SESSION["readServer"]) or die(mysql_error());
 		if( $valSubnet = mysql_fetch_array( $resSubnet ) ) {			
 			$t[ $cptL ][] = "";
+			if ($_SESSION["lvluser"] == SADMIN)
 			$t[ $cptL ][] = "<a href=index.php?multi=3&mode=11&ipa=".urlencode($arrGateway["nbrez"])."&nomrez=".urlencode($valSubnet["name"])."&dpt=".urlencode($valSubnet["id"])."&ipm=".urlencode($valSubnet["mask"]).">".$valSubnet["name"]."</a>";
+			else
+			$t[ $cptL ][] = $valSubnet["name"];
 			$t[ $cptL ][] = "";
 			$t[ $cptL ][] = $valSubnet["id"];
 		}

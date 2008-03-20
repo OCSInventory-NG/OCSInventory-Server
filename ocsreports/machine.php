@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.20 $)
+//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.21 $)
 
 require('fichierConf.class.php');
 @session_start();
@@ -51,15 +51,27 @@ if( isset( $_GET["suppack"] ) &  $_SESSION["lvluser"]==SADMIN  ) {
 }
 else 
 	$_SESSION["justAdded"] = false;
-	
-if( isset( $_GET["actgrp"] ) && $_SESSION["lvluser"]==SADMIN ) {	
-	$reqDelete = "DELETE FROM groups_cache WHERE hardware_id=".$systemid." AND group_id=".$_GET["grp"];
-	if( $_GET["actgrp"] == 0 ) 
-		$reqDelete .= " AND static<>0";
-	$reqInsert = "INSERT INTO groups_cache(hardware_id, group_id, static) VALUES (".$systemid.", ".$_GET["grp"].", ".$_GET["actgrp"].")";
-	@mysql_query( $reqDelete, $_SESSION["writeServer"] );
-	if( $_GET["actgrp"] != 0 )
-		@mysql_query( $reqInsert, $_SESSION["writeServer"] );
+	//TODO: voir si on loggue les evenements de groupe
+if( isset( $_GET["actgrp"] )) {	
+		//vérification si la valeur correspond à un groupe
+		$reqGroups = "SELECT h.id id
+					  FROM hardware h left join accountinfo a on h.id='".$_GET["grp"]."' 
+					  WHERE h.deviceid='_SYSTEMGROUP_' ";
+		//pour les autres qu'SADMIN, ajout que pour les groupes déclarés visibles
+		if ($_SESSION["lvluser"]!=SADMIN)
+			$reqGroups .= " and a.TAG = 'GROUP_4_ALL'";
+		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
+		$valGroups = mysql_fetch_array( $resGroups ); 
+		if (isset($valGroups->id)){
+			$reqDelete = "DELETE FROM groups_cache WHERE hardware_id=".$systemid." AND group_id=".$_GET["grp"];
+			
+			if( $_GET["actgrp"] == 0 ) 
+				$reqDelete .= " AND static<>0";
+			$reqInsert = "INSERT INTO groups_cache(hardware_id, group_id, static) VALUES (".$systemid.", ".$_GET["grp"].", ".$_GET["actgrp"].")";
+			@mysql_query( $reqDelete, $_SESSION["writeServer"] );
+			if( $_GET["actgrp"] != 0 )
+				@mysql_query( $reqInsert, $_SESSION["writeServer"] );
+		}
 }
 
 $queryMachine    = "SELECT * FROM hardware WHERE (ID=$systemid)";
@@ -401,7 +413,8 @@ function print_perso($systemid) {
 	//PROLOG_FREQ
 	optperso("PROLOG_FREQ",$l->g(724)." <font color=green size=1><i>PROLOG_FREQ</i></font>",$optPerso,0,$optdefault["PROLOG_FREQ"],$l->g(730));
 	//GROUPS
-	$resGroups = @mysql_query("SELECT static, name, group_id  FROM groups_cache g, hardware h WHERE g.hardware_id=$systemid AND h.id=g.group_id"); 
+	$sql_groups="SELECT static, name, group_id,a.TAG  FROM groups_cache g, hardware h left join accountinfo a on h.id=a.hardware_id WHERE g.hardware_id=$systemid AND h.id=g.group_id";
+	$resGroups = @mysql_query($sql_groups, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"])); 
 	
 	if( mysql_num_rows( $resGroups )>0 ) {
 		while( $valGroups = mysql_fetch_array( $resGroups ) ) {
@@ -409,7 +422,7 @@ function print_perso($systemid) {
 			echo "<tr>";
 			echo "<td bgcolor='white' align='center' valign='center'>&nbsp;</td>";
 			echo $td3.$l->g(607)." ";		
-			if( $_SESSION["lvluser"] == SADMIN || $_SESSION["lvluser"] == LADMIN)
+			if( $_SESSION["lvluser"] == SADMIN || $_SESSION["lvluser"] == LADMIN || $valGroups["TAG"]=="GROUP_4_ALL")
 				echo "<a href='index.php?multi=29&popup=1&systemid=".$valGroups["group_id"]."' target='_blank'>".$valGroups["name"]."</td>";
 			else
 				echo "<b>".$valGroups["name"]."</b></td>";			
@@ -421,7 +434,7 @@ function print_perso($systemid) {
 				case 2: echo "<font color='red'>".$l->g(597)."</font></td>"; break;
 			}
 			
-			if( $_SESSION["lvluser"]==SADMIN ) {
+			if( $_SESSION["lvluser"]==SADMIN || $valGroups["TAG"]=="GROUP_4_ALL") {
 				$hrefBase = "machine.php?systemid=".urlencode($systemid)."&option=".urlencode($l->g(500))."&grp=".$valGroups["group_id"];
 				switch( $valGroups["static"] ) {
 					case 0: echo $td3."<a href='$hrefBase&actgrp=1'>".$l->g(598)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=2'>".$l->g(600)."</a></td>"; break;
@@ -454,15 +467,20 @@ function print_perso($systemid) {
 			echo "</tr>";
 		}
 	}
-	if( $_SESSION["lvluser"]==SADMIN ) {
+	
 		$hrefBase = "machine.php?systemid=".urlencode($systemid)."&option=".urlencode($l->g(500));
 		
 		echo "<tr><td colspan='10' align='right'>";
-		echo "<a href='index.php?multi=24&systemid=$systemid&isgroup=0'>".$l->g(501)."</a> ".$l->g(386).
-		" <a href=# OnClick=window.location='$hrefBase&actgrp=1&grp='+document.getElementById(\"groupcombo\").options[document.getElementById(\"groupcombo\").selectedIndex].value>".
+		if( $_SESSION["lvluser"]==SADMIN ) 
+			echo "<a href='index.php?multi=24&systemid=$systemid&isgroup=0'>".$l->g(501)."</a>".$l->g(386);
+		echo " <a href=# OnClick=window.location='$hrefBase&actgrp=1&grp='+document.getElementById(\"groupcombo\").options[document.getElementById(\"groupcombo\").selectedIndex].value>".
 		$l->g(589)."</a>";
-		
-		$reqGroups = "SELECT name,id FROM hardware WHERE deviceid='_SYSTEMGROUP_'";
+	
+		$reqGroups = "SELECT h.name,h.id 
+					  FROM hardware h left join accountinfo a on h.id=a.hardware_id 
+					  WHERE h.deviceid='_SYSTEMGROUP_'";
+		if( $_SESSION["lvluser"]!=SADMIN )
+			$reqGroups .= " and a.TAG = 'GROUP_4_ALL'";
 		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 		$first = true;
 		while( $valGroups = mysql_fetch_array( $resGroups ) ) {
@@ -477,7 +495,7 @@ function print_perso($systemid) {
 			echo "</select>";
 			
 		echo "</td></tr>";		
-	}
+	//}
 	echo "</table><br>";
 	
 	if ($_POST['modification_param'])

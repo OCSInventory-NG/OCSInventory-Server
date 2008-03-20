@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-17 13:48:10 $$Author: airoine $($Revision: 1.19 $)
+//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.20 $)
 if (isset($_GET['first']) or ($_GET == null))
 $_GET['multi']="console";
 $sleep=1;
@@ -116,14 +116,20 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 
 		if($lareq->label == $l->g(182)) 
 			continue;
-		$countHl++;
+		//$countHl++;
 		echo "<a href=index.php?lareq=".urlencode($lareq->label)."><img title=\"".htmlspecialchars($lareq->label)."\" src='image/".$lareq->pics[(!isset($_GET["multi"])&&$_GET["lareq"]==$lareq->label?1:0)]."'></a>";
 	}	
+	//groups
+	$sql_groups_4all="select TAG from accountinfo where TAG='GROUP_4_ALL'";
+	$res = mysql_query($sql_groups_4all, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+	$item = mysql_fetch_object($res);
+	if (isset($item->TAG) or $_SESSION["lvluser"]==SADMIN or $_SESSION["lvluser"]==LADMIN)	
+	echo "<a href=index.php?multi=37><img title=\"".htmlspecialchars($l->g(583))."\" src='image/".($_GET["multi"]==37?"groups_a.png":"groups.png")."'></a>";
 	
-	$countHl++;
+	//$countHl++;
 	//multicrit
 	echo "<a href=index.php?multi=36><img title=\"".htmlspecialchars($l->g(765))."\" src='image/".($_GET["multi"]==36?"ttlogiciels_a.png":"ttlogiciels.png")."'></a>";
-	$countHl++;
+	//$countHl++;
 	echo "<a href=index.php?multi=1><img title=\"".htmlspecialchars($l->g(9))."\" src='image/".($_GET["multi"]==1||(!isset($_GET["multi"])&&$_GET["lareq"]==$l->g(9))?"recherche_a.png":"recherche.png")."'></a>";
 	
 	
@@ -280,6 +286,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 34: require ('rules_redistrib.php');break;
 		case 35: require ('admin_language.php');break;
 		case 36: require ('all_soft.php');break;
+		case 37: require ('groups.php');break;
 		case "console" : require ('console.php');break;	
 		default:require ('resultats.php');
  		//default: require ('console.php');		
