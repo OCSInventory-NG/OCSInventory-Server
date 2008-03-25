@@ -9,7 +9,7 @@
 									and deviceid != '_DOWNLOADGROUP_' ";
  require_once('require/function_table_html.php');
 echo "<script language=javascript>
-		function garde_valeur(form_name,did,hidden_name,did2,hidden_name2){
+		function garde_valeur_console(form_name,did,hidden_name,did2,hidden_name2){
 				document.getElementById(hidden_name).value=did;
 				document.getElementById(hidden_name2).value=did2;
 				document.getElementById(form_name).submit();
@@ -34,16 +34,23 @@ echo "<script language=javascript>
 		$sql_on_hardware = "select count(*) c from (".$sql_on_hardware.") temp where temp.c != 0";
 	 	$result_on_hardware = mysql_query( $sql_on_hardware, $_SESSION["readServer"]);
 		$item_on_hardware = mysql_fetch_object($result_on_hardware);
-		$data['nb_'.$name]['data']="<a OnClick='garde_valeur(\"".$form_name."\",\"".$name."\",\"detail\",\"".$tablename."\",\"tablename\")'>".$item_on_hardware->c."</a>";
+		$data['nb_'.$name]['count']=$item_on_hardware->c;
+		$data['nb_'.$name]['data']="<a OnClick='garde_valeur_console(\"".$form_name."\",\"".$name."\",\"detail\",\"".$tablename."\",\"tablename\")'>".$data['nb_'.$name]['count']."</a>";
 		$data['nb_'.$name]['lbl']=$lbl_data;
  	}
  }
  
 //function for show all result  
  function query_on_table($name,$lbl_data,$lbl_data_detail,$tablename="hardware"){
- 	global $exlu_group,$list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show;
+ 	global $exlu_group,$list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show,$limit;
  	if (!isset($list_no_show[$name])){
-	 	$sql_on_hardware="select count(".$name.") c, ".$name." 
+ 		if ($_POST['tri'] == ""){
+ 			$_POST['tri']=1;
+ 			$_POST['sens']='DESC';
+ 			
+ 		}
+ 		
+	 	$sql_on_hardware="select count(".$name.") c, ".$name." NAME
 						from ".$tablename." h ";
 		if ($tablename=="hardware"){
 			if ($list_on_hardware == "")
@@ -53,12 +60,12 @@ echo "<script language=javascript>
 		}else
 		$sql_on_hardware.=$list_on_else;
 		$sql_on_hardware.="	group by ".$name."
-							order by 1 desc ";
+							order by ".$_POST['tri']." ".$_POST['sens']." limit ".$limit['BEGIN'].",".$limit['END'];
 	 	$result_on_hardware = mysql_query( $sql_on_hardware, $_SESSION["readServer"]);
 		$nb_lign=0;
 		while($item_on_hardware = mysql_fetch_object($result_on_hardware)){
 			if ($item_on_hardware -> c != 0){
-			$data_detail[$name][$nb_lign]['lbl']=$item_on_hardware ->$name;
+			$data_detail[$name][$nb_lign]['lbl']=$item_on_hardware ->NAME;
 			$data_detail[$name][$nb_lign]['data']= $item_on_hardware -> c;
 		 	$nb_lign++;
 			}
@@ -324,18 +331,28 @@ if (isset($default)){
 		 }
 	}
 	 echo "</table></table>";
-	echo "<input type='hidden' id='detail' name='detail' value=''>";
-	echo "<input type='hidden' id='tablename' name='tablename' value=''>";
+	echo "<input type='hidden' id='detail' name='detail' value='".$_POST['detail']."'>";
+	echo "<input type='hidden' id='tablename' name='tablename' value='".$_POST['tablename']."'>";
+	echo "<input type='hidden' id='old_onglet' name='old_onglet' value='".$_POST['onglet']."'>";
 	
-	
-	if ($_POST['detail'] != "" and isset($_POST['detail'])){
+	if ($_POST['detail'] != "" and isset($_POST['detail']) and $_POST['onglet'] == $_POST['old_onglet']){
+		$limit=nb_page($form_name);
+		if ($_POST['sens'] == "ASC")
+			$sens="DESC";
+		else
+			$sens="ASC";
+		$deb="<a OnClick='tri(\"".$col."\",\"".$sens."\",\"".$form_name."\")' >";
+		$fin="</a>";
+		$entete[]="<a OnClick='tri(\"NAME\",\"".$sens."\",\"".$form_name."\")' >NAME</a>";
+		$entete[]="<a OnClick='tri(\"c\",\"".$sens."\",\"".$form_name."\")' >QTE</a>";
+		echo "<input type='hidden' id='tri' name='tri' value='".$_POST['tri']."'>";
+		echo "<input type='hidden' id='sens' name='sens' value='".$_POST['sens']."'>";
 		query_on_table($_POST['detail'],$lbl_field[$_POST['detail']],$l->g(808),$_POST['tablename']);
-		$entete[]="NAME";
-		$entete[]="QTE";
+		
 		$width=60;
 		$height=300;
-		//print_r($data_detail);
 		tab_entete_fixe($entete,$data_detail[$_POST['detail']],$titre[$_POST['detail']],$width,$height);
+		show_page($data['nb_'.$_POST['detail']]['count'],$form_name);
 	}
 	echo "</form>";
 }
