@@ -249,7 +249,12 @@ then
     echo "Found Apache HTTPD_ROOT $APACHE_ROOT" >> $SETUP_LOG
     APACHE_CONFIG=`eval $APACHE_BIN -V | grep "SERVER_CONFIG_FILE" | cut -d'=' -f2 | tr -d '"'`
     echo "Found Apache SERVER_CONFIG_FILE $APACHE_CONFIG" >> $SETUP_LOG
-    APACHE_CONFIG_FILE_FOUND="$APACHE_ROOT/$APACHE_CONFIG"
+    if [ -e $APACHE_CONFIG ]
+    then
+        APACHE_CONFIG_FILE_FOUND="$APACHE_CONFIG"
+    else
+        APACHE_CONFIG_FILE_FOUND="$APACHE_ROOT/$APACHE_CONFIG"
+    fi
 fi
 echo "Found Apache main configuration file $APACHE_CONFIG_FILE_FOUND" >> $SETUP_LOG
 # Ask user's confirmation 
@@ -671,7 +676,7 @@ then
     else
         echo "Found that PERL module Net::IP is available."
     fi
-    if [ $REQUIRED_PERL_MODULE_MISSING -neq 0 ]
+    if [ $REQUIRED_PERL_MODULE_MISSING -ne 0 ]
     then
         echo "*** ERROR: There is one or more required PERL modules missing on your computer !"
         echo "Please, install missing PERL modules first."
@@ -1044,7 +1049,7 @@ then
     else
         echo "Found that PERL module Net::IP is available."
     fi
-    if [ $REQUIRED_PERL_MODULE_MISSING -neq 0 ]
+    if [ $REQUIRED_PERL_MODULE_MISSING -ne 0 ]
     then
         echo "*** ERROR: There is one or more required PERL modules missing on your computer !"
         echo "Please, install missing PERL modules first."
