@@ -143,6 +143,9 @@ sub _update_inventory_section{
         if(!$sth->execute($deviceId, @bind_values)){
           return(1);
         }
+        if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} ){
+          &_cache( 'add', $section, $sectionMeta, \@bind_values );
+        }
         @bind_values = ();
       }
     }
