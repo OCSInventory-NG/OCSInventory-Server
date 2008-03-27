@@ -116,8 +116,8 @@ if($analyse and !$net){
   die "Wich subnet do you want to analyse ?\n";
 } 
 if($cache or $auto){
-  unless(-d "ipd"){
-      mkdir("ipd") 
+  unless(-d "$path/ipd"){
+      mkdir("$path/ipd") 
         or die $!;
   }
 }
@@ -156,7 +156,7 @@ if($auto){
   my %subnet;
   for(@subnet){
      my $name = $_->[1];
-     my $netn  = $_->[2];
+     my $netn  = $_->[0];
      $name=~s/ /_/g;
      $name=~s/\//\\\//g;
      $subnet{$name} = $netn;
@@ -545,7 +545,7 @@ if($analyse){
   my @ips;
   push @ips, $$_[1] for(@hosts);
   #Check that there is no analyses of this network pending
-  open NMAP, "+>$filter.gnmap";
+  open NMAP, "+>$path/$filter.gnmap";
   unless(flock(NMAP, LOCK_EX|LOCK_NB)){
       if($xml){
         print "<ERROR><MESSAGE>345</MESSAGE></ERROR>";
@@ -555,13 +555,13 @@ if($analyse){
       }
     }
   #Analyse
-  system("nmap -R -v @ips -p 135,80,22,23 -oG $filter.gnmap -P0 > /dev/null");
+  system("nmap -R -v @ips -p 135,80,22,23 -oG $path/$filter.gnmap -P0 > /dev/null");
   #
   my @gnmap;
   if($net){
     @gnmap = <NMAP>;
     close NMAP;
-    unlink "$filter.gnmap";
+    unlink "$path/$filter.gnmap";
     #
     ###########
     #
@@ -688,14 +688,14 @@ sub _smbname{
 #
 sub _cleanup{
   my($name, @files);
-  opendir DIR, ".";
+  opendir DIR, $path;
   while($name = readdir DIR){
     push @files, $name if $name=~/\.gnmap$/i;
   }
   closedir DIR;
   for(@files){
     open FILE, $_ or next;
-    unlink $_ if(flock(FILE, LOCK_EX|LOCK_NB));
+    unlink "$path/$_" if(flock(FILE, LOCK_EX|LOCK_NB));
   }
 }
 
