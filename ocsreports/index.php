@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.20 $)
+//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.21 $)
 if (isset($_GET['first']) or ($_GET == null))
 $_GET['multi']="console";
 $sleep=1;
@@ -167,8 +167,7 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 			$title=$l->g(512);
 			$data_list_deploy[20]=$l->g(513);
 			$data_list_deploy[21]=$l->g(514);
-		//	$data_list_deploy[40]="TEST";
-			$data_list_deploy[33]=$l->g(633);
+			//$data_list_deploy[26]=$l->g(515);
 			$data_list_deploy[34]=$l->g(662);
 			menu_list($name_menu,$packAct,$nam_img,$title,$data_list_deploy);
 			if( DB_NAME == "ocsweb") 	
@@ -246,12 +245,13 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 			createGroup( $_POST["eg"], $_POST["desc"], false, true );
 			unset( $_POST );
 		}
+	}
 		// Add checked computers to existing group
-		else if( isset( $_POST["asg"] ) && $_POST["asg"] != "_nothing_" ) {
+	 if( isset( $_POST["asg"] ) && $_POST["asg"] != "_nothing_" ) {
 			addComputersToGroup( $_POST["asg"], $_POST );
 			unset( $_POST );
 		}		
-	}		
+			
 		
 	switch($_GET["multi"]) {
 		case 1: require ('multicritere.php');	break;
@@ -282,7 +282,6 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 30: require ('tele_massaffect.php'); break; 
 		case 31: require ('admin_attrib.php'); break; 
 		case 32: require ('blacklist.php');break;
-		case 33: require ('server_redistrib.php');break;
 		case 34: require ('rules_redistrib.php');break;
 		case 35: require ('admin_language.php');break;
 		case 36: require ('all_soft.php');break;

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.15 $)
+//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.16 $)
 ?>
 <script language='javascript'>
 
@@ -110,18 +110,16 @@
 				<tr height='30px' bgcolor='white'><td><?php echo $l->g(462); ?>:</td><td><?php echo round($size/1024); ?> <?php echo $l->g(516); ?></td></tr>
 				<tr height='30px' bgcolor='white'><td><?php echo $l->g(463); ?>:</td><td>
 				<table><tr><td width='30%'>	
-				<span id='tailleFrag' name='tailleFrag'><?php echo round($size/1024); ?></span> <?php echo $l->g(516); ?>
+				<input type='text' id='tailleFrag' name='tailleFrag' size='8' <?php if( round($size) > 1024 ) { ?> onKeyPress='maj();' 
+						onkeydown='maj();' onkeyup='maj();' 
+		  				onblur='maj();'  onclick='maj();'<?php }else{  echo " value=1 readonly style='color:black; background-color:#e1e1e2;'" ;}?>><?php echo $l->g(516); ?>
 				</td>
-				<?php if( round($size) > 1024 ) { ?>
-						<td>
-						<div class="slider" id="slider-1" tabIndex="1">
-						<input class="slider-input" id="slider-input-1" name="slider-input-1"/>
-						</div>
-						</td>
-				<?php }?>
+				
 				</tr></table></td></tr>
 				<tr height='30px' bgcolor='white'><td><?php echo $l->g(464); ?>:</td><td>
-					<input id='nbfrags' name='nbfrags' value='1' size='5' readonly></td></tr>
+				<input id='nbfrags' name='nbfrags' size='5' <?php if( round($size) > 1024 ) { ?> onKeyPress='maj2();' 
+						onkeydown='maj2();' onkeyup='maj2();' 
+		  				onblur='maj2();'  onclick='maj2();' <?}else{ echo " value=1 readonly style='color:black; background-color:#e1e1e2;'" ;} ?></td></tr>
 				<tr height='30px' bgcolor='white'><td align='right' colspan='10'><input type='submit'>
 				<input type='hidden' name='id' value='<?php echo $id; ?>'>
 				<input type='hidden' name='digest' value='<?php echo $digest; ?>'>
@@ -130,20 +128,31 @@
 				</form>
 				<?php if( round($size) > 1024 ) { ?>
 					<script type="text/javascript">
-					
-					var s = new Slider(document.getElementById("slider-1"),
-					                   document.getElementById("slider-input-1"));
 					var siz = <?php echo round($size); ?>;
-					var vmin = 1024;
-					
-					s.setMaximum( siz );				
-					s.setValue( siz );
-					
-					s.setMinimum(vmin);						
-					s.onchange = function () {
-						document.getElementById('tailleFrag').innerHTML = Math.ceil((s.getValue())/1024);
-						document.getElementById('nbfrags').value = Math.ceil( siz / (Math.ceil(s.getValue())) );				
-					}	
+					function maj(){
+						if (document.getElementById('tailleFrag').value != "" &&  document.getElementById('tailleFrag').value != 0){
+							if ( Math.ceil(document.getElementById('tailleFrag').value*1024) < siz)							
+							document.getElementById('nbfrags').value = Math.ceil( siz / (Math.ceil(document.getElementById('tailleFrag').value*1024)) );	
+							else{
+							document.getElementById('nbfrags').value = 1;
+							document.getElementById('tailleFrag').value=Math.ceil(siz/1024)
+							}
+						}else
+						document.getElementById('nbfrags').value = "";
+					}
+					function maj2(){
+						if (document.getElementById('nbfrags').value != "" && document.getElementById('nbfrags').value != 0){
+							if ( Math.ceil(document.getElementById('nbfrags').value*1024) < siz)	
+						document.getElementById('tailleFrag').value = Math.ceil(siz/document.getElementById('nbfrags').value/1024);
+							else{
+								document.getElementById('nbfrags').value = Math.ceil(siz/1024);
+								document.getElementById('tailleFrag').value=1
+							}
+						}else
+						document.getElementById('tailleFrag').value = "";
+						
+					}
+								
 					</script>
 					<?php 
 				}

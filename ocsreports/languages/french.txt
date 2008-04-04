@@ -702,3 +702,9 @@
 809 GROUPES STATIQUES
 810 GROUPES DYNAMIQUES
 811 Etes-vous sûr de vouloir modifier la visibilité du groupe
+812 Les logiciels à 0 sont présents en cache mais ne sont plus installés sur les machines.<br>Ils ne peuvent pas être mis dans une catégorie de dictionnaire
+813 Nombre disque dur avec taille restante >
+814 Nombre disque dur avec taille restante <
+815 Nombre disque dur avec taille restante entre
+816 Taille disque restante maximum
+817 Taille disque restante minimum

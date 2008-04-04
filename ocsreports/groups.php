@@ -53,6 +53,7 @@ require_once('require/function_table_html.php');
 if ($_SESSION["lvluser"]==SADMIN){
 	$def_onglets['DYNA']=$l->g(810); //Dynamic group
 	$def_onglets['STAT']=$l->g(809); //Static group centraux
+	$def_onglets['SERV']=strtoupper($l->g(651));
 	if ($_POST['onglet'] == "")
 	$_POST['onglet']="DYNA";
 	echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
@@ -67,28 +68,37 @@ $limit=nb_page($form_name);
 
 if ($_POST['tri'] == "")
 $_POST['tri']=1;
-$sql="select h.id id,h.name name,h.DESCRIPTION description,h.lastdate creat, count(g_c.HARDWARE_ID) nbr ";
-if ($_POST['onglet'] == "STAT")
-$sql.=", TAG";
-$sql.=" from hardware h,groups_cache g_c,groups g ";
-if ($_POST['onglet'] == "STAT")
-	$sql.="left join accountinfo on accountinfo.hardware_id=g.hardware_id";
-$sql.="	where deviceid = '_SYSTEMGROUP_' 
-			and g.HARDWARE_ID=h.ID
-			and g_c.group_id=h.ID 
-			and g.request ";
-
-if ($_POST['onglet'] == "DYNA")
-	$sql.=" != ";
-else
-	$sql.=" = ";
-	$sql .= " '' ";
-if($_SESSION["lvluser"]!=SADMIN)
-$sql.=" and TAG='GROUP_4_ALL' ";
-$sql.=" group by h.name order by ".$_POST['tri']." ".$_POST['sens'];		
-$reqCount="select count(*) nb from (".$sql.") toto";
-$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
-
+if ($_POST['onglet'] == "STAT" or $_POST['onglet'] == "DYNA"){
+	$sql="select h.id id,h.name name,h.DESCRIPTION description,h.lastdate creat, count(g_c.HARDWARE_ID) nbr ";
+	if ($_POST['onglet'] == "STAT")
+	$sql.=", TAG";
+	$sql.=" from hardware h left join groups_cache g_c on g_c.group_id=h.ID,groups g ";
+	if ($_POST['onglet'] == "STAT")
+		$sql.="left join accountinfo on accountinfo.hardware_id=g.hardware_id";
+	$sql.="	where deviceid = '_SYSTEMGROUP_' 
+				and g.HARDWARE_ID=h.ID
+				and g.request ";
+	
+	if ($_POST['onglet'] == "DYNA")
+		$sql.=" != ";
+	else
+		$sql.=" = ";
+		$sql .= " '' ";
+	if($_SESSION["lvluser"]!=SADMIN)
+	$sql.=" and TAG='GROUP_4_ALL' ";
+	$sql.=" group by h.name order by ".$_POST['tri']." ".$_POST['sens'];		
+	$reqCount="select count(*) nb from (".$sql.") toto";
+	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
+}elseif ($_POST['onglet'] == "SERV"){
+	
+	$sql="select group_id id,h.name name,h.DESCRIPTION description, h.lastdate creat, count(hardware_id) nbr
+			from download_servers d_s,hardware h
+			where d_s.group_id=h.id
+			group by group_id order by ".$_POST['tri']." ".$_POST['sens'];
+	$reqCount="select count(*) nb from (".$sql.") toto";
+	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
+	
+}
 $resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 $valCount = mysql_fetch_array($resCount);
 $result = mysql_query( $sql, $_SESSION["readServer"]);

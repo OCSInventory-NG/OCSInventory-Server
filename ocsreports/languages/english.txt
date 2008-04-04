@@ -705,3 +705,9 @@
 809 STATICS GROUPS 
 810 DYNAMICS GROUPS 
 811 Are you sure to want to modify the visibility of the group
+812 The software in 0 is present in CACHE but are not any more settled on machines.<br>They cannot be put in a category of dictionary
+813 hard disk number with remaining size >
+814 hard disk number with remaining size <
+815 hard disk number with remaining size between
+816 hard disk maximum remaining size 
+817 hard disk minimum remaining size

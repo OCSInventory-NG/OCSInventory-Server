@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.21 $)
+//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.22 $)
 
 require('fichierConf.class.php');
 @session_start();
@@ -53,16 +53,16 @@ else
 	$_SESSION["justAdded"] = false;
 	//TODO: voir si on loggue les evenements de groupe
 if( isset( $_GET["actgrp"] )) {	
-		//vérification si la valeur correspond à un groupe
+		//vï¿½rification si la valeur correspond ï¿½ un groupe
 		$reqGroups = "SELECT h.id id
 					  FROM hardware h left join accountinfo a on h.id='".$_GET["grp"]."' 
 					  WHERE h.deviceid='_SYSTEMGROUP_' ";
-		//pour les autres qu'SADMIN, ajout que pour les groupes déclarés visibles
+		//pour les autres qu'SADMIN, ajout que pour les groupes dï¿½clarï¿½s visibles
 		if ($_SESSION["lvluser"]!=SADMIN)
 			$reqGroups .= " and a.TAG = 'GROUP_4_ALL'";
 		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 		$valGroups = mysql_fetch_array( $resGroups ); 
-		if (isset($valGroups->id)){
+		if (isset($valGroups['id'])){
 			$reqDelete = "DELETE FROM groups_cache WHERE hardware_id=".$systemid." AND group_id=".$_GET["grp"];
 			
 			if( $_GET["actgrp"] == 0 ) 
@@ -325,7 +325,7 @@ function print_perso($systemid) {
 					
 		echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	
-	//echo "<tr><td>&nbsp;&nbsp;</td> $td1 "."Libellé"." </td> $td1 "."Valeur"." </td><td>&nbsp;</td></tr>";		
+	//echo "<tr><td>&nbsp;&nbsp;</td> $td1 "."Libellï¿½"." </td> $td1 "."Valeur"." </td><td>&nbsp;</td></tr>";		
 	while($item=mysql_fetch_array($resultDetails,MYSQL_ASSOC)) {
 		$optPerso[ $item["NAME"] ][ "IVALUE" ] = $item["IVALUE"];
 		$optPerso[ $item["NAME"] ][ "TVALUE" ] = $item["TVALUE"];

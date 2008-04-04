@@ -8,10 +8,11 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-20 16:26:49 $$Author: airoine $($Revision: 1.5 $)
+//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.6 $)
 
 
 
+require_once('require/function_table_html.php');
 require('fichierConf.class.php');
 require('req.class.php');
 require('require/function_opt_param.php');
@@ -65,13 +66,13 @@ if( isset($_POST["actshowgroup"])) {
 	}	
 }
 //update values if user want modify groups' values
-if ($_POST['Valid_modif_x'])
+if ($_POST['Valid_modif_x'] and !isset($_POST['modif']))
 {
 	if (trim($_POST['NAME'])!= '' and trim($_POST['DESCR'])!=''){
 		$req = "UPDATE hardware SET ".	
 			"NAME='".$_POST['NAME']."',".
 			"DESCRIPTION='".$_POST['DESCR']."' ".
-			"where ID='".$systemid."' and deviceid = '_SYSTEMGROUP_'";
+			"where ID='".$systemid."' and (deviceid = '_SYSTEMGROUP_' or deviceid ='_DOWNLOADGROUP_')";
 		$result = mysql_query($req, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
 	}
 	else{
@@ -79,7 +80,11 @@ if ($_POST['Valid_modif_x'])
 		echo "<script>alert('".$l->g(627)."')</script>";
 	}
 }
-$queryMachine   = "SELECT * FROM hardware, groups WHERE ID=$systemid AND hardware_id=$systemid";
+$queryMachine   = "SELECT REQUEST,
+						  CREATE_TIME,
+						  NAME,
+						  DESCRIPTION,LASTDATE FROM hardware h left join groups g on g.hardware_id=h.id 
+				  WHERE ID=$systemid AND (deviceid ='_SYSTEMGROUP_' or deviceid='_DOWNLOADGROUP_')";
 $result   = mysql_query( $queryMachine, $_SESSION["readServer"] ) or mysql_error($_SESSION["readServer"]);
 $item     = mysql_fetch_object($result);
 
@@ -90,11 +95,16 @@ if( ! $item ) {
 	die();
 }
 
-if( ! empty($item->REQUEST) )
+if( $item->REQUEST !="")
 	$pureStat = false;
-else {
+else{
 	$pureStat = true;
 }
+
+if ( $item->CREATE_TIME == "")
+	$server_group=true;
+else
+	$server_group=false;
 
 echo "<html>\n";
 echo "<head>\n";
@@ -172,54 +182,106 @@ echo "$tdhfpb</table>";
 echo "</form>";
 
 //*/// END COMPUTER SUMMARY
-
-if( isset($_GET["action"]) || isset($_POST["action_form"]) ) {
-	require("ajout_maj.php");
-	die();
-}
-
-if( ! isset($_GET["option"]) ) {
-	$opt = $l->g(500);
-}
-else {
-	$opt = stripslashes(urldecode($_GET["option"]));
-}
-
-$td1	  = "<td height=20px id='color' align='center'><FONT FACE='tahoma' SIZE=2 color=blue><b>";
-$td2      = "<td height=20px bgcolor='white' align='center'>";
-$td3      = $td2;
-$td4      = "<td height=20px bgcolor='#F0F0F0' align='center'>";
-$lblAdm = Array($l->g(500));
-$imgAdm = Array("spec");
-$lblHdw = Array($l->g(580), $l->g(581));
-$imgHdw = Array("ttmachinesred", "ttmachines",);
-
-echo "<br><br>";
-
-echo "<table width='20%' border=0 align='center' cellpadding='0' cellspacing='0'>
-		<tr>";
-echo img($imgAdm[0],$lblAdm[0], 1, $opt);
-
-if( ! $pureStat )
-	echo img($imgHdw[0],$lblHdw[0], 1, $opt);
+if ($server_group){
+	require("server_redistrib.php");
+//	if (!(isset($_POST["pcparpage"])) and isset($_GET['res_pag']))
+//	$_POST["pcparpage"]=$_GET['res_pag'];
+//	if (!(isset($_POST["page"])) and isset($_GET['page']))
+//	$_POST["page"]=$_GET['page'];
+//	$form_name='nb_4_pag';
+//	echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
+//	$limit=nb_page($form_name);
+//	$sql="select hardware.ID,
+//			  hardware.NAME,
+//			  hardware.IPADDR,
+//			  hardware.DESCRIPTION,
+//			  download_servers.URL,
+//			  download_servers.ADD_REP
+//		from hardware left join download_servers on hardware.id=download_servers.hardware_id
+//		where download_servers.GROUP_ID=".$systemid;
+//	$reqCount="select count(*) nb from (".$sql.") toto";
+//	$resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+//	$valCount = mysql_fetch_array($resCount);
+//	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
+//		$result = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+//		$i=0;
+//	while($colname = mysql_fetch_field($result))
+//		$entete2[$i++]=$colname->name;
+//		$entete2[$i++]="SUP <br><a href=# OnClick='confirme(\"".$data[$_GET['viewmach']]['ID']."\",\"".$l->g(643)."\",\"all_mach\",\"viewmach\",\"".$_GET['viewmach']."\");'><img src=image/delete_all.png></a>";
+//		$entete2[$i]="MODIF <a href='index.php?multi=33&viewmach=".$_GET['viewmach']."&modifmachgroupserver=ALL&res_pag=".$_POST["pcparpage"]."&page=".$_POST['page']."'><img src=image/modif_all.png ></a>";
+//
+//	$i=0;
+//	//" du groupe ".$data[$_GET['viewmach']]['ID'].
+//	while($item = mysql_fetch_object($result)){
+//			$data2[$i]['ID']=$item ->ID;
+//			$data2[$i]['NAME']=$item ->NAME;
+//			$data2[$i]['IP_ADDR']=$item ->IPADDR;
+//			$data2[$i]['DESCRIPTION']=$item ->DESCRIPTION;
+//			$data2[$i]['URL']="http://".$item ->URL;
+//			$data2[$i]['REP_STORE']=$item ->ADD_REP;
+//			$data2[$i]['SUP']="<a href=# OnClick='confirme(\"".$item ->ID."\",\"".$l->g(644)."\",\"mach\",\"viewmach\",\"".$_GET['viewmach']."\");'><img src=image/supp.png></a>";
+//			$data2[$i]['MODIF']="<a href='index.php?multi=33&viewmach=".$_GET['viewmach']."&modifmachgroupserver=".$i."&res_pag=".$_POST["pcparpage"]."&page=".$_POST['page']."'><img src=image/modif_tab.png ></a>";
+//			$i++;
+//	}
+//	 $total="<font color=red> (<b>".$valCount['nb']." ".$l->g(652)."</b>)</font>";
+//	tab_entete_fixe($entete2,$data2,"","95","300");
+//	show_page($valCount['nb'],$form_name);
+//	echo "</table></form>";
+	//require("server_redistrib.php");
+	//die();
 	
-echo img($imgHdw[1],$lblHdw[1], 1, $opt);
-echo "</tr></table>";
-
-echo"<br><br><br>";
-
-switch ($opt) :
-	case $l->g(500): print_perso($systemid);
-						break;
-	case $l->g(581):
-			  print_computers_cached($systemid);
-						break;
-	case $l->g(580):
-			  print_computers_real($systemid);
-						break;
-	default : print_perso($systemid);
-						break;
-	endswitch;					
+}else{
+	
+	
+	
+	if( isset($_GET["action"]) || isset($_POST["action_form"]) ) {
+		require("ajout_maj.php");
+		die();
+	}
+	
+	if( ! isset($_GET["option"]) ) {
+		$opt = $l->g(500);
+	}
+	else {
+		$opt = stripslashes(urldecode($_GET["option"]));
+	}
+	
+	$td1	  = "<td height=20px id='color' align='center'><FONT FACE='tahoma' SIZE=2 color=blue><b>";
+	$td2      = "<td height=20px bgcolor='white' align='center'>";
+	$td3      = $td2;
+	$td4      = "<td height=20px bgcolor='#F0F0F0' align='center'>";
+	$lblAdm = Array($l->g(500));
+	$imgAdm = Array("spec");
+	$lblHdw = Array($l->g(580), $l->g(581));
+	$imgHdw = Array("ttmachinesred", "ttmachines",);
+	
+	echo "<br><br>";
+	
+	echo "<table width='20%' border=0 align='center' cellpadding='0' cellspacing='0'>
+			<tr>";
+	echo img($imgAdm[0],$lblAdm[0], 1, $opt);
+	
+	if( ! $pureStat )
+		echo img($imgHdw[0],$lblHdw[0], 1, $opt);
+		
+	echo img($imgHdw[1],$lblHdw[1], 1, $opt);
+	echo "</tr></table>";
+	
+	echo"<br><br><br>";
+	
+	switch ($opt) :
+		case $l->g(500): print_perso($systemid);
+							break;
+		case $l->g(581):
+				  print_computers_cached($systemid);
+							break;
+		case $l->g(580):
+				  print_computers_real($systemid);
+							break;
+		default : print_perso($systemid);
+							break;
+		endswitch;		
+}			
 echo "<script language='javascript'>wait(0);</script>";
 flush();
 echo "<br></body>";
@@ -256,7 +318,8 @@ function print_computers_real($systemid) {
 
 function print_computers_cached($systemid) {
 
-	global $l;
+	global $l,$server_group;
+	
 	if ($_SESSION["lvluser"]==ADMIN){
 		$sql_mesMachines="select hardware_id from accountinfo a where ".$_SESSION["mesmachines"];
 		$res_mesMachines = mysql_query($sql_mesMachines, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
@@ -484,13 +547,13 @@ function isAvail($lbl) {
 	$valAvail = mysql_num_rows( $resAv );
 	return ($valAvail>0);
 }
-function show_modif($name,$input_name,$input_type)
-{
-	if ($input_type == 1)
-	return "<textarea name='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
-	else
-	return "<input type='text' name='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
-}
+//function show_modif($name,$input_name,$input_type)
+//{
+//	if ($input_type == 1)
+//	return "<textarea name='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
+//	else
+//	return "<input type='text' name='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
+//}
 
 
 ?>

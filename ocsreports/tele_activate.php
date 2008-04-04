@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-02-27 12:34:12 $$Author: hunal $($Revision: 1.12 $)
+//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.13 $)
 
 PrintEnTete($l->g(465));
 //activate for server's group
@@ -173,7 +173,6 @@ else if( isset( $_GET["suppack"] )) {
 	@mysql_query($reqDelEnable, $_SESSION["writeServer"]) or die(mysql_error());
 	$reqDelAvailable = "DELETE FROM download_available WHERE FILEID='".$_GET["suppack"]."'";
 	@mysql_query($reqDelAvailable, $_SESSION["writeServer"]) or die(mysql_error());
-	
 	//looking for the directory for pack
 	$sql_document_root="select tvalue from config where NAME='DOWNLOAD_PACK_DIR'";
 	$res_document_root = mysql_query( $sql_document_root, $_SESSION["readServer"] );

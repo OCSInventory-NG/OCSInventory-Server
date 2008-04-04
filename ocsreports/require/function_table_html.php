@@ -261,6 +261,8 @@ function tab_list_error($data,$title)
 
 function nb_page($form_name){
 	global $_POST,$l;
+	if ($_POST['old_pcparpage'] != $_POST['pcparpage'])
+	$_POST['page']=0;
 	if (!(isset($_POST["pcparpage"])))
 	 $_POST["pcparpage"]=20;
 	 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td align=center>";
@@ -293,11 +295,25 @@ function show_page($valCount,$form_name){
 	echo "<img src='image/prec24.png' OnClick='page(\"".$down."\",\"page\",\"".$form_name."\")'>";
 	//if ($nbpage<10){
 		$i=0;
-		while ($i<$nbpage){
-			if ($_POST['page'] == $i)
-			echo "<font color=red>".$i."</font> ";
-			else
+		$deja="";
+		while ($i<$nbpage){			
+			$point="";
+			if ($_POST['page'] == $i){
+				if ($i<$nbpage-10 and  $i>10  and $deja==""){
+				$point=" ... ";
+				$deja="ok";	
+				}
+				if($i<$nbpage-10 and  $i>10){
+					$point2=" ... ";
+				}
+				echo $point."<font color=red>".$i."</font> ".$point2;
+			}
+			elseif($i>$nbpage-10 or $i<10)
 			echo "<a OnClick='page(\"".$i."\",\"page\",\"".$form_name."\")'>".$i."</a> ";
+			elseif ($i<$nbpage-10 and  $i>10 and $deja==""){
+				echo " ... ";
+				$deja="ok";	
+			}
 			$i++;
 		}
 
@@ -305,12 +321,17 @@ function show_page($valCount,$form_name){
 	echo "<img src='image/proch24.png' OnClick='page(\"".$up."\",\"page\",\"".$form_name."\")'>";
 	
 	}
-	echo "<input type='hidden' id='page' name='page' value=''>";
+	echo "<input type='hidden' id='page' name='page' value='".$_POST['page']."'>";
+	echo "<input type='hidden' id='old_pcparpage' name='old_pcparpage' value='".$_POST['pcparpage']."'>";
 }
 
 
 function onglet($def_onglets,$form_name,$post_name,$ligne)
 {
+	global $_POST;
+	if ($_POST["old_".$post_name] != $_POST[$post_name]){
+	$_POST['page']=0;
+	}
 	/*This fnction use code of Douglas Bowman (Sliding Doors of CSS)
 	http://www.alistapart.com/articles/slidingdoors/
 	THANKS!!!!
@@ -364,6 +385,7 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	echo "</ul>
 	</div></td></tr></table>";
 	echo "<input type='hidden' id='".$post_name."' name='".$post_name."' value='".$_POST[$post_name]."'>";
+	echo "<input type='hidden' id='old_".$post_name."' name='old_".$post_name."' value='".$_POST[$post_name]."'>";
 	}
 }
 

@@ -15,7 +15,6 @@ if(isset($_GET["timestamp"])){
 	if (!isset($document_root))
 	$document_root = $_SERVER["DOCUMENT_ROOT"];
 	$rep = $document_root."/download/".$_GET["timestamp"]."/";
-	//$rep = "../download/".$_GET["timestamp"];
 	echo $rep;
 	$dir = opendir($rep);
 	while($f = readdir($dir))
