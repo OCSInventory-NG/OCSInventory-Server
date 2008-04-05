@@ -775,8 +775,12 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_FILTER_ON',0
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_RAM_MAX',512,'','Filter on RAM for console page');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_RAM_MINI',128,'','Filter on RAM for console page');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_NOT_VIEW',3,'','Filter on DAY for console page');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_PROC_MINI',1000,'','Filter on PROCESSOR for console page');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_PROC_MAX',4000,'','Filter on PROCESSOR for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_PROC_MINI',1000,'','Filter on Hard Drive for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_DD_MAX',4000,'','Filter on Hard Drive for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_PROC_MAX',3000,'','Filter on PROCESSOR for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_DD_MINI',500,'','Filter on PROCESSOR for console page');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_AGIN_MACH',30,'','Filter on lastdate for console page');
+
 
 ALTER TABLE download_enable ADD SERVER_ID INT(11);
 ALTER TABLE download_enable ADD GROUP_ID INT(11);
