@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.17 $)
+//Modified on $Date: 2008-04-11 15:34:54 $$Author: airoine $($Revision: 1.18 $)
 
 //find IPDISCOVER_IPD_DIR
 $sql_IPD_DIR="select tvalue from config where NAME='IPDISCOVER_IPD_DIR'";
@@ -275,7 +275,7 @@ else if( $_GET["mode"] == 1 ) {
 			LEFT OUTER JOIN networks        ns ON ns.macaddr = mac 
 			LEFT OUTER JOIN network_devices nd ON nd.macaddr = mac
 			INNER      JOIN subnet          s  ON s.netid    = n.netid 
-			WHERE s.id $dpt
+			WHERE s.id = '$dpt'
 			AND ns.macaddr IS NULL 
 			AND nd.macaddr IS NULL";
 			
@@ -284,7 +284,7 @@ else if( $_GET["mode"] == 1 ) {
 		
 		echo "<center><b></b></center><br>";
 		$reqGateway = "SELECT ipsubnet as nbrez, COUNT(hardware_id) AS nbc FROM networks n,subnet s
-		WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' AND n.ipsubnet=s.netid AND s.id $dpt GROUP BY(ipsubnet) ";
+		WHERE ipsubnet<>'0.0.0.0' AND description NOT LIKE '%PPP%' AND n.ipsubnet=s.netid AND s.id = '$dpt' GROUP BY(ipsubnet) ";
 		
 		$strEnTete =  $l->g(562)." ".$dpt."<br>";
 		$strEnTete .= "<br>(<font color='red'>".$totNinvValLoc["total"]."</font> ".$l->g(219).")";
