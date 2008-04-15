@@ -77,6 +77,8 @@ sub update_history_full{
 
 sub update_history_diff{
   my ( $hardwareId, $dbh, $fromXml, $fromDb ) = @_;
+
+  my @alreadyhandled;
   
   for my $l_xml (@$fromXml){
     my $found = 0;
@@ -91,10 +93,12 @@ sub update_history_diff{
       }
     }
     if(!$found){
-      $dbh->do( 'INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)', {}, $hardwareId, $l_xml );
+      $dbh->do( 'INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)', {}, $hardwareId, $l_xml )
+        unless grep /\Q$l_xml\E/, @alreadyhandled; 
     }
+    push @alreadyhandled, $l_xml;
   }
-  
+
   for( @$fromDb ){
     next if !defined ($_);
     $dbh->do( 'DELETE FROM download_history WHERE HARDWARE_ID=? AND PKG_ID=?', {}, $hardwareId, $_ );
