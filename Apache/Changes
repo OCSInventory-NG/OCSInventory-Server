@@ -1,6 +1,9 @@
 Revision history for Apache::Ocsinventory
+1.02 RC2
+	* Fix the problem of feeding cache when write_diff is OFF
+	* Fix the duplicate error in packages history (download)
 
-1.02
+1.02 RC1
 	* As the dictionnary and "all softs" are inventory cache dependant = INVENTORY_CACHE_REVALIDATE default => 7
 	* Fixed the DEVICEID checking
 	* Important fix in "on the fly deletion" in inventory cache
