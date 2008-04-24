@@ -230,7 +230,7 @@ $lbl_field=array("WORKGROUP"=>$l->g(778),
 			  "NB_HARD_DISK_B"=>$l->g(815)
 			  );
 
-//définition des onglets
+//dï¿½finition des onglets
 $data_on['ACTIVITY']=$l->g(798);
 $data_on['SOFT']=strtoupper($l->g(20));
 $data_on['HARD']=$l->g(799);
@@ -553,7 +553,6 @@ if (isset($default)){
 			$height=300;
 			tab_entete_fixe($entete,$data,$titre,$width,$height);
 			
-			echo "<a href='ipcsv.php'>sdfdfsdfs</a>";
 			show_page($valCount['c'],$form_name);
 			
 			
