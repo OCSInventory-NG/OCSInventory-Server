@@ -284,6 +284,7 @@ function update_default_value($POST){
 		}
 		if ($value != ""){
 				if ($key != 'onglet' 
+					and $key != 'old_onglet' 
 					and $key != 'Valid' 
 					and $key != 'LOCAL_SERVER'
 					and $key != 'DOWNLOAD_SERVER_URI' 
@@ -359,7 +360,6 @@ function update_default_value($POST){
 				}
 				
 				if (isset($sql)){
-					
 					if( ! @mysql_query( $sql, $_SESSION["writeServer"] )) {
 						echo "<br><center><font color=red><b>ERROR: MySql connection problem<br>".mysql_error($_SESSION["writeServer"])."</b></font></center>";
 						return false;
