@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-04-11 15:34:54 $$Author: airoine $($Revision: 1.18 $)
+//Modified on $Date: 2008-04-26 13:10:57 $$Author: dliroulet $($Revision: 1.19 $)
 
 //find IPDISCOVER_IPD_DIR
 $sql_IPD_DIR="select tvalue from config where NAME='IPDISCOVER_IPD_DIR'";
@@ -26,7 +26,7 @@ if( $scriptPresent = @stat($fipdisc) ) {
 	if( ! is_executable($fipdisc) ) {
 		$scriptPresent = false;
 	}
-	else if( ! is_writable(".") ) {
+	else if( ! is_writable( "$IPD_DIR/ipd") ) {
 		$scriptPresent = false;
 	}	
 }
@@ -46,7 +46,7 @@ switch( $_GET["mode"] ) {
 				if( ! is_executable($fipdisc) ) {
 					echo "<br><center><b><font color='red'>$fipdisc ".$l->g(341)."</b></center>";
 				}
-				else if( ! is_writable(".") ) {
+				else if( ! is_writable( "$IPD_DIR/ipd") ) {
 					echo "<br><center><b><font color='red'>".$l->g(342)." $fipdisc</b></center>";
 				}	
 			}
@@ -878,7 +878,7 @@ function printTab($t ,$modeReg=false, $tailles=null, $unSurDeux=false, $scroll =
 
 function runCommand($command="") {
 	global $l,$IPD_DIR;
-	$command = "perl ipdiscover-util.pl $command -xml -h=".$_SESSION["SERVEUR_SQL"]." -u=".$_SESSION["COMPTE_BASE"]." -p=".$_SESSION["PSWD_BASE"]." -path=".$IPD_DIR."/ipd";
+	$command = "perl ipdiscover-util.pl $command -xml -h=".$_SESSION["SERVEUR_SQL"]." -u=".$_SESSION["COMPTE_BASE"]." -p=".$_SESSION["PSWD_BASE"]." -path=".$IPD_DIR;
 	//echo $command."<br>";
 	$fd = popen($command,"r");	
 	if($fd==FALSE) {

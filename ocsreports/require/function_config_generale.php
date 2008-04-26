@@ -431,10 +431,10 @@ function auto_duplicate_lvl_poids($value,$entree_sortie){
 					'BORDERCOLOR'=>'#9894B5'));
 	ligne('LOCAL_PORT',$l->g(566),'input',array('VALUE'=>$values['ivalue']['LOCAL_PORT'],'SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
 	ligne('LOCAL_SERVER',$l->g(565),'input',array('BEGIN'=>'HTTP://','VALUE'=>$values['tvalue']['LOCAL_SERVER'],'SIZE'=>50,'MAXLENGHT'=>254));
-	ligne('DOWNLOAD_PACK_DIR',$l->g(775),'radio',array('DEFAULT'=>"Par défaut(".$_SERVER["DOCUMENT_ROOT"]."/DOWNLOAD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_pack),
-		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['DOWNLOAD_PACK_DIR'],'SIZE'=>70,'END'=>"/DOWNLOAD"));
-	ligne('IPDISCOVER_IPD_DIR',$l->g(776),'radio',array('DEFAULT'=>"Par défaut(".$_SERVER["DOCUMENT_ROOT"]."/oscreport/IPD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_ipd),
-		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['IPDISCOVER_IPD_DIR'],'SIZE'=>70,'END'=>"/IPD"));
+	ligne('DOWNLOAD_PACK_DIR',$l->g(775),'radio',array('DEFAULT'=>$l->g(488)." (".$_SERVER["DOCUMENT_ROOT"].")",'CUSTOM'=>$l->g(487),'VALUE'=>$select_pack),
+		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['DOWNLOAD_PACK_DIR'],'SIZE'=>70,'END'=>"/download"));
+	ligne('IPDISCOVER_IPD_DIR',$l->g(776),'radio',array('DEFAULT'=>$l->g(488)." (".$_SERVER["DOCUMENT_ROOT"]."/oscreport)",'CUSTOM'=>$l->g(487),'VALUE'=>$select_ipd),
+		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['IPDISCOVER_IPD_DIR'],'SIZE'=>70,'END'=>"/ipd"));
 		
 	fin_tab($form_name);
  	
