@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-03-20 16:26:48 $$Author: airoine $($Revision: 1.33 $)
+//Modified on $Date: 2008-05-01 20:09:05 $$Author: dliroulet $($Revision: 1.34 $)
 
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
@@ -19,7 +19,7 @@ define("MAX_CACHED_REGISTRY", 200 );	// Max number of registry that may be retur
 define("USE_CACHE", 0 );				//Do we use cache tables ?
 define("UPDATE_CHECKSUM", 1 );			// do we need to update software checksum when using dictionnary ?
 define("UTF8_DEGREE", 0 );				// 0 For non utf8 database, 1 for utf8
-define("GUI_VER", "5000");				// Version of the GUI
+define("GUI_VER", "5001");				// Version of the GUI
 define("MAC_FILE", "files/oui.txt");	// File containing MAC database
 define("TAG_LBL", "Tag");				// Name of the tag information
 define("DB_NAME", "ocsweb");			// Database name
@@ -942,30 +942,44 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			//Super user and not group query
 
 			if($massProcessing && $req->label != $l->g(583) && $req->label != $l->g(2) ) {
+
 				echo "<br><center><b>".$l->g(430).":</b>";	
+
 				if ( $_SESSION["lvluser"]==SADMIN ){		
+
 				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=22\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(107)."</a></b> |";
 				//echo "&nbsp;&nbsp;<b><a href='index.php?multi=23' target=_top>".$l->g(312)."</a></b>";
 				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&frompref=1&multi=24&isgroup=0\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(428)."</a></b> |";
 				echo "&nbsp;&nbsp;<b><a href=# onclick='document.getElementById(\"checkmass\").action=\"index.php?{$prefG}&multi=27\";document.getElementById(\"checkmass\").submit();' target=_top>".$l->g(122)."</a></b> |";
 				}
+
 				//GROUP BAR
 				if( $_GET["multi"] == 1 ) {
 					// get values for coming back from group_create page
 					//$_SESSION["hiddens"] = $hiddens;
 					echo "&nbsp;&nbsp;<b><a href='#' target='_top'
 						 onclick='document.getElementById(\"groups\").style.display=\"block\";";
+
 					if ( $_SESSION["lvluser"]==SADMIN ){	 
+
 							echo "	  document.getElementById(\"server\").style.display=\"none\";
+
 						 		  document.getElementById(\"add_serv\").style.display=\"none\";
 						 		  document.getElementById(\"new_serv\").style.display=\"none\";
 						 		  document.getElementById(\"replace_serv\").style.display=\"none\";";
+
 					}
+
 					echo "  return false;'>".$l->g(583)."</a></b> ";
+
 					if ( $_SESSION["lvluser"]==SADMIN ){
+
 					echo "|&nbsp;&nbsp;<b><a href='#' target='_top' onclick='document.getElementById(\"groups\").style.display=\"none\"; document.getElementById(\"server\").style.display=\"block\"; return false;'>".$l->g(628)."</a></b>";
+
 					}//find all group
+
 					$reqGroups = "SELECT DISTINCT name,TAG FROM hardware h left join accountinfo a on h.id=a.hardware_id WHERE deviceid='_SYSTEMGROUP_'";
+
 					$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 					//list of choise
 					$actionServer['0']=$l->g(32);
@@ -975,27 +989,47 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					$first = true;
 					while( $valGroups = mysql_fetch_array( $resGroups ) ) {
 						if ($_SESSION["lvluser"] == SADMIN or $valGroups["TAG"] == "GROUP_4_ALL")
+
 						$groupList .= "<option>".$valGroups["name"]."</option>";
 					}
 					if ( $_SESSION["lvluser"]==SADMIN ){
+
 						//find all server
+
 						$reqGroupsServers = "SELECT DISTINCT name FROM hardware WHERE deviceid='_DOWNLOADGROUP_'";
+
 						$resGroupsServers = mysql_query( $reqGroupsServers, $_SESSION["readServer"] );
+
 						while( $valGroupsServers = mysql_fetch_array( $resGroupsServers ) ) {
+
 							$groupListServers .= "<option>".$valGroupsServers["name"]."</option>";
+
 						}
+
 						//function for show only one div
+
 						function show_only_me($show,$actionServer)
+
 						{
+
 							echo "<option value='".$show."' onclick='";
+
 							foreach ($actionServer as $key=>$value){
+
 								if ($key == $show and $key != '0')
+
 								echo "document.getElementById(\"".$key."\").style.display=\"block\";";
+
 								elseif ($key != '0')
+
 								echo "document.getElementById(\"".$key."\").style.display=\"none\";";
+
 								
+
 							}
+
 							echo "'>".$actionServer[$show]."</option>";
+
 							
 						}
 					}
@@ -1014,38 +1048,62 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					}
 					</script>
 					<?
+
 					echo "<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '60%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
+
 					<tr height='20px' bgcolor='white'>";
+
 					if ( $_SESSION["lvluser"]==SADMIN ){  
+
 						echo "	<td align='center' colspan='2'><b>".$l->g(584)."</b></td>
+
 						<td align='center' colspan='10'><b>".$l->g(585)."</b></td></tr>
+
 					<tr height='20px' bgcolor='white'>
 						<td width='25%'>".$l->g(586)." :</td><td width='25%'><input type='text' id='cg' name='cg' onfocus='cleanForm(this)'></td>
+
 					<td width='25%'>".$l->g(587)." :</td><td width='25%'><input type='text' id='cgs' name='cgs' onfocus='cleanForm(this)'></td>
+
 					</tr>
 					<tr height='20px' bgcolor='white'>
 						<td>".$l->g(588)." :</td><td><select id='eg' name='eg' onfocus='cleanForm(this)'><option value='_nothing_'>".$l->g(32)."</option>".$groupList."</select></td>";
+
 					}
+
 					echo "	<td>".$l->g(589)." :</td><td><select id='asg' name='asg'";
+
 					if ( $_SESSION["lvluser"]==SADMIN )
+
 					echo " onfocus='cleanForm(this)'";
+
 					echo "><option value='_nothing_'>".$l->g(32)."</option>".$groupList."</select></td></tr>";
+
 					if ( $_SESSION["lvluser"]==SADMIN ){ 
+
 					echo "<tr height='30px' bgcolor='white'><td align='center' colspan='5'>".$l->g(53).": 
+
 					<input type='text' name='desc' id='desc' size='100'></td></tr>
 					<tr height='20px' bgcolor='white'>";
+
 					}
+
 					echo "<td align='right' colspan='5'><b><input type='submit'></b></td></tr>
+
 					</table>
 					</div>";
+
 					if ( $_SESSION["lvluser"]==SADMIN ){
+
 					
 					echo "<div id='server' style='display:none'>
+
 		 			<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5' >
 					<tr>
 						<td align='center' colspan='2'><b>".$l->g(585)."></b></td></tr>
+
 					<tr>
 						<td>".$l->g(634)." :</td><td><select id='action_server' name='action_server'>";
+
 						show_only_me(0,$actionServer);
 						show_only_me("new_serv",$actionServer);
 						show_only_me("add_serv",$actionServer);
@@ -1091,6 +1149,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 						echo "</div>";*/
 				}
 				}
+
 				echo "</center>";
 			}			
 		}		
