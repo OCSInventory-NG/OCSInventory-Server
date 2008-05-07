@@ -8,15 +8,17 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.16 $)
+//Modified on $Date: 2008-05-07 15:41:12 $$Author: airoine $($Revision: 1.17 $)
 $form_name='admin_param';
+require_once('require/function_table_html.php');
+require_once('require/function_dico.php');
 //more one onglet => must add verif for reset $_POST['page']
 if ($_POST['old_onglet_perso'] != $_POST['onglet_perso'] or $_POST['old_onglet_bis'] != $_POST['onglet_bis'])
 	$_POST['page']=0;
 echo "<script language=javascript>
 		function confirme(did,form_name,hidden_name){
 			if(confirm('".$l->g(640)." '+did+'?')){
-				garde_valeur(did,form_name,hidden_name)
+				garde_post(did,hidden_name,form_name)
 			}
 		}
 		function active(id, sens) {
@@ -35,13 +37,16 @@ echo "<script language=javascript>
 				}
 			}
 		}
+		function garde_post(did,hidden_name,form_name){
+				garde_valeur(did,hidden_name);
+				post(form_name);
+		}
 </script>";
-require_once('require/function_table_html.php');
-require_once('require/function_dico.php');
+
 //definition of onglet
 $def_onglets['CAT']='CATEGORIES'; //Categories
 $def_onglets['NEW']='NEW'; //nouveau logiciels
-$def_onglets['IGNORED']='IGNORED'; //ignoré
+$def_onglets['IGNORED']='IGNORED'; //ignorÃ©
 $def_onglets['UNCHANGED']='UNCHANGED'; //unchanged
 if ($_POST['onglet'] == "")
 $_POST['onglet']="CAT";
@@ -162,14 +167,13 @@ if ($_POST['onglet'] == 'NEW'){
 			and name not in (".$list_ignored_soft.")".$search_cache;	
 	 $result_list_alpha = mysql_query( $sql_list_alpha, $_SESSION["readServer"]);
 	 $i=0;
-
 //execute the query only if necessary 
 if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha or !isset($_POST['onglet_bis'])){
 	 while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
 	 	if (strtoupper($item_list_alpha -> alpha) != "" 
-			and strtoupper($item_list_alpha -> alpha) != Ã
-			and strtoupper($item_list_alpha -> alpha) != Â
-			and strtoupper($item_list_alpha -> alpha) != Ä){
+			and strtoupper($item_list_alpha -> alpha) != Ãƒ
+			and strtoupper($item_list_alpha -> alpha) != Ã‚
+			and strtoupper($item_list_alpha -> alpha) != Ã„){
 				if (!isset($_POST['onglet_bis']))
 					$_POST['onglet_bis']=strtoupper($item_list_alpha -> alpha);
 				$list_alpha[strtoupper($item_list_alpha -> alpha)]=strtoupper($item_list_alpha -> alpha);
@@ -210,7 +214,7 @@ if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha or !isset($_POST['onglet_bis'
  	$list_soft="''";
 
 	$sql="select name, count(name) nbre from softwares 
-			where name in (".$list_soft.")
+			where name in (".$list_soft.") and name != ''
 			group by name
 			order by 1 ";
 }
@@ -218,7 +222,7 @@ if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha or !isset($_POST['onglet_bis'
 /*******************************************************CAS OF IGNORED*******************************************************/
 if ($_POST['onglet'] == 'IGNORED'){
 	$reqCount="select count(extracted) nb from dico_ignored";
-	//on enlève le AND et on met le where devant
+	//on enlÃ¨ve le AND et on met le where devant
 	if ($search_count != "")
 	$modif_search = " where ".substr($search_count,4);
 	$reqCount.=$modif_search;
@@ -261,15 +265,17 @@ $num_rows_reality = mysql_num_rows($result);
 		$i++;
 		}
 	if ($num_rows_reality != $num_rows_soft and $_POST['onglet'] == 'NEW'){
-		foreach ($name_verif as $key){
-			if (!isset($view_ok[$key])){
-			$data[$i][$entete[0]]=$key;
-			$data[$i][$entete[1]]="0";
-			$data[$i][$entete[2]]="<input type='checkbox' onclick='return false'>";
-			$i++;
-			}	
+		if (isset($name_verif)){
+			foreach ($name_verif as $key){
+				if (!isset($view_ok[$key])){
+				$data[$i][$entete[0]]=$key;
+				$data[$i][$entete[1]]="0";
+				$data[$i][$entete[2]]="<input type='checkbox' onclick='return false'>";
+				$i++;
+				}	
+			}
+			$expl_cache="<font color=green>".$l->g(812)."</font>";
 		}
-		$expl_cache="<font color=green>".$l->g(812)."</font>";
 		
 	}	
 	$titre=$l->g(768)." ".$valCount['nb'];
@@ -280,7 +286,6 @@ if ($_POST['onglet'] == 'NEW'){
 echo $expl_cache;
 		 onglet($_SESSION['ONGLET_SOFT'],$form_name,"onglet_bis",20);
 }
-	
 	tab_entete_fixe($entete,$data,$titre,$width,$height);
 
 show_page($valCount['nb'],$form_name);
@@ -292,7 +297,7 @@ echo "</td></tr>";
 
 
 /******************************************CHAMP DE TRANSFERT********************************************/
-//récupération de toutes les catégories
+//rÃ©cupÃ©ration de toutes les catÃ©gories
 $sql_list_categories="select distinct(formatted) name from dico_soft where formatted!=extracted";
 $result_list_categories = mysql_query( $sql_list_categories, $_SESSION["readServer"]);
 $list_categories['EMPTY']="";
@@ -300,7 +305,7 @@ $list_categories['EMPTY']="";
 while($item_list_categories = mysql_fetch_object($result_list_categories)){
 	$list_categories[$item_list_categories ->name]=$item_list_categories ->name;	
 }
-//définition de toutes les options possible
+//dÃ©finition de toutes les options possible
 $choix_affect['EMPTY']="";
 $choix_affect['NEW_CAT']=$l->g(385);
 $choix_affect['EXIST_CAT']=$l->g(387);
@@ -325,7 +330,7 @@ $countHl++;
 echo "</select>";
 echo "</td><td align=left><div id='NEW_CAT_div' style='display:none'>
 		<input type='text' size='20' maxlength='20' id='NEW_CAT_edit' name='NEW_CAT_edit' style='background-color:white;'>
-		<input type='button' name='TRANSF' value='".$l->g(13)."' onclick='garde_valeur(\"TRANSF\",\"".$form_name."\",\"TRANSF\")'>
+		<input type='button' name='TRANSF' value='".$l->g(13)."' onclick='garde_post(\"TRANSF\",\"TRANSF\",\"".$form_name."\")'>
 	</div>";
 echo "</td><td><div id='EXIST_CAT_div' style='display:none'>";
 echo "<select name='EXIST_CAT_edit' style='background-color:white;'>";
@@ -337,7 +342,8 @@ foreach ($list_categories as $key=>$value){
 	echo ($countHl%2==1?"":"class='hi'").">".$value."</option>";
 	$countHl++;
 }
-echo "</select><input type='button' name='TRANSF' value='".$l->g(13)."' onclick='garde_valeur(\"TRANSF\",\"".$form_name."\",\"TRANSF\")'></div>";
+
+echo "</select><input type='button' name='TRANSF' value='".$l->g(13)."' onclick='garde_post(\"TRANSF\",\"TRANSF\",\"".$form_name."\")'></div>";
 echo "</td></tr>";
 /******************************************SEARCH BUTTON********************************************/
 echo "<tr><td>
