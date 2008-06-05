@@ -43,6 +43,9 @@ function maj_trans($onglet,$nom_new_cat){
 			$search_name_end=" from softwares_name_cache where ID=".$value."";
 		
 		}else{
+			//add by Inferno
+			$value=str_replace("'","\'",$value);
+			//end add
 			$search_name_begin="'".$value."'";
 			$search_name_end="";
 		}
@@ -131,7 +134,7 @@ function maj_trans($onglet,$nom_new_cat){
 						$nbr_maj++;
 					}
 	}
-	return $l->g(770)." ".$nbr_maj." ".$l->g(20)."(s)"; //mise à jour de XXX logiciel(s)
+	return $l->g(770)." ".$nbr_maj." ".$l->g(20)."(s)"; //mise ï¿½ jour de XXX logiciel(s)
 }
 
 function maj_trans_all($onglet,$nom_new_cat,$search_cache,$search_count){

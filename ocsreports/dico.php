@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-05-07 15:41:12 $$Author: airoine $($Revision: 1.17 $)
+//Modified on $Date: 2008-06-05 12:39:58 $$Author: airoine $($Revision: 1.18 $)
 $form_name='admin_param';
 require_once('require/function_table_html.php');
 require_once('require/function_dico.php');
@@ -261,7 +261,9 @@ $num_rows_reality = mysql_num_rows($result);
 		$data[$i][$entete[0]]=$item ->name;
 		if ($_POST['onglet'] == 'NEW' )
 		$data[$i][$entete[1]]=$item ->nbre;
-		$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".(isset($item ->id)?$item ->id:str_replace("'","\'",$item -> name))."' id='".$i."'>";
+		//corrected by Inferno
+		$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".(isset($item ->id)?$item->id:str_replace("'","&#39",$item -> name))."'id='".$i."'>";
+		//$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".(isset($item ->id)?$item ->id:str_replace("'","\'",$item -> name))."' id='".$i."'>";
 		$i++;
 		}
 	if ($num_rows_reality != $num_rows_soft and $_POST['onglet'] == 'NEW'){
