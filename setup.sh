@@ -50,11 +50,11 @@ COM_SERVER_LOGROTATE_CONF_FILE="ocsinventory-server"
 # Administration Console Apache configuration file
 ADM_SERVER_APACHE_CONF_FILE="ocsinventory-reports.conf"
 # Administration console read only files directory
-ADM_SERVER_STATIC_DIR="/usr/share/ocsinventory-server"
+ADM_SERVER_STATIC_DIR="/usr/share/ocsinventory-reports"
 ADM_SERVER_STATIC_REPORTS_DIR="ocsreports"
 ADM_SERVER_REPORTS_ALIAS="/ocsreports"
 # Administration console read/write files dir
-ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-server"
+ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-reports"
 # Administration default packages directory and Apache alias
 ADM_SERVER_VAR_PACKAGES_DIR="download"
 ADM_SERVER_PACKAGES_ALIAS="/download"

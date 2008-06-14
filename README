@@ -25,7 +25,7 @@ REMOVE (or move) directories 'ocsreports' and 'download' from Apache root
 document directory.
 If you choose to move directory, YOU MUST MOVE 'download' directory to 
 Administration Server variable/cache directory (by default 
-/var/lib/ocsinventpry-server), especialy if you use deployement feature.
+/var/lib/ocsinventory-reports), especialy if you use deployement feature.
 ================================================================================
 
 
@@ -75,9 +75,9 @@ Using default setup,
 - Communication Server logs are stored under directory 
   /var/log/ocsinventory-server
 - PHP files are installed under directory 
-  /usr/share/ocsinventory-server/ocsreports
+  /usr/share/ocsinventory-reports/ocsreports
 - Writable/cache directories "download" and "ipd" are created under directory 
-  /var/lib/ocsinventory-server
+  /var/lib/ocsinventory-reports
 - Administration Server configuration file ocsinventory-reports.conf is 
   installed under Apache configuration directory, usually /etc/httpd/conf.d or
   /etc/apache[2]/conf.d. It contains aliases for /ocsreports and /download URL.
