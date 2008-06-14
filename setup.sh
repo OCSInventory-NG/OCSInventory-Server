@@ -981,7 +981,7 @@ then
     else
        ADM_SERVER_STATIC_DIR="$ligne"
     fi
-    echo "OK, PHP files copied into $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR ;-)"
+    echo "OK, using directory $ADM_SERVER_STATIC_DIR to install static files ;-)"
     echo "Using directory $ADM_SERVER_STATIC_DIR for static files" >> $SETUP_LOG
 
     echo "Where to create writable/cache directories for deployement packages and"
