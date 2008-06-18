@@ -8,8 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.6 $)
-
+//Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.7 $)
 
 
 require_once('require/function_table_html.php');
@@ -30,7 +29,7 @@ elseif (isset($_POST['systemid'])) {
 	$systemid = $_POST['systemid'];
 }
 if( $_SESSION["lvluser"]!=LADMIN && $_SESSION["lvluser"]!=SADMIN  ){
-	$sql_verif="select TAG from accountinfo where TAG='GROUP_4_ALL' and HARDWARE_ID='".$systemid."'";
+	$sql_verif="select workgroup from hardware where workgroup='GROUP_4_ALL' and ID='".$systemid."'";
 	$res_verif = mysql_query($sql_verif, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$item_verif = mysql_fetch_object($res_verif);
 	if ($item_verif == "")
@@ -446,9 +445,8 @@ function print_perso($systemid) {
 	optperso("PROLOG_FREQ",$l->g(724)." <font color=green size=1><i>PROLOG_FREQ</i></font>",$optPerso,1,$optdefault["PROLOG_FREQ"],$l->g(730));
 
 	//TELEDEPLOY
-	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc  FROM devices d, download_enable e LEFT JOIN download_available a 
+	$resDeploy = @mysql_query("SELECT a.name, d.tvalue,d.ivalue, e.pack_loc,e.fileid  FROM devices d, download_enable e LEFT JOIN download_available a 
 	ON e.fileid=a.fileid WHERE d.name='DOWNLOAD' AND e.id=d.ivalue AND d.hardware_id=$systemid"); 
-	 
 	if( mysql_num_rows( $resDeploy )>0 ) {
 			
 		while( $valDeploy = mysql_fetch_array( $resDeploy ) ) {
@@ -460,7 +458,9 @@ function print_perso($systemid) {
 			if( $_SESSION["lvluser"]==SADMIN )	
 				echo "$td3 <a href='index.php?multi=29&popup=1&suppack=".$valDeploy["ivalue"]."&systemid=".
 				urlencode($systemid)."&option=".urlencode($l->g(500))."'>".$l->g(122)."</a></td>";
+			show_stat($valDeploy["fileid"]);
 			echo "</tr>";
+			//print_r($valDeploy);
 		}
 	}
 	if( $_SESSION["lvluser"]==SADMIN )
@@ -547,13 +547,11 @@ function isAvail($lbl) {
 	$valAvail = mysql_num_rows( $resAv );
 	return ($valAvail>0);
 }
-//function show_modif($name,$input_name,$input_type)
-//{
-//	if ($input_type == 1)
-//	return "<textarea name='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
-//	else
-//	return "<input type='text' name='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
-//}
+function show_stat($fileId){
+	global $td3;
+	
+	echo $td3."<a href=\"tele_stats.php?stat=".$fileId."&group=".$_GET['systemid']."\" target=_blank><img src='image/stat.png'></a></td>";
+}
 
 
 ?>

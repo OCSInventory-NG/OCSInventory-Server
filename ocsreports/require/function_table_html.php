@@ -259,13 +259,13 @@ function tab_list_error($data,$title)
 	
 }
 
-function nb_page($form_name){
+function nb_page($form_name,$taille_cadre='80',$bgcolor='#C7D9F5',$bordercolor='#9894B5'){
 	global $_POST,$l;
 	if ($_POST['old_pcparpage'] != $_POST['pcparpage'])
 	$_POST['page']=0;
 	if (!(isset($_POST["pcparpage"])))
 	 $_POST["pcparpage"]=20;
-	 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td align=center>";
+	 echo "<table cellspacing='5' width='".$taille_cadre."%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='".$bgcolor."' BORDERCOLOR='".$bordercolor."'><tr><td align=center>";
 	$machNmb = array(5,10,15,20,50,100);
 	$pcParPageHtml = $l->g(340).": <select name='pcparpage' onChange='document.".$form_name.".submit();'>";
 	$countHl=0;
@@ -389,6 +389,58 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	}
 }
 
+
+function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list_fields,$default_fields){
+	global $_POST,$l;
+	//print_r($_POST);
+	if ($_POST['SUP_COL'] != "" and isset($_POST['SUP_COL']))
+	unset($_SESSION['col_tab'][$tab_name][$_POST['SUP_COL']]);
+	
+	if ($_POST['restCol']){
+		$_SESSION['col_tab'][$tab_name][$_POST['restCol']]=$_POST['restCol'];
+	}
+	if ($_POST['RAZ'] == "RAZ")
+	unset($_SESSION['col_tab'][$tab_name]);
+
+	if (!isset($_SESSION['col_tab'][$tab_name]))
+	$_SESSION['col_tab'][$tab_name]=$default_fields;
+	foreach ($entete as $k=>$v){
+		if (in_array($k,$_SESSION['col_tab'][$tab_name])){
+		$data_with_filter['entete'][$k]=$v;	
+		if (!isset($list_col_cant_del[$k]))
+		$data_with_filter['entete'][$k].="<a href=# OnClick='page(\"".$k."\",\"SUP_COL\",\"form\");'><img src=image/supp.png></a>";
+		}	
+		else
+		$list_rest[$k]=$list_fields[$k];
+		
+	}
+
+	foreach ($data as $k=>$v){
+		foreach ($v as $k2=>$v2){
+			if (in_array($k2,$_SESSION['col_tab'][$tab_name])){
+				$data_with_filter['data'][$k][$k2]=$v2;
+			}
+		}
+
+	}
+	$select_restCol ="Ajouter la colonne :<select name='restCol' onChange='document.".$form_name.".submit();'>";
+	$select_restCol .= "<option".($_POST["restCol"] == "DEFAULT" ? " selected" : "")." >Choisissez...</option>";
+	$countHl=0;
+	if ($list_rest != ""){
+		 asort($list_rest,SORT_STRING);
+		foreach( $list_rest as $name_field => $lbl_field) {
+			$select_restCol .=  "<option".($_POST["restCol"] == $name_field ? " selected" : "").($countHl%2==0?" class='hi'":"")." value=".$name_field.">$lbl_field</option>";
+			$countHl++;
+		}
+	}
+	$select_restCol .=  "</select><a href=# OnClick='page(\"RAZ\",\"RAZ\",\"form\");'><img src=image/supp.png></a></td></tr><tr><td align=center>"; //</td></tr><tr><td align=center>
+	echo $select_restCol;
+	echo "<input type='hidden' id='SUP_COL' name='SUP_COL' value=''>";
+	echo "<input type='hidden' id='RAZ' name='RAZ' value=''>";
+	return( $data_with_filter);
+	
+	
+}
 
 
 ?>

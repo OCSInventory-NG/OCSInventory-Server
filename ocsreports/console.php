@@ -95,9 +95,7 @@ echo "<script language=javascript>
 		$item_count = mysql_fetch_object($result_count);
 		
 		if ($link != "" and $item_count -> c != 0 and $item_count -> c != ""){
-			
- 			//$a_behing="<a href='".$link."' target='_blank'>";
- 			$a_behing="<a href='".$link."' target='_blank'>";
+			$a_behing="<a href='".$link."' target='_blank'>";
  			$a_end="</a>";
  			$_SESSION['SQL'][$name_data]= $sql_SESSION;		
  		}elseif($item_count -> c != 0 and $item_count -> c != ""){
@@ -111,9 +109,15 @@ echo "<script language=javascript>
  	}
 
  }
- 
+
 //for SADMIN only 
 if( $_SESSION["lvluser"] == SADMIN) {
+	
+	//Value of FREQUENCY
+	$sql_frequency="select ivalue from config where name='FREQUENCY'";
+	$result_frequency = mysql_query( $sql_frequency, $_SESSION["readServer"]);
+	$item_frequency = mysql_fetch_object($result_frequency);
+	
 	if (isset($_POST['supp']) and $_POST['supp'] != ""){
 		$sql_not_show="delete from config where name='".addslashes($_POST['supp'])."'";
 		mysql_query( $sql_not_show, $_SESSION["writeServer"] );
@@ -131,14 +135,19 @@ if( $_SESSION["lvluser"] == SADMIN) {
 			mysql_query( $sql_show, $_SESSION["writeServer"] );
 
 	 }
-	if (isset($_POST['Valid']) and $_POST['onglet'] == "CONFIG"){	
+	if (isset($_POST['Valid']) and $_POST['onglet'] == "CONFIG"){
 		foreach ($_POST as $key=>$value){
 			
 			if ($value != "" and $key != "Valid" and $key != 'onglet' and $key !='pcparpage'){
-				$sql="delete from config where NAME='GUI_REPORT_".$key."'";
-				mysql_query( $sql, $_SESSION["writeServer"] );
-				$sql="insert into config (NAME,IVALUE) value ('GUI_REPORT_".$key."',".$value.")";
-				mysql_query( $sql, $_SESSION["writeServer"] );
+					//Check correct value for LAST_DIFF
+				if ($key == 'LAST_DIFF' and $value < $item_frequency->ivalue)
+					echo "<script> alert('La valeur de LAST_DIFF doit être suppérieure à celle de FREQUENCY')</script>";
+				else{
+					$sql="delete from config where NAME='GUI_REPORT_".$key."'";
+					mysql_query( $sql, $_SESSION["writeServer"] );
+					$sql="insert into config (NAME,IVALUE) value ('GUI_REPORT_".$key."',".$value.")";
+					mysql_query( $sql, $_SESSION["writeServer"] );
+				}
 				
 			}
 			
@@ -201,8 +210,8 @@ $repart=array("WORKGROUP"=>"ELSE",
 			  "NB_4_MOMENT"=>"ACTIVITY",
 			  "NB_HARD_DISK_H"=>"HARD",
 			  "NB_HARD_DISK_M"=>"HARD",
-			  "NB_HARD_DISK_B"=>"HARD"
-
+			  "NB_HARD_DISK_B"=>"HARD",
+			  "NB_LAST_INV"=>"ACTIVITY"
 			  );
 //all lbl fields
 $lbl_field=array("WORKGROUP"=>$l->g(778),
@@ -227,10 +236,11 @@ $lbl_field=array("WORKGROUP"=>$l->g(778),
 			  "NB_4_MOMENT"=>$l->g(797),
 			  "NB_HARD_DISK_H"=>$l->g(813),
 			  "NB_HARD_DISK_M"=>$l->g(814),
-			  "NB_HARD_DISK_B"=>$l->g(815)
+			  "NB_HARD_DISK_B"=>$l->g(815),
+			  "NB_LAST_INV"=>"Nombre d'agent n'envoyant plus d'inventaire depuis au moins "
 			  );
 
-//dï¿½finition des onglets
+//définition des onglets
 $data_on['ACTIVITY']=$l->g(798);
 $data_on['SOFT']=strtoupper($l->g(20));
 $data_on['HARD']=$l->g(799);
@@ -324,9 +334,16 @@ if (isset($default)){
 		query_with_condition("where lastdate > date_format(sysdate(),'%Y-%m-%d 00:00:00') ",
 							 $lbl_field['NB_INV'],'NB_INV');
 		//query_on_table_count("NAME",$lbl_field['NB_4_MOMENT']." ".$list_option['NOT_VIEW']." ".$l->g(496),"hardware"," and unix_timestamp(lastdate) < unix_timestamp(sysdate())-(".$list_option['NOT_VIEW']."*86400)");
+		//select floor((unix_timestamp(lastcome) - unix_timestamp(lastdate) )/86400),lastcome,lastdate from hardware 
+//		query_with_condition("where unix_timestamp(lastdate) - unix_timestamp(lastcome) < ".$list_option['AGIN_MACH']." ",
+//							 $lbl_field['NB_4_MOMENT']." ".$list_option['AGIN_MACH']." ".$l->g(496),'NB_4_MOMENT');
 		query_with_condition("where unix_timestamp(lastdate) < unix_timestamp(sysdate())-(".$list_option['AGIN_MACH']."*86400) ",
 							 $lbl_field['NB_4_MOMENT']." ".$list_option['AGIN_MACH']." ".$l->g(496),'NB_4_MOMENT');
-
+		if (isset($list_option['LAST_DIFF'])){
+				query_with_condition("where floor((unix_timestamp(lastcome) - unix_timestamp(lastdate) )/86400) >= ".$list_option['LAST_DIFF'],
+							 $lbl_field['NB_LAST_INV']." ".$list_option['LAST_DIFF']." ".$l->g(496),'NB_LAST_INV');
+			}
+		
 	
 	}
 	
@@ -391,13 +408,18 @@ if (isset($default)){
 	 	ligne('RAM_MAX',$l->g(807),'input',array('VALUE'=>$list_option['RAM_MAX'],'END'=>'Mo','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
 	 	ligne('DD_MAX',$l->g(816),'input',array('VALUE'=>$list_option['DD_MAX'],'END'=>'Mo','SIZE'=>4,'MAXLENGHT'=>8,'JAVASCRIPT'=>$numeric));
 	 	ligne('DD_MINI',$l->g(817),'input',array('VALUE'=>$list_option['DD_MINI'],'END'=>'Mo','SIZE'=>4,'MAXLENGHT'=>8,'JAVASCRIPT'=>$numeric));
+	 	
+	 	
+	 	if ($item_frequency -> ivalue != -1){
+	 	$text="<br><font color=orange><i>La valeur doit être supérieur à ".$item_frequency -> ivalue." jour(s) (valeur de FREQUENCY)</i></font>";
+	 	ligne('LAST_DIFF','Différentiel entre LASTDATE et LASTCOME','input',array('VALUE'=>$list_option['LAST_DIFF'],'END'=>$l->g(496).$text,'SIZE'=>2,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));
+	 	}
 		echo "<tr><td align=center colspan=100><input type='submit' name='Valid' value='".$l->g(103)."' align=center></td></tr>";
 		echo "</table>";
 	}
 	
 	if ($_POST['onglet'] == "MSG"){
 		require_once('require/function_config_generale.php');
-		
 		$entete[]=$l->g(583);
 		$entete[]=$l->g(449);
 		$entete[]=$l->g(392);
@@ -457,11 +479,12 @@ if (isset($default)){
 	echo "<input type='hidden' id='detail' name='detail' value='".$_POST['detail']."'>";
 	echo "<input type='hidden' id='tablename' name='tablename' value='".$_POST['tablename']."'>";
 	echo "<input type='hidden' id='old_onglet' name='old_onglet' value='".$_POST['onglet']."'>";
+	//echo "<input type='hidden' id='detail_more' name='detail_more' value=''>";
 	
 	if ($_POST['detail'] != "" 
 		and isset($_POST['detail']) 
 				and $_POST['onglet'] == $_POST['old_onglet'] 
-							and $_POST['onglet'] != "MSG"){
+							and $_POST['onglet'] != "MSG" and $_POST['onglet'] != "CONFIG"){
 		if ($_POST['tablename'] != "ELSE"){		
 		$limit=nb_page($form_name);
 		if ($_POST['sens'] == "ASC")
@@ -501,6 +524,10 @@ if (isset($default)){
 			elseif ($_POST['detail'] == "NB_HARD_DISK_H" or $_POST['detail'] == "NB_HARD_DISK_M" or $_POST['detail'] == "NB_HARD_DISK_B"){
 				$FIELDS["LETTER"]="LETTER";
 				$FIELDS["FREE"]="FREE";
+			}
+			elseif ($_POST['detail'] == "NB_LAST_INV"){
+				$FIELDS["LASTDATE"]="LASTDATE";
+				$FIELDS["LASTCOME"]="LASTCOME";				
 			}
 			$FIELDS["DESCRIPTION"]=$table_hard."DESCRIPTION";
 			$FIELDS["WINOWNER"]=$table_hard."WINOWNER";
@@ -552,7 +579,6 @@ if (isset($default)){
 			$width=100;
 			$height=300;
 			tab_entete_fixe($entete,$data,$titre,$width,$height);
-			
 			show_page($valCount['c'],$form_name);
 			
 			

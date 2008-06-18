@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.22 $)
+//Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.23 $)
 
 require('fichierConf.class.php');
 @session_start();
@@ -55,11 +55,11 @@ else
 if( isset( $_GET["actgrp"] )) {	
 		//v�rification si la valeur correspond � un groupe
 		$reqGroups = "SELECT h.id id
-					  FROM hardware h left join accountinfo a on h.id='".$_GET["grp"]."' 
+					  FROM hardware h 
 					  WHERE h.deviceid='_SYSTEMGROUP_' ";
 		//pour les autres qu'SADMIN, ajout que pour les groupes d�clar�s visibles
 		if ($_SESSION["lvluser"]!=SADMIN)
-			$reqGroups .= " and a.TAG = 'GROUP_4_ALL'";
+			$reqGroups .= " and h.workgroup = 'GROUP_4_ALL'";
 		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 		$valGroups = mysql_fetch_array( $resGroups ); 
 		if (isset($valGroups['id'])){
@@ -413,7 +413,7 @@ function print_perso($systemid) {
 	//PROLOG_FREQ
 	optperso("PROLOG_FREQ",$l->g(724)." <font color=green size=1><i>PROLOG_FREQ</i></font>",$optPerso,0,$optdefault["PROLOG_FREQ"],$l->g(730));
 	//GROUPS
-	$sql_groups="SELECT static, name, group_id,a.TAG  FROM groups_cache g, hardware h left join accountinfo a on h.id=a.hardware_id WHERE g.hardware_id=$systemid AND h.id=g.group_id";
+	$sql_groups="SELECT static, name, group_id,workgroup  FROM groups_cache g, hardware h WHERE g.hardware_id=$systemid AND h.id=g.group_id";
 	$resGroups = @mysql_query($sql_groups, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"])); 
 	
 	if( mysql_num_rows( $resGroups )>0 ) {
@@ -422,7 +422,7 @@ function print_perso($systemid) {
 			echo "<tr>";
 			echo "<td bgcolor='white' align='center' valign='center'>&nbsp;</td>";
 			echo $td3.$l->g(607)." ";		
-			if( $_SESSION["lvluser"] == SADMIN || $_SESSION["lvluser"] == LADMIN || $valGroups["TAG"]=="GROUP_4_ALL")
+			if( $_SESSION["lvluser"] == SADMIN || $_SESSION["lvluser"] == LADMIN || $valGroups["workgroup"]=="GROUP_4_ALL")
 				echo "<a href='index.php?multi=29&popup=1&systemid=".$valGroups["group_id"]."' target='_blank'>".$valGroups["name"]."</td>";
 			else
 				echo "<b>".$valGroups["name"]."</b></td>";			
@@ -434,11 +434,11 @@ function print_perso($systemid) {
 				case 2: echo "<font color='red'>".$l->g(597)."</font></td>"; break;
 			}
 			
-			if( $_SESSION["lvluser"]==SADMIN || $valGroups["TAG"]=="GROUP_4_ALL") {
+			if( $_SESSION["lvluser"]==SADMIN || $valGroups["workgroup"]=="GROUP_4_ALL") {
 				$hrefBase = "machine.php?systemid=".urlencode($systemid)."&option=".urlencode($l->g(500))."&grp=".$valGroups["group_id"];
 				switch( $valGroups["static"] ) {
 					case 0: echo $td3."<a href='$hrefBase&actgrp=1'>".$l->g(598)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=2'>".$l->g(600)."</a></td>"; break;
-					case 1: echo $td3."<a href='$hrefBase&actgrp=0'>".$l->g(599)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=2'>".$l->g(600)."</a></td>"; break;
+					case 1: echo $td3."<a href='$hrefBase&actgrp=0'>".$l->g(818)."</a></td>"; break;
 					case 2: echo $td3."<a href='$hrefBase&actgrp=1'>".$l->g(598)."</a>&nbsp; &nbsp; &nbsp;<a href='$hrefBase&actgrp=0'>".$l->g(599)."</a></td>"; break;
 				}
 			}			
@@ -476,11 +476,11 @@ function print_perso($systemid) {
 		echo " <a href=# OnClick=window.location='$hrefBase&actgrp=1&grp='+document.getElementById(\"groupcombo\").options[document.getElementById(\"groupcombo\").selectedIndex].value>".
 		$l->g(589)."</a>";
 	
-		$reqGroups = "SELECT h.name,h.id 
-					  FROM hardware h left join accountinfo a on h.id=a.hardware_id 
+		$reqGroups = "SELECT h.name,h.id,h.workgroup 
+					  FROM hardware h 
 					  WHERE h.deviceid='_SYSTEMGROUP_'";
 		if( $_SESSION["lvluser"]!=SADMIN )
-			$reqGroups .= " and a.TAG = 'GROUP_4_ALL'";
+			$reqGroups .= " and workgroup = 'GROUP_4_ALL'";
 		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 		$first = true;
 		while( $valGroups = mysql_fetch_array( $resGroups ) ) {

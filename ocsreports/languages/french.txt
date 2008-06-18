@@ -708,3 +708,6 @@
 815 Nombre disque dur avec taille restante entre
 816 Taille disque restante maximum
 817 Taille disque restante minimum
+818 Sortir du groupe
+819 machine(s) ajoutée(s) au groupe
+820 Dernier contact

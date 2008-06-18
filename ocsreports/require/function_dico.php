@@ -162,9 +162,10 @@ function maj_trans_all($onglet,$nom_new_cat,$search_cache,$search_count){
 		else
 			$nom_champ = "'".$nom_new_cat."'";	
 		if ($nom_new_cat != "IGNORED")
-			$sql_cat="insert into dico_soft (extracted,formatted) select NAME,".$nom_champ." from ".$table_cache." cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;					
+			$sql_cat="insert into dico_soft (extracted,formatted) select distinct NAME,".$nom_champ." from ".$table_cache." cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;					
 		elseif($nom_new_cat == "IGNORED")
-			$sql_cat="insert into dico_ignored (extracted) select NAME from ".$table_cache." cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;	
+			$sql_cat="insert into dico_ignored (extracted) select distinct NAME from ".$table_cache." cache where NAME like '".$_POST['onglet_bis']."%'".$search_cache;	
+		echo $sql_cat."<br>";
 		mysql_query($sql_cat, $_SESSION["writeServer"]);		
 	}
 	if ($onglet == "IGNORED"){

@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-04-04 16:39:35 $$Author: airoine $($Revision: 1.21 $)
+//Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.22 $)
 if (isset($_GET['first']) or ($_GET == null))
 $_GET['multi']="console";
 $sleep=1;
@@ -120,10 +120,10 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 		echo "<a href=index.php?lareq=".urlencode($lareq->label)."><img title=\"".htmlspecialchars($lareq->label)."\" src='image/".$lareq->pics[(!isset($_GET["multi"])&&$_GET["lareq"]==$lareq->label?1:0)]."'></a>";
 	}	
 	//groups
-	$sql_groups_4all="select TAG from accountinfo where TAG='GROUP_4_ALL'";
+	$sql_groups_4all="select workgroup from hardware where workgroup='GROUP_4_ALL' and deviceid='_SYSTEMGROUP_'";
 	$res = mysql_query($sql_groups_4all, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$item = mysql_fetch_object($res);
-	if (isset($item->TAG) or $_SESSION["lvluser"]==SADMIN or $_SESSION["lvluser"]==LADMIN)	
+	if (isset($item->workgroup) or $_SESSION["lvluser"]==SADMIN or $_SESSION["lvluser"]==LADMIN)	
 	echo "<a href=index.php?multi=37><img title=\"".htmlspecialchars($l->g(583))."\" src='image/".($_GET["multi"]==37?"groups_a.png":"groups.png")."'></a>";
 	
 	//$countHl++;
@@ -236,7 +236,8 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		//New static group, with checked computers in cache
 		else if( ! empty( $_POST["cgs"] ) ) {
 			if( createGroup( $_POST["cgs"], $_POST["desc"], true ) ) {
-				addComputersToGroup( $_POST["cgs"], $_POST );
+				$mess=addComputersToGroup( $_POST["cgs"], $_POST );
+				echo "<div align=center><font color=green><big><B>".$mess." ".$l->g(819)."</B></big></font></div>";
 				unset( $_POST );
 			}
 		}
@@ -248,7 +249,8 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 	}
 		// Add checked computers to existing group
 	 if( isset( $_POST["asg"] ) && $_POST["asg"] != "_nothing_" ) {
-			addComputersToGroup( $_POST["asg"], $_POST );
+			$mess=addComputersToGroup( $_POST["asg"], $_POST );
+			echo "<div align=center><font color=green><big><B>".$mess." ".$l->g(819)."</B></big></font></div>";
 			unset( $_POST );
 		}		
 			

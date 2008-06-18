@@ -751,7 +751,6 @@ CREATE TABLE download_affect_rules (
 
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_URI','','$IP$/local','Server url used for group of server');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_SERVER_DOCROOT','','d:\\\\tele_ocs','Server directory used for group of server');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('DOWNLOAD_PACK_DIR','','/var/lib/ocsinventory-reports','Directory for download files');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('LOCK_REUSE_TIME',600,'','Validity of a computer\'s lock');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_DIFF',1,'','Configure engine to update inventory regarding to CHECKSUM agent value (lower DB backend load)');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('INVENTORY_TRANSACTION',1,'','Make engine consider an inventory as a transaction (lower concurency, better disk usage)');
@@ -764,7 +763,6 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GROUPS_CACHE_REVALIDAT
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_BETTER_THRESHOLD',1,'','Specify the minimal difference to replace an ipdiscover agent');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_NO_POSTPONE',0,'','Disable the time before a first election (not recommended)');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_USE_GROUPS',1,'','Enable groups for ipdiscover (for example, you might want to prevent some groups');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_IPD_DIR','','/var/lib/ocsinventory-reports','Directory for Ipdiscover files');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GENERATE_OCS_FILES',0,'','Use with ocsinventory-local, enable the multi entities feature');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_FORMAT','','OCS','Generate either compressed file or clear XML text');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_OVERWRITE',0,'','Specify if you want to keep trace of all inventory between to synchronisation with the higher level server');
@@ -787,9 +785,6 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_AGIN_MACH',
 ALTER TABLE download_enable ADD SERVER_ID INT(11);
 ALTER TABLE download_enable ADD GROUP_ID INT(11);
 ALTER TABLE groups ADD REVALIDATE_FROM INT(11);
-ALTER TABLE groups change REVALIDATE_FROM REVALIDATE_FROM INT default 0;
-ALTER TABLE groups change CREATE_TIME CREATE_TIME INT default 0;
-
 
 CREATE TABLE prolog_conntrack (
   ID int(11) NOT NULL auto_increment,
