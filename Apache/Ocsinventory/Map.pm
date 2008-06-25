@@ -108,6 +108,7 @@ our %DATA_MAP= (
        NUMSLOTS => { fallback=>0 },
        TYPE => {},
        PURPOSE => {},
+       SERIALNUMBER => {}
    }
   },
   
@@ -208,7 +209,9 @@ our %DATA_MAP= (
        MODEL => {},
        DESCRIPTION => {},
        TYPE => {},
-       DISKSIZE => { fallback=>0 }
+       DISKSIZE => { fallback=>0 },
+       SERIALNUMBER => {},
+       FIRMWARE => {}
    }
   },
   

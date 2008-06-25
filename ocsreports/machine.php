@@ -8,7 +8,7 @@
 // code is always made freely available.
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
-//Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.23 $)
+//Modified on $Date: 2008-06-25 12:30:34 $$Author: hunal $($Revision: 1.24 $)
 
 require('fichierConf.class.php');
 @session_start();
@@ -563,7 +563,7 @@ function print_storages($systemid)
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr>  $td1 ".$l->g(49)."   </td> $td1 ".$l->g(64)."   </td>   $td1 ".$l->g(65)."         </td>
 		  		$td1 ".$l->g(53)."  </td>    $td1 ".$l->g(66)."         </td>
-		  		$td1 ".$l->g(67)." (MB) </td> </tr>";
+		  		$td1 ".$l->g(67)." (MB) </td> $td1 ".$l->g(36)."      </td> $td1 ".$l->g(277)." </td></tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
@@ -573,7 +573,9 @@ function print_storages($systemid)
 			  $td3".textDecode($item->MODEL)."       </td>
 	          $td3".textDecode($item->DESCRIPTION)." </td>
      		  $td3".textDecode($item->TYPE)."        </td>
- 		      $td3".textDecode($item->DISKSIZE)."    </td>	";
+ 		      $td3".textDecode($item->DISKSIZE)."    </td>
+     		  $td3".textDecode($item->SERIALNUMBER)."</td>
+     		  $td3".textDecode($item->FIRMWARE)."    </td> ";
 		echo "</tr>";
 	}
 	echo "</table><br>";		
@@ -861,7 +863,7 @@ function print_memories($systemid)
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr>";
 	echo "$td1 ".$l->g(80)."  </td>  $td1 ".$l->g(53)."  </td>  $td1 ".$l->g(83)." (MB)  </td> $td1 ".$l->g(283)."    </td>
-	      $td1 ".$l->g(66)."  </td>  $td1 ".$l->g(268)."  </td>  $td1 ".$l->g(94)."      </td> </tr>";
+	      $td1 ".$l->g(66)."  </td>  $td1 ".$l->g(268)."  </td>  $td1 ".$l->g(94)."      </td> $td1 ".$l->g(36)."    </td></tr>";
 
 	while($item = mysql_fetch_object($resultDetails))
 	{	$ii++; $td3 = $ii%2==0?$td2:$td4;
@@ -873,6 +875,7 @@ function print_memories($systemid)
 		      $td3 ".textDecode($item->TYPE)."        </td>
 		      $td3 ".textDecode($item->SPEED)."       </td>
 		      $td3 ".textDecode($item->NUMSLOTS)."    </td>
+		      $td3 ".textDecode($item->SERIALNUMBER)."</td>
 		      </tr>";
 	}
 	echo "</table><br>";		
