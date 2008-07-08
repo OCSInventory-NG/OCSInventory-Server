@@ -1,66 +1,66 @@
 0 iso-8859-1
-1 Requisições
+1 Requisiï¿½ï¿½es
 2 Todos os Computadores
 3 Computadores com sotfware...
 4 Computadores sem software...
-5 Códigos de unidade sob minha responsabilidade
+5 Cï¿½digos de unidade sob minha responsabilidade
 6 Equipamentos fora de garantia
 7 Detalhe de equipamentos fora de garantia
-8 Escolha sua requisição
-9 Escolha com vários critérios
+8 Escolha sua requisiï¿½ï¿½o
+9 Escolha com vï¿½rios critï¿½rios
 10 Computadores por etiquetas
 11 Computadores por etiquetas
 12 Nome da Etiqueta
 13 Envio
-14 Gestão
+14 Gestï¿½o
 15 Etiquetas
 16 Admins
 17 Agente
 18 Adicionando Data
-19 Versão de software
+19 Versï¿½o de software
 20 Software
 21 Primeira data
 22 Data fora da garantia
 23 Computador
 24 Utilizador
 25 Sistema Operativo
-26 Memória
+26 Memï¿½ria
 27 Velocidade de memory (MHz)
-28 Número de Máquina
-29 O servidor LDAP não responde
+28 Nï¿½mero de Mï¿½quina
+29 O servidor LDAP nï¿½o responde
 30 Procura
-31 Escolha um parâmetro
+31 Escolha um parï¿½metro
 32 Escolha
-33 Domínio
-34 Endereço IP
+33 Domï¿½nio
+34 Endereï¿½o IP
 35 Nome do Computador
-36 No de série
+36 No de sï¿½rie
 37 Command letter
 38 Ordem de entrega
 39 Origem
-40 Código
+40 Cï¿½digo
 41 Reset
 42 Nenhum resultado
 43 Menu Principal
-44 Escolha Opção
-45 Espaço Livre
-46 Último Inventário
-47 Última página
+44 Escolha Opï¿½ï¿½o
+45 Espaï¿½o Livre
+46 ï¿½ltimo Inventï¿½rio
+47 ï¿½ltima pï¿½gina
 48 Detalhes do Computador
 49 Nome
 50 Swap
-51 Comentários
-52 Licença
-53 Descrição
+51 Comentï¿½rios
+52 Licenï¿½a
+53 Descriï¿½ï¿½o
 54 Processador(s)
-55 Número
+55 Nï¿½mero
 56 Dados Administrativos
-57 Número comando
+57 Nï¿½mero comando
 58 Data comando
-59 Código
+59 Cï¿½digo
 60 Ordem de Entrega
-61 Placa de Vídeo
-62 Resolução
+61 Placa de Vï¿½deo
+62 Resoluï¿½ï¿½o
 63 Armazenamento
 64 Fabricante
 65 Modelo
@@ -68,14 +68,14 @@
 67 Tamanho do disco
 68 Pasta
 69 Editor
-70 Designação
+70 Designaï¿½ï¿½o
 71 Garantia
-72 Intervenção(es)
+72 Intervenï¿½ï¿½o(es)
 73 Valor
 74 Demand date
 75 Demand type
-76 Data de Intervenção
-77 Tipo de Intervenção
+76 Data de Intervenï¿½ï¿½o
+77 Tipo de Intervenï¿½ï¿½o
 78 Conta
 79 Impressora(s)
 80 Caption
@@ -92,116 +92,116 @@
 91 Dispositivos de entrada
 92 HD(s)
 93 Controladora (s)
-94 Número de Slot
-95 Endereço MAC
+94 Nï¿½mero de Slot
+95 Endereï¿½o MAC
 96 Som
 97 Monitor(es)
-98 Cuidado, você só pode seleccionar 8 opções!
+98 Cuidado, vocï¿½ sï¿½ pode seleccionar 8 opï¿½ï¿½es!
 99 Detalhes do computador
-100 Parâmetros de inicialização
+100 Parï¿½metros de inicializaï¿½ï¿½o
 101 Ordena
 102 Nova Pesquisa
 103 Actualizar
 104 directamente afectados
 105 em unidades
-106 Opções de configuração
-107 Configuração
+106 Opï¿½ï¿½es de configuraï¿½ï¿½o
+107 Configuraï¿½ï¿½o
 108 Consultas ao Registry
 109 Tipo de Computador
 110 para
-111 Número de licença Windows
+111 Nï¿½mero de licenï¿½a Windows
 112 Data garantia
 113 Cancela
 114 Registar
 115 Atualiza
 116 Adiciona
 117 Registry
-118 Vá para pág.
-119 Você quer mesmo apagar
+118 Vï¿½ para pï¿½g.
+119 Vocï¿½ quer mesmo apagar
 120 nulo
 121 Apaga o computador
 122 Apaga
-123 Modificação de tipo de computador
-124 Adicione novo tipo de máquina
-125 Último
-126 Próximo
+123 Modificaï¿½ï¿½o de tipo de computador
+124 Adicione novo tipo de mï¿½quina
+125 ï¿½ltimo
+126 Prï¿½ximo
 127 Primeiro
 128 Regressar
 129 COMO
 130 DIFERENTE
-131 Arquivo de Ícone
+131 Arquivo de ï¿½cone
 132 Arquivo de imagem
-133 Inventário
+133 Inventï¿½rio
 134 Adicione novo arquivo na base
-135 Cuidado, você vai apagar este ficheiro definitivamente !!
+135 Cuidado, vocï¿½ vai apagar este ficheiro definitivamente !!
 136 Download
 137 Arquivo
 138 Cria
-139 Criação / Deleção de
+139 Criaï¿½ï¿½o / Deleï¿½ï¿½o de
 140 Super administradores
 141 Administradores
 142 Administradores locais
-143 Os super administradores visualizam todas as máquinas e podem fornecer 
+143 Os super administradores visualizam todas as mï¿½quinas e podem fornecer 
 etiqueta de unidade aos administradores.
-144 Os administradores visualizam todas as máquinas, mas não dão etiqueta de 
+144 Os administradores visualizam todas as mï¿½quinas, mas nï¿½o dï¿½o etiqueta de 
 unidade.
-145 Os administradores locais visualizam somente suas máquinas e não podem 
+145 Os administradores locais visualizam somente suas mï¿½quinas e nï¿½o podem 
 dar etiqueta de unidade.
 146 Escolha um administrador
-147 Cuidado, você está apagando os direitos definitivamente !!
+147 Cuidado, vocï¿½ estï¿½ apagando os direitos definitivamente !!
 148 ETIQUETA DESCONHECIDA
 149 Etiqueta de unidade sob a responsabilidade de
 150 direito (s) adicionados
 151 direito (s) apagados
-152 Cuidado, esta operação elimina os direitos desse administrador!!!
+152 Cuidado, esta operaï¿½ï¿½o elimina os direitos desse administrador!!!
 153 Nenhuma etiqueta de unidade relacionada a esse administrador
 154 Adiciona uma etiqueta a um administrador
-155 Adiciona um administrador à uma etiqueta
+155 Adiciona um administrador ï¿½ uma etiqueta
 156 Adiciona uma etiqueta de unidade
 157 Copia
 158 Copia os direitos para
 159 direitos copiados de
 160 Nenhum administrador para essa etiqueta
 161 Etiqueta de unidade sob responsabilidade de
-162 Apague a seleção
+162 Apague a seleï¿½ï¿½o
 163 Service Grade Name
-164 Pessoas responsávais pela etiqueta de unidade
-165 Você deve entrar com um nome ou uma lista para procurar !
-166 Você deve escolher um ítem da lista !
+164 Pessoas responsï¿½vais pela etiqueta de unidade
+165 Vocï¿½ deve entrar com um nome ou uma lista para procurar !
+166 Vocï¿½ deve escolher um ï¿½tem da lista !
 167 Veja os detalhes
-168 Este formato de arquivo é inválido (deve ser um .zip, pl ou binário 
+168 Este formato de arquivo ï¿½ invï¿½lido (deve ser um .zip, pl ou binï¿½rio 
 UNIX)
-169 adiciona à base
-170 O mesmo arquivo já existe!
+169 adiciona ï¿½ base
+170 O mesmo arquivo jï¿½ existe!
 171 Arquivo apagado
 172 Um erro aconteceu. O arquivo
-173 não foi adicionado à base.
+173 nï¿½o foi adicionado ï¿½ base.
 174 IpDisc.
 175 Duplicados
 176 Ips
 177 Fundir (merge) computadores redundantes
-178 Etiqueta / Número de divisões de PCs
+178 Etiqueta / Nï¿½mero de divisï¿½es de PCs
 179 Nome da Unidade
-180 Utilizador não registado
+180 Utilizador nï¿½o registado
 181 Problema de Login
 182 Computadores com determinado tag
 183 Download
 184 This file does not contain "use constant version"
-185 Versão deve ser maior que 1
-186 Este ficheiro não contém o ficheiro .ver
-187 Este ficheiro, não é um ficheiro zipado válido
+185 Versï¿½o deve ser maior que 1
+186 Este ficheiro nï¿½o contï¿½m o ficheiro .ver
+187 Este ficheiro, nï¿½o ï¿½ um ficheiro zipado vï¿½lido
 188 Regressar
-189 Você deve seleccionar pelo menos 2 computadores
+189 Vocï¿½ deve seleccionar pelo menos 2 computadores
 190 infoconta:
 191 apagado
-192 Sumário de Redundância
+192 Sumï¿½rio de Redundï¿½ncia
 193 Hostname + No Serial
 194 Hostname + Mac address
 195 Mac address + No Serial
 196 Somente Hostname
-197 Só Serial
-198 Só Mac address
-199 Redundância
+197 Sï¿½ Serial
+198 Sï¿½ Mac address
+199 Redundï¿½ncia
 200 Corresponding relay decremented
 201 MENOR
 202 MAIOR
@@ -210,23 +210,23 @@ UNIX)
 205 Habilitado
 206 salvo por
 207 Gateway
-208 Máscara
-209 Versão de BIOS
+208 Mï¿½scara
+209 Versï¿½o de BIOS
 210 Data da BIOS
 211 Registry
 212 Nome da chave
 213 Valor da chave
-214 Imprime essa página
+214 Imprime essa pï¿½gina
 215 Mostra todos
 216 Senha incorreta
 217 Senha
-218 Versões de agentes
+218 Versï¿½es de agentes
 219 IPs desconhecidos
 220 apagado
 221 Computadores recolhidos pelo IP
-222 Atenção ! Todos os computadores selecionados serão reunidos num único 
+222 Atenï¿½ï¿½o ! Todos os computadores selecionados serï¿½o reunidos num ï¿½nico 
 computador ! Tem certeza ?!
-223 Informação
+223 Informaï¿½ï¿½o
 224 Valor
 225 Admininfo
 226 foi apagado com sucesso da tabela infoconta
@@ -241,9 +241,9 @@ computador ! Tem certeza ?!
 235 Utilizadores
 236 Nova senha
 237 Nova senha
-238 Confirmação
-239 Você deve preencher todos os campos
-240 Sua senha não confere
+238 Confirmaï¿½ï¿½o
+239 Vocï¿½ deve preencher todos os campos
+240 Sua senha nï¿½o confere
 241 Sua senha foi modificada com sucesso.
 242 Administrador
 243 Utilizador
@@ -252,24 +252,24 @@ computador ! Tem certeza ?!
 246 Tem certeza que quer apagar o utilizador?
 247 MySql utilizador
 248 MySql senha
-249 Não foi possível conectar-se ao MYSql. Por favor introduza um 
-utilizador/senha válidos.
+249 Nï¿½o foi possï¿½vel conectar-se ao MYSql. Por favor introduza um 
+utilizador/senha vï¿½lidos.
 250 MySql HostName
 251 Sair
-252 Nome (você escolhe)
+252 Nome (vocï¿½ escolhe)
 253 Registro "hive"
 254 Caminho da chave (Ex: SOFTWAREMozilla)
-255 Nome da chave que será lida (* for all)
+255 Nome da chave que serï¿½ lida (* for all)
 256 Escolha
 257 Nome da chave do registro
 258 Valor da chave do registro
-259 Erro, o dado não pode ser inserido (Caracteres especiais não são 
+259 Erro, o dado nï¿½o pode ser inserido (Caracteres especiais nï¿½o sï¿½o 
 permitidos)
-260 Descrição modificada com sucesso
-261 Descrição apagada
-262 Digite uma descrição
-263 Configuração do arquivo descrição
-264 Nenhum arquivo "descrição" agora
+260 Descriï¿½ï¿½o modificada com sucesso
+261 Descriï¿½ï¿½o apagada
+262 Digite uma descriï¿½ï¿½o
+263 Configuraï¿½ï¿½o do arquivo descriï¿½ï¿½o
+264 Nenhum arquivo "descriï¿½ï¿½o" agora
 265 Anything
 266 Invalid date
 267 dd/mm/yyyy
@@ -280,7 +280,7 @@ permitidos)
 272 Porto(s)
 273 BIOS
 274 Sistema Operativo
-275 Versão de SO
+275 Versï¿½o de SO
 276 Chipset
 277 Version
 278 Driver
@@ -290,22 +290,22 @@ permitidos)
 282 Gateways
 283 Finalidade
 284 BIOS Manufacturer
-285 Seleccionar um parâmetro para ser modificado
+285 Seleccionar um parï¿½metro para ser modificado
 286 Service pack
-287 Importação Local
-288 Importação Local
-289 Informação de Rede
+287 Importaï¿½ï¿½o Local
+288 Importaï¿½ï¿½o Local
+289 Informaï¿½ï¿½o de Rede
 290 Pesquisa de IPs
 291 Modo Perito
 292 Acrescentar / Apagar dispositivos
 293 Tipos de dispositivos
 294 Nomes de Subnet
-295 Localização
+295 Localizaï¿½ï¿½o
 296 Uid
-297 Não posso escrever na directoria
+297 Nï¿½o posso escrever na directoria
 298 Todos os campos devem ser preenchidos
-299 Endereço IP inválido (deve ser: x.x.x.x)
-300 Máscara inválida: deve ser: x.x.x.x or xx (xx<32)
+299 Endereï¿½o IP invï¿½lido (deve ser: x.x.x.x)
+300 Mï¿½scara invï¿½lida: deve ser: x.x.x.x or xx (xx<32)
 301 Rede inserida
 302 Rede apagada
 303 Acrescentar uma subnet
@@ -320,12 +320,12 @@ permitidos)
 312 IpDiscover
 313 Gateway computers
 314 IpDiscover gateway computers
-315 Computadores não inventariados
+315 Computadores nï¿½o inventariados
 316 Subnet
 317 ANALISAR
 318 Nome DNS
-319 Resultados da análise da rede
-320 Esta análise foi realizada em
+319 Resultados da anï¿½lise da rede
+320 Esta anï¿½lise foi realizada em
 321  quer ver os dados em cache ?
 322 Dados em cache
 323 gerados em
@@ -336,20 +336,20 @@ permitidos)
 328 Descobertos
 329 Inventariados
 330 Nome NetBIOS
-331 Número de Rede
+331 Nï¿½mero de Rede
 332 Por favor aguarde...
 333 Acrescentar dispositivo de rede
 334 Lista de dispositivos
 335 Tipo de dispositivo
-336 Dewcrição de dispositivo
-337 O PROGRAMA NÃO ENVIOU NADA
+336 Dewcriï¿½ï¿½o de dispositivo
+337 O PROGRAMA Nï¿½O ENVIOU NADA
 338 Modo limitado
-339 Necessita do ipdiscover-util.pl (Só em Linux) para modo perito
+339 Necessita do ipdiscover-util.pl (Sï¿½ em Linux) para modo perito
 340 Mostrar
 341 can't be launched, you must set execution rights
 342 You need to set writing rights on the root directory in order to use
 344 Erro
-345 ESTA ANÁLISE ESTÁ A CORRER. POR FAVOR, TENTE DE NOVO DENTRO DE ALGUNS MINUTOS
+345 ESTA ANï¿½LISE ESTï¿½ A CORRER. POR FAVOR, TENTE DE NOVO DENTRO DE ALGUNS MINUTOS
 346 ANTES
 347 DEPOIS
 348 Utilizador Windows
@@ -360,20 +360,20 @@ permitidos)
 353 Qualidade
 354 Fidelidade
 355 Companhia
-356 Responsável
+356 Responsï¿½vel
 357 Agente do Utilizador
-358 Jokers: ? (um caracter), * (vários caracteres)
-359 Nº série do Monitor
+358 Jokers: ? (um caracter), * (vï¿½rios caracteres)
+359 Nï¿½ sï¿½rie do Monitor
 360 Fabricado em (Semana/Ano)
 362 A rede
-363 Já existem
+363 Jï¿½ existem
 364 Inventariados
-365 Não-inventariados
+365 Nï¿½o-inventariados
 366 Identificados
 367 Dispositivos da rede
 368 da rede
 369 Submetido por
-370 Distribuição
+370 Distribuiï¿½ï¿½o
 371 All components
 372 Choose the components
 373 Registered user
@@ -413,9 +413,9 @@ permitidos)
 421 Automatic software distribution: see documentation.
 422 Automatic software distribution: see documentation.
 423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
-424 Validez de um pacote como de sua consideração pelo agente.
+424 Validez de um pacote como de sua consideraï¿½ï¿½o pelo agente.
 425 Max number of computers per gateway retrieving IP on the network.
-426 Validez dos inventários. (SEMPRE: inventário em cada início de uma sessão. NUNCA: nenhum inventário)
+426 Validez dos inventï¿½rios. (SEMPRE: inventï¿½rio em cada inï¿½cio de uma sessï¿½o. NUNCA: nenhum inventï¿½rio)
 427 Defines criteria that must be equals for two computers to be automatically merged.
 428 Deploy
 429 Frequency
@@ -473,7 +473,7 @@ permitidos)
 481 Activated packages
 482 WAITING NOTIFICATION
 483 Validate SUCCESSES
-484 Freqüência feita sob encomenda
+484 Freqï¿½ï¿½ncia feita sob encomenda
 485 Always inventoried
 486 Never inventoried
 487 Custom
@@ -557,7 +557,7 @@ permitidos)
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
 570 Help
 571 Validate all

@@ -1,313 +1,313 @@
 0 iso-8859-9
-2 Bütün Bilgiyarlar
-3 Bilgisayar ve Bilgisayar yazýlýmý...
-5 Sorumluluðum Altýndaki Birlik
+2 Bï¿½tï¿½n Bilgiyarlar
+3 Bilgisayar ve Bilgisayar yazï¿½lï¿½mï¿½...
+5 Sorumluluï¿½um Altï¿½ndaki Birlik
 9 Arama ve Kriterler
-12 Etki deðeri
-13 Gönder
+12 Etki deï¿½eri
+13 Gï¿½nder
 17 Temsilci
-19 Yazýlým versiyonu
-20 Yazýlým
+19 Yazï¿½lï¿½m versiyonu
+20 Yazï¿½lï¿½m
 23 Bilgisayar
-24 Kullanýcý
-25 Ýþletim sistemi
+24 Kullanï¿½cï¿½
+25 ï¿½ï¿½letim sistemi
 26 Bellek
-27 Bellek Hýzý (MHz)
-28 Bilgisayar Sayýsý
+27 Bellek Hï¿½zï¿½ (MHz)
+28 Bilgisayar Sayï¿½sï¿½
 30 Arama
 31 Bir parametre
-32 Seçim
+32 Seï¿½im
 33 Alan
 34 IP Adresi
-35 Bilgisayar Adý
-36 Seri Numarasý
+35 Bilgisayar Adï¿½
+36 Seri Numarasï¿½
 41 Yenile
-42 Sonuç yok
-43 Ana Mönü
-45 Boþ yer
+42 Sonuï¿½ yok
+43 Ana Mï¿½nï¿½
+45 Boï¿½ yer
 46 Son envanter
-48 Bilgisayar ayrýntýsý
-49 Adý
-50 Deðiþtir
+48 Bilgisayar ayrï¿½ntï¿½sï¿½
+49 Adï¿½
+50 Deï¿½iï¿½tir
 51 Yorumlar
-53 Taným
-54 Ýþlemci
-55 Sayý
-56 Yönetimsel Bilgi
-61 Video Kartý
-62 Önerilen
+53 Tanï¿½m
+54 ï¿½ï¿½lemci
+55 Sayï¿½
+56 Yï¿½netimsel Bilgi
+61 Video Kartï¿½
+62 ï¿½nerilen
 63 Depo
-64 Yapýmcý
+64 Yapï¿½mcï¿½
 65 Model
-66 Tür
+66 Tï¿½r
 67 Disk Boyutu
-69 Editör
+69 Editï¿½r
 70 Ata
-79 Yazýcý(s)
-80 Baþlýk
+79 Yazï¿½cï¿½(s)
+80 Baï¿½lï¿½k
 81 Konum
-82 Að(s)
+82 Aï¿½(s)
 83 Kapasite
-84 Arayüz
+84 Arayï¿½z
 85 Mektup
-86 Sistem Dosyalarý
+86 Sistem Dosyalarï¿½
 87 Toplam
-88 Boþ
-90 Sonuç(s)
-91 Giriþ Aleti
+88 Boï¿½
+90 Sonuï¿½(s)
+91 Giriï¿½ Aleti
 92 Disk(s)
 93 Kontrol(s)
-94 Slot numarasý
+94 Slot numarasï¿½
 95 MAC adresi
-96 Güvenli
-97 Monitör(s)
-98 Dikkat,Sadece 8 seçim hakkýnýz var !
-99 Bilgisayar ayrýntýlarý
-103 Güncelle
-107 Biçim
-108 Kayýt Talebi
+96 Gï¿½venli
+97 Monitï¿½r(s)
+98 Dikkat,Sadece 8 seï¿½im hakkï¿½nï¿½z var !
+99 Bilgisayar ayrï¿½ntï¿½larï¿½
+103 Gï¿½ncelle
+107 Biï¿½im
+108 Kayï¿½t Talebi
 111 Pencere izni
-113 Ýptal
-114 Kayýt
-115 Güncelle
+113 ï¿½ptal
+114 Kayï¿½t
+115 Gï¿½ncelle
 116 Ekle
-117 Kayýt
-119 Silmek istediðinizden eminmisiniz 
+117 Kayï¿½t
+119 Silmek istediï¿½inizden eminmisiniz 
 122 sil
-129 Eþitler
-130 Baþka
-134 Veri tabanýna yeni bir dosya ekle
-135 Dikkat, Dosyayý tamamen siliyorsunuz!
-136 Ýndir
+129 Eï¿½itler
+130 Baï¿½ka
+134 Veri tabanï¿½na yeni bir dosya ekle
+135 Dikkat, Dosyayï¿½ tamamen siliyorsunuz!
+136 ï¿½ndir
 137 Dosya
-168 Bu biçimlendirme dosyasý geçersiz (dosya  zip, pl veya unix binary olmalý)
-170 Ayný dosya zaten var !
-171 Dosyayý Sil
-172 Bu dosya hatalý!
+168 Bu biï¿½imlendirme dosyasï¿½ geï¿½ersiz (dosya  zip, pl veya unix binary olmalï¿½)
+170 Aynï¿½ dosya zaten var !
+171 Dosyayï¿½ Sil
+172 Bu dosya hatalï¿½!
 173 Temele eklenmedi
-174 Güvenlik
-175 Çoðalt
+174 Gï¿½venlik
+175 ï¿½oï¿½alt
 176 Ips
-177 Birleþtirmede gereðinden fazla bilgisayar var.
+177 Birleï¿½tirmede gereï¿½inden fazla bilgisayar var.
 178 Etiket/ Number of PC repartition
-180 Kullanýcý kayýtlý deðil
-182 Bilgisayarlarýn belirli bir etiketi var
-183 Ýndir
-184 Bu dosya içermemekte"Deðiþik versiyon"
+180 Kullanï¿½cï¿½ kayï¿½tlï¿½ deï¿½il
+182 Bilgisayarlarï¿½n belirli bir etiketi var
+183 ï¿½ndir
+184 Bu dosya iï¿½ermemekte"Deï¿½iï¿½ik versiyon"
 185 Versin 1
-186 Bu dosya balkon dosya içermemekte
-187 Bu dosya geçerli sýkýþtýrma dosyasý deðil
+186 Bu dosya balkon dosya iï¿½ermemekte
+187 Bu dosya geï¿½erli sï¿½kï¿½ï¿½tï¿½rma dosyasï¿½ deï¿½il
 188 Geri
-189 En iki bilgisayar seçmelisiniz
+189 En iki bilgisayar seï¿½melisiniz
 190 Rapor bilgisi:
 191 Silindi
-192 Gereksiz özet
-193 Sunucu Adý + Seri numarasý
-194 Sunucu Adý + Mac adresi
-195 Mac adresi+ Seri numarasý
-196 Yanlýzca sunucu adý
-197 yanlýzca serinumarasý
-198 Yanlýzca mac adresi
+192 Gereksiz ï¿½zet
+193 Sunucu Adï¿½ + Seri numarasï¿½
+194 Sunucu Adï¿½ + Mac adresi
+195 Mac adresi+ Seri numarasï¿½
+196 Yanlï¿½zca sunucu adï¿½
+197 yanlï¿½zca serinumarasï¿½
+198 Yanlï¿½zca mac adresi
 199 Gereksiz
-200 Uygun görülen artýklardaki azalma miktarý
-201 Küçükler
-202 Büyükler
-203 Arasýnda
-204 Dýþarda
-205 Kullanýlabilir
+200 Uygun gï¿½rï¿½len artï¿½klardaki azalma miktarï¿½
+201 Kï¿½ï¿½ï¿½kler
+202 Bï¿½yï¿½kler
+203 Arasï¿½nda
+204 Dï¿½ï¿½arda
+205 Kullanï¿½labilir
 206 Kaydet
-207 Að Geçidi 
+207 Aï¿½ Geï¿½idi 
 208 Maske 
 209 BIOS Versiyon
 210 BIOS Tarihi
-211 Sistem kütüðü
-212 Anahtar Adý
-213 Anahtar Deðeri
-214 Bu sayfayý yazdýr
-215 Þifre Hatalý
-217 Þifre
+211 Sistem kï¿½tï¿½ï¿½ï¿½
+212 Anahtar Adï¿½
+213 Anahtar Deï¿½eri
+214 Bu sayfayï¿½ yazdï¿½r
+215 ï¿½ifre Hatalï¿½
+217 ï¿½ifre
 218 Acenta Verisoyu
-219 uninventoried Að arayüzü
+219 uninventoried Aï¿½ arayï¿½zï¿½
 220 Silindi
-221 IP Toplantý Bilgisayarlarý
-222 Uyarý! Seçili tüm bilgisayarlar tek bir bilgisayara doðru birleþtiriliyor ! Eminmisiniz ?
-223 Danýþma
-224 Deðer
-225 Yönetici Bilgisi
-226 Rapor bilgisi tablosu baþarýyla silindi
-227 sütünü silmek istediðinizden eminmisiniz?
-228 Yeni bir yönetel bilgi giriþi
-229 Yazý(255)
-230 Tamsayý 
-231 Gerçek 
+221 IP Toplantï¿½ Bilgisayarlarï¿½
+222 Uyarï¿½! Seï¿½ili tï¿½m bilgisayarlar tek bir bilgisayara doï¿½ru birleï¿½tiriliyor ! Eminmisiniz ?
+223 Danï¿½ï¿½ma
+224 Deï¿½er
+225 Yï¿½netici Bilgisi
+226 Rapor bilgisi tablosu baï¿½arï¿½yla silindi
+227 sï¿½tï¿½nï¿½ silmek istediï¿½inizden eminmisiniz?
+228 Yeni bir yï¿½netel bilgi giriï¿½i
+229 Yazï¿½(255)
+230 Tamsayï¿½ 
+231 Gerï¿½ek 
 232 Tarih
-233 Güncel bilgi
-234 Baþarýyla eklendi
-235 Kullanýcýlar
-236 Deðiþtire geç
-237 Yeni þifre
-238 Doðrulama
+233 Gï¿½ncel bilgi
+234 Baï¿½arï¿½yla eklendi
+235 Kullanï¿½cï¿½lar
+236 Deï¿½iï¿½tire geï¿½
+237 Yeni ï¿½ifre
+238 Doï¿½rulama
 239 Her bir alan doldu
-240 Þifreniz farklý
-241 Þifreniz baþarýyla deðiþtirildi
-242 Yönetici 
-243 Kullanýcý
-244 Yeni Bir kullanýcý
-245 Baþarýyla silindi
-246 Kullanýcýyý silmek istediðinizden eminmisiniz?
-247 MySql Oturumu aç
-248 MySql Þifresi
-249 MySql baðlantýsý kurulmadý. Lütfen geçerli oturumu giriþini yapýnýz/Devam.
-250 MySql Sunucu Adý
+240 ï¿½ifreniz farklï¿½
+241 ï¿½ifreniz baï¿½arï¿½yla deï¿½iï¿½tirildi
+242 Yï¿½netici 
+243 Kullanï¿½cï¿½
+244 Yeni Bir kullanï¿½cï¿½
+245 Baï¿½arï¿½yla silindi
+246 Kullanï¿½cï¿½yï¿½ silmek istediï¿½inizden eminmisiniz?
+247 MySql Oturumu aï¿½
+248 MySql ï¿½ifresi
+249 MySql baï¿½lantï¿½sï¿½ kurulmadï¿½. Lï¿½tfen geï¿½erli oturumu giriï¿½ini yapï¿½nï¿½z/Devam.
+250 MySql Sunucu Adï¿½
 251 Oturum Kapat
-252 Adý (seçiminiz)        	
-253 Sistem kütüðü 	
-254 Anahtar yolu (Ex: yazýlýmMozilla)  	
-255 Anahtar adý okunacak (* tamamý)
-256 seçim
-257 Sistem kütüðü anahtarý
-258 Sistem kütüðü anahtarý deðeri
-259 Hata ,Bilgi girilemedi (Özel karakter kullanmayýnýz)
+252 Adï¿½ (seï¿½iminiz)        	
+253 Sistem kï¿½tï¿½ï¿½ï¿½ 	
+254 Anahtar yolu (Ex: yazï¿½lï¿½mMozilla)  	
+255 Anahtar adï¿½ okunacak (* tamamï¿½)
+256 seï¿½im
+257 Sistem kï¿½tï¿½ï¿½ï¿½ anahtarï¿½
+258 Sistem kï¿½tï¿½ï¿½ï¿½ anahtarï¿½ deï¿½eri
+259 Hata ,Bilgi girilemedi (ï¿½zel karakter kullanmayï¿½nï¿½z)
 260 Label file modification ok
 261 Label file deleted
 262 Type in a label
-263 Dosya etiketi biçimi
+263 Dosya etiketi biï¿½imi
 264 Dosya etiketi yok
 265 Herhangi biri
-266 Geçersiz tarih
+266 Geï¿½ersiz tarih
 267 dd/mm/yyyy
-268 Hýz
+268 Hï¿½z
 269 %m/%d/%Y
 270 Modem(s)
-271 Yarýk(s)
-272 Baðlama noktasý(s)
+271 Yarï¿½k(s)
+272 Baï¿½lama noktasï¿½(s)
 273 BIOS
-274 Ýþletim sistemi adý
-275 Ýþletim sistemi Versiyonu
-276 Tümdevre ailesi
+274 ï¿½ï¿½letim sistemi adï¿½
+275 ï¿½ï¿½letim sistemi Versiyonu
+276 Tï¿½mdevre ailesi
 277 Versiyon
-278 sürücü
-279 Baðlama noktasý
+278 sï¿½rï¿½cï¿½
+279 Baï¿½lama noktasï¿½
 280 MIB tipi
 281 DHCP IP
-282 Að Geçidi
-283 Amaç
-284 BIOS Yapýmcýsý
-285 Deðiþik bir parametre seçiniz
+282 Aï¿½ Geï¿½idi
+283 Amaï¿½
+284 BIOS Yapï¿½mcï¿½sï¿½
+285 Deï¿½iï¿½ik bir parametre seï¿½iniz
 286 Hizmet paketi
 287 Yerele getir
 288 Yerele ithal et
-289 Að danýþmaný
+289 Aï¿½ danï¿½ï¿½manï¿½
 290 Ip sorgusu
 291 Uzman modu
-292 Ekle/ að aygýtý sil
-293 að aygýtý tipi
-294 Alt að isimleri
-295 Düzelte týkla
+292 Ekle/ aï¿½ aygï¿½tï¿½ sil
+293 aï¿½ aygï¿½tï¿½ tipi
+294 Alt aï¿½ isimleri
+295 Dï¿½zelte tï¿½kla
 296 Uid
-297 Adres defterine yazýlmadý
-298 Bütün alanlar dolu
-299 Geçersiz ip adresi (olmalý: x.x.x.x)
-300 Geçersiz mask: olmalý: x.x.x.x or xx (xx<32)
-301 Aða girildi
-302 Að silindi
-303 Alt að ekle
-304 Að adý
+297 Adres defterine yazï¿½lmadï¿½
+298 Bï¿½tï¿½n alanlar dolu
+299 Geï¿½ersiz ip adresi (olmalï¿½: x.x.x.x)
+300 Geï¿½ersiz mask: olmalï¿½: x.x.x.x or xx (xx<32)
+301 Aï¿½a girildi
+302 Aï¿½ silindi
+303 Alt aï¿½ ekle
+304 Aï¿½ adï¿½
 305 Uid
-306 Alt að listesi
+306 Alt aï¿½ listesi
 307 Yeni bir tip ekle
-308 Tip adý
-309 Að aygýtý tipi
-310 Ip sayýsý daha az olmalý
+308 Tip adï¿½
+309 Aï¿½ aygï¿½tï¿½ tipi
+310 Ip sayï¿½sï¿½ daha az olmalï¿½
 311 Sunucular
 312 IpDis
-313 Að geçidi bilgisayarlarý
-314 IpDiscover Að geçidi bilgisayarlarý
-315 Saldýran bilgisayarlar
-316 Alt að
+313 Aï¿½ geï¿½idi bilgisayarlarï¿½
+314 IpDiscover Aï¿½ geï¿½idi bilgisayarlarï¿½
+315 Saldï¿½ran bilgisayarlar
+316 Alt aï¿½
 317 Analiz
-318 DNS Adý
-319 að analiz sonucu
+318 DNS Adï¿½
+319 aï¿½ analiz sonucu
 320 bu analiz zaten bitti
-321 gizli dosyalarý görmek istermisiniz ?
-322 Gizli Dosyalar için
-323 Oluþtur
-324 Sunucu deðerlendir
-325 Boþ
+321 gizli dosyalarï¿½ gï¿½rmek istermisiniz ?
+322 Gizli Dosyalar iï¿½in
+323 Oluï¿½tur
+324 Sunucu deï¿½erlendir
+325 Boï¿½
 326 Meske tipi yok
-327 Bilgisayar detaylarý
+327 Bilgisayar detaylarï¿½
 328 Bulundu
 329 Stok
-330 NetBIOS adý
-331 Að numarasý
-332 Lütfen bekleyiniz...
-333 Yenir br að aygýtý ekle
-334 Að aygýtý listesi
-335 Aygýt tipi
-336 aygýt tanýmý
-337 Bu program hiçbir þeye gönderilemedi
-338 Sýnýrlý mod
-339 Bulmanýz gereken -util.pl (Linux only) Uzman modu için
-340 Göster
-341 Baþlatýlamadý, ayarlarýnýzý düzgün yapmalýsýnýz
-342 Diðer kullancýlarý kök dizine doðru bir þekilde yazmanýz gerekiyor.
+330 NetBIOS adï¿½
+331 Aï¿½ numarasï¿½
+332 Lï¿½tfen bekleyiniz...
+333 Yenir br aï¿½ aygï¿½tï¿½ ekle
+334 Aï¿½ aygï¿½tï¿½ listesi
+335 Aygï¿½t tipi
+336 aygï¿½t tanï¿½mï¿½
+337 Bu program hiï¿½bir ï¿½eye gï¿½nderilemedi
+338 Sï¿½nï¿½rlï¿½ mod
+339 Bulmanï¿½z gereken -util.pl (Linux only) Uzman modu iï¿½in
+340 Gï¿½ster
+341 Baï¿½latï¿½lamadï¿½, ayarlarï¿½nï¿½zï¿½ dï¿½zgï¿½n yapmalï¿½sï¿½nï¿½z
+342 Diï¿½er kullancï¿½larï¿½ kï¿½k dizine doï¿½ru bir ï¿½ekilde yazmanï¿½z gerekiyor.
 344 Hata
-345 Bu analiz þu anda çalýþýyor, Lütfen bir kaç saniye sonra tekrar deneyniz
-346 Önceki
+345 Bu analiz ï¿½u anda ï¿½alï¿½ï¿½ï¿½yor, Lï¿½tfen bir kaï¿½ saniye sonra tekrar deneyniz
+346 ï¿½nceki
 347 Sonraki
-348 Pencere kullanýcýsý
-349 Sütün ekle
+348 Pencere kullanï¿½cï¿½sï¿½
+349 Sï¿½tï¿½n ekle
 350 CPU tipi
-351 CPU mumarasý
+351 CPU mumarasï¿½
 352 Son
 353 Nitelik
-354 Baðlýlýk
-355 Þirket
+354 Baï¿½lï¿½lï¿½k
+355 ï¿½irket
 356 sahip
-357 Kullanýcý acentasý
-358 Joker: ? (Bir karakter), * (Bir kaç karakter)
-359 Monitör seri
-360 Yapým  (haftasý/yýlý)
-362 Að
+357 Kullanï¿½cï¿½ acentasï¿½
+358 Joker: ? (Bir karakter), * (Bir kaï¿½ karakter)
+359 Monitï¿½r seri
+360 Yapï¿½m  (haftasï¿½/yï¿½lï¿½)
+362 Aï¿½
 363 Zaten var
 364 Bulundu
-365 Saldýrý bulundu
-366 Kimlik saptandý
-367 Að aygýtý
-368 Að kapalý
+365 Saldï¿½rï¿½ bulundu
+366 Kimlik saptandï¿½
+367 Aï¿½ aygï¿½tï¿½
+368 Aï¿½ kapalï¿½
 369 sunuldu
-370 Yayýlma
-371 Bütün bilgisayarlar
-372Bilgisayar seçimi
-373 Kayýtlý kullanýcý
-374 Kayýtlý Kurum
+370 Yayï¿½lma
+371 Bï¿½tï¿½n bilgisayarlar
+372Bilgisayar seï¿½imi
+373 Kayï¿½tlï¿½ kullanï¿½cï¿½
+374 Kayï¿½tlï¿½ Kurum
 375 OCS NG Acenta versiyonu
-376 Bilgisayar kapalý. Lütfen bir kaç saniye sonra tekrar deneyiniz.
-377 Ýþlemci hýzý (Mhz)
-380 Sözlük
-381 Sayý
-382 Yazýlým adý
+376 Bilgisayar kapalï¿½. Lï¿½tfen bir kaï¿½ saniye sonra tekrar deneyiniz.
+377 ï¿½ï¿½lemci hï¿½zï¿½ (Mhz)
+380 Sï¿½zlï¿½k
+381 Sayï¿½
+382 Yazï¿½lï¿½m adï¿½
 383 Sayfa
-384 Tümünü Taþý
+384 Tï¿½mï¿½nï¿½ Taï¿½ï¿½
 385 Yeni kategori
 386 Veya
 387 Kategori bulundu
 388 Kategori 
-389 Hiç
-390 sölzük kategorisi
-391 Kategori adý
+389 Hiï¿½
+390 sï¿½lzï¿½k kategorisi
+391 Kategori adï¿½
 392 sil
 393 Ara
 394 Arama Kategorisi
-395 Yazýlýmý her yerde ara
-396 Yeniden baþlat
+395 Yazï¿½lï¿½mï¿½ her yerde ara
+396 Yeniden baï¿½lat
 397 Kategoriye git
 398 Kategori listesi
 410 Tamamen
-411 Alanlar sadece Sayýlarý kapsamakta !
-412 Sistem kütüðü anahtarý geçerli
-413 Otomatik güncelleme geçerli
-414 otomatik yayýlma geçerli
+411 Alanlar sadece Sayï¿½larï¿½ kapsamakta !
+412 Sistem kï¿½tï¿½ï¿½ï¿½ anahtarï¿½ geï¿½erli
+413 Otomatik gï¿½ncelleme geï¿½erli
+414 otomatik yayï¿½lma geï¿½erli
 415 Deletion logging functionality (needed by GLPI).
 416 Logging functionality.
 417 Automatic software distribution functionality.
@@ -323,129 +323,129 @@
 427 Defines criteria that must be equals for two computers to be automatically merged.
 428 Mevzilendir
 429 Frekans
-430 Küme yýðýný
-431 Etkinleþtir
+430 Kï¿½me yï¿½ï¿½ï¿½nï¿½
+431 Etkinleï¿½tir
 432 Non notified
 433 Affect
 434 paket kuruldu
-435 Yeni paket oluþtur
-436 Dosya açýlmýyor
-437 Paketiniz baþarýlý bir þekilde dizine oluþturuldu
-438 Yei paket oluþtur
+435 Yeni paket oluï¿½tur
+436 Dosya aï¿½ï¿½lmï¿½yor
+437 Paketiniz baï¿½arï¿½lï¿½ bir ï¿½ekilde dizine oluï¿½turuldu
+438 Yei paket oluï¿½tur
 439 Protokol
-440 Öncelik
+440 ï¿½ncelik
 441 Algoritma
-442 Kodlayýcý
+442 Kodlayï¿½cï¿½
 443 Hareket
 444 Komut
 445 yol
-446 Dosya adý
+446 Dosya adï¿½
 447 User notifications
-448 Kullancýyý uyar
-449 Yazý
-450 Geri sayým
-451 Kullanýcý durduruldu
-452 Kullanýcý ertelendi
+448 Kullancï¿½yï¿½ uyar
+449 Yazï¿½
+450 Geri sayï¿½m
+451 Kullanï¿½cï¿½ durduruldu
+452 Kullanï¿½cï¿½ ertelendi
 453 Installation completion need user action
-454 Hayýr
+454 Hayï¿½r
 455 Evet
-456 Yürüt
+456 Yï¿½rï¿½t
 457 Stok
-458 Baþlat
-459 Geri sayýlacak sayý
+458 Baï¿½lat
+459 Geri sayï¿½lacak sayï¿½
 460 Unique identifier
 461 Digest
 462 Toplam boyut
-463 Parça boyutu (1 KB min)
-464 Parça numarasý
+463 Parï¿½a boyutu (1 KB min)
+464 Parï¿½a numarasï¿½
 465 Etkin paket
-466 Uyarý: Bilgi dosyasý bulunamadý
-467 Uyarý: Dosya parçasý bulunamadý
-468 Bu paketi aktif hale getirmek istediðinizden eminmisiniz?
-469 Paket aktif, Sanal yapýlsýnmý?
+466 Uyarï¿½: Bilgi dosyasï¿½ bulunamadï¿½
+467 Uyarï¿½: Dosya parï¿½asï¿½ bulunamadï¿½
+468 Bu paketi aktif hale getirmek istediï¿½inizden eminmisiniz?
+469 Paket aktif, Sanal yapï¿½lsï¿½nmï¿½?
 470 Https url
-471 Parça url
-472 Hata: Parça silinmedi
-473 Zaman izni numarasý
+471 Parï¿½a url
+472 Hata: Parï¿½a silinmedi
+473 Zaman izni numarasï¿½
 474 Zaman izni 10 dan uzun
 475 Zaman izni
 476 Veya Paketi elle etiki hale getir
 477 Paketi etkile
 478 Bilgisayar(lar)
-479 Bilgisayar seçilmedi
-480 Parçalar
+479 Bilgisayar seï¿½ilmedi
+480 Parï¿½alar
 481 Aktif paketler
-482 Uyarý Bildiri
-483 Onay Baþarýlý
-484 Özel frakansý etkile
+482 Uyarï¿½ Bildiri
+483 Onay Baï¿½arï¿½lï¿½
+484 ï¿½zel frakansï¿½ etkile
 485 Herzaman Bul
 486 Asla Bulma
-487 Özel
-488 Varsayýlan
+487 ï¿½zel
+488 Varsayï¿½lan
 489 Harekete izin ver
 490 Harekete Asla izin verme
-491 Harekete herzaman izin ver aðda
+491 Harekete herzaman izin ver aï¿½da
 492 ELECTED IpDiscover of network
 493 Default (can be elected)
 494 Custom inventory frequency
 495 Inventoried every 
-496 Gün(s)
-497 Varsayýlan, Kullanýcý parametre frekansý.
+496 Gï¿½n(s)
+497 Varsayï¿½lan, Kullanï¿½cï¿½ parametre frekansï¿½.
 498 Paket
 499 Sunucu
-500 Masa üstü uygulamasý
+500 Masa ï¿½stï¿½ uygulamasï¿½
 501 Paket ekle
-502 Seçim
-503 Güç seçimi
-504 Seçim yok
-505 Seçimler
-506 seçimler yok
+502 Seï¿½im
+503 Gï¿½ï¿½ seï¿½imi
+504 Seï¿½im yok
+505 Seï¿½imler
+506 seï¿½imler yok
 507 Al
 508 Alma
 509 Biraz
 510 Paket yok
-511 Ýkinci
-512 Yayýlma
-513 Oluþturmak
-514 Çalýþtýr
-515 Çalýþtýrýldý
+511 ï¿½kinci
+512 Yayï¿½lma
+513 Oluï¿½turmak
+514 ï¿½alï¿½ï¿½tï¿½r
+515 ï¿½alï¿½ï¿½tï¿½rï¿½ldï¿½
 516 KB
-517 Bu seçim sadece sahte birbilgisayarda yapýlýr.
-518 Güç keþfi
-519 Bilgisayar zaten að için seçilmiþ.
-520 Bilgisayar zaten zorunlu að için bulundu
-521 Bilgisayar zaten zorunlu seçimde
+517 Bu seï¿½im sadece sahte birbilgisayarda yapï¿½lï¿½r.
+518 Gï¿½ï¿½ keï¿½fi
+519 Bilgisayar zaten aï¿½ iï¿½in seï¿½ilmiï¿½.
+520 Bilgisayar zaten zorunlu aï¿½ iï¿½in bulundu
+521 Bilgisayar zaten zorunlu seï¿½imde
 522 Standart bilgisayar
-523 Eski duruma geri dön
+523 Eski duruma geri dï¿½n
 524 Birdaha tekrar etkileme
 525 Eminmisiniz?
 526 Sahte bilgisayar yok
 527 Ocak
-528 Þubat
+528 ï¿½ubat
 529 Nisan
-531 Mayýs
+531 Mayï¿½s
 532 Haziran
 533 Temmuz
-534 Aðustos
-535 Eylül
+534 Aï¿½ustos
+535 Eylï¿½l
 536 Ekim
-537 Kasým
-538 Aralýk
+537 Kasï¿½m
+538 Aralï¿½k
 539 Pazar
 540 Pazartesi
-541 Salý
-542 Çarþamba
-543 Perþembe
+541 Salï¿½
+542 ï¿½arï¿½amba
+543 Perï¿½embe
 544 Cuma
 545 Cumartesi
 546 Durum
 547 Hepsi
-548 Tümü ama baþarýlý
+548 Tï¿½mï¿½ ama baï¿½arï¿½lï¿½
 549 Dosya(Ekle, client bilgisayara)
-550 File (Zorunlu deðil, komutu geçmiþe"Uygula" )
+550 File (Zorunlu deï¿½il, komutu geï¿½miï¿½e"Uygula" )
 551 Bu paketin ismi zaten var
-552 <i>Bilgisayar aramanýz gerekiyor, ve aktivasyon paketinin mevkisini týklayýn<br>Hem bir bilgisara hemde bir pakete etki ediyor</i>.
-553 Pencere anahtarý
+552 <i>Bilgisayar aramanï¿½z gerekiyor, ve aktivasyon paketinin mevkisini tï¿½klayï¿½n<br>Hem bir bilgisara hemde bir pakete etki ediyor</i>.
+553 Pencere anahtarï¿½
 557 Userdomain
 558 Affected packages
 559 This file is not .ocs
@@ -457,7 +457,7 @@
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
 570 Help
 571 Validate all

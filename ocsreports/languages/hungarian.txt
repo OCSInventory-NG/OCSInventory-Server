@@ -1,146 +1,146 @@
 0 iso-8859-2
-1 Kérések
-2 Összes számítógép
-3 Számítógépek szoftver nélkül...
-4 számítógép szoftverrel...
-5 Hatáskörömbe tartozó egységek
-6 Lejárt garanciájú gépek
-7 Lejárt garanciájú gépek részletesen
-8 Válassza ki, mit kíván
-9 Paraméterek szerinti keresés
-10 Számítógépek jellemzok szerint
-11 Számítógépek jellemzok szerint
+1 Kï¿½rï¿½sek
+2 ï¿½sszes szï¿½mï¿½tï¿½gï¿½p
+3 Szï¿½mï¿½tï¿½gï¿½pek szoftver nï¿½lkï¿½l...
+4 szï¿½mï¿½tï¿½gï¿½p szoftverrel...
+5 Hatï¿½skï¿½rï¿½mbe tartozï¿½ egysï¿½gek
+6 Lejï¿½rt garanciï¿½jï¿½ gï¿½pek
+7 Lejï¿½rt garanciï¿½jï¿½ gï¿½pek rï¿½szletesen
+8 Vï¿½lassza ki, mit kï¿½vï¿½n
+9 Paramï¿½terek szerinti keresï¿½s
+10 Szï¿½mï¿½tï¿½gï¿½pek jellemzok szerint
+11 Szï¿½mï¿½tï¿½gï¿½pek jellemzok szerint
 12 Szoba
-13 Küld
-14 Menedzselés
-15 Azonosítók
-16 Adminisztrátorok
-17 Ügynök
-18 Felvétel dátuma
-19 Szoftver verzió
+13 Kï¿½ld
+14 Menedzselï¿½s
+15 Azonosï¿½tï¿½k
+16 Adminisztrï¿½torok
+17 ï¿½gynï¿½k
+18 Felvï¿½tel dï¿½tuma
+19 Szoftver verziï¿½
 20 Szoftver
-21 Elso dátum
-22 Garancia lejárata
-23 Számítógép
-24 Felhasználó
-25 Operációs rendszer
-26 Memória
-27 CPU órajel (MHz)
-28 Gépek száma
-29 Az LDAP szerver nem válaszol
-30 Keresés
-31 Válasszon paramétert
-32 Választ
-33 Domén
-34 IP cím
-35 Számítógép neve
-36 Széria szám
+21 Elso dï¿½tum
+22 Garancia lejï¿½rata
+23 Szï¿½mï¿½tï¿½gï¿½p
+24 Felhasznï¿½lï¿½
+25 Operï¿½ciï¿½s rendszer
+26 Memï¿½ria
+27 CPU ï¿½rajel (MHz)
+28 Gï¿½pek szï¿½ma
+29 Az LDAP szerver nem vï¿½laszol
+30 Keresï¿½s
+31 Vï¿½lasszon paramï¿½tert
+32 Vï¿½laszt
+33 Domï¿½n
+34 IP cï¿½m
+35 Szï¿½mï¿½tï¿½gï¿½p neve
+36 Szï¿½ria szï¿½m
 37 Parancs
-38 Megrendelés
+38 Megrendelï¿½s
 39 Eredet
-40 Kód
-41 Alapállapot
-42 Nincs eredmény
+40 Kï¿½d
+41 Alapï¿½llapot
+42 Nincs eredmï¿½ny
 43 Fomenu
-44 Válasszon opciókat
+44 Vï¿½lasszon opciï¿½kat
 45 Szabad hely
-46 Utolsó leltár
-47 Utolsó lap
-48 Számítógép részletek
-49 Név
+46 Utolsï¿½ leltï¿½r
+47 Utolsï¿½ lap
+48 Szï¿½mï¿½tï¿½gï¿½p rï¿½szletek
+49 Nï¿½v
 50 Swap
-51 Megjegyzés
+51 Megjegyzï¿½s
 52 Licenc
-53 Leírás
+53 Leï¿½rï¿½s
 54 Processor(ok)
-55 Szám
-56 Adminisztratív adatok
-57 Parancs szám
-58 Parancs dátum
-59 Kód
-60 Szállítólevél
-61 Video kártya
-62 Felbontás
-63 Tárolók
-64 Gyártó
+55 Szï¿½m
+56 Adminisztratï¿½v adatok
+57 Parancs szï¿½m
+58 Parancs dï¿½tum
+59 Kï¿½d
+60 Szï¿½llï¿½tï¿½levï¿½l
+61 Video kï¿½rtya
+62 Felbontï¿½s
+63 Tï¿½rolï¿½k
+64 Gyï¿½rtï¿½
 65 Modell
-66 Típus
-67 Diszk méret
-68 Könyvtár
-69 Gyártó
+66 Tï¿½pus
+67 Diszk mï¿½ret
+68 Kï¿½nyvtï¿½r
+69 Gyï¿½rtï¿½
 70 Designation
 71 Garancia
-72 Beavatkozás(ok)
-73 Ár
+72 Beavatkozï¿½s(ok)
+73 ï¿½r
 74 Demand date
 75 Demand type
-76 Leltár dátuma
-77 Leltár típus
-78 Számla
+76 Leltï¿½r dï¿½tuma
+77 Leltï¿½r tï¿½pus
+78 Szï¿½mla
 79 Printer(ek)
-80 Muködés
-81 Státusz
-82 Hálózat(ok)
-83 Kapacitás
+80 Mukï¿½dï¿½s
+81 Stï¿½tusz
+82 Hï¿½lï¿½zat(ok)
+83 Kapacitï¿½s
 84 Interface
-85 Levél
+85 Levï¿½l
 86 File rendszer
-87 Összesen
+87 ï¿½sszesen
 88 Szabad
 89 Delivery order date
-90 találat
-91 Input eszközök
+90 talï¿½lat
+91 Input eszkï¿½zï¿½k
 92 Diszk(ek)
 93 Kontroler(ek)
-94 Slot szám
-95 MAC cím
+94 Slot szï¿½m
+95 MAC cï¿½m
 96 Hang
 97 Monitor(ok)
-98 Vigyázat, csak 8 opciót választhat !
-99 Számítógép részletek
-100 Kezdeti paraméterek
-101 Rendezés
-102 Új kereséd
-103 Modosítás
-104 közvetlenül érintett
-105 Egységekben
-106 Konfigurációs beállítások
-107 Konfiguráció
-108 Registry kérések
-109 Számítógép típus
+98 Vigyï¿½zat, csak 8 opciï¿½t vï¿½laszthat !
+99 Szï¿½mï¿½tï¿½gï¿½p rï¿½szletek
+100 Kezdeti paramï¿½terek
+101 Rendezï¿½s
+102 ï¿½j keresï¿½d
+103 Modosï¿½tï¿½s
+104 kï¿½zvetlenï¿½l ï¿½rintett
+105 Egysï¿½gekben
+106 Konfigurï¿½ciï¿½s beï¿½llï¿½tï¿½sok
+107 Konfigurï¿½ciï¿½
+108 Registry kï¿½rï¿½sek
+109 Szï¿½mï¿½tï¿½gï¿½p tï¿½pus
 110 -hoz
-111 Windows licenc szám
-112 Garancia dátum
-113 Mégsem
+111 Windows licenc szï¿½m
+112 Garancia dï¿½tum
+113 Mï¿½gsem
 114 Rendben
-115 Módosít
-116 Új
+115 Mï¿½dosï¿½t
+116 ï¿½j
 117 Registry
-118 Lapra ugrás
-119 Valóban törölni akarja:
+118 Lapra ugrï¿½s
+119 Valï¿½ban tï¿½rï¿½lni akarja:
 120 null
-121 Számítógép törlés
-122 TÖRLÉS
-123 Számítógép típus módosítás
-124 Új számítógép típus
-125 Utolsó
-126 Következo
+121 Szï¿½mï¿½tï¿½gï¿½p tï¿½rlï¿½s
+122 Tï¿½RLï¿½S
+123 Szï¿½mï¿½tï¿½gï¿½p tï¿½pus mï¿½dosï¿½tï¿½s
+124 ï¿½j szï¿½mï¿½tï¿½gï¿½p tï¿½pus
+125 Utolsï¿½
+126 Kï¿½vetkezo
 127 Elso
 128 Vissza
 129 EGYENLO
 130 NEM EGYENLO
-131 Icon állomány
-132 Image állomány
-133 Leltár
-134 Új zip állomány hozzáadása
-135 Vigyázat, véglegesen törli az állományt !
-136 Letöltés
-137 Állomány
-138 Létrehozás
-139 Létrehozás / törlés
-140 Szuper adminisztrátorok
-141 Adminisztrátorok
-142 Helyi adminisztrátorok
+131 Icon ï¿½llomï¿½ny
+132 Image ï¿½llomï¿½ny
+133 Leltï¿½r
+134 ï¿½j zip ï¿½llomï¿½ny hozzï¿½adï¿½sa
+135 Vigyï¿½zat, vï¿½glegesen tï¿½rli az ï¿½llomï¿½nyt !
+136 Letï¿½ltï¿½s
+137 ï¿½llomï¿½ny
+138 Lï¿½trehozï¿½s
+139 Lï¿½trehozï¿½s / tï¿½rlï¿½s
+140 Szuper adminisztrï¿½torok
+141 Adminisztrï¿½torok
+142 Helyi adminisztrï¿½torok
 143 The super administrators see all the machines and can give unity tag to the administrators.
 144 The administrators see all the machines but cannot give unity tag.
 145 The local administrators see only their machine and cannot give unity tag.
@@ -148,14 +148,14 @@
 147 Be careful, you're about to delete the rights definitively !
 148 ISMERETLEN TAG
 149 Unity tags under the responsibility of
-150 jog(ok) módosítva
-151 jog(ok) törölve
-152 Vigyázat, ez a muvelet törli az érintett adminisztrátor jogait !
+150 jog(ok) mï¿½dosï¿½tva
+151 jog(ok) tï¿½rï¿½lve
+152 Vigyï¿½zat, ez a muvelet tï¿½rli az ï¿½rintett adminisztrï¿½tor jogait !
 153 No tag unity affected to this administator
 154 Add a tag to an administrador
 155 Add administrator to a tag
 156 Add a unity tag
-157 Másol
+157 Mï¿½sol
 158 Copy the rights to
 159 rights copied from
 160 No administrator for this tag
@@ -167,233 +167,233 @@
 166 You have to choose an element from the list !
 167 See the details
 168 This format file is invalid (it must be zip, pl or unix binary)
-169 hozzádás
-170 Ez az állomány már létezik !
-171 Állomány törölve
-172 Hiba történt, az állomány:
-173 nem adtható hozzá
-174 IP keresés
-175 Duplikátumok
+169 hozzï¿½dï¿½s
+170 Ez az ï¿½llomï¿½ny mï¿½r lï¿½tezik !
+171 ï¿½llomï¿½ny tï¿½rï¿½lve
+172 Hiba tï¿½rtï¿½nt, az ï¿½llomï¿½ny:
+173 nem adthatï¿½ hozzï¿½
+174 IP keresï¿½s
+175 Duplikï¿½tumok
 176 IP-k
-177 Redundáns gépek összefuzése
-178 Szoba / gépek száma
-179 Egység neve
-180 Nem regisztrált felhasználó
-181 Bejelentkezési probléma
-182 A megadott tulajdonsággal rendelkezo gépek
-183 Letöltés
+177 Redundï¿½ns gï¿½pek ï¿½sszefuzï¿½se
+178 Szoba / gï¿½pek szï¿½ma
+179 Egysï¿½g neve
+180 Nem regisztrï¿½lt felhasznï¿½lï¿½
+181 Bejelentkezï¿½si problï¿½ma
+182 A megadott tulajdonsï¿½ggal rendelkezo gï¿½pek
+183 Letï¿½ltï¿½s
 184 This file does not contain "use constant version"
 185 Version must be over 1
 186 This file does not contain the ver file
 187 This file is not a valid zip file
 188 Vissza
-189 Legalább 2 gépet ki kellválasztani
-190 Számla infó:
-191 törölve
-192 Redundancia özssefoglalás
-193 Hosztnév + Széria szám
-194 Hosztnév + Mac cím
-195 Mac cím + Széria szám
-196 Hosztnév
-197 Széria szám
-198 Mac cím
+189 Legalï¿½bb 2 gï¿½pet ki kellvï¿½lasztani
+190 Szï¿½mla infï¿½:
+191 tï¿½rï¿½lve
+192 Redundancia ï¿½zssefoglalï¿½s
+193 Hosztnï¿½v + Szï¿½ria szï¿½m
+194 Hosztnï¿½v + Mac cï¿½m
+195 Mac cï¿½m + Szï¿½ria szï¿½m
+196 Hosztnï¿½v
+197 Szï¿½ria szï¿½m
+198 Mac cï¿½m
 199 Redundancia
-200 A számláló csökkentve
+200 A szï¿½mlï¿½lï¿½ csï¿½kkentve
 201 KISEBB
 202 NAGYOBB
-203 KÖZÖTT
-204 KÍVÜL
+203 Kï¿½Zï¿½TT
+204 Kï¿½Vï¿½L
 205 Enabled
 206 saved for
-207 Átjáró
+207 ï¿½tjï¿½rï¿½
 208 maszk
-209 BIOS Verzió
-210 BIOS Dátum
+209 BIOS Verziï¿½
+210 BIOS Dï¿½tum
 211 Registry
-212 Kulcs név
-213 Kulcs érték
+212 Kulcs nï¿½v
+213 Kulcs ï¿½rtï¿½k
 214 Nyomtat
-215 Összes információ
-216 Jelszó hiba
-217 Jelszó
-218 Ügynök verziók
-219 Nem leltározott hálózati csatoló
-220 törölt
-221 IP cím felderíto gépek
-222 Vigyázat ! Az összes kijelölt gépet összefuzí ! Biztos benne ?
-223 Információ
-224 Érték
-225 Admin.infó
-226 sikeresen a törölve az accountinfo táblából
-227 Biztos, hogy törli az oszlopot
-228 Írja be az új adminisztratív információt
-229 Szöveg (255)
-230 Egész
-231 Valós
-232 Dátum
-233 Aktuális adat
-234 sikeresen beszúrva
-235 Felhasználók
-236 Jelszó váltás
-237 Új jelszó
-238 Megerosítés
-239 Minden mezot ki kell tölteni
+215 ï¿½sszes informï¿½ciï¿½
+216 Jelszï¿½ hiba
+217 Jelszï¿½
+218 ï¿½gynï¿½k verziï¿½k
+219 Nem leltï¿½rozott hï¿½lï¿½zati csatolï¿½
+220 tï¿½rï¿½lt
+221 IP cï¿½m felderï¿½to gï¿½pek
+222 Vigyï¿½zat ! Az ï¿½sszes kijelï¿½lt gï¿½pet ï¿½sszefuzï¿½ ! Biztos benne ?
+223 Informï¿½ciï¿½
+224 ï¿½rtï¿½k
+225 Admin.infï¿½
+226 sikeresen a tï¿½rï¿½lve az accountinfo tï¿½blï¿½bï¿½l
+227 Biztos, hogy tï¿½rli az oszlopot
+228 ï¿½rja be az ï¿½j adminisztratï¿½v informï¿½ciï¿½t
+229 Szï¿½veg (255)
+230 Egï¿½sz
+231 Valï¿½s
+232 Dï¿½tum
+233 Aktuï¿½lis adat
+234 sikeresen beszï¿½rva
+235 Felhasznï¿½lï¿½k
+236 Jelszï¿½ vï¿½ltï¿½s
+237 ï¿½j jelszï¿½
+238 Megerosï¿½tï¿½s
+239 Minden mezot ki kell tï¿½lteni
 240 A jelszavak nem egyeznek meg
-241 A jelszó sikeresen módosítva
-242 Adminisztrátor
-243 Felhasználó
-244 Új felhasználó
-245 sikeresen törölve
-246 Biztos, hogy törli a felhasználót
-247 MySql bejelentkezés
-248 MySql jelszó
-249 MySql nem elérheto. Kérem, adjon meg helyes bejelentkezést/jelszót.
-250 MySql Hosztnév
-251 Kilépés
-252 Név (Ön választja)
-253 A registry "fejezet" száma <br>(0: HKEY_CLASSES_ROOT, 1: HKEY_CURRENT_USER stb.)
+241 A jelszï¿½ sikeresen mï¿½dosï¿½tva
+242 Adminisztrï¿½tor
+243 Felhasznï¿½lï¿½
+244 ï¿½j felhasznï¿½lï¿½
+245 sikeresen tï¿½rï¿½lve
+246 Biztos, hogy tï¿½rli a felhasznï¿½lï¿½t
+247 MySql bejelentkezï¿½s
+248 MySql jelszï¿½
+249 MySql nem elï¿½rheto. Kï¿½rem, adjon meg helyes bejelentkezï¿½st/jelszï¿½t.
+250 MySql Hosztnï¿½v
+251 Kilï¿½pï¿½s
+252 Nï¿½v (ï¿½n vï¿½lasztja)
+253 A registry "fejezet" szï¿½ma <br>(0: HKEY_CLASSES_ROOT, 1: HKEY_CURRENT_USER stb.)
 254 A kulcs helye (pl.: SOFTWARE/Mozilla)
-255 A kulcs megnevezése
-256 Választás
+255 A kulcs megnevezï¿½se
+256 Vï¿½lasztï¿½s
 257 Registry kulcs
-258 Registry kulcs érték
-259 Hiba, az adat nem szúrható be (speciális karakterek nem megengedettek)
-260 Címke állomány módosítás rendben
-261 Címke állomány törölve
-262 Írjon be egy címkét
-263 Címke állomány konfiguráció
-264 Nincs címke állomány
-265 Bármi
-266 Hibás dátum
+258 Registry kulcs ï¿½rtï¿½k
+259 Hiba, az adat nem szï¿½rhatï¿½ be (speciï¿½lis karakterek nem megengedettek)
+260 Cï¿½mke ï¿½llomï¿½ny mï¿½dosï¿½tï¿½s rendben
+261 Cï¿½mke ï¿½llomï¿½ny tï¿½rï¿½lve
+262 ï¿½rjon be egy cï¿½mkï¿½t
+263 Cï¿½mke ï¿½llomï¿½ny konfigurï¿½ciï¿½
+264 Nincs cï¿½mke ï¿½llomï¿½ny
+265 Bï¿½rmi
+266 Hibï¿½s dï¿½tum
 267 yyyy/mm/dd
-268 Sebesség
+268 Sebessï¿½g
 269 %Y/%m/%d
 270 Modem(ek)
 271 Slot(ok)
 272 Port(ok)
 273 BIOS
 274 Op.rsz. neve
-275 Op.rsz. verziója
-276 Chip készlet
-277 Verzió
-278 Meghajtó
+275 Op.rsz. verziï¿½ja
+276 Chip kï¿½szlet
+277 Verziï¿½
+278 Meghajtï¿½
 279 Port
-280 MIB típus
+280 MIB tï¿½pus
 281 DHCP IP
-282 Átjárók
-283 Lehetoség
-284 BIOS gyártó
-285 Válassza ki a módosítandó paramétert
-286 Szervíz csomag
+282 ï¿½tjï¿½rï¿½k
+283 Lehetosï¿½g
+284 BIOS gyï¿½rtï¿½
+285 Vï¿½lassza ki a mï¿½dosï¿½tandï¿½ paramï¿½tert
+286 Szervï¿½z csomag
 287 Helyi import
-288 Helyi importálás
-289 Hálózat információ
-290 Ip lekérdezés
-291 Gyakorlott mód
-292 Hálózati eszköz felvétel / törlés
-293 Hálózati eszköz típusok
-294 Alhálózat nevek
+288 Helyi importï¿½lï¿½s
+289 Hï¿½lï¿½zat informï¿½ciï¿½
+290 Ip lekï¿½rdezï¿½s
+291 Gyakorlott mï¿½d
+292 Hï¿½lï¿½zati eszkï¿½z felvï¿½tel / tï¿½rlï¿½s
+293 Hï¿½lï¿½zati eszkï¿½z tï¿½pusok
+294 Alhï¿½lï¿½zat nevek
 295 Hely
 296 Uid
 297 Can't write in directory
-298 Minden mezot ki kell tölteni
-299 Helytelen IP cím (formátum: x.x.x.x)
-300 Helytelen maszk: formátum: x.x.x.x or xx (xx<32)
-301 Hálózat felvéve
-302 Hálózat törölve
-303 Alhálózat hozzáadása
-304 Hálózat név
+298 Minden mezot ki kell tï¿½lteni
+299 Helytelen IP cï¿½m (formï¿½tum: x.x.x.x)
+300 Helytelen maszk: formï¿½tum: x.x.x.x or xx (xx<32)
+301 Hï¿½lï¿½zat felvï¿½ve
+302 Hï¿½lï¿½zat tï¿½rï¿½lve
+303 Alhï¿½lï¿½zat hozzï¿½adï¿½sa
+304 Hï¿½lï¿½zat nï¿½v
 305 Uid
-306 Alhálózat lista
-307 Új típus
-308 Típus neve
-309 Hálózati eszköz típusok
-310 IpFelderítés kisebb mint
-311 Gép
-312 Ip felderítés
-313 Gateway számítógépek
-314 Ip felderito gateway számítógépek
-315 Nem leltározott számítógépek
-316 Alhálózat
-317 VIZSZGÁL
-318 DNS név
-319 Hálózat vizsgálat eredményei
-320 Ez az analízis már végrehajtódott
-321 látni akarja cache adatait ?
-322 Adat a cache-ból
-323 készült
-324 A GÉP ELNEVEZVE MINT
-325 üres
+306 Alhï¿½lï¿½zat lista
+307 ï¿½j tï¿½pus
+308 Tï¿½pus neve
+309 Hï¿½lï¿½zati eszkï¿½z tï¿½pusok
+310 IpFelderï¿½tï¿½s kisebb mint
+311 Gï¿½p
+312 Ip felderï¿½tï¿½s
+313 Gateway szï¿½mï¿½tï¿½gï¿½pek
+314 Ip felderito gateway szï¿½mï¿½tï¿½gï¿½pek
+315 Nem leltï¿½rozott szï¿½mï¿½tï¿½gï¿½pek
+316 Alhï¿½lï¿½zat
+317 VIZSZGï¿½L
+318 DNS nï¿½v
+319 Hï¿½lï¿½zat vizsgï¿½lat eredmï¿½nyei
+320 Ez az analï¿½zis mï¿½r vï¿½grehajtï¿½dott
+321 lï¿½tni akarja cache adatait ?
+322 Adat a cache-bï¿½l
+323 kï¿½szï¿½lt
+324 A Gï¿½P ELNEVEZVE MINT
+325 ï¿½res
 326 nincs maszk megadva
-327 Számítógép részletek
+327 Szï¿½mï¿½tï¿½gï¿½p rï¿½szletek
 328 Felfedezett
-329 Leltározott
-330 NetBIOS név
-331 Hálózat szám
-332 Kérem , várjon ...
-333 Új hálózati eszköz
-334 Hálózati eszköz lista
-335 Eszköz típus
-336 Eszköz leírása
-337 A PROGRAM NEM KÜLD SEMMIT
-338 Csökkentett mód
-339 A gyakorlott módhoz szükség van az ipdiscover-util.pl programra (Csak Linuxon fut)
+329 Leltï¿½rozott
+330 NetBIOS nï¿½v
+331 Hï¿½lï¿½zat szï¿½m
+332 Kï¿½rem , vï¿½rjon ...
+333 ï¿½j hï¿½lï¿½zati eszkï¿½z
+334 Hï¿½lï¿½zati eszkï¿½z lista
+335 Eszkï¿½z tï¿½pus
+336 Eszkï¿½z leï¿½rï¿½sa
+337 A PROGRAM NEM Kï¿½LD SEMMIT
+338 Csï¿½kkentett mï¿½d
+339 A gyakorlott mï¿½dhoz szï¿½ksï¿½g van az ipdiscover-util.pl programra (Csak Linuxon fut)
 340 Megtekint
-340 Sorok száma
-341 nem indítható, állítsa be a végrehajtási jogokat
-342 Írási jogot kell bállítania a gyökér könyvtárra , hogy használhassa
+340 Sorok szï¿½ma
+341 nem indï¿½thatï¿½, ï¿½llï¿½tsa be a vï¿½grehajtï¿½si jogokat
+342 ï¿½rï¿½si jogot kell bï¿½llï¿½tania a gyï¿½kï¿½r kï¿½nyvtï¿½rra , hogy hasznï¿½lhassa
 344 Hiba
-345 EZ AZ ANALÍZIS FOLYAMATBAN VAN, PRÓBÁLJA KÉSOBB
+345 EZ AZ ANALï¿½ZIS FOLYAMATBAN VAN, PRï¿½Bï¿½LJA Kï¿½SOBB
 346 ELOTT
-347 UTÁN
-348 Windows felhasználó
-349 Új oszlop
-350 CPU típus
-351 CPU szám
-352 Utolsó belépés
-353 Minoség
-354 Érzékenység
-355 Cég
+347 UTï¿½N
+348 Windows felhasznï¿½lï¿½
+349 ï¿½j oszlop
+350 CPU tï¿½pus
+351 CPU szï¿½m
+352 Utolsï¿½ belï¿½pï¿½s
+353 Minosï¿½g
+354 ï¿½rzï¿½kenysï¿½g
+355 Cï¿½g
 356 Tulajdonos
-357 OCS ágens
-358 Jokerek: ? (egy karakter), * (több karakter)
-359 Monitor szériaszáma
-360 Gyártva (hét/év)
-362 A hálózat
-363 már létezik
-364 Leltározott
-365 Nem leltározott
+357 OCS ï¿½gens
+358 Jokerek: ? (egy karakter), * (tï¿½bb karakter)
+359 Monitor szï¿½riaszï¿½ma
+360 Gyï¿½rtva (hï¿½t/ï¿½v)
+362 A hï¿½lï¿½zat
+363 mï¿½r lï¿½tezik
+364 Leltï¿½rozott
+365 Nem leltï¿½rozott
 366 Felismert
-367 Hálózati eszközök
-368 hálózat
-369 Rögzítette
-370 Közzététel
-371 Összes komponens
-372 Válasszon komponenst
-373 Regisztrált felhasználó
-374 Regisztrált szervezet
-375 OCS NG Agens verzió
-376 A számítógép zárolt. Próbálja késobb
-377 Processzor sebesség (Mhz)
+367 Hï¿½lï¿½zati eszkï¿½zï¿½k
+368 hï¿½lï¿½zat
+369 Rï¿½gzï¿½tette
+370 Kï¿½zzï¿½tï¿½tel
+371 ï¿½sszes komponens
+372 Vï¿½lasszon komponenst
+373 Regisztrï¿½lt felhasznï¿½lï¿½
+374 Regisztrï¿½lt szervezet
+375 OCS NG Agens verziï¿½
+376 A szï¿½mï¿½tï¿½gï¿½p zï¿½rolt. Prï¿½bï¿½lja kï¿½sobb
+377 Processzor sebessï¿½g (Mhz)
 380 Szoftver
-381 Szám
-382 Szoftver név
+381 Szï¿½m
+382 Szoftver nï¿½v
 383 Lap
 384 Mindet mozgatja
-385 új kategóriába
+385 ï¿½j kategï¿½riï¿½ba
 386 VAGY
-387 létezo kategóriába
-388 Kategória
+387 lï¿½tezo kategï¿½riï¿½ba
+388 Kategï¿½ria
 389 Semmi
-390 Szofver kategóriák
-391 Kategória név
-392 Törlés
-393 Keresés
-394 Kategória keresés
-395 Szoftver keresés MINDENHOL
+390 Szofver kategï¿½riï¿½k
+391 Kategï¿½ria nï¿½v
+392 Tï¿½rlï¿½s
+393 Keresï¿½s
+394 Kategï¿½ria keresï¿½s
+395 Szoftver keresï¿½s MINDENHOL
 396 Reset
-397 Ugrás kategóriára
-398 Kategória lista
+397 Ugrï¿½s kategï¿½riï¿½ra
+398 Kategï¿½ria lista
 410 EXACTLY
 411 Fields must contain only numbers !
 412 Registry key gathering functionality
@@ -552,7 +552,7 @@
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
 570 Help
 571 Validate all

@@ -2,17 +2,17 @@
 2 Wszystkie komputery
 3 Komputery z oprogramowaniem...
 5 Unity codes under my responsibility
-9 Szukaj w/g okre¶lonych kryteriów
-12 Warto¶æ Tag-u
-13 Wy¶lij
+9 Szukaj w/g okreï¿½lonych kryteriï¿½w
+12 Wartoï¿½ï¿½ Tag-u
+13 Wyï¿½lij
 17 Agent
 19 Wersja oprogramowania
 20 Oprogramowanie
 23 Komputer
-24 U¿ytkownik
+24 Uï¿½ytkownik
 25 System Operacyjny
-26 Pamiêæ
-27 Szybko¶æ Pamiêci (MHz)
+26 Pamiï¿½ï¿½
+27 Szybkoï¿½ï¿½ Pamiï¿½ci (MHz)
 28 Numery maszyn
 30 Szukaj
 31 Wybierz parametr
@@ -22,8 +22,8 @@
 35 Nazwa Komputera
 36 Numer Seryjny
 41 Reset
-42 Brak rezultatów
-43 G³ówne menu
+42 Brak rezultatï¿½w
+43 Gï¿½ï¿½wne menu
 45 Free space
 46 Ostatnia inventaryzacja
 48 Detale komputera
@@ -35,7 +35,7 @@
 55 Numer
 56 Dane Administracyjne
 61 Karta Graficzna
-62 Rozdzielczo¶æ
+62 Rozdzielczoï¿½ï¿½
 63 Magazyn
 64 Producent
 65 Model
@@ -46,23 +46,23 @@
 79 Drukarka(i)
 80 Nazwa
 81 Status
-82 Sieæ(i)
-83 Pojemno¶æ
+82 Sieï¿½(i)
+83 Pojemnoï¿½ï¿½
 84 Interfejs
 85 Litera
-86 System plików
-87 Ogó³em
+86 System plikï¿½w
+87 Ogï¿½em
 88 Wolne
 90 Rezultat(y)
-91 Urz±dzenia wej¶ciowe
+91 Urzï¿½dzenia wejï¿½ciowe
 92 Dysk(i)
 93 Kontroler(y)
 94 Numer slotu
 95 Adres MAC
-96 D¿wiêk
+96 Dï¿½wiï¿½k
 97 Monitor(y)
-98 B±d¿ ostro¿ny, mo¿esz zaznaczyæ tylko 8 opcji !
-99 Szczegó³y komputera
+98 Bï¿½dï¿½ ostroï¿½ny, moï¿½esz zaznaczyï¿½ tylko 8 opcji !
+99 Szczegï¿½y komputera
 103 Aktualizuj
 107 Konfiguracja
 108 Zapytania rejestru
@@ -72,49 +72,49 @@
 115 Aktualizuj
 116 Dodaj
 117 Rejestr
-119 Naprawdê chcesz usun±æ 
-122 Usuñ
+119 Naprawdï¿½ chcesz usunï¿½ï¿½ 
+122 Usuï¿½
 129 PASUJE
-130 RÓ¯NI SIÊ
+130 RÓ¯NI SIï¿½
 134 Dodaj nowy plik do bazy
-135 Ostro¿nie, ten plik zostanie usuniêty definitywnie !
+135 Ostroï¿½nie, ten plik zostanie usuniï¿½ty definitywnie !
 136 Pobierz
 137 Plik
-168 Ten format pliku jest nieodpowiedni (to musi byæ zip, pl albo unixowa binarka)
-170 Taki sam plik ju¿ istnieje !
-171 Plik usuniêty
+168 Ten format pliku jest nieodpowiedni (to musi byï¿½ zip, pl albo unixowa binarka)
+170 Taki sam plik juï¿½ istnieje !
+171 Plik usuniï¿½ty
 172 An error is appeared, the file
 173 nie zostanie dodany do bazy
-174 Bezpieczeñstwo
+174 Bezpieczeï¿½stwo
 175 Duplikaty
 176 Ips
-177 Po³±cz nadmiarowe komputery
+177 Poï¿½ï¿½cz nadmiarowe komputery
 178 Tag / Number of PC repartition
-180 U¿ytkownik nie zarejestrowany
+180 Uï¿½ytkownik nie zarejestrowany
 182 Computers having a given tag
 183 Pobierz
 184 This file does not contain "use constant version"
-185 Wersja musi byæ wieksza od 1
+185 Wersja musi byï¿½ wieksza od 1
 186 Ten plik nie zawiera pliku ver
-187 Ten plik nie jest prawid³owym plikiem zip
-188 Powrót
-189 Musisz zaznaczyæ co najmniej 2 komputery  
+187 Ten plik nie jest prawidï¿½owym plikiem zip
+188 Powrï¿½t
+189 Musisz zaznaczyï¿½ co najmniej 2 komputery  
 190 Accountinfo:
-191 usuniêty
-192 Suma ró¿nic
+191 usuniï¿½ty
+192 Suma rï¿½nic
 193 Nazwa + Numer seryjny
 194 Nazwa + Adres MAC
 195 Adres MAC + Numer seryjny
 196 Tylko nazwa
 197 Tylko Numer
 198 Tylko Adres MAC
-199 Ró¿nice
+199 Rï¿½nice
 200 Corresponding relay decremented
 201 MNIEJSZY
-202 WIÊKSZY
-203 POMIÊDZY
+202 WIï¿½KSZY
+203 POMIï¿½DZY
 204 OUT OF
-205 W³±czony
+205 Wï¿½ï¿½czony
 206 saved for
 207 Brama
 208 Maska
@@ -122,62 +122,62 @@
 210 Data BIOS
 211 Rejestr
 212 Nazwa klucza
-213 Warto¶æ klucza
-214 Drukuj tê stronê
-215 Poka¿ wszystko
-216 B³±d has³a
-217 Has³o
-218 Wersje agentów
+213 Wartoï¿½ï¿½ klucza
+214 Drukuj tï¿½ stronï¿½
+215 Pokaï¿½ wszystko
+216 Bï¿½ï¿½d hasï¿½a
+217 Hasï¿½o
+218 Wersje agentï¿½w
 219 niezinwentaryzowane interfejsy sieciowe
-220 usuniête
+220 usuniï¿½te
 221 IP gathering computers
-222 Uwaga ! Wszystkie zaznaczone komputery zostan± po³±czone w pojedynczy komputer ! Jeste¶ pewny ?
+222 Uwaga ! Wszystkie zaznaczone komputery zostanï¿½ poï¿½ï¿½czone w pojedynczy komputer ! Jesteï¿½ pewny ?
 223 Informacje
-224 Warto¶æ
+224 Wartoï¿½ï¿½
 225 Admininfo
-226 usuniêto from accountinfo table
-227 Jeste¶ pewny, ¿e chcesz usun±æ t± kolumnê ?
-228 Wprowad¿ nowe administrative info
+226 usuniï¿½to from accountinfo table
+227 Jesteï¿½ pewny, ï¿½e chcesz usunï¿½ï¿½ tï¿½ kolumnï¿½ ?
+228 Wprowadï¿½ nowe administrative info
 229 Text (255)
-230 Liczba ca³kowita
+230 Liczba caï¿½kowita
 231 Liczba naturalna
 232 Data
-233 Bierz±ce dane
-234 zosta³ dodany
-235 U¿ytkownicy
-236 Zmieñ has³o
-237 Nowe has³o
+233 Bierzï¿½ce dane
+234 zostaï¿½ dodany
+235 Uï¿½ytkownicy
+236 Zmieï¿½ hasï¿½o
+237 Nowe hasï¿½o
 238 Potwierdzenie
-239 Musisz wype³niæ wszystkie pola
-240 Podane has³a ró¿ni± siê
-241 Twoje has³o zosta³o zmienione
+239 Musisz wypeï¿½niï¿½ wszystkie pola
+240 Podane hasï¿½a rï¿½niï¿½ siï¿½
+241 Twoje hasï¿½o zostaï¿½o zmienione
 242 Administrator
-243 U¿ytkownik
-244 Dodaj nowego u¿ytkownika
-245 zosta³ usuniêty
-246 Jeste¶ pewien, ¿e chcesz usun±æ tego u¿ytkownika?
+243 Uï¿½ytkownik
+244 Dodaj nowego uï¿½ytkownika
+245 zostaï¿½ usuniï¿½ty
+246 Jesteï¿½ pewien, ï¿½e chcesz usunï¿½ï¿½ tego uï¿½ytkownika?
 247 Login MySQL
-248 Has³o MySQL
-249 Nie mo¿na po³±czyæ z MySql. Proszê podaæ prawid³owe(y) login/has³o.
+248 Hasï¿½o MySQL
+249 Nie moï¿½na poï¿½ï¿½czyï¿½ z MySql. Proszï¿½ podaï¿½ prawidï¿½owe(y) login/hasï¿½o.
 250 Nazwa hosta MySQL
 251 Wyloguj
 252 Nazwa (wybierz)        	
 253 Gniazdo rejestru	
-254 ¦cie¿ka klucza (np: SOFTWAREMozilla)  	
+254 ï¿½cieï¿½ka klucza (np: SOFTWAREMozilla)  	
 255 Nazwa klucza do odczytania (* dla wszystkich)
 256 Wybierz
 257 Klucz rejestru
-258 Warto¶æ klucza rejestru
-259 B³±d, dane nie mog³y zostaæ dodane (znaki specjalne nie s± dozwolone)
+258 Wartoï¿½ï¿½ klucza rejestru
+259 Bï¿½ï¿½d, dane nie mogï¿½y zostaï¿½ dodane (znaki specjalne nie sï¿½ dozwolone)
 260 Label file modification ok
 261 Label file deleted
 262 Type in a label
 263 Label file configuration
 264 No label file now
 265 Cokolwiek
-266 Nieprawid³owa data
+266 Nieprawidï¿½owa data
 267 dd/mm/rrrr
-268 Szybko¶æ
+268 Szybkoï¿½ï¿½
 269 %m/%d/%R
 270 Modem(y)
 271 Slot(y)
@@ -201,25 +201,25 @@
 289 Informacje o sieci
 290 Ip querying
 291 Tryb eksperta
-292 Dodaj / Usuñ urz±dzenie sieciowe
-293 Typy urz±dzeñ sieciowych
+292 Dodaj / Usuï¿½ urzï¿½dzenie sieciowe
+293 Typy urzï¿½dzeï¿½ sieciowych
 294 Nazwy Podsieci
 295 Lokalizacje
 296 Uid
-297 Nie mo¿na zapisywaæ w katalogu
-298 Wszystkie pola musz± byæ wype³nione
-299 Nieprawid³owy adres IP (musi byæ: x.x.x.x)
-300 Nieprawid³owa maska: musi byæ: x.x.x.x or xx (xx<32)
-301 Sieæ dodana
-302 Sieæ usuniêta
-303 Dodaj Podsieæ
+297 Nie moï¿½na zapisywaï¿½ w katalogu
+298 Wszystkie pola muszï¿½ byï¿½ wypeï¿½nione
+299 Nieprawidï¿½owy adres IP (musi byï¿½: x.x.x.x)
+300 Nieprawidï¿½owa maska: musi byï¿½: x.x.x.x or xx (xx<32)
+301 Sieï¿½ dodana
+302 Sieï¿½ usuniï¿½ta
+303 Dodaj Podsieï¿½
 304 Nazwa sieci
 305 Uid
 306 Lista podsieci
 307 Dodaj typ
 308 Nazwa typu
-309 Typy urz±dzeñ sieciowych
-310 IpDiscover mniejsze ni¿
+309 Typy urzï¿½dzeï¿½ sieciowych
+310 IpDiscover mniejsze niï¿½
 311 Hosty
 312 IpDiscover
 313 Bramy
@@ -229,80 +229,80 @@
 317 ANALIZUJ
 318 Nazwa DNS
 319 Rezultaty analizy sieci
-320 Ta analiza zosta³a ju¿ wykonana
-321 chcesz zobaczyæ zebrane dane?
+320 Ta analiza zostaï¿½a juï¿½ wykonana
+321 chcesz zobaczyï¿½ zebrane dane?
 322 Data from cache
 323 wygenerowano
 324 HOSTS EVALUATED AS
 325 puste
 326 nie wpisano maski
-327 Szczegó³y komputera
+327 Szczegï¿½y komputera
 328 Discovered
 329 Inventoried
 330 Nazwa NetBIOS
 331 Numer sieci
-332 Proszê czekaæ...
-333 Dodaj nowe urz±dzenie NetBIOS
-334 Lista urz±dzeñ sieciowych
-335 Typ urz±dzenia
-336 Opis urz±dzenia
-337 PROGRAM NIC NIE WYS£A£
+332 Proszï¿½ czekaï¿½...
+333 Dodaj nowe urzï¿½dzenie NetBIOS
+334 Lista urzï¿½dzeï¿½ sieciowych
+335 Typ urzï¿½dzenia
+336 Opis urzï¿½dzenia
+337 PROGRAM NIC NIE WYSï¿½Aï¿½
 338 Tryb limitowany
 339 Potrzebujesz ipdiscover-util.pl (Linux only) dla trybu experta
-340 Poka¿
-341 nie mo¿na uruchomiæ, musisz ustawiæ prawa wykonywania 
-342 Misisz ustawiæ prawa zapisu dla g³ównego katalogu
-344 B³±d
-345 AKTUALNIE URUCHOMIONY JEST PROCES ANALIZY, PROSZÊ SPRÓBOWAÆ PONOWNIE ZA KILKA MINUT
+340 Pokaï¿½
+341 nie moï¿½na uruchomiï¿½, musisz ustawiï¿½ prawa wykonywania 
+342 Misisz ustawiï¿½ prawa zapisu dla gï¿½ï¿½wnego katalogu
+344 Bï¿½ï¿½d
+345 AKTUALNIE URUCHOMIONY JEST PROCES ANALIZY, PROSZï¿½ SPRï¿½BOWAï¿½ PONOWNIE ZA KILKA MINUT
 346 PRZED
 347 PO
-348 U¿ytkownik windows
-349 Dodaj kolumnê
+348 Uï¿½ytkownik windows
+349 Dodaj kolumnï¿½
 350 Typ CPU
 351 Numer CPU
 352 Ostatnia wizyta
-353 Jako¶æ
-354 Dok³adno¶æ
+353 Jakoï¿½ï¿½
+354 Dokï¿½adnoï¿½ï¿½
 355 Firma
-356 W³a¶ciciel
+356 Wï¿½aï¿½ciciel
 357 Agent
 358 Jokers: ? (one character), * (several characters)
 359 Numer seryjny monitora
 360 Wyprodukowano (miesiac/rok)
-362 Sieæ
-363 ju¿ isnieje
+362 Sieï¿½
+363 juï¿½ isnieje
 364 Zinwentaryzowany
 365 Nie ziwentaryzowany
 366 Zidentyfikowany
-367 Urz±dzenie sieciowe
+367 Urzï¿½dzenie sieciowe
 368 sieci
-369 Wys³ane przez
+369 Wysï¿½ane przez
 370 Rozmieszczenie
 371 Wszystkie komponenty
 372 Wybierz komponenty
 373 Zalogowany urzytkownik
 374 Registered society
 375 Wersja agenta OCS NG
-376 Komputer zablokowany. Proszê spróbowaæ za kilka minut
-377 Szybko¶æ procesora (Mhz)
-380 S³ownikowy
+376 Komputer zablokowany. Proszï¿½ sprï¿½bowaï¿½ za kilka minut
+377 Szybkoï¿½ï¿½ procesora (Mhz)
+380 Sï¿½ownikowy
 381 Numer
 382 Nazwa oprogramowania
 383 Wszystko
-384 Przenie¶ WSZYSTKO
+384 Przenieï¿½ WSZYSTKO
 385 do nowej kategorii
 386 LUB
-387 do istniej±cej kategorii
+387 do istniejï¿½cej kategorii
 388 Kategoria
 389 Nic
-390 Kategorie S³ownikowe
+390 Kategorie Sï¿½ownikowe
 391 Nazwa kategorii
-392 Usuñ
+392 Usuï¿½
 393 Szukaj
 394 Szukaj kategorii
-395 Szukaj oprogramowania WSZÊDZIE
+395 Szukaj oprogramowania WSZï¿½DZIE
 396 Reset
-397 Id¼ do kategorii
+397 Idï¿½ do kategorii
 398 Lista kategorii
 410 EXACTLY
 411 Fields must contain only numbers !
@@ -463,7 +463,7 @@
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
 570 Help
 571 Validate all

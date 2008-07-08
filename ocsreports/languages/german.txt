@@ -166,7 +166,7 @@
 165 You have to enter a name or a diffusion list to search !
 166 You have to choose an element from the list !
 167 Details anzeigen
-168 Das Format dieser Datei ist ungueltig (entweder zip, pl oder unix-Binärdatei)
+168 Das Format dieser Datei ist ungueltig (entweder zip, pl oder unix-Binï¿½rdatei)
 169 zur Basis hinzufuegen
 170 Eine gleiche Datei existiert bereits !
 171 Datei geloescht
@@ -253,7 +253,7 @@
 252 Name (sie waehlen)        	
 253 Registry "hive"    	
 254 Pfad des Schluessels (z.B. SOFTWAREMozilla)  	
-255 Name des Schluessels der gelesen wird (* für alles)
+255 Name des Schluessels der gelesen wird (* fï¿½r alles)
 256 Auswaehlen
 257 Registrierungsschluessel
 258 Registrierungsschluessel-Wert
@@ -283,7 +283,7 @@
 282 Gateways
 283 Zweck
 284 BIOS Hersteller
-285 Wählen Sie einen zu modifizierenden Parameter
+285 Wï¿½hlen Sie einen zu modifizierenden Parameter
 286 Servicepack
 287 Lokaler Import
 288 Lokale Importierung
@@ -291,7 +291,7 @@
 290 Ip Abfrage
 291 Experten Modus
 292 Hinzufuegen / Loeschen von Netzwerkgeraeten
-293 Netzwerkgeräte Typen
+293 Netzwerkgerï¿½te Typen
 294 Subnetz Namen
 295 Lokalisierung
 296 Uid
@@ -407,9 +407,9 @@
 421 Automatic software distribution: see documentation.
 422 Automatic software distribution: see documentation.
 423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
-424 Gültigkeit eines Pakets wie von seiner Betrachtung durch das Mittel
+424 Gï¿½ltigkeit eines Pakets wie von seiner Betrachtung durch das Mittel
 425 Max number of computers per gateway retrieving IP on the network.
-426 Gültigkeit von Warenbeständen. (IMMER: Warenbestand an jedem LOGON. NIE: kein Warenbestand)
+426 Gï¿½ltigkeit von Warenbestï¿½nden. (IMMER: Warenbestand an jedem LOGON. NIE: kein Warenbestand)
 427 Defines criteria that must be equals for two computers to be automatically merged.
 428 Deploy
 429 Frequency
@@ -551,7 +551,7 @@
 565 Server used for local inventories
 566 Port used for local inventories
 567 Ipdiscover latency
-568 RAM(MO)
+568 RAM(MB)
 569 CPU(MHz)
 570 Help
 571 Validate all
