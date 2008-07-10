@@ -103,7 +103,7 @@
 
 <?php
 /*
- * Created on 6 févr. 2008
+ * Created on 6 fï¿½vr. 2008
  *
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
@@ -140,7 +140,7 @@
 
  	echo "<TR height=65px bgcolor='#F2F2F2' BORDERCOLOR='#9894B5'><td align='center' width='150px'>".$name;
 	echo "<br><font size=1 color=green><i>".$lbl."</i></font></td><td align='left' width='150px'>";
-	//si on est dans un type bouton ou boite à cocher
+	//si on est dans un type bouton ou boite ï¿½ cocher
  	if ($type=='radio' or $type=='checkbox'){
  		if ($data_hidden != ''){
  			//javascript for hidden or show an html DIV 
@@ -150,7 +150,7 @@
 			}	
 			</script>"; 			
  		}
- 		//si le champ hidden est celui qui doit être affiché en entrée, il faut afficher le champ
+ 		//si le champ hidden est celui qui doit ï¿½tre affichï¿½ en entrï¿½e, il faut afficher le champ
  		//echo "<br>hidden ==".$data_hidden['HIDDEN']."      value ==".$data['VALUE'];
  		if ($data_hidden['HIDDEN']==$data['VALUE'])
  		$display="block";
@@ -160,7 +160,7 @@
  		$i=1;
  		//pour toutes les valeurs
  		foreach ($data as $key=>$value){
- 			//sauf la valeur à afficher
+ 			//sauf la valeur ï¿½ afficher
  			if ($key !== 'VALUE' and $key !== 'CHECK'){
   				echo "<input type='".$type."' value='".$key."' id='".$name."' ";
  				if ($readonly != '')
@@ -171,7 +171,7 @@
  					$i++;
  				}
  				echo "'";
- 				//si un champ hidden est demandé, on gére l'affichage par javascript
+ 				//si un champ hidden est demandï¿½, on gï¿½re l'affichage par javascript
 	 			if ($data_hidden != '' and  $data_hidden['HIDDEN'] == $key){
 	 				echo "OnClick=\"active('".$name."_div',1);\"";
 	 			}elseif ($data_hidden != '' and  $data_hidden['HIDDEN'] != key){
@@ -226,7 +226,7 @@ function fin_tab($form_name,$disable=''){
 	$gris="disabled=disabled";
 	else
 	$gris="";
-	echo "<tr><td align=center colspan=100><input type='button' name='Valid' value='Mettre à jour' align=center onclick='verif_champ(\"".$form_name."\")' $gris></td></tr>";
+	echo "<tr><td align=center colspan=100><input type='button' name='Valid' value='".$l->g(103)."' align=center onclick='verif_champ(\"".$form_name."\")' $gris></td></tr>";
 	echo "</table>
 		<input type='hidden' id='Valid' name='Valid' value=''>";
 	
@@ -381,21 +381,21 @@ function update_default_value($POST){
 }
 
 function auto_duplicate_lvl_poids($value,$entree_sortie){
-	//définition du poids des auto_duplicate_lvl
+	//dï¿½finition du poids des auto_duplicate_lvl
  	$poids['HOSTNAME']=1;
  	$poids['SERIAL']=2;
  	$poids['MACADRESSE']=4;
  	$poids['MODEL']=8;	
- 	//si on veut les cases cochées par rapport à un chiffre
+ 	//si on veut les cases cochï¿½es par rapport ï¿½ un chiffre
  	if ($entree_sortie == 1){
- 		//gestion des poids pour connaitre les cases cochées.
+ 		//gestion des poids pour connaitre les cases cochï¿½es.
  	//ex: si AUTO_DUPLICATE_LVL == 7 on a les cases HOSTNAME (de poids 1), SERIAL (de poids 2) et MACADRESSE (de poids 4) 
- 	//cochées (1+2+4=7)
+ 	//cochï¿½es (1+2+4=7)
  		foreach ($poids as $k=>$v){
  			if ($value & $v)
  			$check[$k]=$k;
  		}
- 	}//si on veut le chiffre par rapport a la case cochée
+ 	}//si on veut le chiffre par rapport a la case cochï¿½e
  	else{
  		foreach ($poids as $k=>$v){
  			if ($k == $value)
@@ -431,9 +431,9 @@ function auto_duplicate_lvl_poids($value,$entree_sortie){
 					'BORDERCOLOR'=>'#9894B5'));
 	ligne('LOCAL_PORT',$l->g(566),'input',array('VALUE'=>$values['ivalue']['LOCAL_PORT'],'SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
 	ligne('LOCAL_SERVER',$l->g(565),'input',array('BEGIN'=>'HTTP://','VALUE'=>$values['tvalue']['LOCAL_SERVER'],'SIZE'=>50,'MAXLENGHT'=>254));
-	ligne('DOWNLOAD_PACK_DIR',$l->g(775),'radio',array('DEFAULT'=>"Par défaut(".$_SERVER["DOCUMENT_ROOT"]."/DOWNLOAD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_pack),
+	ligne('DOWNLOAD_PACK_DIR',$l->g(775),'radio',array('DEFAULT'=>"Par dï¿½faut(".$_SERVER["DOCUMENT_ROOT"]."/DOWNLOAD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_pack),
 		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['DOWNLOAD_PACK_DIR'],'SIZE'=>70,'END'=>"/DOWNLOAD"));
-	ligne('IPDISCOVER_IPD_DIR',$l->g(776),'radio',array('DEFAULT'=>"Par défaut(".$_SERVER["DOCUMENT_ROOT"]."/oscreport/IPD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_ipd),
+	ligne('IPDISCOVER_IPD_DIR',$l->g(776),'radio',array('DEFAULT'=>"Par dï¿½faut(".$_SERVER["DOCUMENT_ROOT"]."/oscreport/IPD)",'CUSTOM'=>"Personnaliser",'VALUE'=>$select_ipd),
 		array('HIDDEN'=>'CUSTOM','HIDDEN_VALUE'=>$values['tvalue']['IPDISCOVER_IPD_DIR'],'SIZE'=>70,'END'=>"/IPD"));
 		
 	fin_tab($form_name);
@@ -517,7 +517,7 @@ function pagegroups($form_name){
 				  'SESSION_VALIDITY_TIME'=>'SESSION_VALIDITY_TIME');
  	$values=look_default_values($champs);
  	if (isset($champs['AUTO_DUPLICATE_LVL']))
- 	//on utilise la fonction pour connaître les cases cochées correspondantes au chiffre en base de AUTO_DUPLICATE_LVL
+ 	//on utilise la fonction pour connaï¿½tre les cases cochï¿½es correspondantes au chiffre en base de AUTO_DUPLICATE_LVL
  	$check=auto_duplicate_lvl_poids($values['ivalue']['AUTO_DUPLICATE_LVL'],1);
   	debut_tab(array('CELLSPACING'=>'5',
 					'WIDTH'=>'80%',
@@ -603,7 +603,7 @@ function pagegroups($form_name){
  	$values=look_default_values($champs);
  	if (isset($champs['IPDISCOVER'])){
  		$ipdiscover=$values['ivalue']['IPDISCOVER'];
- 		//gestion des différentes valeurs de l'ipdiscover
+ 		//gestion des diffï¿½rentes valeurs de l'ipdiscover
  		if ($values['ivalue']['IPDISCOVER'] != 0)
  		$values['ivalue']['IPDISCOVER']='ON';
  		else
