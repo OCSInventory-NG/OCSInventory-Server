@@ -141,7 +141,7 @@ if( $_SESSION["lvluser"] == SADMIN) {
 			if ($value != "" and $key != "Valid" and $key != 'onglet' and $key !='pcparpage'){
 					//Check correct value for LAST_DIFF
 				if ($key == 'LAST_DIFF' and $value < $item_frequency->ivalue)
-					echo "<script> alert('La valeur de LAST_DIFF doit être suppérieure à celle de FREQUENCY')</script>";
+					echo "<script> alert('La valeur de LAST_DIFF doit ï¿½tre suppï¿½rieure ï¿½ celle de FREQUENCY')</script>";
 				else{
 					$sql="delete from config where NAME='GUI_REPORT_".$key."'";
 					mysql_query( $sql, $_SESSION["writeServer"] );
@@ -240,7 +240,7 @@ $lbl_field=array("WORKGROUP"=>$l->g(778),
 			  "NB_LAST_INV"=>"Nombre d'agent n'envoyant plus d'inventaire depuis au moins "
 			  );
 
-//définition des onglets
+//dï¿½finition des onglets
 $data_on['ACTIVITY']=$l->g(798);
 $data_on['SOFT']=strtoupper($l->g(20));
 $data_on['HARD']=$l->g(799);
@@ -364,17 +364,17 @@ if (isset($default)){
 		query_on_table_count("PROCESSORT",$lbl_field["PROCESSORT"]);
 		query_on_table_count("RESOLUTION",$lbl_field["RESOLUTION"],"videos");
 		query_with_condition("where processors>=".$list_option['PROC_MAX'],
-								$lbl_field['NB_LIMIT_FREQ_H']." ".$list_option['PROC_MAX']." Mhz",'NB_LIMIT_FREQ_H');
+								$lbl_field['NB_LIMIT_FREQ_H']." ".$list_option['PROC_MAX']." MHz",'NB_LIMIT_FREQ_H');
 		query_with_condition("where processors<=".$list_option['PROC_MINI'],
-								$lbl_field['NB_LIMIT_FREQ_M']." ".$list_option['PROC_MINI']." Mhz",'NB_LIMIT_FREQ_M');
+								$lbl_field['NB_LIMIT_FREQ_M']." ".$list_option['PROC_MINI']." MHz",'NB_LIMIT_FREQ_M');
 		query_with_condition("where processors>".$list_option['PROC_MINI']." and processors<".$list_option['PROC_MAX'],
-								$lbl_field['NB_LIMIT_FREQ_B']." ".$list_option['PROC_MINI']." Mhz ".$l->g(582)." ".$list_option['PROC_MAX']." Mhz",'NB_LIMIT_FREQ_B');
+								$lbl_field['NB_LIMIT_FREQ_B']." ".$list_option['PROC_MINI']." MHz ".$l->g(582)." ".$list_option['PROC_MAX']." MHz",'NB_LIMIT_FREQ_B');
 		query_with_condition("where memory>=".$list_option['RAM_MAX'],
-								$lbl_field['NB_LIMIT_MEM_H']." ".$list_option['RAM_MAX']." Mo",'NB_LIMIT_MEM_H');
+								$lbl_field['NB_LIMIT_MEM_H']." ".$list_option['RAM_MAX']." MB",'NB_LIMIT_MEM_H');
 		query_with_condition("where memory<=".$list_option['RAM_MINI'],
-							$lbl_field['NB_LIMIT_MEM_M']." ".$list_option['RAM_MINI']." Mo",'NB_LIMIT_MEM_M');
+							$lbl_field['NB_LIMIT_MEM_M']." ".$list_option['RAM_MINI']." MB",'NB_LIMIT_MEM_M');
 		query_with_condition("where memory>".$list_option['RAM_MINI']." and memory <".$list_option['RAM_MAX'],
-								$lbl_field['NB_LIMIT_MEM_B']." ".$list_option['RAM_MINI']." Mo ".$l->g(582)." ".$list_option['RAM_MAX']." Mo",'NB_LIMIT_MEM_B');
+								$lbl_field['NB_LIMIT_MEM_B']." ".$list_option['RAM_MINI']." MB ".$l->g(582)." ".$list_option['RAM_MAX']." MB",'NB_LIMIT_MEM_B');
 		
 		query_with_condition("where h.type='Hard Drive' and h.free >=".$list_option['DD_MAX'],$lbl_field['NB_HARD_DISK_H']." ".$list_option['DD_MAX']." Mo",'NB_HARD_DISK_H',"drives");
 		query_with_condition("where h.type='Hard Drive' and h.free <=".$list_option['DD_MINI'],	$lbl_field['NB_HARD_DISK_M']." ".$list_option['DD_MINI']." Mo",'NB_HARD_DISK_M',"drives");
@@ -402,17 +402,17 @@ if (isset($default)){
 	 		ligne('USE_OPTION',$l->g(802),'select',array('VALUE'=>$_POST['USE_OPTION'],'SELECT_VALUE'=>$list_no_show_cat,'RELOAD'=>$form_name));
 		}
 	 	ligne('AGIN_MACH',$l->g(803),'input',array('VALUE'=>$list_option['AGIN_MACH'],'END'=>$l->g(496),'SIZE'=>2,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));
-	 	ligne('PROC_MINI',$l->g(804),'input',array('VALUE'=>$list_option['PROC_MINI'],'END'=>'Mhz','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
-	 	ligne('PROC_MAX',$l->g(805),'input',array('VALUE'=>$list_option['PROC_MAX'],'END'=>'Mhz','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
-	 	ligne('RAM_MINI',$l->g(806),'input',array('VALUE'=>$list_option['RAM_MINI'],'END'=>'Mo','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
-	 	ligne('RAM_MAX',$l->g(807),'input',array('VALUE'=>$list_option['RAM_MAX'],'END'=>'Mo','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
-	 	ligne('DD_MAX',$l->g(816),'input',array('VALUE'=>$list_option['DD_MAX'],'END'=>'Mo','SIZE'=>4,'MAXLENGHT'=>8,'JAVASCRIPT'=>$numeric));
-	 	ligne('DD_MINI',$l->g(817),'input',array('VALUE'=>$list_option['DD_MINI'],'END'=>'Mo','SIZE'=>4,'MAXLENGHT'=>8,'JAVASCRIPT'=>$numeric));
+	 	ligne('PROC_MINI',$l->g(804),'input',array('VALUE'=>$list_option['PROC_MINI'],'END'=>'MHz','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
+	 	ligne('PROC_MAX',$l->g(805),'input',array('VALUE'=>$list_option['PROC_MAX'],'END'=>'MHz','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
+	 	ligne('RAM_MINI',$l->g(806),'input',array('VALUE'=>$list_option['RAM_MINI'],'END'=>'MB','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
+	 	ligne('RAM_MAX',$l->g(807),'input',array('VALUE'=>$list_option['RAM_MAX'],'END'=>'MB','SIZE'=>2,'MAXLENGHT'=>4,'JAVASCRIPT'=>$numeric));
+	 	ligne('DD_MAX',$l->g(816),'input',array('VALUE'=>$list_option['DD_MAX'],'END'=>'MB','SIZE'=>4,'MAXLENGHT'=>8,'JAVASCRIPT'=>$numeric));
+	 	ligne('DD_MINI',$l->g(817),'input',array('VALUE'=>$list_option['DD_MINI'],'END'=>'MB','SIZE'=>4,'MAXLENGHT'=>8,'JAVASCRIPT'=>$numeric));
 	 	
 	 	
 	 	if ($item_frequency -> ivalue != -1){
-	 	$text="<br><font color=orange><i>La valeur doit être supérieur à ".$item_frequency -> ivalue." jour(s) (valeur de FREQUENCY)</i></font>";
-	 	ligne('LAST_DIFF','Différentiel entre LASTDATE et LASTCOME','input',array('VALUE'=>$list_option['LAST_DIFF'],'END'=>$l->g(496).$text,'SIZE'=>2,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));
+	 	$text="<br><font color=orange><i>La valeur doit ï¿½tre supï¿½rieur ï¿½ ".$item_frequency -> ivalue." jour(s) (valeur de FREQUENCY)</i></font>";
+	 	ligne('LAST_DIFF','Diffï¿½rentiel entre LASTDATE et LASTCOME','input',array('VALUE'=>$list_option['LAST_DIFF'],'END'=>$l->g(496).$text,'SIZE'=>2,'MAXLENGHT'=>3,'JAVASCRIPT'=>$numeric));
 	 	}
 		echo "<tr><td align=center colspan=100><input type='submit' name='Valid' value='".$l->g(103)."' align=center></td></tr>";
 		echo "</table>";
