@@ -222,6 +222,7 @@ function debut_tab($config){
 }
 
 function fin_tab($form_name,$disable=''){
+	global $l;
 	if ($disable != '')
 	$gris="disabled=disabled";
 	else
