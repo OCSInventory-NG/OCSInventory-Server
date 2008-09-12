@@ -28,77 +28,8 @@
         var autorisation = reCarValides.test(car) || reCarSpeciaux.test(car) || pressePapierNS6(evenement,car);
         var toto = autorisation;
         return autorisation;
-        }		
-        
-        function verif_champ(form_name) {
-     		 var i=0;
-     		 var txt1='';
-     		 var txt10='';
-     		 
-     		 supp1 = new Array();
-     		 supp10 = new Array();
-     		 
-     		 supp1[0]="DOWNLOAD_CYCLE_LATENCY";
-     		 supp1[1]="DOWNLOAD_FRAG_LATENCY";
-     		 supp1[2]="DOWNLOAD_PERIOD_LATENCY";
-     		 supp1[3]="DOWNLOAD_PERIOD_LENGTH";
-     		 supp1[4]="DOWNLOAD_TIMEOUT";
-     		 supp1[5]="PROLOG_FREQ";
-     		 supp1[6]="IPDISCOVER_MAX_ALIVE";
-     		 supp1[7]="GROUPS_CACHE_REVALIDATE";
-     		 supp1[8]="GROUPS_CACHE_OFFSET";
-     		 supp1[9]="LOCK_REUSE_TIME";
-     		 supp1[10]="IPDISCOVER_BETTER_THRESHOLD";
-     		 supp1[11]="GROUPS_CACHE_OFFSET";
-     		 supp1[12]="GROUPS_CACHE_REVALIDATE";
-     		 supp1[13]="INVENTORY_FILTER_FLOOD_IP_CACHE_TIME";
-   			 supp1[14]="SESSION_VALIDITY_TIME";
-   			 
-       		 supp10[0]="IPDISCOVER_LATENCY";
-     		 
-			 while (supp1[i]){
-			 	if (document.getElementById(supp1[i]+"_div")){
-     		 		if (document.getElementById(supp1[i]+"_div").style.display == 'block' && document.getElementById(supp1[i]+"_edit").value==0||document.getElementById(supp1[i]+"_edit").value==null){
-     				 document.getElementById(supp1[i]+"_edit").style.color = 'rgb(255, 0, 0)';
-		     		 	txt1=txt1+'\n'+supp1[i];
-     		 		}
-     			 }
-			 	 if (document.getElementById(supp1[i])){
-		     		 if(document.getElementById(supp1[i]).value==0||document.getElementById(supp1[i]).value==null) {
-		     		 	document.getElementById(supp1[i]).style.color = 'rgb(255, 0, 0)';
-		     		 	txt1=txt1+'\n'+supp1[i];
-		     		 }
-			 	 }
-	     		 i++;
-			 }
-			 i=0;
-			 while (supp10[i]){
-			 	if (document.getElementById(supp10[i])){
-		     		 if(document.getElementById(supp10[i]).value < 10||document.getElementById(supp10[i]).value==null) {
-		     		 	document.getElementById(supp10[i]).style.color = 'rgb(255, 0, 0)';
-		     		 	txt10=txt10+'\n'+supp10[i];
-		     		 }
-			 	 }
-	     		 i++;
-			 	
-			 }		 
-						 
-			 
-	         if (txt1 != ''){
-	         		alert(txt1+"\n <?echo $l->g(759);?> 1");
-	          		 return false;
-	        		 } else if (txt10 != '') {
-	        		 alert(txt10+"\n <?echo $l->g(759);?> 10");
-	          		 return false;
-	        		 } else {
-	        		 	document.getElementById('Valid').value='Valid';
-	        		 	document.getElementById(form_name).submit();
-	     		 		}
-
-        }
-        
-        
-	</script>
+        }		       
+</script>
 
 
 <?php
@@ -220,6 +151,35 @@ function debut_tab($config){
 				BORDERCOLOR='".$config['BORDERCOLOR']."'>";
 	
 }
+//function 
+function verif_champ(){
+	global $_POST,$l;
+	$supp1=array("DOWNLOAD_CYCLE_LATENCY","DOWNLOAD_FRAG_LATENCY","DOWNLOAD_PERIOD_LATENCY",
+				 "DOWNLOAD_PERIOD_LENGTH","DOWNLOAD_TIMEOUT","PROLOG_FREQ","IPDISCOVER_MAX_ALIVE",
+			     "GROUPS_CACHE_REVALIDATE","GROUPS_CACHE_OFFSET","LOCK_REUSE_TIME","INVENTORY_CACHE_REVALIDATE",
+				 "IPDISCOVER_BETTER_THRESHOLD","GROUPS_CACHE_OFFSET","GROUPS_CACHE_REVALIDATE","INVENTORY_FILTER_FLOOD_IP_CACHE_TIME",
+				 "SESSION_VALIDITY_TIME","IPDISCOVER_LATENCY");
+	$supp10=array("IPDISCOVER_LATENCY");
+	$i=0;
+	while ($supp1[$i]){
+		if ($_POST[$supp1[$i]] < 1 and isset($_POST[$supp1[$i]]))
+			$tab_error[$supp1[$i]]='1';
+		$i++;
+	}
+	$i=0;
+	while ($supp10[$i]){
+		if ($_POST[$supp10[$i]] < 10 and isset($_POST[$supp10[$i]]))
+			$tab_error[$supp10[$i]]='10';	
+		$i++;
+	}
+	return $tab_error;
+	//echo $l->g(759);
+	//$error=  "doit être supérieur à 1!!!";
+	
+	
+}
+
+
 
 function fin_tab($form_name,$disable=''){
 	global $l;
@@ -227,9 +187,8 @@ function fin_tab($form_name,$disable=''){
 	$gris="disabled=disabled";
 	else
 	$gris="";
-	echo "<tr><td align=center colspan=100><input type='button' name='Valid' value='".$l->g(103)."' align=center onclick='verif_champ(\"".$form_name."\")' $gris></td></tr>";
-	echo "</table>
-		<input type='hidden' id='Valid' name='Valid' value=''>";
+	echo "<tr><td align=center colspan=100><input type='submit' name='Valid' value='".$l->g(103)."' align=center $gris></td></tr>";
+	echo "</table>";
 	
 }
 

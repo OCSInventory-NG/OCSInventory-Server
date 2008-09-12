@@ -19,8 +19,21 @@ $def_onglets[$l->g(734)]=$l->g(734); //Fichiers d'inventaire
 $def_onglets[$l->g(735)]=$l->g(735); //Filtres
 $def_onglets[$l->g(760)]=$l->g(760); //Webservice
 $def_onglets[$l->g(84)]=$l->g(84); //GUI
-if ($_POST['Valid'] == "Valid")
-$MAJ=update_default_value($_POST); //function in function_table_html.php
+if ($_POST['Valid'] == $l->g(103)){
+	$etat=verif_champ();
+	if ($etat == "")
+	$MAJ=update_default_value($_POST); //function in function_config_generale.php
+	else{
+		$msg="";
+		foreach ($etat as $name=>$value){
+			$msg.=$name." ".$l->g(759)." ".$value."<br>";
+		}
+		//print_r($etat);
+	echo "<font color=RED ><center><b>".$msg."</b></center></font>";
+		
+	}
+	
+}
 echo "<font color=green ><center><b>".$MAJ."</b></center></font>";
 $form_name='modif_onglet';
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action='index.php?multi=4'>";
