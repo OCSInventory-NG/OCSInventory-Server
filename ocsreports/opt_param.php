@@ -11,7 +11,7 @@ require_once('require/function_config_generale.php');
 if( $_SESSION["lvluser"] != SADMIN )
 	die("FORBIDDEN");
 //update values	
-if ($_POST['Valid']=="Valid"){
+if ($_POST['Valid']==$l->g(103)){
 	if (!isset($_POST['origine'])){
 		$list_hardware_id="";
 		$lareq = getPrelim( $_SESSION["storedRequest"] );
@@ -102,7 +102,7 @@ $champ_ignored=0;
 	echo "<br><center><a href='#' OnClick=\"window.location='".$direction."';\"><= ".$l->g(188)."</a></center>";
 $def_onglets[$l->g(499)]=$l->g(499); //Serveur
 $def_onglets[$l->g(728)]=$l->g(728); //Inventaire
-$def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+$def_onglets[$l->g(512)]=$l->g(512); //Tï¿½lï¿½dï¿½ploiement
 $def_onglets[$l->g(312)]=$l->g(312); //ipdiscover
 $form_name='admin_param';
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
