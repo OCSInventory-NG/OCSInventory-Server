@@ -120,6 +120,9 @@ sub _has_changed{
   my $section = shift;
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
   
+  # Don't use inventory diff if section mask is
+  return 1 if $DATA_MAP{$section}->{mask}==0;
+   
   # Check checksum to know if section has changed
   if( defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM}) ){
     return $DATA_MAP{$section}->{mask} & $result->{CONTENT}->{HARDWARE}->{CHECKSUM};
