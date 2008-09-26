@@ -5,13 +5,16 @@
  * 
  * 
  */
-
-  echo "<script language=javascript>
-		function post(form_name){		
+ 
+ 
+ 
+echo "	<script language='javascript'>
+		function post(form_name){	
 			document.getElementById(form_name).submit();
 		}
+		
 		function tri(did,did2,form_name){
-				document.getElementById(\"tri\").value=did;
+				document.getElementById(\"tri2\").value=did;
 				document.getElementById(\"sens\").value=did2;
 				post(form_name);
 		}
@@ -24,12 +27,13 @@
 		function garde_valeur(did,hidden_name){
 				document.getElementById(hidden_name).value=did;
 		}
-		function page(did,hidden_name,form_name){
+		function pag(did,hidden_name,form_name){
 				garde_valeur(did,hidden_name);
 				post(form_name);
 		}
 
 </script>";
+
 
 //ascending and descending sort
 function tri($sql)
@@ -69,6 +73,7 @@ function tri($sql)
  */
  function tab_entete_fixe($entete_colonne,$data,$titre,$width,$height,$lien=array())
 {
+	echo "<div align=center>";
 	global $_GET,$l;
 	if ($_GET['sens'] == "ASC"){
 	$sens="DESC";
@@ -81,7 +86,7 @@ function tri($sql)
 	if(isset($data[0]))
 	{
 	?>
-	<script language=javascript>		
+	<script language='javascript'>		
 	function changerCouleur(obj, state) {
 			if (state == true) {
 				bcolor = obj.style.backgroundColor;
@@ -106,9 +111,9 @@ function tri($sql)
 	foreach($entete_colonne as $k=>$v)
 	{
 		if (in_array($v,$lien))
-		echo "<th class='ta'><a href='index.php?multi=".$_GET['multi']."&sens=".$sens."&col=".$i."'>".$v."</a></th>";
+			echo "<th class='ta'><a href='index.php?multi=".$_GET['multi']."&sens=".$sens."&col=".$i."'>".$v."</a></th>";
 		else
-		echo "<th class='ta'><font size=1>".$v."</font></th>";	
+			echo "<th class='ta'><font size=1 align=center>".$v."</font></th>";	
 		$i++;		
 	}
 	echo "
@@ -138,7 +143,7 @@ function tri($sql)
 	echo "<center><font size=5 color=red>".$l->g(766)."</font></center>";
 	return FALSE;
 	}
-	
+	echo "</div>";
 }
 
 
@@ -188,12 +193,12 @@ function show_modif($name,$input_name,$input_type,$input_reload = "")
 
 	global $_POST;
 	if ($input_type == 1)
-	return "<textarea name='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
+	return "<textarea name='".$input_name."' id='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
 	elseif ($input_type ==0)
-	return "<input type='text' name='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
+	return "<input type='text' name='".$input_name."' id='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
 	elseif($input_type ==2){
 		
-		$champs="<select name='".$input_name."'";
+		$champs="<select name='".$input_name."' id='".$input_name."'";
 		if ($input_reload != "") $champs.=" onChange='document.".$input_reload.".submit();'";
 		$champs.="><option value=''></option>";
 		foreach ($name as $key=>$value){
@@ -290,9 +295,10 @@ function show_page($valCount,$form_name){
 	if ($nbpage >1){
 	$up=$_POST['page']+1;
 	$down=$_POST['page']-1;
-	echo "</tr><tr><td align=center>";
+	echo "<table align='center' width='99%' border='0' bgcolor=#f2f2f2>";
+	echo "<tr><td align=center>";
 	if ($_POST['page'] > 0)
-	echo "<img src='image/prec24.png' OnClick='page(\"".$down."\",\"page\",\"".$form_name."\")'>";
+	echo "<img src='image/prec24.png' OnClick='pag(\"".$down."\",\"page\",\"".$form_name."\")'>";
 	//if ($nbpage<10){
 		$i=0;
 		$deja="";
@@ -309,7 +315,7 @@ function show_page($valCount,$form_name){
 				echo $point."<font color=red>".$i."</font> ".$point2;
 			}
 			elseif($i>$nbpage-10 or $i<10)
-			echo "<a OnClick='page(\"".$i."\",\"page\",\"".$form_name."\")'>".$i."</a> ";
+			echo "<a OnClick='pag(\"".$i."\",\"page\",\"".$form_name."\")'>".$i."</a> ";
 			elseif ($i<$nbpage-10 and  $i>10 and $deja==""){
 				echo " ... ";
 				$deja="ok";	
@@ -318,9 +324,10 @@ function show_page($valCount,$form_name){
 		}
 
 	if ($_POST['page']< $nbpage-1)
-	echo "<img src='image/proch24.png' OnClick='page(\"".$up."\",\"page\",\"".$form_name."\")'>";
+	echo "<img src='image/proch24.png' OnClick='pag(\"".$up."\",\"page\",\"".$form_name."\")'>";
 	
 	}
+	echo "</td></tr></table>";
 	echo "<input type='hidden' id='page' name='page' value='".$_POST['page']."'>";
 	echo "<input type='hidden' id='old_pcparpage' name='old_pcparpage' value='".$_POST['pcparpage']."'>";
 }
@@ -348,7 +355,7 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	$post_name is the name of var will be post
 	$ligne is if u want have onglet on more ligne*/
 	if ($def_onglets != ""){
-	echo "<script language=javascript>
+	echo "<script language='javascript'>
 
   		function recharge2(onglet,form_name,post_name){
 			document.getElementById(post_name).value=onglet;
@@ -356,13 +363,14 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 		}
 		</script>";
 	echo "<LINK REL='StyleSheet' TYPE='text/css' HREF='css/onglets.css'>\n";
-	echo "<table cellspacing='5' BORDER='0' ALIGN = 'Center' CELLPADDING='0'><tr><td><div id='header'>
-	<ul>";
+	echo "<table cellspacing='5' BORDER='0' ALIGN = 'Center' CELLPADDING='0'><tr><td><div id='header'>";
+	echo "<ul>";
 	$current="";
 	$i=0;
 	  foreach($def_onglets as $key=>$value){
+	  	
 	  	if ($i == $ligne){
-	  		echo "<br><br>";
+	  		echo "</ul><ul>";
 	  		$i=0;
 	  		
 	  	}
@@ -378,7 +386,6 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	 			 $current=1;
 			}
 		}
-
 	  	echo "><a OnClick='recharge2(\"".str_replace('"','\"',$key)."\",\"".$form_name."\",\"".$post_name."\")'>".$value."</a></li>";
 	  $i++;	
 	  }	
@@ -390,14 +397,12 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 }
 
 
-function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list_fields,$default_fields){
+function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list_fields,$default_fields,$id_form='form'){
 	global $_POST,$l;
-	//print_r($_POST);
 	if ($_POST['SUP_COL'] != "" and isset($_POST['SUP_COL']))
 	unset($_SESSION['col_tab'][$tab_name][$_POST['SUP_COL']]);
-	
-	if ($_POST['restCol']){
-		$_SESSION['col_tab'][$tab_name][$_POST['restCol']]=$_POST['restCol'];
+	if ($_POST['restCol'.$tab_name]){
+		$_SESSION['col_tab'][$tab_name][$_POST['restCol'.$tab_name]]=$_POST['restCol'.$tab_name];
 	}
 	if ($_POST['RAZ'] == "RAZ")
 	unset($_SESSION['col_tab'][$tab_name]);
@@ -406,12 +411,12 @@ function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list
 	$_SESSION['col_tab'][$tab_name]=$default_fields;
 	foreach ($entete as $k=>$v){
 		if (in_array($k,$_SESSION['col_tab'][$tab_name])){
-		$data_with_filter['entete'][$k]=$v;	
-		if (!isset($list_col_cant_del[$k]))
-		$data_with_filter['entete'][$k].="<a href=# OnClick='page(\"".$k."\",\"SUP_COL\",\"form\");'><img src=image/supp.png></a>";
+			$data_with_filter['entete'][$k]=$v;	
+			if (!isset($list_col_cant_del[$k]))
+			$data_with_filter['entete'][$k].="<a href=# onclick='return pag(\"".$k."\",\"SUP_COL\",\"".$id_form."\");'><img src=image/supp.png></a>";
 		}	
 		else
-		$list_rest[$k]=$list_fields[$k];
+		$list_rest[$k]=$v;
 		
 	}
 
@@ -423,17 +428,17 @@ function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list
 		}
 
 	}
-	$select_restCol ="Ajouter la colonne :<select name='restCol' onChange='document.".$form_name.".submit();'>";
-	$select_restCol .= "<option".($_POST["restCol"] == "DEFAULT" ? " selected" : "")." >Choisissez...</option>";
+	$select_restCol =$l->g(349)." :<select name='restCol".$tab_name."' onChange='document.".$form_name.".submit();'>";
+	$select_restCol .= "<option".($_POST["restCol".$tab_name] == "DEFAULT" ? " selected" : "")." >".$l->g(32)."...</option>";
 	$countHl=0;
 	if ($list_rest != ""){
-		 asort($list_rest,SORT_STRING);
-		foreach( $list_rest as $name_field => $lbl_field) {
-			$select_restCol .=  "<option".($_POST["restCol"] == $name_field ? " selected" : "").($countHl%2==0?" class='hi'":"")." value=".$name_field.">$lbl_field</option>";
+		 ksort($list_rest,SORT_STRING);
+		foreach( $list_rest as $lbl_field => $name_field) {
+			$select_restCol .=  "<option".($_POST["restCol".$tab_name] == $lbl_field ? " selected" : "").($countHl%2==0?" class='hi'":"")." value=".$lbl_field.">$name_field</option>";
 			$countHl++;
 		}
 	}
-	$select_restCol .=  "</select><a href=# OnClick='page(\"RAZ\",\"RAZ\",\"form\");'><img src=image/supp.png></a></td></tr><tr><td align=center>"; //</td></tr><tr><td align=center>
+	$select_restCol .=  "</select><a href=# OnClick='pag(\"RAZ\",\"RAZ\",\"".$id_form."\");'><img src=image/supp.png></a></td></tr><tr><td align=center>"; //</td></tr><tr><td align=center>
 	echo $select_restCol;
 	echo "<input type='hidden' id='SUP_COL' name='SUP_COL' value=''>";
 	echo "<input type='hidden' id='RAZ' name='RAZ' value=''>";
@@ -442,5 +447,96 @@ function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list
 	
 }
 
-
+function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$queryDetails,$form_name,$width='100')
+{
+	global $_POST,$l;
+	echo "<script language='javascript'>
+		function checkall()
+		 {
+			for(i=0; i<document.".$form_name.".elements.length; i++)
+			{
+				if(document.".$form_name.".elements[i].name.substring(0,5) == 'check'){
+			        if (document.".$form_name.".elements[i].checked)
+						document.".$form_name.".elements[i].checked = false;
+					else
+						document.".$form_name.".elements[i].checked = true;
+				}
+			}
+		}
+	</script>";
+	
+	$link=$_SESSION["readServer"];	
+	$limit=nb_page($form_name,100,"","");
+	if ($_POST['tri2'] == "" or !in_array($_POST['tri2'],$list_fields))
+	$_POST['tri2']=1;
+	if ($_POST['sens'] == "")
+	$_POST['sens']='ASC';
+	$queryDetails.= " order by ".$_POST['tri2']." ".$_POST['sens'];
+	$resultDetails = mysql_query($queryDetails, $link) or mysql_error($link);
+	$num_rows_result = mysql_num_rows($resultDetails);
+	$_SESSION['cvs'][$table_name]=$queryDetails;	
+	$queryDetails.=" limit ".$limit["BEGIN"].",".$limit["END"];
+	$resultDetails = mysql_query($queryDetails, $link) or mysql_error($link);
+	$i=0;	
+	
+	while($item = mysql_fetch_object($resultDetails)){
+		foreach($list_fields as $key=>$value){
+			$col[$i]=$key;
+			if ($_POST['sens'] == "ASC")
+				$sens="DESC";
+			else
+				$sens="ASC";
+			if ($key == "SUP"){
+				$data[$i][$key]="<a href=# OnClick='confirme(\"\",\"".$item ->$value."\",\"".$form_name."\",\"SUP_PROF\",\"".$l->g(640)." ".$item ->$value."\");'><img src=image/supp.png></a>";
+				$entete[$key]=$key;
+			}elseif ($key == "MODIF"){
+				$data[$i][$key]="<a href=# OnClick='pag(\"".$item ->$value."\",\"MODIF\",\"".$form_name."\");'><img src=image/modif_tab.png></a>";
+				$entete[$key]=$key;
+			}elseif ($key == "SELECT"){
+				$data[$i][$key]="<a href=# OnClick='pag(\"".$item ->$value."\",\"SELECT\",\"".$form_name."\");'><img src=image/prec16.png></a>";
+				$entete[$key]=$key;
+			}elseif ($key == "OTHER"){
+				$data[$i][$key]="<a href=# OnClick='pag(\"".$item ->$value."\",\"OTHER\",\"".$form_name."\");'><img src=image/red.png></a>";
+				$entete[$key]=$key;
+			}elseif ($key == "CHECK"){
+				$data[$i][$key]="<input type='checkbox' name='check".$item ->ID."' id='check".$item ->ID."' ".(isset($_POST['check'.$item ->ID])? " checked ": "").">";
+				$entete[$key]=$key."<input type='checkbox' name='ALL' id='ALL' Onclick='checkall();'>";				
+			}else{
+				if ($key == "NAME"){
+					$data[$i][$key]="<a href='machine.php?systemid=".$item ->$value."'  target='_blank'>".$item ->$key."</a>";
+					$value=$l->g(23);
+				}
+				else
+				$data[$i][$key]=$item ->$value;
+				
+				$deb="<a onclick='return tri(\"".$key."\",\"".$sens."\",\"".$form_name."\");' >";
+				$fin="</a>";
+				$entete[$key]=$deb.$key.$fin;
+			}
+			
+		}
+		$i++;
+	}
+	
+	if ($i != 0){
+		$title=$num_rows_result." ".$l->g(90);
+		$title.= "<a href='cvs.php?tablename=".$table_name."'><small>(".$l->g(136).")</small></a>";
+		$result_with_col=gestion_col($entete,$data,$list_col_cant_del,$form_name,$table_name,$list_fields,$default_fields,$form_name);
+		tab_entete_fixe($result_with_col['entete'],$result_with_col['data'],$title,$width,"");
+		show_page($num_rows_result,$form_name);
+		echo "<input type='hidden' id='tri2' name='tri2' value='".$_POST['tri2']."'>";
+		echo "<input type='hidden' id='sens' name='sens' value='".$_POST['sens']."'>";
+		echo "<input type='hidden' id='SUP_PROF' name='SUP_PROF' value=''>";
+		echo "<input type='hidden' id='MODIF' name='MODIF' value=''>";
+		echo "<input type='hidden' id='SELECT' name='SELECT' value=''>";
+		echo "<input type='hidden' id='OTHER' name='OTHER' value=''>";
+	}else
+	echo "<font color=red size=5><B>".$l->g(766)."</B></font>";
+	
+	
+	
+	
+	
+	
+}
 ?>

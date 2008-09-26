@@ -65,8 +65,8 @@ if (isset($_POST['Valid_modif_x']) and isset($_POST['modif']) and $_POST['modif'
 //view of all group's machin
 if (isset($systemid))
 {
-	if ($_POST['tri'] == "")
-	$_POST['tri']=1;
+	if ($_POST['tri2'] == "")
+	$_POST['tri2']=1;
 	if (!(isset($_POST["pcparpage"])) and isset($_GET['res_pag']))
 	$_POST["pcparpage"]=$_GET['res_pag'];
 	if (!(isset($_POST["page"])) and isset($_GET['page']))
@@ -81,7 +81,7 @@ if (isset($systemid))
 			  download_servers.URL,
 			  download_servers.ADD_REP
 		from hardware right join download_servers on hardware.id=download_servers.hardware_id
-		where download_servers.GROUP_ID=".$systemid." order by ".$_POST['tri']." ".$_POST['sens'];
+		where download_servers.GROUP_ID=".$systemid." order by ".$_POST['tri2']." ".$_POST['sens'];
 	$reqCount="select count(*) nb from (".$sql.") toto";
 	$resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$valCount = mysql_fetch_array($resCount);
@@ -99,7 +99,7 @@ if (isset($systemid))
 		$entete[$i++]=$deb.$col.$fin;			
 	}
 		$entete[$i++]="SUP <br><img src=image/delete_all.png OnClick='confirme(\"\",\"ALL\",\"".$form_name."\",\"supp\",\"".$l->g(640)." ".$l->g(643)." \");'>";
-		$entete[$i]="MODIF  <img src=image/modif_all.png  OnClick='page(\"ALL\",\"modif\",\"".$form_name."\")'>";
+		$entete[$i]="MODIF  <img src=image/modif_all.png  OnClick='pag(\"ALL\",\"modif\",\"".$form_name."\")'>";
 
 	$i=0;
 	//" du groupe ".$data[$_GET['viewmach']]['ID'].
@@ -112,7 +112,7 @@ if (isset($systemid))
 			$data2[$i]['REP_STORE']=$item ->ADD_REP;
 			$data2[$i]['SUP']="<img src=image/supp.png OnClick='confirme(\"".$item ->NAME."\",\"".$item ->ID."\",\"".$form_name."\",\"supp\",\"".$l->g(640)." ".$l->g(644)." \");'>";
 			if ($data2[$i]['IP_ADDR'] != "" )
-			$data2[$i]['MODIF']="<img src=image/modif_tab.png OnClick='page(\"".$i."\",\"modif\",\"".$form_name."\")'>";
+			$data2[$i]['MODIF']="<img src=image/modif_tab.png OnClick='pag(\"".$i."\",\"modif\",\"".$form_name."\")'>";
 			else
 			$data2[$i]['MODIF']="";
 			$i++;
@@ -122,7 +122,7 @@ if (isset($systemid))
 	show_page($valCount['nb'],$form_name);
 	echo "<input type='hidden' id='supp' name='supp' value=''>";	
 	echo "<input type='hidden' id='modif' name='modif' value=''>";
-	echo "<input type='hidden' id='tri' name='tri' value='".$_POST['tri']."'>";
+	echo "<input type='hidden' id='tri2' name='tri2' value='".$_POST['tri2']."'>";
 	echo "<input type='hidden' id='sens' name='sens' value='".$_POST['sens']."'>";
 	echo "</table>";
 	echo "</form>";

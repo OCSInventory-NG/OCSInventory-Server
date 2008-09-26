@@ -259,7 +259,7 @@
 <form id='pack' name='pack' action='index.php?multi=20' method='post' enctype='multipart/form-data'>
 	<tr height='30px'><td colspan='10' align='center'><b><?php echo $l->g(438); ?></b></td></tr>
 	<tr height='30px' bgcolor='white'><td><?php echo $l->g(49); ?>:</td><td colspan='2'><input id='nom' name='nom'></td></tr>
-	<tr height='30px' bgcolor='white'><td><?php echo $l->g(25); ?>:</td><td colspan='2'><select id='os' name='os' OnChange='active("divNotif", this.value=="WINDOWS");'><option>WINDOWS</option><option>LINUX</option></select></td></tr>
+	<tr height='30px' bgcolor='white'><td><?php echo $l->g(25); ?>:</td><td colspan='2'><select id='os' name='os' OnChange='active("divNotif", this.value=="WINDOWS");'><option>WINDOWS</option><option>LINUX</option><option>MacOSX</option></select></td></tr>
 	<tr height='30px' bgcolor='white'><td><?php echo $l->g(439); ?>:</td><td colspan='2'><select id='proto' name='proto'><option>HTTP</option></select></td></tr>
 	<tr height='30px' bgcolor='white'><td><?php echo $l->g(440); ?>:</td><td colspan='2'><select  id='priority' name='priority'>
 	<option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>

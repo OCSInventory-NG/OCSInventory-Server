@@ -95,8 +95,8 @@ if ($_SESSION["lvluser"]==SADMIN){
 }
 $limit=nb_page($form_name);
 
-if ($_POST['tri'] == "")
-$_POST['tri']=1;
+if ($_POST['tri2'] == "")
+$_POST['tri2']=1;
 if ($_POST['onglet'] == "STAT" or $_POST['onglet'] == "DYNA"){
 	$sql="select h.id id,h.name name,h.DESCRIPTION description,h.lastdate creat, count(g_c.HARDWARE_ID) nbr ";
 	if ($_POST['onglet'] == "STAT")
@@ -115,7 +115,7 @@ if ($_POST['onglet'] == "STAT" or $_POST['onglet'] == "DYNA"){
 		$sql .= " '' ";
 	if($_SESSION["lvluser"]!=SADMIN)
 	$sql.=" and workgroup='GROUP_4_ALL' ";
-	$sql.=" group by h.name order by ".$_POST['tri']." ".$_POST['sens'];		
+	$sql.=" group by h.name order by ".$_POST['tri2']." ".$_POST['sens'];		
 	$reqCount="select count(*) nb from (".$sql.") toto";
 	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
 }elseif ($_POST['onglet'] == "SERV"){
@@ -123,7 +123,7 @@ if ($_POST['onglet'] == "STAT" or $_POST['onglet'] == "DYNA"){
 	$sql="select group_id id,h.name name,h.DESCRIPTION description, h.lastdate creat, count(hardware_id) nbr
 			from download_servers d_s,hardware h
 			where d_s.group_id=h.id
-			group by group_id order by ".$_POST['tri']." ".$_POST['sens'];
+			group by group_id order by ".$_POST['tri2']." ".$_POST['sens'];
 	$reqCount="select count(*) nb from (".$sql.") toto";
 	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
 	
@@ -169,9 +169,9 @@ $result = mysql_query( $sql, $_SESSION["readServer"]);
 		$nbr=$item ->nbr;
 		$data[$i][$entete[3]]=$nbr;
 		if ($_SESSION["lvluser"]==SADMIN){
-			$data[$i][$entete[4]]="<img src='image/supp.png' OnClick='confirme(\"".$item ->name."\",".$item ->id.",\"".$form_name."\",\"supp\",\"".$l->g(640)." \")'>";
+			$data[$i][$entete[4]]="<img src='image/supp.png' OnClick='confirme(\"".str_replace("'", "", $item ->name)."\",".$item ->id.",\"".$form_name."\",\"supp\",\"".$l->g(640)." \")'>";
 			if ($_POST['onglet'] == "STAT")
-			$data[$i][$entete[5]]="<input type='checkbox' OnClick='confirme(\"".$item ->name."\",".$item ->id.",\"".$form_name."\",\"check_group\",\"".$l->g(811)." \")' ".($item -> workgroup ? " checked" : "").">";
+			$data[$i][$entete[5]]="<input type='checkbox' OnClick='confirme(\"".str_replace("'", "", $item ->name)."\",".$item ->id.",\"".$form_name."\",\"check_group\",\"".$l->g(811)." \")' ".($item -> workgroup ? " checked" : "").">";
 			
 			//OnClick='page(\"".$item ->id."\",\"check\",\"".$form_name."\")'
 		}
@@ -188,7 +188,7 @@ if ($_POST['onglet'] == "STAT" and $_SESSION["lvluser"]==SADMIN)
 echo "<br><input type=submit value='".$l->g(587)."' name='add_static_group'>";
 
 echo "</table>";
-echo "<input type='hidden' id='tri' name='tri' value='".$_POST['tri']."'>";
+echo "<input type='hidden' id='tri2' name='tri2' value='".$_POST['tri2']."'>";
 echo "<input type='hidden' id='sens' name='sens' value='".$_POST['sens']."'>";
 echo "<input type='hidden' id='supp' name='supp' value=''>";
 echo "<input type='hidden' id='check_group' name='check_group' value=''>";

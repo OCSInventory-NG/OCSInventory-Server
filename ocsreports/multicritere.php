@@ -881,11 +881,13 @@ function afficheLigne($ligne)
 		
 		$linSel = "LINUX"   == $_SESSION["reqs"][$label][3] ?" selected":"";
 		$winSel = "WINDOWS" == $_SESSION["reqs"][$label][3] ?" selected":"";
+		$macOSX = "MacOSX"  == $_SESSION["reqs"][$label][3] ?" selected":""; //add by WES Young
 		
 		if( $champ=="osname")
 			echo "<option value='LINUX' $linSel>LINUX (".$l->g(547).")</option>
-				  <option value='WINDOWS' $winSel>WINDOWS (".$l->g(547).")</option>";
-		
+				  <option value='WINDOWS' $winSel>WINDOWS (".$l->g(547).")</option>
+				  <option value='MacOSX' $macOSX>MacOSX (".$l->g(547).")</option>";//add by WES Young
+				 
 		while($row=mysql_fetch_array($res))
 		{
 			if($row[0]=="") continue;	

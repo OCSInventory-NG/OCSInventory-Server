@@ -47,8 +47,8 @@ echo "<script language=javascript>
  function query_on_table($name,$lbl_data,$lbl_data_detail,$tablename="hardware"){
  	global $exlu_group,$list_on_hardware,$form_name,$data,$data_detail,$titre,$list_on_else,$list_no_show,$limit;
  	if (!isset($list_no_show[$name])){
- 		if ($_POST['tri'] == ""){
- 			$_POST['tri']=1;
+ 		if ($_POST['tri2'] == ""){
+ 			$_POST['tri2']=1;
  			$_POST['sens']='DESC';
  			
  		}
@@ -64,7 +64,7 @@ echo "<script language=javascript>
 		$sql_on_hardware.=$list_on_else;
 		$sql_on_hardware.="	group by ".$name;
 		$_SESSION["forcedRequest"]=$sql_on_hardware;
-		$sql_on_hardware.="	order by ".$_POST['tri']." ".$_POST['sens']." limit ".$limit['BEGIN'].",".$limit['END'];
+		$sql_on_hardware.="	order by ".$_POST['tri2']." ".$_POST['sens']." limit ".$limit['BEGIN'].",".$limit['END'];
 	 	$result_on_hardware = mysql_query( $sql_on_hardware, $_SESSION["readServer"]);
 		$nb_lign=0;
 		while($item_on_hardware = mysql_fetch_object($result_on_hardware)){
@@ -533,13 +533,13 @@ if (isset($default)){
 			$FIELDS["WINOWNER"]=$table_hard."WINOWNER";
 			$FIELDS["USERAGENT"]=$table_hard."USERAGENT";
 			$FIELDS_LINK["NAME"]=$table_hard."NAME";
-			if ($_POST['tri'] == "" or !isset($FIELDS[$_POST['tri']]))
-				$_POST['tri']=1;
+			if ($_POST['tri2'] == "" or !isset($FIELDS[$_POST['tri2']]))
+				$_POST['tri2']=1;
 			$limit=nb_page($form_name);
 			$trans = array("count(*) c" => implode(",", $FIELDS));	
 			$sql= strtr($_SESSION['SQL'][$_POST['detail']], $trans);
 			$_SESSION["forcedRequest"]=$sql;
-			$sql.= " order by ".$_POST['tri']." ".$_POST['sens'];
+			$sql.= " order by ".$_POST['tri2']." ".$_POST['sens'];
 			$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
 			$resCount = mysql_query($_SESSION['SQL'][$_POST['detail']], $_SESSION["readServer"]) 
 				or die(mysql_error($_SESSION["readServer"]));
@@ -583,7 +583,7 @@ if (isset($default)){
 			
 			
 		}
-		echo "<input type='hidden' id='tri' name='tri' value='".$_POST['tri']."'>";
+		echo "<input type='hidden' id='tri2' name='tri2' value='".$_POST['tri2']."'>";
 		echo "<input type='hidden' id='sens' name='sens' value='".$_POST['sens']."'>";
 	}
 	echo "</table></form>";

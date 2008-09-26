@@ -1,8 +1,8 @@
 0 iso-8859-1
 2 Toutes les machines
 3 Machines ayant un logiciel
-5 Les codes unit� dont je suis responsable
-9 Recherche multicrit�res
+5 Les codes unite dont je suis responsable
+9 Recherche multicriteres
 12 Tag
 13 Envoyer
 17 Client
@@ -10,60 +10,60 @@
 20 Logiciel
 23 Machine
 24 Utilisateur
-25 Syst�me
-26 M�moire
-27 Vitesse m�moire (MHz)
+25 Systeme
+26 Memoire
+27 Vitesse memoire (MHz)
 28 Nombre de machines
 30 Recherche
-31 Choisissez un param�tre
+31 Choisissez un parametre
 32 Choisissez
 33 Domaine
 34 Adresse IP
 35 Nom machine
-36 Num�ro de s�rie
-41 R�initialiser
-42 Aucun r�sultat
+36 Numero de serie
+41 Reinitialiser
+42 Aucun resultat
 43 Menu principal
 45 Espace libre
 46 Dernier inventaire
-48 Affichage syst�me
+48 Affichage systeme
 49 Nom
 50 Espace de Swap 
 51 Commentaires
 53 Description
 54 Processeur(s)
 55 Nombre
-56 Donn�es administratives
-61 Carte vid�o
-62 R�solution
+56 Donnees administratives
+61 Carte video
+62 Resolution
 63 Stockage
 64 Fabricant
-65 Mod�le
+65 Modele
 66 Type
 67 Taille disque
 69 Editeur
 70 Designation
 79 Imprimante(s)
-80 Libell�
+80 Libelle
 81 Etat
-82 R�seau(x)
-83 Capacit�
+82 Reseau(x)
+83 Capacite
 84 Interface
 85 Lettre
-86 Syst�me de fichier
+86 Systeme de fichier
 87 Total
 88 Libre
-90 r�sultat(s)
-91 P�riph�rique(s) d'entr�e
+90 resultat(s)
+91 Peripherique(s) d'entree
 92 Disque(s)
-93 Contr�leur(s)
+93 Controleur(s)
 94 Nombre de slots
 95 Adresse MAC
 96 Son
 97 Moniteur(s)
-103 Mettre � jour
+103 Mettre a jour
 107 Configuration
-108 Requ�tes de registre
+108 Requetes de registre
 111 Licence Windows
 113 Annuler
 114 Enregistrer
@@ -75,31 +75,31 @@
 129 RESSEMBLE
 130 DIFFERENT
 134 Ajout d'un nouveau fichier dans la base
-135 Attention, vous allez supprimer ce fichier d�finitivement !
-136 T�l�charger
+135 Attention, vous allez supprimer ce fichier definitivement !
+136 Telecharger
 137 Fichier
-168 Ce format de fichier n'est pas utilisable (il doit �tre: ocsagent.exe, zip, pl ou binaire unix)
-170 Un fichier correspondant existe d�j� !
-171 Fichier supprim�
+168 Ce format de fichier n'est pas utilisable (il doit etre: ocsagent.exe, zip, pl ou binaire unix)
+170 Un fichier correspondant existe deja !
+171 Fichier supprime
 172 Une erreur est survenue, le fichier
-173 n'a pas �t� ins�r� dans la base
-174 Securit�
+173 n'a pas ete insere dans la base
+174 Securite
 175 Doubles
 176 IPs
 177 Fusionner les lignes redondantes
-178 R�partition code/machines
-180 Utilisateur non enregistr� dans la base OCS
-182 Machines ayant un tag donn�
+178 Repartition code/machines
+180 Utilisateur non enregistre dans la base OCS
+182 Machines ayant un tag donne
 183 Telecharger
 184 Ce fichier ne contient pas "use constant version"
-185 La version doit �tre sup�rieure ou �gale � 1
+185 La version doit etre superieure ou egale a 1
 186 Cette archive ne contient pas ver
 187 Ce fichier n'est pas une archive zip valide
 188 Retour
 189 Vous devez selectionner au moins deux machines
 190 Accountinfo:
-191 supprim�es
-192 R�sum� redondance
+191 supprimees
+192 Resume redondance
 193 Hostname + Serial number
 194 Hostname + Mac address
 195 Mac address + Serial number
@@ -107,68 +107,68 @@
 197 Serial seul
 198 Mac address seule
 199 Redondances
-200 Relai correspondant diminu�
+200 Relai correspondant diminue
 201 PLUS PETIT
 202 PLUS GRAND
 203 ENTRE
 204 HORS DE
 205 Actif
-206 r�cup�r�es pour
+206 recuperees pour
 207 Passerelle
 208 masque
 209 Version BIOS
 210 Date BIOS
 211 Registre
-212 Nom de la cl�
-213 Valeur de la cl�
+212 Nom de la cle
+213 Valeur de la cle
 214 Imprimer cette page
 215 Tout afficher
 216 Erreur dans le mot de passe
 217 Mot de passe
 218 Versions des agents
-219 interfaces r�seau non inventori�es
-220 supprim�
+219 interfaces reseau non inventoriees
+220 supprime
 221 Machines renvoyant des IPs
-222 Attention ! Toutes les machine coch�es seront fusionn�es en une seule machine ! Etes vous sur ?
+222 Attention ! Toutes les machine cochees seront fusionnees en une seule machine ! Etes vous sur ?
 223 Information
 224 Valeur
 225 Admininfo
-226 a bien �t� supprim� de la table accountinfo
+226 a bien ete supprime de la table accountinfo
 227 Etes vous sur de vouloir supprimer la colonne 
-228 Entrer le nom de la nouvelle donn�e administrative
+228 Entrer le nom de la nouvelle donnee administrative
 229 Texte (255)
 230 Entier
-231 R�el
+231 Reel
 232 Date
-233 Donn�es actuelles
-234 a bien �t� enregistr� dans la table
+233 Donnees actuelles
+234 a bien ete enregistre dans la table
 235 Users
 236 Changer mot de passe
 237 Nouveau mot de passe
 238 Confirmation
 239 Vous devez remplir tous les champs
-240 Vos mots de passe sont diff�rents
-241 Votre mot de passe a bien �t� chang�
+240 Vos mots de passe sont differents
+241 Votre mot de passe a bien ete change
 242 Administrateur
 243 Utilisateur
 244 Ajouter un nouvel utilisateur
-245 a bien �t� supprim�
+245 a bien ete supprime
 246 Etes vous sur de vouloir supprimer l'utilisateur
 247 Login mysql
 248 Mot de passe MySql
-249 Impossible de se connecter � MySql sur localhost, merci d'entrer un login/mot de passe MySql valide
+249 Impossible de se connecter a MySql sur localhost, merci d'entrer un login/mot de passe MySql valide
 250 MySql HostName
 251 Deconnexion
 252 Nom (au choix)        	
 253 Ruche registre     	
-254 Chemin de la cl� (Ex: SOFTWAREMozilla)  	
-255 Nom de la cl� � lire (* pour toutes)
-256 Selectionnez la requ�te registre � modifier
-257 Cl� de registre
-258 Valeur cl� de registre
-259 Erreur, la donn�e n'a pas pu �tre cr��e (merci de ne pas mettre de caract�res sp�ciaux)
-260 Fichier label modifi�
-261 Fichier label d�truit
+254 Chemin de la cle (Ex: SOFTWAREMozilla)  	
+255 Nom de la cle a lire (* pour toutes)
+256 Selectionnez la requete registre a modifier
+257 Cle de registre
+258 Valeur cle de registre
+259 Erreur, la donnee n'a pas pu etre creee (merci de ne pas mettre de caracteres speciaux)
+260 Fichier label modifie
+261 Fichier label detruit
 262 Entrez un label
 263 Modifier le label
 264 Actuellement aucun fichier label
@@ -181,8 +181,8 @@
 271 Slot(s)
 272 Port(s)
 273 BIOS
-274 Nom du syst�me
-275 Version du syst�me
+274 Nom du systeme
+275 Version du systeme
 276 Chipset
 277 Version
 278 Driver
@@ -192,63 +192,63 @@
 282 Passerelles
 283 Fonction
 284 Fabricant du BIOS
-285 Selectionnez le param�tre � modifier
+285 Selectionnez le parametre a modifier
 286 Service pack
 287 Import local
 288 Import d'un fichier local
-289 D�tail des r�seaux interconnect�s
+289 Detail des reseaux interconnectes
 290 Interrogation par IP
 291 Mode expert
-292 Ajout / supression d'un p�riph�rique
-293 Types de p�riph�riques
-294 Noms des sous r�seaux
-295 Cliquer pour �diter
+292 Ajout / supression d'un peripherique
+293 Types de peripheriques
+294 Noms des sous reseaux
+295 Cliquer pour editer
 296 Id
-297 Ne peut �crire dans le r�pertoire
-298 Tous les champs doivent �tre remplis
+297 Ne peut ecrire dans le repertoire
+298 Tous les champs doivent etre remplis
 299 Adresse IP invalide (format valide: x.x.x.x)
 300 Masque invalide: format valide: x.x.x.x ou xx (xx<32)
-301 R�seau ins�r�
-302 R�seau supprim�
-303 Ajouter un sous-r�seau
-304 Nom r�seau
+301 Reseau insere
+302 Reseau supprime
+303 Ajouter un sous-reseau
+304 Nom reseau
 305 Uid
-306 Liste des sous-r�seaux
+306 Liste des sous-reseaux
 307 Ajouter un type
 308 Nom du type
-309 Types de p�riph�riques
+309 Types de peripheriques
 310 IpDiscover inferieur a
-311 H�tes
+311 Hotes
 312 IpDiscover
 313 Machines de la passerelle
 314 Machines IpDiscover de la passerelle
-315 H�tes non inventori�s
+315 Hotes non inventories
 316 Sous-reseau
 317 ANALYSE
 318 Nom DNS
 319 Resultat d'analyse du reseau
-320 Cette analyse a d�ja �t� effectu�e le
-321 voulez vous voir les donn�es en cache ?
-322 Donn�es issues du cache
+320 Cette analyse a deja ete effectuee le
+321 voulez vous voir les donnees en cache ?
+322 Donnees issues du cache
 323 datent du
 324 HOTES EVALUES
 325 vide
-326 pas de masque entr�
+326 pas de masque entre
 327 Details de la machine
-328 D�couverte
-329 Inventori�e
+328 Decouverte
+329 Inventoriee
 330 Nom NetBIOS
-331 Num�ro r�seau
+331 Numero reseau
 332 Patientez...
-333 Ajout d'un nouveau p�riph�rique
-334 Liste des p�riph�riques
-335 Type de mat�riel
-336 Description du p�riph�rique
+333 Ajout d'un nouveau peripherique
+334 Liste des peripheriques
+335 Type de materiel
+336 Description du peripherique
 337 L'EXECUTABLE N'A RIEN RENVOYE
-338 Mode limit�
-339 Vous devez disposer de ipdiscover-util.pl (Linux uniquement) pour plus de fonctionnalit�s
+338 Mode limite
+339 Vous devez disposer de ipdiscover-util.pl (Linux uniquement) pour plus de fonctionnalites
 340 Afficher
-341 ne peut �tre lanc�, vous devez mettre les droits d'execution
+341 ne peut etre lance, vous devez mettre les droits d'execution
 342 Vous devez mettre les droits d'ecriture sur le repertoire racine pour pouvoir utiliser
 344 Erreur
 345 L'ANALYSE EST DEJA EN COURS, MERCI DE RESSAYER PLUS TARD
@@ -258,30 +258,30 @@
 349 Ajouter colonne
 350 Type de processeur
 351 Nombre de processeurs
-352 Derni�re visite
-353 Qualit�
-354 Fid�lit�
-355 Soci�t�
-356 Propri�taire
+352 Derniere visite
+353 Qualite
+354 Fidelite
+355 Societe
+356 Proprietaire
 357 Type d'agent
-358 Jokers: ? pour un caract�re et * pour plusieurs
-359 Num�ro de s�rie �cran
-360 Fabrication (semaine/ann�e)
-362 Le r�seau
-363 existe d�j�
-364 Inventori�s
-365 Non- inventori�s
-366 Identifi�s
-367 Machines du r�seau
-368 du r�seau
+358 Jokers: ? pour un caractere et * pour plusieurs
+359 Numero de serie ecran
+360 Fabrication (semaine/annee)
+362 Le reseau
+363 existe deja
+364 Inventories
+365 Non- inventories
+366 Identifies
+367 Machines du reseau
+368 du reseau
 369 Saisi par
-370 D�ploiement
+370 Deploiement
 371 Tous les composants de machine
-372 Choisissez les composants � afficher
-373 Utilisateur enregistr�
-374 Soci�t� enregistr�e
+372 Choisissez les composants a afficher
+373 Utilisateur enregistre
+374 Societe enregistree
 375 Version Agent OCS NG
-376 Ordinateur verrouill�. R�essayer dans quelques instants...
+376 Ordinateur verrouille. Reessayer dans quelques instants...
 377 Vitesse CPU (Mhz)
 380 Dictionnaire
 381 Nombre
@@ -304,35 +304,35 @@
 398 Liste des categories
 410 EXACTEMENT
 411 Vous ne devez entrer que des chiffres !
-412 Fonctionnalit� de recherche dans le registre
-413 Fonctionnalit� de mise � jour automatique
-414 Fonctionnalit� de d�ploiement automatique de l'agent
-415 Fonctionnalit� d'enregistrement des suppressions (outils tiers, ex: GLPI).
-416 Fonctionnalit� de log sur le serveur.
-417 Fonctionnalit� de t�l�d�ploiement (agent et serveur).
-418 Fonctionnalit� d'inventaires diff�rentiels.
-419 Nombre de jour maximal avant qu'une machine ipdiscover ne soit remplac�e.
-420 T�l�d�ploiement: voir documentation.
-421 T�l�d�ploiement: voir documentation.
-422 T�l�d�ploiement: voir documentation.
-423 T�l�d�ploiement: voir documentation (Les paquets ayant une valeur sup�rieure ou �gale ne seront plus t�l�charg�s).
-424 Validit� d'un paquet � compter de sa prise en compte par l'agent.
-425 Nombre d'ordinateurs remontants les machines de leurs r�seaux.
-426 Validit� d'un inventaire.<br>(ALWAYS: toujours inventori�, NEVER:inventaires d�sactiv�s)
-427 D�fini les crit�res devant �tre indentiques pour qu'une fusion automatique ait lieu.
-428 T�l�d�ployer
-429 Fr�quence
+412 Fonctionnalite de recherche dans le registre
+413 Fonctionnalite de mise a jour automatique
+414 Fonctionnalite de deploiement automatique de l'agent
+415 Fonctionnalite d'enregistrement des suppressions (outils tiers, ex: GLPI).
+416 Fonctionnalite de log sur le serveur.
+417 Fonctionnalite de teledeploiement (agent et serveur).
+418 Fonctionnalite d'inventaires differentiels.
+419 Nombre de jour maximal avant qu'une machine ipdiscover ne soit remplacee.
+420 Teledeploiement: voir documentation.
+421 Teledeploiement: voir documentation.
+422 Teledeploiement: voir documentation.
+423 Teledeploiement: voir documentation (Les paquets ayant une valeur superieure ou egale ne seront plus telecharges).
+424 Validite d'un paquet a compter de sa prise en compte par l'agent.
+425 Nombre d'ordinateurs remontants les machines de leurs reseaux.
+426 Validite d'un inventaire.<br>(ALWAYS: toujours inventorie, NEVER:inventaires desactives)
+427 Defini les criteres devant etre indentiques pour qu'une fusion automatique ait lieu.
+428 Teledeployer
+429 Frequence
 430 Traitement par lots
 431 Activer
-432 Non notifi�s
+432 Non notifies
 433 Affecter
-434 Fabrication d'un paquet de t�l�d�ploiement
-435 Cr�ation d'un nouveau paquet
+434 Fabrication d'un paquet de teledeploiement
+435 Creation d'un nouveau paquet
 436 Ne peut pas ouvrir le fichier:
-437 Votre paquet a bien �t� cr�� dans le r�pertoire
-438 Cr�ation d'un nouveau paquet
+437 Votre paquet a bien ete cree dans le repertoire
+438 Creation d'un nouveau paquet
 439 Protocole
-440 Priorit�
+440 Priorite
 441 Algorithme de digest
 442 Encodage digest
 443 Action
@@ -340,31 +340,31 @@
 445 Chemin
 446 Nom du fichier
 447 Interactions utilisateur
-448 Pr�venir utilisateur
+448 Prevenir utilisateur
 449 Texte
-450 Compte � rebours
+450 Compte a rebours
 451 L'utilisateur peut annuler
 452 L'utilisateur peut remettre a plus tard
-453 La fin de l'installation n�cessite une intervention utilisateur
+453 La fin de l'installation necessite une intervention utilisateur
 454 NON
 455 OUI
-456 Ex�cuter
+456 Executer
 457 Stocker
 458 Lancer
-459 Le compte � rebours doit �tre un nombre
+459 Le compte a rebours doit etre un nombre
 460 Identifiant unique
 461 Digest
 462 Taille totale
 463 Taille fragment ( 1 Ko min )
 464 Nombre de fragments
 465 Activation de paquets
-466 ATTENTION: Le fichier d'information est introuvable � l'adresse
-467 ATTENTION: Les fragments sont introuvables � l'adresse
-468 Etes vous sur de vouloir tout de m�me activer le paquet avec ces param�tres ?
-469 Paquet activ�, il peut maintenant �tre affect�
+466 ATTENTION: Le fichier d'information est introuvable a l'adresse
+467 ATTENTION: Les fragments sont introuvables a l'adresse
+468 Etes vous sur de vouloir tout de meme activer le paquet avec ces parametres ?
+469 Paquet active, il peut maintenant etre affecte
 470 Serveur https
 471 Serveur de fichiers
-472 ERREUR: Ne peut supprimer le r�pertoire
+472 ERREUR: Ne peut supprimer le repertoire
 473 Le timestamp doit etre un nombre
 474 Le timestamp doit faire dix chiffres de long
 475 Timestamp
@@ -373,49 +373,49 @@
 478 Machine(s)
 479 PAS DE MACHINE SELECTIONNEE
 480 fragments
-481 Paquets activ�s
+481 Paquets actives
 482 ATTENTE NOTIFICATION
 483 Valider SUCCES
-484 Fr�quence personnalis�e
-485 Toujours inventori�
-486 Jamais inventori�
-487 Personnalis�
-488 D�faut
+484 Frequence personnalisee
+485 Toujours inventorie
+486 Jamais inventorie
+487 Personnalise
+488 Defaut
 489 Comportement IpDiscover
-490 Forc� jamais IpDiscover
-491 Forc� toujours IpDiscover du r�seau
-492 Elue IpDiscover du r�seau
-493 Standard (peut �tre �lue)
-494 Fr�quence d'inventaire personnalis�e
+490 Force jamais IpDiscover
+491 Force toujours IpDiscover du reseau
+492 Elue IpDiscover du reseau
+493 Standard (peut etre elue)
+494 Frequence d'inventaire personnalisee
 495 Inventorier tous les 
 496 jours
-497 Standard, utilise le param�tre 'FREQUENCY' des options g�n�rales.
+497 Standard, utilise le parametre 'FREQUENCY' des options generales.
 498 Paquet
 499 serveur
-500 Traitements personnalis�s
+500 Traitements personnalises
 501 ajouter paquet
-502 �lu
-503 �lu forc�
-504 non �lu
-505 �ligible
-506 non �ligible
+502 elu
+503 elu force
+504 non elu
+505 eligible
+506 non eligible
 507 AYANT
 508 N'AYANT PAS
 509 INDIFFERENT
 510 Pas de paquet
 511 secondes
-512 T�l�d�ploiement
-513 Cr�ation
+512 Teledeploiement
+513 Creation
 514 Activation
-515 Activ�s
+515 Actives
 516 Ko
-517 Cette option ne peut �tre affect�e que pour une machine � la fois
+517 Cette option ne peut etre affectee que pour une machine e la fois
 518 Forcer IpDiscover
-519 Machine d�ja ELUE ipdiscover pour le r�seau
-520 Machine d�ja FORCEE ipdiscover pour le r�seau
-521 Machine forc�e in�ligible ipdiscover
+519 Machine deja ELUE ipdiscover pour le reseau
+520 Machine deja FORCEE ipdiscover pour le reseau
+521 Machine forcee ineligible ipdiscover
 522 Machine standard
-523 Remettre dans l'�tat par d�faut
+523 Remettre dans l'etat par defaut
 524 Ne PLUS JAMAIS affecter
 525 ETES VOUS SUR ?
 526 PAS DE MACHINE AFFECTEE
@@ -438,53 +438,53 @@
 543 Jeudi
 544 Vendredi
 545 Samedi
-546 dans l'�tat
+546 dans l'etat
 547 tous
 548 Tout sauf SUCCESS
-549 Fichier (deploy� sur les ordinateurs client)
-550 Fichier (facultatif, peut �tre utiliser par "ex�cuter")
-551 Ce nom de paquet est d�ja utilis�
-552 <i>Vous devez faire une recherche multicrit�res puis cliquer sur 'T�l�d�ployer' pour affecter un de ces paquets activ�s � des machines<br>Vous pouvez aussi affecter un paquet � une machine unique en utilisant l'onglet 'Traitements personnalis�s' dans les d�tails d'une machine</i>.
-553 Cl� Windows
-554 Ecran: num�ro de s�rie
+549 Fichier (deploye sur les ordinateurs client)
+550 Fichier (facultatif, peut etre utiliser par "executer")
+551 Ce nom de paquet est deja utilise
+552 <i>Vous devez faire une recherche multicriteres puis cliquer sur 'Teledeployer' pour affecter un de ces paquets actives a des machines<br>Vous pouvez aussi affecter un paquet e une machine unique en utilisant l'onglet 'Traitements personnalises' dans les details d'une machine</i>.
+553 Cle Windows
+554 Ecran: numero de serie
 555 Ecran: fabricant
 556 Ecran: description
 557 Userdomain
-558 Paquets affect�s
+558 Paquets affectes
 559 Ce fichier n'est pas un .ocs
 560 Vers serveur
-561 Inconnu (paquet supprim�)
-562 R�seaux ayant l'uid:
+561 Inconnu (paquet supprime)
+562 Reseaux ayant l'uid:
 563 Constructeur
-564 Fr�quence de lancement de l'agent par le service
-565 Serveur utilis� pour les imports locaux
-566 Port utilis� pour les imports locaux
+564 Frequence de lancement de l'agent par le service
+565 Serveur utilise pour les imports locaux
+566 Port utilise pour les imports locaux
 567 Latence de l'ipdiscover
 568 RAM(MB)
 569 CPU(MHz)
 570 Aide
 571 Tout valider
-572 Succ�s
+572 Succes
 573 Erreurs
 574 Stats
-575 D�saffecter non notifi�s
-576 Ipdiscover personnalis�
+575 Desaffecter non notifies
+576 Ipdiscover personnalise
 577 Nom du groupe
 580 Toutes les machines (rejouer)
 581 Toutes les machines (cache)
 582 et
 583 Groupes
 584 Pour la requete
-585 Pour la s�lection
-586 Cr�er groupe
-587 Cr�er groupe statique
+585 Pour la selection
+586 Creer groupe
+587 Creer groupe statique
 588 Ecraser groupe
-589 Ajouter statiquement �
-590 Reinitialiser �tat
+589 Ajouter statiquement a
+590 Reinitialiser etat
 591 Inclure statiquement
 592 Exclure statiquement
-593 Date de cr�ation
-594 R�g�n�ration du cache
+593 Date de creation
+594 Regeneration du cache
 595 GROUPE STATIQUE PUR
 596 INCLU DYNAMIQUEMENT
 597 EXCLU STATIQUEMENT
@@ -493,44 +493,44 @@
 600 Exclure
 601 Affectation de masse
 602 Vous devez envoyer un fichier
-603 Aucune machine n'a �t� trouv�e, merci de v�rifier votre fichier
-604 machine(s) affect�e(s) avec succ�s.
+603 Aucune machine n'a ete trouvee, merci de verifier votre fichier
+604 machine(s) affectee(s) avec succes.
 605 machine(s) en erreur
-606 Fichier des machines � affecter
+606 Fichier des machines a affecter
 607 Groupe
-608 cr��
-609 ecras�
+608 cree
+609 ecrase
 610 INCLU STATIQUEMENT
 611 PAS CACHE
 612 STATIQUE
 613 DYNAMIQUE
 614 EXCLU
-615 Requ�te
-616 P�rim�tre de l'utilisateur
+615 Requete
+616 Perimetre de l'utilisateur
 617 Nouveau
-618 Perim�tre
+618 Perimetre
 619 Utilisateur local
-620 Vous n'avez aucune machine affect�e.
-621 Ce groupe n'a pas �t� cr��. Ce nom existe d�ja.
+620 Vous n'avez aucune machine affectee.
+621 Ce groupe n'a pas ete cree. Ce nom existe deja.
 622 En cache
 623 L'information que vous essayez de voir n'existe pas.
 624 Voulez-vous vraiment supprimer le groupe 
 625 Valider les modifications
 626 Annuler les modifications
-627 Au moins un des champs est vide... Mise � jour non effectu�e.
+627 Au moins un des champs est vide... Mise a jour non effectuee.
 628 Serveurs de redistribution
 629 Nouveau groupe de serveurs de redistribution
 630 un groupe de serveurs existants
-631 Ajouter �
+631 Ajouter a
 632 Ecraser
 633 Gestion des groupes serveurs
-634 Action d�sir�e
+634 Action desiree
 635 Nouveau nom
 636 Description
 637 Remplacer
 638 LE NOM DU GROUPE NE PEUT ETRE VIDE
 639 CE GROUPE DE SERVEUR N EXISTE PAS
-640 Etes-vous s�r de vouloir supprimer
+640 Etes-vous sur de vouloir supprimer
 641 Administration des serveurs de redistribution
 642 le groupe
 643 TOUTES les machines
@@ -544,26 +544,26 @@
 651 Groupe de serveurs
 652 Machine(s)
 653 Blacklist d'adresse MAC
-654 Entrez une nouvelle adresse MAC � blacklister
-655 Insertion effectu�e
-656 Cette donn�e existe d�j� dans la liste
+654 Entrez une nouvelle adresse MAC a blacklister
+655 Insertion effectuee
+656 Cette donnee existe deja dans la liste
 657 Les champs en rouge sont en erreur!!! (champs vides ou taille <2)
 658 machines n'ont pas de serveurs de redistribution. <br>Il faut donc affecter ce paquet individuellement.
-659 machines ont d�j� ce paquet teledeploy�. Le statut de ce paquet pour ces machines est donc � nouveau  
+659 machines ont deja ce paquet teledeploye. Le statut de ce paquet pour ces machines est donc e nouveau  
 660 GROUPE DE SERVEUR INEXISTANT
 661 PAQUETS POUR SERVEUR DE REDISTRIBUTION
-662 R�gles d'affectation
+662 Regles d'affectation
 663 PROBLEME INTERNE
-664 Action effectu�e
+664 Action effectuee
 665 AUCUNE MACHINE SELECTIONNEE. GROUPE DE SERVEUR NON CREE
-666 Groupe de serveur cr��
+666 Groupe de serveur cree
 667 POUR LE PAQUET
-668 Affecter avec quelle r�gle?
-669 ATTENTION: il existe des doublons de priorit�<br>Une seule r�gle sera retenue!
-670 Une r�gle porte d�j� ce nom
-671 Le nom de la r�gle ne peut �tre vide
-672 Cette r�gle n'existe pas!!!
-673 Administration des r�gles d'affectation
+668 Affecter avec quelle regle?
+669 ATTENTION: il existe des doublons de priorite<br>Une seule regle sera retenue!
+670 Une regle porte deja ce nom
+671 Le nom de la regle ne peut etre vide
+672 Cette regle n'existe pas!!!
+673 Administration des regles d'affectation
 674 NOM DE LA REGLE
 675 PRIORITE
 676 VALEUR MACHINE
@@ -572,67 +572,67 @@
 679 NOM
 680 DOMAINE
 681 UTILISATEUR
-682 Ajouter une condition suppl�mentaire
-683 Valider la r�gle
-684 Les champs suivants doivent �tre saisis
-685 Ajouter une r�gle
+682 Ajouter une condition supplementaire
+683 Valider la regle
+684 Les champs suivants doivent etre saisis
+685 Ajouter une regle
 686 La condition
 687 Vous ne pouvez pas le supprimer.
-688 Des paquets sont affect�s sur ce goupe! 
-689 Des paquets sont affect�s sur ce serveur!
+688 Des paquets sont affectes sur ce goupe! 
+689 Des paquets sont affectes sur ce serveur!
 690 Vous ne pouvez pas supprimer toutes les machines.
-691 Valeurs g�n�riques: $IP$ et $NAME$
+691 Valeurs generiques: $IP$ et $NAME$
 692 Vous modifiez TOUTES les valeurs des serveurs
 693 Vous modifiez les valeurs du serveur suivant:
-694 Pour retrouver les valeurs par d�fault, valider les champs � vide
+694 Pour retrouver les valeurs par default, valider les champs a vide
 695 Vous modifiez le groupe de serveurs
-696 Visualiser les paquets activ�s � affecter sur
+696 Visualiser les paquets actives a affecter sur
 697 une machine
 698 un groupe de serveurs
-699 Etes-vous s�r de vouloir affecter ce paquet � ces machines?
+699 Etes-vous sur de vouloir affecter ce paquet a ces machines?
 700 Choix Blacklist
-701 Blacklist de num�ro de s�rie
-702 Entrez un nouveau num�ro de s�rie � blacklister
+701 Blacklist de numero de serie
+702 Entrez un nouveau numero de serie a blacklister
 703 Blacklist
-704 Etes-vous s�r de vouloir blacklister 
-705 Etes-vous s�r de vouloir d�blacklister 
-706 D�blacklister
-707 ce num�ro de s�rie
+704 Etes-vous sur de vouloir blacklister 
+705 Etes-vous sur de vouloir deblacklister 
+706 Deblacklister
+707 ce numero de serie
 708 cette adresse mac
-709 Cycles de latence personnalis�s
-710 Param�tres de t�l�chargements personnalis�s
+709 Cycles de latence personnalises
+710 Parametres de telechargements personnalises
 711 Modifications prises en compte
 712 Fichier langue
-713 Etes-vous s�r de vouloir remplacer le fichier de langue
-714 Fichier de langue de r�f�rence
-715 Choisir le fichier de langue � modifier
+713 Etes-vous sur de vouloir remplacer le fichier de langue
+714 Fichier de langue de reference
+715 Choisir le fichier de langue a modifier
 716 Remplacer le fichier de langue
-717 personnalis�
+717 personnalise
 718 Ignorer
 719 (en seconde)
-720 Temps d'attente entre 2 cycles de t�l�d�ploiement
-721 Temps d'attente entre 2 fragments t�l�charg�s
-722 Temps d'attente entre 2 p�riodes de t�l�d�ploiement
-723 Priorit� maximum des paquets t�l�charg�s<br>(Les paquets d'une priorit� sup�rieure sont ignor�s)
+720 Temps d'attente entre 2 cycles de teledeploiement
+721 Temps d'attente entre 2 fragments telecharges
+722 Temps d'attente entre 2 periodes de teledeploiement
+723 Priorite maximum des paquets telecharges<br>(Les paquets d'une priorite superieure sont ignores)
 724 Temps entre 2 prises de contacts entre l'agent et le serveur
 725 (en heure)
-726 URI des serveurs de redistribution ($IP$ et $NAME$ sont les valeurs g�n�riques)
-727 R�pertoire de destination des paquets.
+726 URI des serveurs de redistribution ($IP$ et $NAME$ sont les valeurs generiques)
+727 Repertoire de destination des paquets.
 728 Inventaire
 729 ordinateurs
 730 heures
-731 Fonctionnalit� de commit sur la base � chaque section d'inventaire.
+731 Fonctionnalite de commit sur la base a chaque section d'inventaire.
 732 miliseconde(s)
 733 Inactif
 734 Fichiers inventaire
 735 Filtres
 736 Permet la fonction de groupes
-737 Nombre al�atoire calcul� dans la gamme d�finie. Con�u pour �viter de calculer tous les groupes en m�me temps
-738 Sp�cifie la validit� d'un groupe (par d�faut : calcul� une fois par jour - voir offset)
-739 Am�lioration futur de la s�curit�
-740 Validit� du lock d'un ordinateur
-741 Configuration du moteur pour mettre � jour les sections d'inventaire en fonction du CHECKSUM (pour baisser la charge de DB backend )
-742 Faire que le moteur consid�re un inventaire comme une transaction (acc�s concurrentiel plus bas, meilleure utilisation du disque)
+737 Nombre aleatoire calcule dans la gamme definie. Coneu pour eviter de calculer tous les groupes en meme temps
+738 Specifie la validite d'un groupe (par defaut : calcule une fois par jour - voir offset)
+739 Amelioration futur de la securite
+740 Validite du lock d'un ordinateur
+741 Configuration du moteur pour mettre a jour les sections d'inventaire en fonction du CHECKSUM (pour baisser la charge de DB backend )
+742 Faire que le moteur considere un inventaire comme une transaction (acces concurrentiel plus bas, meilleure utilisation du disque)
 743 Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load
 744 N'accepter un inventaire que si une session est active (refus du /FORCE)
 745 Specify when the engine will clean the inventory cache structures
@@ -646,37 +646,37 @@
 753 Enable prolog filter stack
 754 Enable core filter system to modify some things "on the fly"
 755 Enable inventory flooding filter. A dedicated ipaddress ia allowed to send a new computer only once in this period
-756 D�finition de la p�riode pour INVENTORY_FILTER_FLOOD_IP
+756 Definition de la periode pour INVENTORY_FILTER_FLOOD_IP
 757 Permettre la pile de filtre d'inventaire
 758 Specify if you want to track packages affected to a group on computer's level
-759 Doit �tre sup�rieur ou �gal �  
+759 Doit etre superieur ou egal a  
 760 Webservice
-761 Activer/d�sactiver le webservice
-762 Taille de la page de r�sultats (a des cons�quences sur les performances)
+761 Activer/desactiver le webservice
+762 Taille de la page de resultats (a des consequences sur les performances)
 763 Fichiers d'inclusion de vos propres extensions
 764 Ces options ne sont pas modifiables par la GUI.<br>(modifier directement dans ocsinventory-server.conf)
 765 Tous les logiciels
 766 AUCUN RESULTAT
 767 ATTENTION: RESULTATS AVEC FILTRE
 768 Nombre d'enregistrement
-769 Tranfert effectu�
+769 Tranfert effectue
 770 MISE A JOUR DE 
-771 Cette cat�gorie existe d�j�
-772 Le nom de la nouvelle cat�gorie ne peut �tre nul
-773 Vous devez s�lectionner un nom de cat�gorie
-774 Vous essayer de faire un transfert de la cat�gorie vers la m�me cat�gorie
-775 R�pertoire de cr�ation des paquets
-776 R�pertoire de mise en cache des analyses d'ipdiscover
-777 Dur�e de validit� d'une session
-778 Nombre de WORKGROUP diff�rents
-779 TAG diff�rents
-780 Sous-r�seaux diff�rents
-781 Machines ayant un paquet en cours de t�l�d�ployement
+771 Cette categorie existe deja
+772 Le nom de la nouvelle categorie ne peut etre nul
+773 Vous devez selectionner un nom de categorie
+774 Vous essayer de faire un transfert de la categorie vers la meme categorie
+775 Repertoire de creation des paquets
+776 Repertoire de mise en cache des analyses d'ipdiscover
+777 Duree de validite d'une session
+778 Nombre de WORKGROUP differents
+779 TAG differents
+780 Sous-reseaux differents
+781 Machines ayant un paquet en cours de teledeployement
 782 Machines ayant un paquet en erreur
-783 Nombre d'OS diff�rents
-784 Agents diff�rents
-785 Processeurs diff�rents
-786 R�solutions diff�rentes
+783 Nombre d'OS differents
+784 Agents differents
+785 Processeurs differents
+786 Resolutions differentes
 787 Machine avec un processeur >=
 788 Machine avec un processeur =<
 789 Machine avec un processeur entre
@@ -691,23 +691,23 @@
 798 ACTIVITE
 799 MATERIEL
 800 DIVERS
-801 Ne plus afficher cette donn�e
-802 Afficher cette donn�e
-803 Nombre de jours depuis que la machine n\'a pas pris contact
+801 Ne plus afficher cette donnee
+802 Afficher cette donnee
+803 Nombre de jours depuis que la machine n'a pas pris contact
 804 Vitesse processeur minimum
 805 Vitesse processeur maximum
 806 Taille RAM minimum
 807 Taille RAM maximum
-808 R�partition
+808 Repartition
 809 GROUPES STATIQUES
 810 GROUPES DYNAMIQUES
-811 Etes-vous s�r de vouloir modifier la visibilit� du groupe
-812 Les logiciels � 0 sont pr�sents en cache mais ne sont plus install�s sur les machines.<br>Ils ne peuvent pas �tre mis dans une cat�gorie de dictionnaire
+811 Etes-vous sur de vouloir modifier la visibilite du groupe
+812 Les logiciels a 0 sont presents en cache mais ne sont plus installes sur les machines.<br>Ils ne peuvent pas etre mis dans une categorie de dictionnaire
 813 Nombre disque dur avec taille restante >
 814 Nombre disque dur avec taille restante <
 815 Nombre disque dur avec taille restante entre
 816 Taille disque restante maximum
 817 Taille disque restante minimum
 818 Sortir du groupe
-819 machine(s) ajout�e(s) au groupe
+819 machine(s) ajoutee(s) au groupe
 820 Dernier contact

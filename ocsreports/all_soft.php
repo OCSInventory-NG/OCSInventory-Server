@@ -156,14 +156,14 @@ $num_rows_reality = mysql_num_rows($result);
 
 
 
-echo "<br><table bgcolor='#66CCCC'><tr><td colspan=2 align=center >FILTRES</td></tr><tr><td align=right>".$l->g(382).": <input type='input' name='search' value='".$_POST['search']."'>
+echo "<br><div align=center><table bgcolor='#66CCCC'><tr><td colspan=2 align=center >FILTRES</td></tr><tr><td align=right>".$l->g(382).": <input type='input' name='search' value='".$_POST['search']."'>
 				<td rowspan=2><input type='submit' value='".$l->g(393)."'><input type='submit' value='".$l->g(396)."' name='RESET'>
 		</td></tr><tr><td align=right>nbre <select name='COMPAR'>
 			<option value='<' ".($_POST['COMPAR'] == '<'?'selected':'')."><</option>
 			<option value='>' ".($_POST['COMPAR'] == '>'?'selected':'').">></option>
 			<option value='=' ".($_POST['COMPAR'] == '='?'selected':'').">=</option>
 		</select><input type='input' name='NBRE' value='".$_POST['NBRE']."' ".$numeric."></td></tr>
-		<tr><td colspan=2 align=center><a href='ipcsv.php'>".$l->g(136)." ".$l->g(765)."</a></td></tr></table>
+		<tr><td colspan=2 align=center><a href='ipcsv.php'>".$l->g(136)." ".$l->g(765)."</a></td></tr></table></div>
 		";
 
 echo "<input type='hidden' name='OLD_ONGLET' value='".$_POST['onglet_bis']."'>";

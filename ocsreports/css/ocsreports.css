@@ -5,6 +5,7 @@ body {
 	background-color:#FFFFFF;
 	font-family: Verdana;
 	font-size: 8pt;
+	text-align: center;
 }
 
 .fondu {
@@ -240,6 +241,7 @@ text-decoration: underline;
 div.tableContainer {
 	overflow: auto;
 	margin: 0 auto;
+	text-align: center;
 	}
 
 table.ta {
