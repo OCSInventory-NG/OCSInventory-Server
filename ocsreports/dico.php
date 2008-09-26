@@ -190,7 +190,7 @@ if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha or !isset($_POST['onglet_bis'
 }
 	
 	//search all soft for the tab as selected 
-	$search_soft="select name from ".$table_cache." cache
+	$search_soft="select distinct name from ".$table_cache." cache
 			where name like '".$_POST['onglet_bis']."%'
 			and name not in (".$list_dico_soft.")
 			and name not in (".$list_ignored_soft.") ".$search_cache;
