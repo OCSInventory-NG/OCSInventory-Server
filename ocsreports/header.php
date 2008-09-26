@@ -174,7 +174,6 @@ if($_SESSION["debug"]==1)
 	}
 
 	$limitedAccess = array(2,3,4,5,6,7,8,9,10,12,13,14,20,21,22,23,24,25,26,27,28,30,31,32,33,34,35);
-	 echo "<u><center><u>PLATE-FORME DE TESTS</u> <big><font color=red><strong>VERSION INTERNET</strong></font></big></u><br>(Lit sur <strong>[".$_SESSION["SERVER_READ"]."]</strong>, ecrit sur <strong>[".$_SESSION["SERVER_WRITE"]."]</strong>)</center><br/>";
 	if( in_array($_GET["multi"],$limitedAccess) && $_SESSION["lvluser"]!=1) {
 		echo "<br><br><center><b><font color=red>ACCESS DENIED</font></b></center><br>";
 		unset($_GET["multi"]);
