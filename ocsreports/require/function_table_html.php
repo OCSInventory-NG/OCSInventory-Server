@@ -31,9 +31,29 @@ echo "	<script language='javascript'>
 				garde_valeur(did,hidden_name);
 				post(form_name);
 		}
-
+		
+		function verif_field(field_name_verif,field_submit,form_name) {
+			if (document.getElementById(field_name_verif).value == '')	{
+				document.getElementById(field_name_verif).style.backgroundColor = 'RED';
+			}else {
+				pag(field_submit,field_submit,form_name);
+			}
+		}
 </script>";
 
+function xml_encode( $txt ) {
+		$cherche = array(	"&"  , "<"  , ">"  , "\""    , "'");
+		$replace = array( "&amp;","&lt;","&gt;", "&quot;", "&apos;");
+		return str_replace($cherche, $replace, $txt);		
+	
+}
+
+function xml_decode( $txt ) {
+		$cherche = array( "&lt;","&gt;", "&quot;", "&apos;","&amp;");
+		$replace = array( "<"   ,">"   , "\""    , "'"	   , "&" );
+		return str_replace($cherche, $replace, $txt);		
+	
+}
 
 //ascending and descending sort
 function tri($sql)
@@ -202,7 +222,7 @@ function show_modif($name,$input_name,$input_type,$input_reload = "")
 		if ($input_reload != "") $champs.=" onChange='document.".$input_reload.".submit();'";
 		$champs.="><option value=''></option>";
 		foreach ($name as $key=>$value){
-			$champs.= "<option value='".$key."'";
+			$champs.= "<option value=\"".$key."\"";
 			if ($_POST[$input_name] == $key )
 			$champs.= " selected";
 			$champs.= ">".$value."</option>";
@@ -381,12 +401,13 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	 		 $current=1;
 			}
 	  	}else{
-			if (str_replace('\"','"',$_POST[$post_name]) === $key or (!isset($_POST[$post_name]) and $current != 1)){
+	  		//echo "<script>alert('".str_replace("'",' ',$_POST[$post_name])." => ".str_replace("'",' ',$key)."')</script>";
+			if (stripslashes($_POST[$post_name]) === $key or (!isset($_POST[$post_name]) and $current != 1)){
 				 echo "id='current'";  
 	 			 $current=1;
 			}
 		}
-	  	echo "><a OnClick='recharge2(\"".str_replace('"','\"',$key)."\",\"".$form_name."\",\"".$post_name."\")'>".$value."</a></li>";
+	  	echo "><a OnClick='recharge2(\"".$key."\",\"".$form_name."\",\"".$post_name."\")'>".xml_decode($value)."</a></li>";
 	  $i++;	
 	  }	
 	echo "</ul>
@@ -517,7 +538,6 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 		}
 		$i++;
 	}
-	
 	if ($i != 0){
 		$title=$num_rows_result." ".$l->g(90);
 		$title.= "<a href='cvs.php?tablename=".$table_name."'><small>(".$l->g(136).")</small></a>";
@@ -530,11 +550,11 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 		echo "<input type='hidden' id='MODIF' name='MODIF' value=''>";
 		echo "<input type='hidden' id='SELECT' name='SELECT' value=''>";
 		echo "<input type='hidden' id='OTHER' name='OTHER' value=''>";
-	}else
+		return TRUE;
+	}else{
 	echo "<font color=red size=5><B>".$l->g(766)."</B></font>";
-	
-	
-	
+	return FALSE;
+	}
 	
 	
 	

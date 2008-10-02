@@ -1,59 +1,30 @@
 <?php 
-//====================================================================================
-// OCS INVENTORY REPORTS
-// Copyleft Pierre LEMMET 2005
-// Web: http://ocsinventory.sourceforge.net
-//
-// This code is open source and may be copied and modified as long as the source
-// code is always made freely available.
-// Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
-//====================================================================================
-//Modified on $Date: 2008-06-05 12:39:58 $$Author: airoine $($Revision: 1.18 $)
-$form_name='admin_param';
+/*
+ * New version of dico page 
+ * 
+ */
 require_once('require/function_table_html.php');
 require_once('require/function_dico.php');
-//more one onglet => must add verif for reset $_POST['page']
-if ($_POST['old_onglet_perso'] != $_POST['onglet_perso'] or $_POST['old_onglet_bis'] != $_POST['onglet_bis'])
-	$_POST['page']=0;
-echo "<script language=javascript>
-		function confirme(did,form_name,hidden_name){
-			if(confirm('".$l->g(640)." '+did+'?')){
-				garde_post(did,hidden_name,form_name)
-			}
-		}
-		function active(id, sens) {
-				var mstyle = document.getElementById(id).style.display	= (sens!=0?\"block\" :\"none\");
-			}	
-
-		function checkall()
-		 {
-			for(i=0; i<document.".$form_name.".elements.length; i++)
-			{
-			    if(document.".$form_name.".elements[i].name.substring(0,5) == 'check'){
-			        if (document.".$form_name.".elements[i].checked)
-						document.".$form_name.".elements[i].checked = false;
-					else
-						document.".$form_name.".elements[i].checked = true;
-				}
-			}
-		}
-		function garde_post(did,hidden_name,form_name){
-				garde_valeur(did,hidden_name);
-				post(form_name);
-		}
-</script>";
-
+//use or not cache
+if ($_SESSION['usecache'])
+	$table="softwares_name_cache";
+else
+	$table="softwares";
+//form name
+$form_name='admin_param';
+//form open
+echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
 //definition of onglet
 $def_onglets['CAT']='CATEGORIES'; //Categories
 $def_onglets['NEW']='NEW'; //nouveau logiciels
-$def_onglets['IGNORED']='IGNORED'; //ignor√©
+$def_onglets['IGNORED']='IGNORED'; //ignorÈ
 $def_onglets['UNCHANGED']='UNCHANGED'; //unchanged
+//dÈfault => first onglet
 if ($_POST['onglet'] == "")
 $_POST['onglet']="CAT";
 //reset search
-if (isset($_POST['RESET']))
+if ($_POST['RESET']=="RESET")
 unset($_POST['search']);
-
 //filtre
 if ($_POST['search']){
 	$search_cache=" and cache.name like '%".$_POST['search']."%' ";
@@ -63,81 +34,91 @@ else{
 	$search="";
 	$search_count = "";
 }
-//delete categorie
-if(isset($_POST['supp']) and $_POST['supp']!=""){	
-	$reqDcat = "DELETE FROM dico_soft WHERE formatted='".$_POST['supp']."'";
-	mysql_query($reqDcat, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));	
-	
-}
-//transfert soft
-if($_POST['TRANSF'] == "TRANSF"){	
-	if ($_POST['onglet'] ==  "CAT")
-		$nom_cat=$_POST['onglet_perso'];
-	if ($_POST['onglet'] ==  "NEW")
-		$nom_cat="";
-	if ($_POST['onglet'] ==  "IGNORED" or $_POST['onglet'] ==  "UNCHANGED")
-		$nom_cat=$_POST['onglet'];
-			
-	if (isset($nom_cat)){
-		$nom_champ=choix_affect($nom_cat);
-		if (!isset($nom_champ['KO'])){
-			if (!isset($_POST['all_item']) and isset($_POST['check']))
-				$message=maj_trans($_POST['onglet'],$nom_champ['OK']);
-			elseif(isset($_POST['all_item']))
-				$message=maj_trans_all($_POST['onglet'],$nom_champ['OK'],$search_cache,$search_count);
-		}else
-		$message=$nom_champ['KO'];
-	}
-}
-//form open
-echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
-//show onglet
+//show first lign of onglet
 onglet($def_onglets,$form_name,"onglet",0);
- $limit=nb_page($form_name);
-
+echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>
+<tr><td align='center' colspan=10>";
+//attention=> result with restriction
 if ($search_count != "" or $search_cache != "")
 echo "<font color=red><b>".$l->g(767)."</b></font>";
-/*******************************************************CAS OF CATEGORIES*******************************************************/
-if ($_POST['onglet'] == 'CAT' or !isset($_POST['onglet'])){
+/**************************************ACTION ON DICO SOFT**************************************/
 
+//transfert soft
+if($_POST['TRANS'] == "TRANS"){	
+	if ($_POST['all_item'] != ''){
+		$list_check=search_all_item($_POST['onglet'],$_POST['onglet_soft']);
+	}else{
+		
+		foreach ($_POST as $key=>$value){
+			if (substr($key, 0, 5) == "check"){
+				$list_check[]=substr($key, 5);
+			} 				
+		}
+	}
+	if ($list_check != '')	
+	trans($_POST['onglet'],$list_check,$_POST['AFFECT_TYPE'],$_POST['NEW_CAT'],$_POST['EXIST_CAT']);	
+}
+//delete a soft in list => return in 'NEW' liste
+if ($_POST['SUP_PROF'] != ""){
+	del_soft($_POST['onglet'],array($_POST['SUP_PROF']));
+}
+/************************************END ACTION**************************************/
+
+if ($_POST['onglet'] != $_POST['old_onglet'])
+unset($_POST['onglet_soft']);
+/*******************************************************CAS OF CATEGORIES*******************************************************/
+if ($_POST['onglet'] == 'CAT'){
+	//search all categories
 	$sql_list_cat="select formatted  name
 		  from dico_soft where extracted!=formatted ".$search_count." group by formatted";
 	 $result_list_cat = mysql_query( $sql_list_cat, $_SESSION["readServer"]);
-	 $i=0;
+	 $i=1;
 	 while($item_list_cat = mysql_fetch_object($result_list_cat)){
-	 	if ($i==0)
-		$first_onglet=$item_list_cat -> name;
-		$list_cat[$item_list_cat -> name]=$item_list_cat -> name;
+	 	if ($i==1)
+		$first_onglet=$i;
+		$list_cat[$i]=$item_list_cat -> name;
 		$i++;
 	 }
-	 if (!isset($list_cat[$_POST['onglet_perso']]))
-	 $_POST['onglet_perso']=$first_onglet;
-	 onglet($list_cat,$form_name,"onglet_perso",7);
-	 if ($search_count == "")
-	 echo "<a href=# OnClick='confirme(\"".$_POST['onglet_perso']."\",\"".$form_name."\",\"supp\");'><img src=image/supp.png></a></td></tr><tr><td>";
-	 $reqCount="";
-	
-	$reqCount="select count(extracted) nb from dico_soft where formatted='".$_POST['onglet_perso']."'".$search_count;
-	
-	$sql="select extracted name,id from dico_soft left join softwares_name_cache cache on dico_soft.extracted=cache.name
-			 where formatted='".$_POST['onglet_perso']."' ".$search_count."
-	order by 1 desc  limit ".$limit['BEGIN'].",".$limit['END'];
-	
- 
- 
+	 //delete categorie
+	if(isset($_POST['SUP_CAT']) and $_POST['SUP_CAT']!=""){	
+		if ($_POST['SUP_CAT'] == 1)
+		$first_onglet=2;
+		$reqDcat = "DELETE FROM dico_soft WHERE formatted='".$list_cat[$_POST['SUP_CAT']]."'";
+		mysql_query($reqDcat, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));
+		unset($list_cat[$_POST['SUP_CAT']]);		
+	}
+	//no selected? default=>first onglet
+	 if ($_POST['onglet_soft']=="" or !isset($list_cat[$_POST['onglet_soft']]))
+	 $_POST['onglet_soft']=$first_onglet;
+	 //show all categories
+	 onglet($list_cat,$form_name,"onglet_soft",7);
+	 //You can delete or not?
+	 if ($i != 1 and isset($list_cat[$_POST['onglet_soft']]))
+	 echo "<a href=# OnClick='return confirme(\"\",\"".$_POST['onglet_soft']."\",\"".$form_name."\",\"SUP_CAT\",\"".$l->g(640)."\");'><img src=image/supp.png></a></td></tr><tr><td>";
+	$list_fields= array('SOFT_NAME'=>'EXTRACTED',
+						'ID'=>'ID',
+						'SUP'=>'ID',
+						'CHECK'=>'ID'
+								);
+	$table_name="CAT_EXIST";
+	$default_fields= array('SOFT_NAME'=>'SOFT_NAME','SUP'=>'SUP','CHECK'=>'CHECK');
+	$list_col_cant_del=array('SOFT_NAME'=>'SOFT_NAME','CHECK'=>'CHECK');
+	$querydico = 'SELECT distinct ';
+	foreach ($list_fields as $key=>$value){
+		if($key != 'SUP' and $key != 'CHECK')
+		$querydico .= $value.',';		
+	} 
+	$querydico=substr($querydico,0,-1);
+	$querydico .= " from dico_soft left join ".$table." cache on dico_soft.extracted=cache.name
+			 where formatted='".$list_cat[$_POST['onglet_soft']]."' ".$search_count." group by EXTRACTED";
 }
-
 /*******************************************************CAS OF NEW*******************************************************/
 if ($_POST['onglet'] == 'NEW'){
-	//Search all first letter for all tab
-	
-	//first: create list of soft for sql request 
-	
 	$search_dico_soft="select extracted name from dico_soft";
 	$result_search_dico_soft = mysql_query( $search_dico_soft, $_SESSION["readServer"]);
 	$list_dico_soft="'";
 	while($item_search_dico_soft = mysql_fetch_object($result_search_dico_soft)){
-		$list_dico_soft.=str_replace("'","\'",$item_search_dico_soft -> name)."','";
+		$list_dico_soft.=$item_search_dico_soft -> name."','";
 	}
 	$list_dico_soft=substr($list_dico_soft,0,-2);
 	
@@ -148,213 +129,153 @@ if ($_POST['onglet'] == 'NEW'){
 	$result_search_ignored_soft = mysql_query( $search_ignored_soft, $_SESSION["readServer"]);
 	$list_ignored_soft="'";
 	while($item_search_ignored_soft = mysql_fetch_object($result_search_ignored_soft)){
-		$list_ignored_soft.=str_replace("'","\'",$item_search_ignored_soft -> name)."','";
+		$list_ignored_soft.=addslashes($item_search_ignored_soft -> name)."','";
 	}
 	$list_ignored_soft=substr($list_ignored_soft,0,-2);
 	
 	if($list_ignored_soft == "")
 	$list_ignored_soft="''";
-	
-	//utilisation du cache	
-	if ($_SESSION["usecache"] == 1){
-		$table_cache="softwares_name_cache";
-	}else{ //non utilisation du cache
-		$table_cache="softwares";
-	}
-	$sql_list_alpha="select substr(trim(name),1,1) alpha
-				 from ".$table_cache." cache 
+
+	$sql_list_alpha="select distinct substr(trim(name),1,1) alpha
+				 from ".$table." cache 
 				 where substr(trim(name),1,1) is not null and name not in (".$list_dico_soft.")
-			and name not in (".$list_ignored_soft.")".$search_cache;	
-	 $result_list_alpha = mysql_query( $sql_list_alpha, $_SESSION["readServer"]);
-	 $i=0;
-//execute the query only if necessary 
-if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha or !isset($_POST['onglet_bis'])){
-	 while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
-	 	if (strtoupper($item_list_alpha -> alpha) != "" 
-			and strtoupper($item_list_alpha -> alpha) != √É
-			and strtoupper($item_list_alpha -> alpha) != √Ç
-			and strtoupper($item_list_alpha -> alpha) != √Ñ){
-				if (!isset($_POST['onglet_bis']))
-					$_POST['onglet_bis']=strtoupper($item_list_alpha -> alpha);
-				$list_alpha[strtoupper($item_list_alpha -> alpha)]=strtoupper($item_list_alpha -> alpha);
-				if (!isset($first)){
-					$first=$list_alpha[strtoupper($item_list_alpha -> alpha)];				
-				}
-	 	}
-	}
-	if (!isset($list_alpha[str_replace('\"','"',$_POST['onglet_bis'])]))
-	$_POST['onglet_bis']=$first;
+			and name not in (".$list_ignored_soft.") ".$search_cache;	
+	$first='';
 	//execute the query only if necessary 
-	$_SESSION['REQ_ONGLET_SOFT']= $sql_list_alpha;
-	$_SESSION['ONGLET_SOFT']=$list_alpha;
-}
+	if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha){
+		$result_list_alpha = mysql_query( $sql_list_alpha, $_SESSION["readServer"]);
+		$i=1;
+		 while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
+		 	if (strtoupper($item_list_alpha -> alpha) != "" 
+				and strtoupper($item_list_alpha -> alpha) != √
+				and strtoupper($item_list_alpha -> alpha) != ¬
+				and strtoupper($item_list_alpha -> alpha) != ƒ){
+					if ($first == ''){
+						$first=$i;
+					}
+					$list_alpha[$i]=strtoupper($item_list_alpha -> alpha);
+					$i++;
+		 	}
+		}
+		//execute the query only if necessary 
+		$_SESSION['REQ_ONGLET_SOFT'] = $sql_list_alpha;
+		$_SESSION['ONGLET_SOFT'] = $list_alpha;
+		$_SESSION['FIRST_DICO'] = $first;
+	}else{
+		$list_alpha=$_SESSION['ONGLET_SOFT'];
+	}
+	if (!isset($_POST['onglet_soft']))
+	$_POST['onglet_soft']=$_SESSION['FIRST_DICO'];
+	 onglet($list_alpha,$form_name,"onglet_soft",20);
 	
 	//search all soft for the tab as selected 
-	$search_soft="select distinct name from ".$table_cache." cache
-			where name like '".$_POST['onglet_bis']."%'
+	$search_soft="select distinct name from ".$table." cache
+			where name like '".$_SESSION['ONGLET_SOFT'][$_POST['onglet_soft']]."%'
 			and name not in (".$list_dico_soft.")
 			and name not in (".$list_ignored_soft.") ".$search_cache;
 	$result_search_soft = mysql_query( $search_soft, $_SESSION["readServer"]);
 	$list_soft="'";
-	$nb_debut=$limit['BEGIN'];
-	$nb_fin=$limit['END']+$nb_debut;
-	$count_soft=0;
-	$num_rows_soft=0;
  	while($item_search_soft = mysql_fetch_object($result_search_soft)){
- 		if ($count_soft < $nb_fin and $count_soft>=$nb_debut){
-		 		$list_soft.=str_replace("'","\'",$item_search_soft -> name)."','";
-		 		$name_verif[$item_search_soft -> name]=$item_search_soft -> name;
-		 		$nb_debut++;
-		 		$num_rows_soft++;
-		 } 	
-		 $count_soft++;
+		 		$list_soft.=addslashes($item_search_soft -> name)."','";
  	}
  	$list_soft=substr($list_soft,0,-2);
  	if ($list_soft == "")
  	$list_soft="''";
 
-	$sql="select name, count(name) nbre from softwares 
+	$list_fields= array('SOFT_NAME'=>'NAME',
+						'ID'=>'ID',
+	 					 'QTE'=> 'QTE',
+    					 'CHECK'=>'ID');
+	$table_name="CAT_NEW";
+	$default_fields= array('SOFT_NAME'=>'SOFT_NAME','QTE'=>'QTE','CHECK'=>'CHECK');
+	$list_col_cant_del=array('SOFT_NAME'=>'SOFT_NAME','CHECK'=>'CHECK');
+	$querydico = 'SELECT ';
+	foreach ($list_fields as $key=>$value){
+		if($key != 'CHECK' and $key != 'QTE')
+		$querydico .= $value.',';		
+		elseif ($key == 'QTE')
+		$querydico .= ' count(NAME) as '.$value.',';
+	} 
+	$querydico=substr($querydico,0,-1);
+	$querydico .= " from softwares 
 			where name in (".$list_soft.") and name != ''
-			group by name
-			order by 1 ";
+			group by name ";
 }
-
 /*******************************************************CAS OF IGNORED*******************************************************/
 if ($_POST['onglet'] == 'IGNORED'){
-	$reqCount="select count(extracted) nb from dico_ignored";
-	//on enl√®ve le AND et on met le where devant
-	if ($search_count != "")
-	$modif_search = " where ".substr($search_count,4);
-	$reqCount.=$modif_search;
-	$sql="select extracted name, cache.id 
-			from dico_ignored left join softwares_name_cache cache on cache.name=dico_ignored.extracted 
-			".$modif_search."
-		 limit ".$limit['BEGIN'].",".$limit['END'];
-
+	$list_fields= array('SOFT_NAME'=>'EXTRACTED',
+						'ID'=>'ID',
+						'SUP'=>'ID',
+						'CHECK'=>'ID'
+								);
+	$table_name="CAT_IGNORED";
+	$default_fields= array('SOFT_NAME'=>'SOFT_NAME','SUP'=>'SUP','CHECK'=>'CHECK');
+	$list_col_cant_del=array('SOFT_NAME'=>'SOFT_NAME','CHECK'=>'CHECK');
+	$querydico = 'SELECT ';
+	foreach ($list_fields as $key=>$value){
+		if($key != 'SUP' and $key != 'CHECK')
+		$querydico .= $value.',';		
+	} 
+	if ($search_count != ""){
+		$modif_search = " where ".substr($search_count,5);
+	}
+	$querydico=substr($querydico,0,-1);
+	$querydico .= " from dico_ignored left join ".$table." cache on cache.name=dico_ignored.extracted ".$modif_search." group by EXTRACTED ";
 }
-
 /*******************************************************CAS OF UNCHANGED*******************************************************/
 if ($_POST['onglet'] == 'UNCHANGED'){
-	$reqCount="select count(extracted) nb from dico_soft where extracted=formatted".$search_count;
-	$sql="select extracted name, cache.id
-		 from dico_soft left join softwares_name_cache cache on cache.name=dico_soft.extracted
-	 	where extracted=formatted ".$search_cache."
-		limit ".$limit['BEGIN'].",".$limit['END'];
+	$list_fields= array('SOFT_NAME'=>'EXTRACTED',
+						'ID'=>'ID',
+						'SUP'=>'ID',
+						'CHECK'=>'ID'
+								);
+	$table_name="CAT_UNCHANGE";
+	$default_fields= array('SOFT_NAME'=>'SOFT_NAME','SUP'=>'SUP','CHECK'=>'CHECK');
+	$list_col_cant_del=array('SOFT_NAME'=>'SOFT_NAME','CHECK'=>'CHECK');
+	$querydico = 'SELECT ';
+	foreach ($list_fields as $key=>$value){
+		if($key != 'SUP' and $key != 'CHECK')
+		$querydico .= $value.',';		
+	} 
+	$querydico=substr($querydico,0,-1);
+	$querydico .= " from dico_soft left join ".$table." cache on cache.name=dico_soft.extracted
+	 	where extracted=formatted ".$search_cache." group by EXTRACTED ";
 }
-if (!isset($count_soft)){
-	$resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
-	$valCount = mysql_fetch_array($resCount);
-}else
-$valCount['nb']=$count_soft;
-$result = mysql_query( $sql, $_SESSION["readServer"]);
-$num_rows_reality = mysql_num_rows($result);
-	$i=0;
-	while($colname = mysql_fetch_field($result)){
-		if ($colname->name != 'id')
-		$entete[$i++]=$colname->name;
-	}
-		$entete[$i]="SELECT<input type='checkbox' name='ALL' id='ALL' Onclick='checkall();'>";
-	$i=0;
-	while($item = mysql_fetch_object($result)){
-		if ($num_rows_reality != $num_rows_soft)
-		$view_ok[$item ->name]=$item ->name;
-		$data[$i][$entete[0]]=$item ->name;
-		if ($_POST['onglet'] == 'NEW' )
-		$data[$i][$entete[1]]=$item ->nbre;
-		//corrected by Inferno
-		$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".(isset($item ->id)?$item->id:str_replace("'","&#39",$item -> name))."'id='".$i."'>";
-		//$data[$i][$entete[2]]="<input type='checkbox' name='check[]' value='".(isset($item ->id)?$item ->id:str_replace("'","\'",$item -> name))."' id='".$i."'>";
-		$i++;
-		}
-	if ($num_rows_reality != $num_rows_soft and $_POST['onglet'] == 'NEW'){
-		if (isset($name_verif)){
-			foreach ($name_verif as $key){
-				if (!isset($view_ok[$key])){
-				$data[$i][$entete[0]]=$key;
-				$data[$i][$entete[1]]="0";
-				$data[$i][$entete[2]]="<input type='checkbox' onclick='return false'>";
-				$i++;
-				}	
-			}
-			$expl_cache="<font color=green>".$l->g(812)."</font>";
-		}
-		
-	}	
-	$titre=$l->g(768)." ".$valCount['nb'];
-	$width=60;
-	$height=300;
-if ($_POST['onglet'] == 'NEW'){
-	if (isset($expl_cache))
-echo $expl_cache;
-		 onglet($_SESSION['ONGLET_SOFT'],$form_name,"onglet_bis",20);
-}
-	tab_entete_fixe($entete,$data,$titre,$width,$height);
-
-show_page($valCount['nb'],$form_name);
-
-echo "<input type='hidden' id='supp' name='supp' value=''>";
-echo "<input type='hidden' id='detail' name='detail' value=''>";
-echo "<input type='hidden' id='TRANSF' name='TRANSF' value=''>";
+$_SESSION['query_dico']=$querydico;
+$result_exist=tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$querydico,$form_name,80); 
 echo "</td></tr>";
-
-
-/******************************************CHAMP DE TRANSFERT********************************************/
-//r√©cup√©ration de toutes les cat√©gories
+$search=show_modif(stripslashes($_POST['search']),"search",'0');
+$trans= "<input name='all_item' id='all_item' type='checkbox' ".(isset($_POST['all_item'])? " checked ": "").">".$l->g(384);
+//rÈcupÈration de toutes les catÈgories
 $sql_list_categories="select distinct(formatted) name from dico_soft where formatted!=extracted";
 $result_list_categories = mysql_query( $sql_list_categories, $_SESSION["readServer"]);
-$list_categories['EMPTY']="";
-
 while($item_list_categories = mysql_fetch_object($result_list_categories)){
 	$list_categories[$item_list_categories ->name]=$item_list_categories ->name;	
 }
-//d√©finition de toutes les options possible
-$choix_affect['EMPTY']="";
+//dÈfinition de toutes les options possible
 $choix_affect['NEW_CAT']=$l->g(385);
 $choix_affect['EXIST_CAT']=$l->g(387);
 $list_categories['IGNORED']="IGNORED";
 $list_categories['UNCHANGED']="UNCHANGED";
-echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td align='right'>";
-echo "<input name='all_item' id='all_item' type='checkbox' >
-		".$l->g(384);
-echo"<select name='AFFECT_TYPE' style='background-color:white;'>";
-$countHl=0;
-foreach ($choix_affect as $key=>$value){	
-	echo "<option value='".$key."' OnClick=\"active('NEW_CAT_div',";
-	if ($key == "NEW_CAT") 	echo "1";
-	else echo "0";
-	echo ");active('EXIST_CAT_div',";
-	if ($key == "EXIST_CAT") 	echo "1";
-	else echo "0";
-	echo ");\"";
-	echo ($countHl%2==1?"":"class='hi'").">".$value."</option>";
-$countHl++;
+$trans.=show_modif($choix_affect,"AFFECT_TYPE",'2',$form_name);
+if ($_POST['AFFECT_TYPE'] == 'EXIST_CAT'){
+	$trans.=show_modif($list_categories,"EXIST_CAT",'2');	
+	$verif_field="EXIST_CAT";
 }
-echo "</select>";
-echo "</td><td align=left><div id='NEW_CAT_div' style='display:none'>
-		<input type='text' size='20' maxlength='20' id='NEW_CAT_edit' name='NEW_CAT_edit' style='background-color:white;'>
-		<input type='button' name='TRANSF' value='".$l->g(13)."' onclick='garde_post(\"TRANSF\",\"TRANSF\",\"".$form_name."\")'>
-	</div>";
-echo "</td><td><div id='EXIST_CAT_div' style='display:none'>";
-echo "<select name='EXIST_CAT_edit' style='background-color:white;'>";
-$countHl=0;
-foreach ($list_categories as $key=>$value){	
-	echo "<option value='".$key."' ";
-	if ($_POST['NEW_CAT_SELECT'] == $key )
-	echo " selected";
-	echo ($countHl%2==1?"":"class='hi'").">".$value."</option>";
-	$countHl++;
-}
+elseif ($_POST['AFFECT_TYPE'] == 'NEW_CAT'){
+	$trans.=show_modif(stripslashes($_POST['NEW_CAT']),"NEW_CAT",'0');
+	$verif_field="NEW_CAT";
+}	
 
-echo "</select><input type='button' name='TRANSF' value='".$l->g(13)."' onclick='garde_post(\"TRANSF\",\"TRANSF\",\"".$form_name."\")'></div>";
-echo "</td></tr>";
-/******************************************SEARCH BUTTON********************************************/
-echo "<tr><td>
-	<input name='search' id='search' value='".$_POST["search"]."' style='background-color:white;'>
-	<input type='Submit' name='valid_search' value='";
-echo $l->g(393)."'>";
-echo "<input type='Submit' value='".$l->g(396)."' name='RESET'></td>";
-//fermeture des tableaux et du formulaire
-echo "</tr></table></table></form>";
+if ($_POST['AFFECT_TYPE']!='')
+$trans.= "<input type='button' name='TRANSF' value='".$l->g(13)."' onclick='return verif_field(\"".$verif_field."\",\"TRANS\",\"".$form_name."\");'>";
 
-
+echo "<tr><td>".$search."<input type='submit' value='".$l->g(393)."'><input type='button' value='".$l->g(396)."' onclick='return pag(\"RESET\",\"RESET\",\"".$form_name."\");'>";
+if ($result_exist != FALSE)
+echo "<div align=right> ".$trans."</div>";
+echo "</td></tr></table></table>";
+echo "<input type='hidden' name='RESET' id='RESET' value=''>";
+echo "<input type='hidden' name='TRANS' id='TRANS' value=''>";
+echo "<input type='hidden' name='SUP_CAT' id='SUP_CAT' value=''>";
+echo "</form>";
 ?>
