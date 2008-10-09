@@ -101,8 +101,9 @@ if( isset( $_POST["actpack"] ) and $_POST['activat_option'] != "for_server") {
 		$reqVerif = "SELECT * FROM download_available WHERE fileid=".$_POST["actpack"];
 		if( ! mysql_num_rows( mysql_query( $reqVerif, $_SESSION["readServer"]) )) {
 			
-			$infoTab = loadInfo( $_POST["https"], $_POST["actpack"] );
-			
+			$infoTab = loadInfo( $_POST["https"], $_POST["actpack"] );			
+			if (!$infoTab)
+			$infoTab= array("PRI"=>'10',"FRAGS"=>'0');
 			$req1 = "INSERT INTO download_available(FILEID, NAME, PRIORITY, FRAGMENTS, OSNAME ) VALUES
 			( '".$_POST["actpack"]."', 'Manual_".$_POST["actpack"]."',".$infoTab["PRI"].",".$infoTab["FRAGS"].", 'N/A' )";
 			
