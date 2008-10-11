@@ -699,6 +699,11 @@ ALTER TABLE softwares ADD INDEX `VERSION`(`VERSION`);
 ALTER TABLE subnet ADD INDEX ID(ID);
 ALTER TABLE hardware CHANGE QUALITY QUALITY DECIMAL(7,4) default NULL;
 
+ALTER TABLE groups change REVALIDATE_FROM REVALIDATE_FROM INT default 0; 	 
+ALTER TABLE groups change CREATE_TIME CREATE_TIME INT default 0;
+UPDATE groups SET CREATE_TIME=0 WHERE CREATE_TIME IS NULL;
+UPDATE groups SET REVALIDATE_FROM=0 WHERE REVALIDATE_FROM IS NULL;
+
 DELETE FROM config WHERE name='GUI_VERSION';
 DELETE FROM config WHERE name='IP_MIN_QUALITY';
 
@@ -723,8 +728,12 @@ INSERT INTO config VALUES ('DOWNLOAD_PERIOD_LATENCY', 0, '', 'Time between two p
 INSERT INTO config VALUES ('DOWNLOAD_TIMEOUT', 30, '', 'Validity of a package (in days)');
 INSERT INTO config VALUES ('LOCAL_SERVER', 0, 'localhost', 'Server address used for local import');
 INSERT INTO config VALUES ('LOCAL_PORT', 80, '', 'Server port used for local import');
+INSERT INTO config VALUES ('DOWNLOAD_PACK_DIR','','/var/lib/ocsinventory-reports','Directory for download files');
+INSERT INTO config VALUES ('IPDISCOVER_IPD_DIR','','/var/lib/ocsinventory-reports','Directory for Ipdiscover files');
+
 INSERT INTO blacklist_serials(SERIAL) VALUES ('N/A'),('(null string)'),('INVALID'),('SYS-1234567890'),('SYS-9876543210'),('SN-12345'),('SN-1234567890'),('1111111111'),('1111111'),('1'),('0123456789'),('12345'),('123456'),('1234567'),('12345678'),('123456789'),('1234567890'),('123456789000'),('12345678901234567'),('0000000000'),('000000000'),('00000000'),('0000000'),('000000'),('NNNNNNN'),('xxxxxxxxxxx'),('EVAL'),('IATPASS'),('none'),('To Be Filled By O.E.M.'),('Tulip Computers'),('Serial Number xxxxxx'),('SN-123456fvgv3i0b8o5n6n7k'),('');
 INSERT INTO blacklist_macaddresses(MACADDRESS) VALUES ('00:00:00:00:00:00'),('FF:FF:FF:FF:FF:FF'),('44:45:53:54:00:00'),('44:45:53:54:00:01'),('00:01:02:7D:9B:1C'),('00:08:A1:46:06:35'),('00:08:A1:66:E2:1A'),('00:09:DD:10:37:68'),('00:0F:EA:9A:E2:F0'),('00:10:5A:72:71:F3'),('00:11:11:85:08:8B'),('10:11:11:11:11:11'),('44:45:53:54:61:6F'),('');
+
 
 INSERT INTO operators VALUES ('admin','admin','admin','admin',1, 'Default administrator account');
 
