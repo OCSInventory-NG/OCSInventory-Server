@@ -94,15 +94,15 @@ if( isset($_POST["name"])) {
 	else
 		$instOk = true;
 }
-if( ! $instOk ) {
+if( $hnd = @fopen("dbconfig.inc.php", "r") ) {
+		fclose($hnd);
+		require("dbconfig.inc.php");
+		$valNme = $_SESSION["COMPTE_BASE"];
+		$valPass = $_SESSION["PSWD_BASE"];
+		$valServ = $_SESSION["SERVEUR_SQL"];
+}
 
-	if( $hnd = @fopen("dbconfig.inc.php", "r") ) {
-			fclose($hnd);
-			require("dbconfig.inc.php");
-			$valNme = $_SESSION["COMPTE_BASE"];
-			$valPass = $_SESSION["PSWD_BASE"];
-			$valServ = $_SESSION["SERVEUR_SQL"];
-	}
+if( ! $instOk ) {
 
 	echo "<br><form name='fsub' action='install.php' method='POST'><table width='100%'>
 	<tr>
@@ -162,7 +162,8 @@ if(isset($_POST["label"])) {
 }
 
 if($_POST["fin"]=="fin") {
-	if(!@mysql_connect($_POST["host"],"ocs","ocs")) {
+	// Configuration done, so try with account from config file
+	if(!@mysql_connect($valServ,$valNme,$valPass)) {
 		if(mysql_errno()==0) {
 			echo "<br><center><font color=red><b>ERROR: MySql authentication problem. You must add the 'old-passwords' in your mysql configuration file (my.ini). Then restart mysql, and relaunch install.php</b><br></font></center>";
 			die();
@@ -185,10 +186,7 @@ if(!$ch = @fopen("dbconfig.inc.php","w")) {
 	die();
 }
 
-fwrite($ch,"<?php \n\$_SESSION[\"SERVEUR_SQL\"]=\"".$_POST["host"]."\";\n\$_SESSION[\"COMPTE_BASE\"]=\"ocs\";\n\$_SESSION[\"PSWD_BASE\"]=\"ocs\";\n?>");
-fclose($ch);
-
-echo "<br><center><font color=green><b>MySql config file successfully written</b></font></center>";
+$keepuser=false;
 
 $db_file = "files/ocsbase.sql";
 if($dbf_handle = @fopen($db_file, "r")) {
@@ -201,7 +199,12 @@ if($dbf_handle = @fopen($db_file, "r")) {
 	foreach ( explode(";", "$sql_query") as $sql_line) {
 		$li++;
 		if(!mysql_query($sql_line)) {
-			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1044 || mysql_errno()==1065 || mysql_errno()==1060 || mysql_errno()==1054 || mysql_errno()==1091 || mysql_errno()==1061) 
+			if (mysql_errno()==1044 && strpos($sql_line, "GRANT ALL")!==false) {
+				// Provided user not MySQL Administror
+				$keepuser=true;
+				continue;
+			}
+			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1065 || mysql_errno()==1060 || mysql_errno()==1054 || mysql_errno()==1091 || mysql_errno()==1061) 
 				continue;		
 
 			if(  mysql_errno()==1071 ) {
@@ -228,6 +231,19 @@ if($dbf_handle = @fopen($db_file, "r")) {
 else {
 	echo "<br><center><font color=red><b>ERROR: $db_file needed</b></font></center>";
 	die();
+}
+
+if ($keepuser) {
+	// Provided user not MySQL Administror
+	// Keep the account used for migration
+	fwrite($ch,"<?php \n\$_SESSION[\"SERVEUR_SQL\"]=\"".$_POST["host"]."\";\n\$_SESSION[\"COMPTE_BASE\"]=\"".$_POST["name"]."\";\n\$_SESSION[\"PSWD_BASE\"]=\"".$_POST["pass"]."\";\n?>");
+	fclose($ch);
+	echo "<br><center><font color=green><b>MySql config file successfully written (using ".$_POST["name"]." account)</b></font></center>";
+} else {
+	// Use account created during installation
+	fwrite($ch,"<?php \n\$_SESSION[\"SERVEUR_SQL\"]=\"".$_POST["host"]."\";\n\$_SESSION[\"COMPTE_BASE\"]=\"ocs\";\n\$_SESSION[\"PSWD_BASE\"]=\"ocs\";\n?>");
+	fclose($ch);
+	echo "<br><center><font color=green><b>MySql config file successfully written (using new ocs account)</b></font></center>";
 }
 
 if($dejaLance>0)	
