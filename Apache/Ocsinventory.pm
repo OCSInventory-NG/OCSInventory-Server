@@ -122,10 +122,9 @@ sub handler{
 
     # To manage the first contact with the bootstrap
     # The uri must be '/ocsinventory/deploy/[filename]'
-    if($r->uri()=~/deploy\/(.+)\/?$/){
+    if($r->uri()=~/deploy\/([^\/]+)\/?$/){
       if($ENV{'OCS_OPT_DEPLOY'}){
-        &_end(0);
-        return(&_send_file('deploy',$1));
+        return &_end(&_send_file('deploy',$1));
       }else{
         return &_end(APACHE_FORBIDDEN);
       }
@@ -133,8 +132,7 @@ sub handler{
     # We use the GET method for the update to use the proxies
     # The URL is built like that : [OCSFSERVER]/ocsinventory/[os]/[name]/[version]
       if($ENV{'OCS_OPT_UPDATE'}){
-        &_end(0);
-        return(&_send_file('update',$1,$2,$3));
+        return &_end(&_send_file('update',$1,$2,$3));
       }else{
         return &_end(APACHE_FORBIDDEN);
       }
