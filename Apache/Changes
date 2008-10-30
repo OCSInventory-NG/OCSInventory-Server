@@ -1,4 +1,8 @@
 Revision history for Apache::Ocsinventory
+1.02 final
+	* Handling the trailing '/' in deploy feature and calling _end in more standard way (Ocsinventory.pm)
+	* Fix a typo (logging) in System.pm (OCS_OPT_LOGPATH) Thx to Remi Collet
+
 1.02 RC2
 	* Fix the problem of feeding cache when write_diff is OFF
 	* Fix the duplicate error in packages history (download)
