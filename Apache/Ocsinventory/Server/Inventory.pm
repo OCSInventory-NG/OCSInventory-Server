@@ -39,6 +39,7 @@ use Apache::Ocsinventory::Server::Inventory::Capacities;
 use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Inventory::Update;
 use Apache::Ocsinventory::Server::Inventory::Filter;
+use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
 
 our %XML_PARSER_OPT = (
 	'ForceArray' => []
