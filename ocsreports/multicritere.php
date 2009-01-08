@@ -636,7 +636,7 @@ $l->g(36), $l->g(207), $l->g(25), $l->g(24), $l->g(377), $l->g(65), $l->g(284), 
 TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331),$l->g(209),$l->g(53),$l->g(45), $l->g(312), $l->g(286), $l->g(429), $l->g(512),$l->g(95),$l->g(555),$l->g(556));
 
 //If software is selected, then software version is available
-if( in_array($l->g(20),$_SESSION["OPT"]))
+if($_SESSION["OPT"] && in_array($l->g(20),$_SESSION["OPT"]))
 	$optArray = array_merge( $optArray , array($l->g(19)) );
 
 $optArray  = array_merge( $optArray, $_SESSION["optCol"]);
