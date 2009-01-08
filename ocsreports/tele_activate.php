@@ -139,7 +139,7 @@ else if( isset( $_GET["actpack"] )) {
 		echo " <form name='formserv' id='formserv' action='index.php?multi=21' method='POST'>
 		<input type='hidden' name='actpack' value='".$_GET["actpack"]."'>
 		<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
-		<tr height='30px'><td align='center' colspan='10'><b>".$l->g(465).$_GET["actpack"]."</b></td></tr>
+		<tr height='30px'><td align='center' colspan='10'><b>".$l->g(465).' '.$_GET["actpack"]."</b></td></tr>
 		<tr><td align='center' colspan='10'>".$l->g(649)."<input type='radio' name='activat_option' value='for_server' onclick='document.getElementById(\"DITRI_SERVER\").style.display=\"block\"; document.getElementById(\"activ\").style.display=\"none\";'></td></tr>
 		<tr><td align='center' colspan='10'>".$l->g(650)."<input type='radio' name='activat_option' value='default' onclick='document.getElementById(\"DITRI_SERVER\").style.display=\"none\"; document.getElementById(\"activ\").style.display=\"block\";' checked></td></tr>
 		</table>
