@@ -24,7 +24,14 @@ our @EXPORT = qw /
 /;
 
 sub get_computers {
-  my $request = decode_xml( shift );
+  my ($data) = @_;
+
+  die unless $data;
+
+  # Remove non printable char from the XML
+  $data =~ s/[[:cntrl:]]//g;
+
+  my $request = decode_xml( $data );
   
   my %build_functions = (
     'INVENTORY' => \&Apache::Ocsinventory::Interface::Inventory::build_xml_inventory,
