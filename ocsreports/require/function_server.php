@@ -144,7 +144,7 @@ function insert_with_rules_opt($ID_HARDWARE,$cfield,$op,$compto,$serv_value){
 
 
 	$sql_servValues = "select a.".$compto.",a.".$id_server.",d.id as id_download_enable from ".$tablecompto." a,download_enable d
-						 where a.".$id_server." in (".implode(',',$list_serverId).") and d.server_id=a.".$id_server;
+						 where a.".$id_server." in (".implode(',',$list_serverId).") and d.server_id=a.".$id_server." and fileid='".$_POST['TIMESTAMP']."'";
 	$res_servValues = mysql_query( $sql_servValues, $_SESSION["readServer"] ) or die(mysql_error($_SESSION["readServer"]));	
 	//echo $sql_servValues;
 	while( $val_servValues = mysql_fetch_array($res_servValues)) {
