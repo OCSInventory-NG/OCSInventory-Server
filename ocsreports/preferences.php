@@ -671,7 +671,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			</script>
 			<td><b><a href=# OnClick='actForm("checked","true")'><?php echo $l->g(383); ?></a>/
 			<a href=# OnClick='actForm("checked","false")'><?php echo $l->g(389); ?></a></b></font></td></td>
-		<?}
+		<?php }
 
 		echo "</tr>";
 		$x=-1; $nb=0;
@@ -1017,7 +1017,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 						
 					}
 					</script>
-					<?
+					<?php
 					echo "<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '60%' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
 					<tr height='20px' bgcolor='white'>";
 					if ( $_SESSION["lvluser"]==SADMIN ){  
@@ -1069,17 +1069,17 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 					</div>
 					<div id='add_serv' style='display:none'>
 					<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5'>
-					<tr><td><?php echo $l->g(589)." "; ?>:</td><td><select id='server' name='name_server_add' ><option value=''><? echo $l->g(32); ?></option><? echo $groupListServers; ?></select></td></tr>
+					<tr><td><?php echo $l->g(589)." "; ?>:</td><td><select id='server' name='name_server_add' ><option value=''><?php echo $l->g(32); ?></option><?php echo $groupListServers; ?></select></td></tr>
 					<tr><td colspan=2 align=center><b><input type='submit' name='valid_server'></b></td></tr>
 					</table>
 					</div>
 					<div id='replace_serv' style='display:none'>
 					<table align='center' width='50%' border='0' cellspacing=10 bgcolor='#C7D9F5'>
-					<tr><td><?php echo $l->g(637); ?> :</td><td><select id='server' name='name_server_replace' ><option value=''><? echo $l->g(32); ?></option><? echo $groupListServers; ?></select></td></tr>
+					<tr><td><?php echo $l->g(637); ?> :</td><td><select id='server' name='name_server_replace' ><option value=''><?php echo $l->g(32); ?></option><?php echo $groupListServers; ?></select></td></tr>
 					<tr><td colspan=2 align=center><b><input type='submit' name='valid_server'></b></td></tr>
 					</table>
 					</div>
-					<?
+					<?php
 						/*$reqGroups = "SELECT DISTINCT name FROM hardware WHERE deviceid<>'_SYSTEMGROUP_'";
 						$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
 						$first = true;

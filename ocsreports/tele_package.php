@@ -119,7 +119,7 @@
 				<tr height='30px' bgcolor='white'><td><?php echo $l->g(464); ?>:</td><td>
 				<input id='nbfrags' name='nbfrags' size='5' <?php if( round($size) > 1024 ) { ?> onKeyPress='maj2();' 
 						onkeydown='maj2();' onkeyup='maj2();' 
-		  				onblur='maj2();'  onclick='maj2();' <?}else{ echo " value=1 readonly style='color:black; background-color:#e1e1e2;'" ;} ?></td></tr>
+		  				onblur='maj2();'  onclick='maj2();' <?php }else{ echo " value=1 readonly style='color:black; background-color:#e1e1e2;'" ;} ?></td></tr>
 				<tr height='30px' bgcolor='white'><td align='right' colspan='10'><input type='submit'>
 				<input type='hidden' name='id' value='<?php echo $id; ?>'>
 				<input type='hidden' name='digest' value='<?php echo $digest; ?>'>

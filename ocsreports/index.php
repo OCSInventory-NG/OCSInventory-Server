@@ -157,7 +157,7 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
 			if (d) {d.style.display='block';}
 		}
 		</script>
-	<?
+	<?php
 
 	if($_SESSION["lvluser"]==SADMIN) {
  
@@ -193,7 +193,7 @@ if(! isset($_SESSION["first"])||!$_GET["lareq"]) {
  				tab($l->g(287), 13);
 	}
 	tab($l->g(570), 28);
-	?><script language='javascript'>montre();</script>	<?	
+	?><script language='javascript'>montre();</script>	<?php
 	echo "</tr></table>";
 	echo "</td></tr></table>";
 	flush();

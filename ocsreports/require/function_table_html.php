@@ -122,7 +122,7 @@ function tri($sql)
 			return false;
 		}
 	</script>
-	<?
+	<?php
 	if ($titre != "")
 	printEnTete($titre);
 	echo "<br><div class='tableContainer' id='data' style=\"width:".$width."%;\"><table cellspacing='0' class='ta'><tr>";

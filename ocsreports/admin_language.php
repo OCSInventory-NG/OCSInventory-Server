@@ -19,7 +19,7 @@ if ($_POST['ok_for_change'] == "OK"){
  	?>
 <script language=javascript>
 function confirme(){
-			if(confirm("<? echo $l->g(713)?>")){
+			if(confirm("<?php echo $l->g(713)?>")){
 				document.getElementById('ok_for_change').value='OK';
 				document.getElementById('modif_lang').submit();
 			}
@@ -35,7 +35,7 @@ function reLangmodif(lang){
 	document.getElementById('modif_lang').submit();	
 }
 </script>
-<?
+<?php
 echo "<form name='modif_lang' id='modif_lang' method='POST' action='index.php?multi=35'><center>";
 if (isset($_POST['langue_ref']) and $_POST['langue_ref'] != "")
 $val_langue_ref=$_POST['langue_ref'];

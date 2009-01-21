@@ -134,7 +134,7 @@ else if( isset( $_GET["actpack"] )) {
 			}
 		
 		</script>
-		<?
+		<?php
 		
 		echo " <form name='formserv' id='formserv' action='index.php?multi=21' method='POST'>
 		<input type='hidden' name='actpack' value='".$_GET["actpack"]."'>
