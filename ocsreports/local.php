@@ -24,7 +24,7 @@ while( $valSql = mysql_fetch_array( $resSql ) ) {
 
 if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
 	
-	if( getFileExtension($_FILES['userfile']['name']) != "ocs" ) {
+	if( getFileExtension($_FILES['userfile']['name']) != "ocs" && getFileExtension($_FILES['userfile']['name']) != "xml" ) {
 		echo "<br><center><b><font color='red'> ".$l->g(559)."</font></b></center>";
 	}
 	else {
