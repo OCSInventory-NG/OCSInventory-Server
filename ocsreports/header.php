@@ -26,9 +26,8 @@ if( !$valUpd || $valUpd["tvalue"]<GUI_VER ) {
 }
 
 if(isset($_GET["logout"])) {
-	foreach( $_SESSION as $key=>$val) {		
-		unset($_SESSION[$key]);
-	}
+        $_SESSION = array();
+        session_destroy();
 }
 
 if( isset($_GET["first"] )) {
