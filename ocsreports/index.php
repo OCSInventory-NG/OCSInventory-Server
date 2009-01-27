@@ -269,7 +269,6 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 11: require ('pass.php');	break;
 		case 12: require ('label.php');	break;
 		case 13: require ('local.php');	break;
-		case 13:	require ('local.php');	break;
 		case 14: require ('dico.php');	break;
 		case 15: require ('composants.php'); break;
 		case 20: require ('tele_package.php'); break; 
