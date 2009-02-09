@@ -173,8 +173,6 @@ sub handler{
     unless( $status == Z_OK or $status == Z_STREAM_END){
       if( $ENV{OCS_OPT_COMPRESS_TRY_OTHERS} ){
         &_inflate(\$raw_data, \$inflated);
-        # Remove non printable char to avoid strange breakage
-        $inflated =~ s/[[:cntrl:]]//g;
       }
       else{
         undef $inflated;
