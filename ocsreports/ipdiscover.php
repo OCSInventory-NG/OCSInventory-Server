@@ -110,10 +110,10 @@ else if( $_GET["mode"] == 11 ) {
 		if( $_POST["nomrez"] == "" || $_POST["dpt"] == "" || $_POST["ipa"] == "" || $_POST["ipm"] == "" ) {
 			echo "<center><font color='red'><b>".$l->g(298)."</b></font></center>";
 		}
-		else if( ! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$",$_POST["ipa"] )) {
+		else if( ! preg_match("/^([0-9]{1,3}\.){3}[0-9]{1,3}$/",$_POST["ipa"] )) {
 			echo "<center><font color='red'><b>".$l->g(299)."</b></font></center>";
 		}
-		else if( (! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$", $_POST["ipm"] )) && ((! ereg("^[0-9]{1,2}$", $_POST["ipm"] ) )||($_POST["ipm"]>32)) ) {
+		else if( (! preg_match("/^([0-9]{1,3}\.){3}[0-9]{1,3}$/", $_POST["ipm"] )) && ((! preg_match("/^[0-9]{1,2}$/", $_POST["ipm"] ) )||($_POST["ipm"]>32)) ) {
 			echo "<center><font color='red'><b>".$l->g(300)."</b></font></center>";
 		}	
 		else {
@@ -314,7 +314,7 @@ else if( $_GET["mode"] == 1 ) {
 		$resIpd = mysql_query("SELECT COUNT(*) AS nbi FROM devices WHERE name='IPDISCOVER' AND tvalue='".$arrGateway["nbrez"]."'", $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		$arrIpd = mysql_fetch_array( $resIpd );
 
-		if( ! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$",$arrGateway["nbrez"]) ) {
+		if( ! preg_match("/^([0-9]{1,3}\.){3}[0-9]{1,3}$/",$arrGateway["nbrez"]) ) {
 			continue ;
 		}
 		$masque = getMask( $arrGateway["nbrez"] ) ;							
@@ -602,10 +602,10 @@ else  if( $_GET["mode"] == 7 ) {
 	
 	if( $ipa ) {
 		
-		if( ! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$",$ipa )) {
+		if( ! preg_match("/^([0-9]{1,3}\.){3}[0-9]{1,3}$/",$ipa )) {
 			echo "<script language='javascript'>alert('".$l->g(299)."');</script>";
 		}
-		else if( (! ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$", $ipm )) && (! ereg("^[0-9]{2}$", $ipm ) ) && $ipm != "") {
+		else if( (! preg_match("/^([0-9]{1,3}\.){3}[0-9]{1,3}$/", $ipm )) && (! preg_match("/^[0-9]{2}$/", $ipm ) ) && $ipm != "") {
 			echo "<script language='javascript'>alert('".$l->g(300)."');</script>";
 		}	
 		else {
@@ -955,7 +955,7 @@ function getMask( $ip ) {
 	$reqMsk = "SELECT ipmask FROM networks WHERE ipsubnet='$ip' AND ipmask <>''";
 	$resMsk = mysql_query( $reqMsk, $_SESSION["readServer"] ) or die( mysql_error($_SESSION["readServer"]) );
 	while( $ligMsk = mysql_fetch_array( $resMsk ) ) {
-		if( ereg("^([0-9]{1,3}\.){3}[0-9]{1,3}$",$ligMsk[0]) ) {
+		if( preg_match("/^([0-9]{1,3}\.){3}[0-9]{1,3}$/",$ligMsk[0]) ) {
 			return $ligMsk[0];
 		}
 	}

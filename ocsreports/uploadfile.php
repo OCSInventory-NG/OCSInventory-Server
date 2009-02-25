@@ -21,7 +21,7 @@ if(is_uploaded_file($_FILES['userfile']['tmp_name']))
 {	
 	$nomFich=$_FILES['userfile']['name'];
 	
-	ereg( "(.*)\.(.*)$" , $_FILES['userfile']['name'] , $results );
+	preg_match( "/(.*)\.(.*)$/" , $_FILES['userfile']['name'] , $results );
 
 	$ext = $results[2];
 	$cp = $results[1];
@@ -196,7 +196,7 @@ function getVersionFromLinuxAgent($content)
 {
 	global $l;
 	$res=Array();
-	ereg("use constant VERSION =>([^;]*);", $content , $res);	
+	preg_match("/use constant VERSION =>([^;]*);/", $content , $res);
 	
 	if($res[1]=="")
 	{

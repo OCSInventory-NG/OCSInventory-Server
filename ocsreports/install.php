@@ -405,7 +405,7 @@ else {
 		$masqueValide = "(($ipValide|$masqueEntier)[ ]*$)";
 		$exp = $ipValide."[ ]*/[ ]*".$masqueValide;
 
-		if( ereg($exp,$data[2],$res) ) {
+		if( preg_match(":$exp:",$data[2],$res) ) {
 			
 			if( @mysql_query("INSERT INTO subnet(netid, name, id, mask) 
 			VALUES ('".$res[1]."','".$data[0]."','".$data[1]."','".$res[4]."')") ) {
