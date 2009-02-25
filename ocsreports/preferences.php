@@ -13,6 +13,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 @session_start();
 require('dbconfig.inc.php');
+require ('fichierConf.class.php');
 
 define("MAX_CACHED_SOFTS", 200 );		// Max number of softs that may be returned by optimizations queries
 define("MAX_CACHED_REGISTRY", 200 );	// Max number of registry that may be returned by optimizations queries
