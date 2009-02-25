@@ -394,7 +394,7 @@ if (isset($_POST['action_server']) and $_POST['action_server'] != '0')
 									$_POST["valreg_".$i] = strtr($_POST["valreg_".$i], "?*", "_%");
 								
 								if( $_SESSION["usecache"] == true && $_POST["ega_".$i] == $l->g(129) ) {
-									$glued = getCache( "registry", "regvalue", $_POST["valreg_".$i], & $totRegs );
+									$glued = getCache( "registry", "regvalue", $_POST["valreg_".$i], $totRegs );
 									$reqCondition.="r.regvalue IN('".$glued."') AND ";
 								}
 								else {
@@ -508,7 +508,7 @@ if (isset($_POST['action_server']) and $_POST['action_server'] != '0')
 				$groupReq .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name$comp".$softsEg[$ii][0]."$compFin";
 				// If cache is used AND 'like' search is used
 				if( $_SESSION["usecache"] == true && $softsEg[$ii][2]==$l->g(129) ) {		
-					$gluedSofts = getCache( "softwares", "name", $softsEg[$ii][0], & $totSofts );
+					$gluedSofts = getCache( "softwares", "name", $softsEg[$ii][0], $totSofts );
 					if ($gluedSofts != ''){
 					$laRequeteF .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name IN('$gluedSofts')";
 					$selFinal   .= " s$logIndexEg.hardware_id=h.id AND s$logIndexEg.name IN('$gluedSofts')";
@@ -530,7 +530,7 @@ if (isset($_POST['action_server']) and $_POST['action_server'] != '0')
 				for($ii=0;$ii<sizeof($softsDi);$ii++) {
 					$gluedSofts = "";
 					$softsDi[$ii][0] = strtr($softsDi[$ii][0], "?*", "_%");
-					$gluedSofts = getCache( "softwares", "name", $softsDi[$ii][0], & $totSofts );
+					$gluedSofts = getCache( "softwares", "name", $softsDi[$ii][0], $totSofts );
 					
 					if( $gluedSofts != "" ) {
 						$reqSid = "SELECT DISTINCT hardware_id FROM softwares WHERE name IN('$gluedSofts')";
@@ -556,7 +556,7 @@ if (isset($_POST['action_server']) and $_POST['action_server'] != '0')
 			if( $_SESSION["usecache"] == true ) {
 				if(sizeof($regDiff)>=1) {				
 					$regDiff[1] = strtr($regDiff[1], "?*", "_%");
-					$gluedRegs = getCache( "registry", "regvalue", $regDiff[1], & $totRegs );
+					$gluedRegs = getCache( "registry", "regvalue", $regDiff[1], $totRegs );
 					$reqSid = "SELECT DISTINCT hardware_id FROM registry WHERE name='".$regDiff[0]."' AND regvalue IN('".$gluedRegs."')";
 					$resSid = mysql_query( $reqSid, $_SESSION["readServer"] );
 					while( $valSid = mysql_fetch_array($resSid) ) {
@@ -636,7 +636,7 @@ $l->g(36), $l->g(207), $l->g(25), $l->g(24), $l->g(377), $l->g(65), $l->g(284), 
 TAG_LBL, $l->g(357), $l->g(46),$l->g(257),$l->g(331),$l->g(209),$l->g(53),$l->g(45), $l->g(312), $l->g(286), $l->g(429), $l->g(512),$l->g(95),$l->g(555),$l->g(556));
 
 //If software is selected, then software version is available
-if($_SESSION["OPT"] && in_array($l->g(20),$_SESSION["OPT"]))
+if(is_array($_SESSION["OPT"]) && in_array($l->g(20),$_SESSION["OPT"]))
 	$optArray = array_merge( $optArray , array($l->g(19)) );
 
 $optArray  = array_merge( $optArray, $_SESSION["optCol"]);
@@ -933,7 +933,7 @@ function afficheLigne($ligne)
 	$indLigne++;
 }
 
-function getCache( $table, $field, $value, $count ) {
+function getCache( $table, $field, $value, &$count ) {
 	$reqCache = "SELECT ".$field." FROM ".$table."_".$field."_cache WHERE ".$field." LIKE '%".$value."%' AND ".$field." IS NOT NULL";	 
 	$resCache = mysql_query( $reqCache, $_SESSION["readServer"] );
 	$cached = array();
