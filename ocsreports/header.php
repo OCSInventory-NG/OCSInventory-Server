@@ -70,7 +70,7 @@ if( isset($_GET["first"] )) {
 	}
 	
 	function ruSure( pageDest ) {
-		if( confirm("<? echo $l->g(525); ?>") )
+		if( confirm("<?php echo $l->g(525); ?>") )
 			window.location = pageDest;
 	}
 
@@ -86,7 +86,7 @@ if( $_GET["multi"] ==3 && $_GET["mode"] == 1) {
 echo ">";
 if( !isset($_GET["popup"] )) {
 ?>
-<table class='headfoot' border='0' <?if ($ban_head=='no') echo "style='display:none;'"?>>
+<table class='headfoot' border='0' <?php if ($ban_head=='no') echo "style='display:none;'"?>>
 <tr height=25px>
 	<td><a href='index.php?first'><img src='image/logo OCS-ng-48.png'></a></td>
 	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
