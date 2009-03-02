@@ -11,7 +11,6 @@
 //Modified on $Date: 2008-03-20 16:26:49 $$Author: airoine $($Revision: 1.12 $)
 
 require ('req.class.php');
-
 $user=$_SESSION["loggeduser"];
 
 if($_SESSION["lvluser"]==SADMIN||$_SESSION["lvluser"]==LADMIN) {
@@ -20,17 +19,18 @@ if($_SESSION["lvluser"]==SADMIN||$_SESSION["lvluser"]==LADMIN) {
 }
 else if( ! isset($_SESSION["mesmachines"] )) {
 	$mescQuery = "SELECT DISTINCT(tag) FROM tags WHERE login='".$user."'";
-	if( ! $mescRes = mysql_query( $mescQuery, $_SESSION["readServer"] ) ) {
-		echo "<br><center><font class='warn'>".$l->g(620)."</font></center>";
-		include("footer.php");
-		die();	
-	}
-
+	$mescRes = mysql_query( $mescQuery, $_SESSION["readServer"] );
 	while( $mescVal = mysql_fetch_array( $mescRes ) ) {
 		$mach[] = $mescVal["tag"];
 	}
-	$mesMachines = "a.".TAG_NAME." IN ('".@implode("','",$mach)."') ";
-	$_SESSION["mesmachines"] = $mesMachines;
+	if (!isset($mach)){
+		echo "<br><center><font class='warn'>".$l->g(620)."</font></center>";
+		include("footer.php");
+		die();		
+	}else{	
+		$mesMachines = "a.".TAG_NAME." IN ('".@implode("','",$mach)."') ";
+		$_SESSION["mesmachines"] = $mesMachines;
+	}
 }
 else {
 	$mesMachines = $_SESSION["mesmachines"];
