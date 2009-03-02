@@ -38,7 +38,7 @@ if($_POST['Valid_modif_x']){
  
  
 //if no SADMIN=> view only your computors
-if ($_SESSION["lvluser"]!=SADMIN){
+if ($_SESSION["lvluser"] == ADMIN){
 	$sql_mesMachines="select hardware_id from accountinfo a where ".$_SESSION["mesmachines"];
 	$res_mesMachines = mysql_query($sql_mesMachines, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$mesmachines="(";
@@ -79,7 +79,7 @@ if (isset($_POST['supp']) and  $_POST['supp'] != "" and is_numeric($_POST['supp'
 $form_name='groups';
 require_once('require/function_table_html.php');
 //if SADMIN=> view all groups
-if ($_SESSION["lvluser"]==SADMIN){
+if ($_SESSION["lvluser"]!= ADMIN){
 	$def_onglets['DYNA']=$l->g(810); //Dynamic group
 	$def_onglets['STAT']=$l->g(809); //Static group centraux
 	$def_onglets['SERV']=strtoupper($l->g(651));
@@ -113,7 +113,7 @@ if ($_POST['onglet'] == "STAT" or $_POST['onglet'] == "DYNA"){
 	else
 		$sql.=" = ";
 		$sql .= " '' ";
-	if($_SESSION["lvluser"]!=SADMIN)
+	if($_SESSION["lvluser"] == ADMIN)
 	$sql.=" and workgroup='GROUP_4_ALL' ";
 	$sql.=" group by h.name order by ".$_POST['tri2']." ".$_POST['sens'];		
 	$reqCount="select count(*) nb from (".$sql.") toto";
@@ -128,6 +128,7 @@ if ($_POST['onglet'] == "STAT" or $_POST['onglet'] == "DYNA"){
 	$sql.=" limit ".$limit["BEGIN"].",".$limit["END"];
 	
 }
+
 $resCount = mysql_query($reqCount, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 $valCount = mysql_fetch_array($resCount);
 $result = mysql_query( $sql, $_SESSION["readServer"]);
@@ -145,7 +146,7 @@ $result = mysql_query( $sql, $_SESSION["readServer"]);
 		$entete[$i++]=$deb.$col.$fin;
 		}
 	}
-	if ($_SESSION["lvluser"]!=ADMIN){
+	if ($_SESSION["lvluser"] == SADMIN){
 		$entete[$i++]="del";
 		if ($_POST['onglet'] == "STAT")
 		$entete[$i++]="Visible";
@@ -157,7 +158,7 @@ $result = mysql_query( $sql, $_SESSION["readServer"]);
 		$data[$i][$entete[0]]=$deb.$item ->name.$fin;
 		$data[$i][$entete[1]]=$item ->description;
 		$data[$i][$entete[2]]=$item ->creat;
-		if ($_SESSION["lvluser"]!=SADMIN){
+		if ($_SESSION["lvluser"] == ADMIN){
 			$sql_count_my = "SELECT count(hardware_id) c FROM groups_cache WHERE group_id='".$item ->id."' and hardware_id ".$mesmachines; 
 			$res_count_my = mysql_query($sql_count_my, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 			$item_count_my = mysql_fetch_object($res_count_my);
@@ -168,7 +169,7 @@ $result = mysql_query( $sql, $_SESSION["readServer"]);
 		}else
 		$nbr=$item ->nbr;
 		$data[$i][$entete[3]]=$nbr;
-		if ($_SESSION["lvluser"]==SADMIN){
+		if ($_SESSION["lvluser"] == SADMIN){
 			$data[$i][$entete[4]]="<img src='image/supp.png' OnClick='confirme(\"".str_replace("'", "", $item ->name)."\",".$item ->id.",\"".$form_name."\",\"supp\",\"".$l->g(640)." \")'>";
 			if ($_POST['onglet'] == "STAT")
 			$data[$i][$entete[5]]="<input type='checkbox' OnClick='confirme(\"".str_replace("'", "", $item ->name)."\",".$item ->id.",\"".$form_name."\",\"check_group\",\"".$l->g(811)." \")' ".($item -> workgroup ? " checked" : "").">";
