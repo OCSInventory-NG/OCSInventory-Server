@@ -794,9 +794,10 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 				if ($listIdstat != ""){
 					$sqlStatnb="select count(*) as nb, substring(tvalue, 1, 4) as design
 								 from devices 
-								where ivalue in (".$listIdstat.") 
-									and hardware_id not in (".$listIdGroup.")
-									and name='DOWNLOAD' 
+								where ivalue in (".$listIdstat.") ";
+ 					if ($listIdGroup != '' and isset($listIdGroup))
+						$sqlStatnb.= " and hardware_id not in (".$listIdGroup.")";
+					$sqlStatnb.= "	and name='DOWNLOAD' 
 									and (tvalue IS NULL or tvalue LIKE 'SUCCESS%' or tvalue LIKE 'ERR_%')
 								group by design";
 					$resStatnb = mysql_query($sqlStatnb, $_SESSION["readServer"]);
