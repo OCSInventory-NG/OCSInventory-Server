@@ -26,7 +26,7 @@ if( $scriptPresent = @stat($fipdisc) ) {
 	if( ! is_executable($fipdisc) ) {
 		$scriptPresent = false;
 	}
-	else if( ! is_writable(".") ) {
+	else if( ! is_writable($IPD_DIR) ) {
 		$scriptPresent = false;
 	}	
 }
@@ -46,7 +46,7 @@ switch( $_GET["mode"] ) {
 				if( ! is_executable($fipdisc) ) {
 					echo "<br><center><b><font color='red'>$fipdisc ".$l->g(341)."</b></center>";
 				}
-				else if( ! is_writable(".") ) {
+				else if( ! is_writable($IPD_DIR) ) {
 					echo "<br><center><b><font color='red'>".$l->g(342)." $fipdisc</b></center>";
 				}	
 			}
