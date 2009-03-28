@@ -151,7 +151,7 @@ if($_SESSION["debug"]==1)
 		
 	if(!isset($_SESSION["loggeduser"]))
 	{			
-		echo "<br><form name='log' id='log' action='index.php' method='post'>
+		echo "<br><form name='log' id='log'  method='post'>
 		<table BORDER='0' WIDTH = 250px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
 			<tr>
 				<td><b>".$l->g(24).":</b></td>
