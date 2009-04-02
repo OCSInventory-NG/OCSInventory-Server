@@ -99,7 +99,7 @@ if($_SESSION["debug"]==1)
 }
 
 	if(isset($_POST["login"])) {				
-		$req="SELECT id, accesslvl, passwd FROM operators WHERE id='".$_POST["login"]."'";
+		$req="SELECT id, accesslvl, passwd FROM operators WHERE id='".mysql_escape_string($_POST["login"])."'";
 		$res=mysql_query($req,$_SESSION["readServer"]) or die(mysql_error());
 		
 		if($row=@mysql_fetch_object($res))
