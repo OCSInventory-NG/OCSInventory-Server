@@ -14,6 +14,11 @@ error_reporting(E_ALL & ~E_NOTICE);
 @set_time_limit(0);
 @session_start();
 
+if(isset($_GET["logout"])) {
+        $_SESSION = array();
+        session_destroy();
+}
+
 require_once("preferences.php");
 
 // update checking
@@ -25,10 +30,6 @@ if( !$valUpd || $valUpd["tvalue"]<GUI_VER ) {
 	die();
 }
 
-if(isset($_GET["logout"])) {
-        $_SESSION = array();
-        session_destroy();
-}
 
 if( isset($_GET["first"] )) {
 	unset( $_SESSION["lareq"] );
@@ -99,7 +100,6 @@ if($_SESSION["debug"]==1)
 
 	if(isset($_POST["login"])) {				
 		$req="SELECT id, accesslvl, passwd FROM operators WHERE id='".$_POST["login"]."'";
-		
 		$res=mysql_query($req,$_SESSION["readServer"]) or die(mysql_error());
 		
 		if($row=@mysql_fetch_object($res))
