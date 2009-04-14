@@ -85,7 +85,7 @@ sub filter_flood_ip_killer{
   my $current_context = shift;
   my $dbh = $current_context->{DBI_HANDLE};
 # In seconds
-  my $flushEverySeconds = $ENV{OCS_OPT_INVENTORY_FILTER_FLOOD_IP_CACHE_TIME}*60;
+  my $flushEverySeconds = $ENV{OCS_OPT_INVENTORY_FILTER_FLOOD_IP_CACHE_TIME};
   
 # Clear cache
   $dbh->do( 'DELETE FROM conntrack WHERE (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(TIMESTAMP))>?', {}, $flushEverySeconds );
