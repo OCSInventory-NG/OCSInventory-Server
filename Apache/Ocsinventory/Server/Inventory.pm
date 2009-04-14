@@ -69,6 +69,12 @@ sub _context{
 
 sub _inventory_handler{
   
+  # Call to preinventory handlers
+  if( &_pre_options() == INVENTORY_STOP ){
+    &_log(107,'inventory','stopped_by_module') if $ENV{'OCS_OPT_LOGLEVEL'};
+    return APACHE_FORBIDDEN;
+  }
+
   return APACHE_SERVER_ERROR if &_context();
   
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
@@ -90,12 +96,6 @@ sub _inventory_handler{
 
   #Inventory incoming
   &_log(104,'inventory','incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
-
-  # Call to preinventory handlers
-  if( &_pre_options() == INVENTORY_STOP ){
-    &_log(107,'inventory','stopped_by_module') if $ENV{'OCS_OPT_LOGLEVEL'};
-    return APACHE_FORBIDDEN;
-  }
   
   # Put the inventory in the database
   return APACHE_SERVER_ERROR if &_update_inventory( \%SECTIONS, \@SECTIONS );

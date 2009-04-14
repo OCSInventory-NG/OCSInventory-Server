@@ -31,8 +31,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   'NAME' => 'DOWNLOAD',
   'HANDLER_PROLOG_READ' => undef,
   'HANDLER_PROLOG_RESP' => \&download_prolog_resp,
-  'HANDLER_PRE_INVENTORY' => \&download_pre_inventory,
-  'HANDLER_POST_INVENTORY' => undef,
+  'HANDLER_PRE_INVENTORY' => undef,
+  'HANDLER_POST_INVENTORY' => \&download_post_inventory,
   'REQUEST_NAME' => 'DOWNLOAD',
   'HANDLER_REQUEST' => \&download_handler,
   'HANDLER_DUPLICATE' => \&download_duplicate,
@@ -263,10 +263,10 @@ sub download_prolog_resp{
   return 0;
 }
 
-sub download_pre_inventory{
+sub download_post_inventory{
   my $current_context = shift;
   
-  return INVENTORY_CONTINUE if !$ENV{'OCS_OPT_DOWNLOAD'};
+  return if !$ENV{'OCS_OPT_DOWNLOAD'};
   
   my $dbh = $current_context->{'DBI_HANDLE'};
   my $hardwareId = $current_context->{'DATABASE_ID'};
@@ -282,7 +282,6 @@ sub download_pre_inventory{
   else{
     &update_history_full( $hardwareId, $dbh, \@fromXml );
   }
-  return INVENTORY_CONTINUE;
 }
 
 sub download_handler{
