@@ -38,11 +38,11 @@ Ocsinventory/Interface/History.pm
 Ocsinventory/Interface/Internals.pm
 Ocsinventory/Interface/Ipdiscover.pm
 Ocsinventory/Interface/Inventory.pm
-binutils/ocsinventory-local.README
+binutils/ocsinventory-injector.README
 binutils/ocs-errors
 binutils/ocsinventory-log.README
 binutils/soap-client.pl
-binutils/ocsinventory-local.pl
+binutils/ocsinventory-injector.pl
 binutils/soap-client.README
 binutils/ipdiscover-util.README
 binutils/ocsinventory-log.pl

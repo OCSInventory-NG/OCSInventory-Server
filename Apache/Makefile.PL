@@ -34,7 +34,7 @@ WriteMakefile(
 #			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
 #			'XML::Entities'   => 0.02,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
 		      },
-#    'EXE_FILES'         => ['binutils/ocsinventory-local.pl'],
+#    'EXE_FILES'         => ['binutils/ocsinventory-injector.pl'],
 #    'INSTALLSCRIPT'     => "/usr/bin",
 #    'INSTALLSITESCRIPT' => "/usr/bin",
     ($] >= 5.005 ?      ## Add these new keywords supported since 5.005

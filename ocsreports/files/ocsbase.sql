@@ -778,7 +778,7 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GROUPS_CACHE_REVALIDAT
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_BETTER_THRESHOLD',1,'','Specify the minimal difference to replace an ipdiscover agent');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_NO_POSTPONE',0,'','Disable the time before a first election (not recommended)');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('IPDISCOVER_USE_GROUPS',1,'','Enable groups for ipdiscover (for example, you might want to prevent some groups');
-insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GENERATE_OCS_FILES',0,'','Use with ocsinventory-local, enable the multi entities feature');
+insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GENERATE_OCS_FILES',0,'','Use with ocsinventory-injector, enable the multi entities feature');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_FORMAT','','OCS','Generate either compressed file or clear XML text');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_OVERWRITE',0,'','Specify if you want to keep trace of all inventory between to synchronisation with the higher level server');
 insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('OCS_FILES_PATH','','/tmp','Path to ocs files directory (must be writeable)');

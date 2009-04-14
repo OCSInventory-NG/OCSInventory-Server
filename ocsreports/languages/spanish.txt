@@ -642,7 +642,7 @@
 746 Especifique la diferencia mínima para reemplazar un agente ipdiscover
 747 Deshabilitar el tiempo antes de una primera elección (no recomendado)
 748 Habilitar grupos para ipdiscover (por ejemplo, para prevenir que algunos grupos sean agentes ipdiscover)
-749 Use con ocsinventory-local, habilitar la opción multi entidades
+749 Use con ocsinventory-injector, habilitar la opción multi entidades
 750 Generar ya sea archivo comprimido o texto XML limpio
 751 Especifique si desea hacer seguimiento de todos los inventarios entre sincronizaciones con el servidor de más alto nivel
 752 Ruta del directorio de archivos ocs (debe tener permiso de escritura)

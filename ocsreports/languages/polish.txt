@@ -643,7 +643,7 @@
 746 Specify the minimal difference to replace an ipdiscover agent
 747 Disable the time before a first election (not recommended)
 748 Enable groups for ipdiscover (for example, you might want to prevent some groups to be ipdiscover agents)
-749 Use with ocsinventory-local, enable the multi entities feature
+749 Use with ocsinventory-injector, enable the multi entities feature
 750 Generate either compressed file or clear XML text
 751 Specify if you want to keep trace of all inventory between to synchronisation with the higher level server
 752 Path to ocs files directory (must be writeable)

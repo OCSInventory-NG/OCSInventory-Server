@@ -9,7 +9,7 @@
 ##code is always made freely available.
 ##Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
-#Last modification : $Id: ocsinventory-local.pl,v 1.3 2008-02-18 07:17:52 hunal Exp $
+#Last modification : $Id: ocsinventory-injector.pl,v 1.3 2008-02-18 07:17:52 hunal Exp $
 #Local insertion script
 use Fcntl qw/:flock/;
 use LWP::UserAgent;
@@ -135,7 +135,7 @@ GetOptions(
 
 # Default values
 $url		= 'http://localhost/ocsinventory' unless $url;
-$useragent	= 'OCS-NG_LOCAL_PL_v'.VERSION unless $useragent;
+$useragent	= 'OCS-NG_INJECTOR_PL_v'.VERSION unless $useragent;
 $directory	= '.' unless $directory;
 ###
 

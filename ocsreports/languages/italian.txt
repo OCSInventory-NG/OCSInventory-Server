@@ -641,7 +641,7 @@
 746 Specifica la differenza minima per sostituire un agente IpDiscover
 747 Disattivare il tempo prima di una prima elezione (non raccomandato)
 748 Abilita gruppi per IpDiscover (es: potresti non volere che alcuni gruppi siano agenti IpDiscover)
-749 Utilizzo con ocsinventory-local, attiva la funzione multi entità
+749 Utilizzo con ocsinventory-injector, attiva la funzione multi entità
 750 Genera file compresso o testo XML in chiaro
 751 Specifica se si desidera mantenere traccia degli inventari con la sincronizzazione al server di livello superiore
 752 Percorso della directory dei file OCS (deve essere scrivibile)

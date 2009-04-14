@@ -195,7 +195,7 @@ our %CONFIG = (
     type => 'IVALUE',
     default => 0,
     unit => 'NA',
-    description => 'Use with ocsinventory-local, enable the multi entities feature',
+    description => 'Use with ocsinventory-injector, enable the multi entities feature',
     level => IMPORTANT,
     filter => qr '^(1|0)$'
   },
