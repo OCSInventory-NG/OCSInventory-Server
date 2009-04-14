@@ -88,7 +88,8 @@ our %DATA_MAP= (
        SSN => {},
        BMANUFACTURER => {},
        BVERSION => {},
-       BDATE => {}
+       BDATE => {},
+       TYPE => {}
    }
   },
      
