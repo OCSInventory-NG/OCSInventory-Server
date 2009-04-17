@@ -91,7 +91,7 @@ if( !isset($_GET["popup"] )) {
 <tr height=25px>
 	<td><a href='index.php?first'><img src='image/logo OCS-ng-48.png'></a></td>
 	<td align='center' width='33%'><a href='index.php?first'><img src=image/banner-ocs.png></a></td><td width='33%' align='right'>
-	<b>Ver. 1.02 RC3&nbsp&nbsp&nbsp;</b>	
+	<b>Ver. 1.02&nbsp&nbsp&nbsp;</b>	
 <?php 
 
 if($_SESSION["debug"]==1)
