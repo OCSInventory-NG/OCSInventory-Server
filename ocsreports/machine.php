@@ -951,8 +951,8 @@ function print_bios($systemid)
 	print_item_header($l->g(273));
 	
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
-	echo "<tr>$td1 ".$l->g(36)."  </td>	  $td1 ".$l->g(64)."  </td>	  $td1 ".$l->g(65)."   </td>	  $td1 ".$l->g(284)."  </td>
-		  $td1 ".$l->g(209)."  </td> $td1 ".$l->g(210)."  </td> </tr>";
+	echo "<tr>$td1 ".$l->g(36)."  </td>  $td1 ".$l->g(66)."       </td> $td1 ".$l->g(64)."  </td>	  $td1 ".$l->g(65)."   </td>	  $td1 ".$l->g(284)."  </td>
+		  $td1 ".$l->g(209)."  </td> $td1 ".$l->g(210)."  </td></tr>";
 		  
 	$item = mysql_fetch_object($resultDetails);	
 	echo "<tr>";
@@ -974,7 +974,8 @@ function print_bios($systemid)
 //	
 //	}
 	echo "</td>";
-	echo "$td3".textDecode($item->SMANUFACTURER)." </td>
+	echo "$td3".textDecode($item->TYPE)."          </td>
+              $td3".textDecode($item->SMANUFACTURER)." </td>
 	      $td3".textDecode($item->SMODEL)."        </td>
 		  $td3".textDecode($item->BMANUFACTURER)." </td>
 		  $td3".textDecode($item->BVERSION)."      </td>
