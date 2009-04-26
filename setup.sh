@@ -875,7 +875,7 @@ then
     echo "Do you allow Setup renaming Communication Server Apache configuration file"
     echo -n "to 'z-$COM_SERVER_APACHE_CONF_FILE' ([y]/n) ?"
     read ligne
-    if [ -z $ligne ] || [ "$ligne" -eq "y" ] || [ "$ligne" -eq "Y" ]
+    if [ -z $ligne ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
     then
         echo "OK, using 'z-$COM_SERVER_APACHE_CONF_FILE' as Communication Server Apache configuration file"
         echo "OK, using 'z-$COM_SERVER_APACHE_CONF_FILE' as Communication Server Apache configuration file" >> $SETUP_LOG
