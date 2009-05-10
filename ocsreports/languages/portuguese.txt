@@ -378,7 +378,7 @@ permitidos)
 372 Choose the components
 373 Registered user
 374 Registered society
-375 OCS NG Agent Vesion
+375 OCS NG Agent Version
 376 Computer locked. Please retry in a few minutes
 380 Dictionnary
 381 Number
