@@ -25,7 +25,8 @@ if (isset($_SESSION['cvs'][$_GET['tablename']])){
 		$toBeWritten = substr($toBeWritten,0,-1)."\r\n";
 	}
 	$filename="export.csv";
-}elseif (isset($_GET['log'])){
+}
+/*elseif (isset($_GET['log'])){
 	
 	if (file_exists($_GET['rep'].$_GET['log'])){
 		$tab = file($_GET['rep'].$_GET['log']);
@@ -34,7 +35,7 @@ if (isset($_SESSION['cvs'][$_GET['tablename']])){
 		}
 		$filename=$_GET['log'];
 	}
-}
+}*/
 	
 if ($toBeWritten != ""){
 	// iexplorer problem
