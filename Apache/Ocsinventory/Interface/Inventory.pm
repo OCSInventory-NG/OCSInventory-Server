@@ -45,7 +45,7 @@ sub get_computers {
     $begin = $parsed_request->{'OFFSET'}*$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
   }
   elsif( defined $parsed_request->{'BEGIN'}){
-    return send_error('BAD_BEGIN_VALUE') unless $begin =~ /^\d+$/;
+    return send_error('BAD_BEGIN_VALUE') unless $parsed_request->{'BEGIN'} =~ /^\d+$/;
     $begin = $parsed_request->{'BEGIN'};
   }
   else{
