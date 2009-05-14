@@ -48,6 +48,7 @@ if( isset($_GET["first"] )) {
 	else
 		echo "; charset=ISO-8859-1;";	
 ?>">
+<link rel="shortcut icon" href="favicon.ico" />
 <LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
 <?php incPicker(); ?>
 <script language='javascript'>
