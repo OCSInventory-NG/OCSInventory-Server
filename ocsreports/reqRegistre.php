@@ -177,8 +177,7 @@ function enregistrer()
 	}	
 	else // enregistrer un ajout
 	{	
-		$req    = "INSERT INTO regconfig VALUES(\"\",\"".$_POST["NAME"]."\",\"".$_POST["REGTREE"]."\",\"".$_POST["REGKEY"]."\",\"".$_POST["REGVALUE"]."\")";
-		
+		$req    = "INSERT INTO regconfig (NAME,REGTREE,REGKEY,REGVALUE) VALUES(\"".$_POST["NAME"]."\",\"".$_POST["REGTREE"]."\",\"".$_POST["REGKEY"]."\",\"".$_POST["REGVALUE"]."\")";
 		$result = mysql_query($req, $_SESSION["writeServer"]);
 	}//fin else
 	?>
