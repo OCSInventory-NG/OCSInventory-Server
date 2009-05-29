@@ -90,7 +90,7 @@
 176 Ips
 177 Unisci i computer duplicati
 178 Etichetta / Numero di ripartizione PC
-180 Utente non registrato
+180 Nome utente o password errata
 182 I computer hanno un'etichetta assegnata
 183 Scarica
 184 Questo file non contiene "use constant version"
@@ -125,7 +125,7 @@
 213 Valore chiave
 214 Stampa questa pagina
 215 Mostra tutto
-216 Password errata
+216 Nome utente o password errata
 217 Password
 218 Versione agente
 219 Interfacce di rete non inventariate

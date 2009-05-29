@@ -178,7 +178,7 @@
 177 Redund�ns g�pek �sszefuz�se
 178 Szoba / g�pek sz�ma
 179 Egys�g neve
-180 Nem regisztr�lt felhaszn�l�
+180 Rossz felhasználói név vagy jelszó
 181 Bejelentkez�si probl�ma
 182 A megadott tulajdons�ggal rendelkezo g�pek
 183 Let�lt�s
@@ -214,7 +214,7 @@
 213 Kulcs �rt�k
 214 Nyomtat
 215 �sszes inform�ci�
-216 Jelsz� hiba
+216 Rossz felhasználói név vagy jelszó
 217 Jelsz�
 218 �gyn�k verzi�k
 219 Nem lelt�rozott h�l�zati csatol�

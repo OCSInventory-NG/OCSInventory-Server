@@ -182,7 +182,7 @@ UNIX)
 177 Fundir (merge) computadores redundantes
 178 Etiqueta / N�mero de divis�es de PCs
 179 Nome da Unidade
-180 Utilizador n�o registado
+180 Errado de usuário ou senha
 181 Problema de Login
 182 Computadores com determinado tag
 183 Download
@@ -218,7 +218,7 @@ UNIX)
 213 Valor da chave
 214 Imprime essa p�gina
 215 Mostra todos
-216 Senha incorreta
+216 Errado de usuário ou senha
 217 Senha
 218 Vers�es de agentes
 219 IPs desconhecidos

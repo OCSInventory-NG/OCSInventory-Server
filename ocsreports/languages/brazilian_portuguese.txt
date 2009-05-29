@@ -179,7 +179,7 @@
 178 Etiqueta/N�mero de divis�es de PCs
 179 Nome da Unidade
 180 Usu�rio n�o registrado
-181 Problema de Login
+181 Errado de usuário ou senha
 182 Computadores que cont�m um determinado tag
 183 Download
 184 Este arquivo n�o cont�m "use vers�o constante"
@@ -214,7 +214,7 @@
 213 Valor da chave
 214 Imprime essa p�gina
 215 Mostra todos
-216 Senha incorreta
+216 Errado de usuário ou senha
 217 Senha
 218 Vers�es de agentes
 219 IPs desconhecidos

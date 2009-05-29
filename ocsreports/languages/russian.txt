@@ -89,7 +89,7 @@
 176 Ips
 177 Merge redundant computers
 178 Tag / Number of PC repartition
-180 Пользователь не зарегистрирован
+180 їїїїїїїїїїїї їїї їїїїїїїїїїїї їїї їїїїїї
 182 Computers having a given tag
 183 Скачать
 184 This file does not contain \"use constant version\"
@@ -124,7 +124,7 @@
 213 Значение ключа
 214 Напечатать эту страницу
 215 Показать все
-216 Ошибка пароля
+216 їїїїїїїїїїїї їїї їїїїїїїїїїїї їїї їїїїїї
 217 Пароль
 218 Версии агентов
 219 uninventoried network interfaces

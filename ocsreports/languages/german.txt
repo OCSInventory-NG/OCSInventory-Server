@@ -178,7 +178,7 @@
 177 Redundante Geraete zusammenfuehren
 178 Summe der PCs mit Tag
 179 Unit Name
-180 User nicht registriert
+180 Falscher Benutzername oder Passwort
 181 Login Problem
 182 Computer mit bestimmtem Tag
 183 Download
@@ -214,7 +214,7 @@
 213 Schluessel Wert
 214 Seite ausdrucken
 215 Alles anzeigen
-216 Passwort Fehler
+216 Falscher Benutzername oder Passwort
 217 Passwort
 218 Agenten Versionen
 219 Unbekannte IPs

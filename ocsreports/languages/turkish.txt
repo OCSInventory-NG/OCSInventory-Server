@@ -90,7 +90,7 @@
 176 Ips
 177 Birle�tirmede gere�inden fazla bilgisayar var.
 178 Etiket/ Number of PC repartition
-180 Kullan�c� kay�tl� de�il
+180 Yanlış kullanıcı adı veya şifre
 182 Bilgisayarlar�n belirli bir etiketi var
 183 �ndir
 184 Bu dosya i�ermemekte"De�i�ik versiyon"
@@ -125,6 +125,7 @@
 213 Anahtar De�eri
 214 Bu sayfay� yazd�r
 215 �ifre Hatal�
+216 Yanlış kullanıcı adı veya şifre
 217 �ifre
 218 Acenta Verisoyu
 219 uninventoried A� aray�z�

@@ -90,7 +90,7 @@
 176 IPs
 177 ZdruÅ¾i odveÄ?ne raÄ?unalnike
 178 SeÅ¡tevek raÄ?unalnikov z oznakami
-180 Uporabnik ni registriran
+180 Napa¿no uporabni¿ko ime ali geslo
 182 RaÄ?unalniki z doloÄ?eno oznako
 183 Prenos
 184 Ta datoteka ne vsebuje "use constant version"
@@ -125,7 +125,7 @@
 213 Vrednost KljuÄ?a
 214 Natisni to stran
 215 PokaÅ¾i vse
-216 Geslo je napaÄ?no
+216 Napa¿no uporabni¿ko ime ali geslo
 217 Geslo
 218 Verzija Agentov
 219 nepopisan mreÅ¾ni vmesnik

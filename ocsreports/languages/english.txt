@@ -90,7 +90,7 @@
 176 Ips
 177 Merge redundant computers
 178 Tag / Number of PC repartition
-180 User not registered
+180 Wrong username or password
 182 Computers having a given tag
 183 Download
 184 This file does not contain "use constant version"
@@ -125,7 +125,7 @@
 213 Key value
 214 Print this page
 215 Show everything
-216 Password error
+216 Wrong username or password
 217 Password
 218 Agents versions
 219 uninventoried network interfaces

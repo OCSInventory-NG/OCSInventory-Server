@@ -90,7 +90,7 @@
 176 Ips
 177 Mezclar computadores redundantes
 178 Etiqueta / Distribución de PCs
-180 Usuario no registrado
+180 Error de Usuario ocontraseña
 182 Computadores que tienen una etiqueta dada
 183 Descargar
 184 Este archivo no contiene "use versión constante"
@@ -125,7 +125,7 @@
 213 Valor clave
 214 Imprimir esta página
 215 Mostrar todo
-216 Error de contraseña
+216 Error de usuario o contraseña
 217 Contraseña
 218 Versiones de agentes
 219 interfaces de red sin inventariar

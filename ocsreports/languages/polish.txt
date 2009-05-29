@@ -90,7 +90,7 @@
 176 Ips
 177 Po��cz nadmiarowe komputery
 178 Tag / Number of PC repartition
-180 U�ytkownik nie zarejestrowany
+180 Zły login lub hasło
 182 Computers having a given tag
 183 Pobierz
 184 This file does not contain "use constant version"
@@ -125,7 +125,7 @@
 213 Warto�� klucza
 214 Drukuj t� stron�
 215 Poka� wszystko
-216 B��d has�a
+216 Zły login lub hasło
 217 Has�o
 218 Wersje agent�w
 219 niezinwentaryzowane interfejsy sieciowe

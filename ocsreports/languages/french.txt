@@ -88,7 +88,7 @@
 176 IPs
 177 Fusionner les lignes redondantes
 178 Repartition code/machines
-180 Utilisateur non enregistre dans la base OCS
+180 Utilisateur ou mot de passe incorrect
 182 Machines ayant un tag donne
 183 Telecharger
 184 Ce fichier ne contient pas "use constant version"
@@ -123,7 +123,7 @@
 213 Valeur de la cle
 214 Imprimer cette page
 215 Tout afficher
-216 Erreur dans le mot de passe
+216 Utilisateur ou mot de passe incorrect
 217 Mot de passe
 218 Versions des agents
 219 interfaces reseau non inventoriees
