@@ -11,8 +11,6 @@ package Apache::Ocsinventory::Map;
 
 use strict;
 
-use constant CHECKSUM_MAX_VALUE => 131071;
-
 require Exporter;
 
 our @ISA = qw /Exporter/;

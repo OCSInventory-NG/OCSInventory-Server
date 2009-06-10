@@ -11,6 +11,8 @@ package Apache::Ocsinventory::Server::Constants;
 
 use strict;
 
+use Apache::Ocsinventory::Map;
+
 require Exporter;
 
 our @ISA = qw /Exporter/;
@@ -40,8 +42,9 @@ use constant PROLOG_RESP_SEND => 2;
 use constant OPTION_TYPE_SYNC => 0;
 use constant OPTION_TYPE_ASYNC => 1;
 
-# Max size of the inventory diff value (17 bits for the moment)
-use constant CHECKSUM_MAX_VALUE => 131071;
+my $checksum_max_value = &get_checksum();
+print STDERR "CHECHSUM_MAX_VALUE=$checksum_max_value\n";
+use constant CHECKSUM_MAX_VALUE => $checksum_max_value;
 
 # To enable user to set how auto-duplicates works
 use constant DUP_HOSTNAME_FL => 1;
@@ -53,4 +56,13 @@ use constant PROLOG_STOP => 1;
 use constant PROLOG_CONTINUE => 0;
 use constant INVENTORY_STOP => 1;
 use constant INVENTORY_CONTINUE => 0;
+
+sub get_checksum {
+  my $checksum;
+
+  for my $section (keys %DATA_MAP){
+    $checksum|=$DATA_MAP{$section}->{mask};
+  }  
+  return $checksum;
+}
 1;
