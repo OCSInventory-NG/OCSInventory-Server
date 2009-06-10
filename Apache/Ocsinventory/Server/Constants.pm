@@ -43,7 +43,6 @@ use constant OPTION_TYPE_SYNC => 0;
 use constant OPTION_TYPE_ASYNC => 1;
 
 my $checksum_max_value = &get_checksum();
-print STDERR "CHECHSUM_MAX_VALUE=$checksum_max_value\n";
 use constant CHECKSUM_MAX_VALUE => $checksum_max_value;
 
 # To enable user to set how auto-duplicates works
