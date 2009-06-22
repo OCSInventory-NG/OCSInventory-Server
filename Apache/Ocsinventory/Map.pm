@@ -374,5 +374,26 @@ our %DATA_MAP= (
        NAME => {}
    },
   },
+
+  virtualmachines => {
+	  mask => 131072,
+	  multi => 1,
+	  auto => 1,
+	  delOnReplace => 1,
+	  sortBy => 'NAME',
+	  writeDiff => 1,
+	  cache => 0,
+	  fields =>  {
+		  NAME => {},
+		  MEMORY => {},
+		  UUID => {},
+		  STATUS => {},
+		  SUBSYSTEM => {},
+		  VMTYPE => {},
+		  VCPU => {},
+	  },
+  },
+
+
 ); 
 1;
