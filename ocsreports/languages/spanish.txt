@@ -711,3 +711,7 @@
 815 número de discos duro con tamaño restante entre
 816 tamaño de disco duro máximo restante
 817 tamaño de disco duro mínimo restante
+818 go out of the group
+819 machine(s) add to the group
+820 Last contact
+821 PDA/SMARTPHONE

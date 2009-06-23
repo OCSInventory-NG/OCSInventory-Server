@@ -711,3 +711,5 @@
 818 Sortir du groupe
 819 machine(s) ajoutee(s) au groupe
 820 Dernier contact
+821 PDA/SMARTPHONE
+

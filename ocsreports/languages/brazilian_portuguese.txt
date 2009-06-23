@@ -800,3 +800,7 @@
 815 hard disk number with remaining size between
 816 hard disk maximum remaining size 
 817 hard disk minimum remaining size
+818 go out of the group
+819 machine(s) add to the group
+820 Last contact
+821 PDA/SMARTPHONE

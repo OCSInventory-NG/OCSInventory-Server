@@ -710,3 +710,7 @@
 815 numero di hard disk con spazio libero tra
 816 hard disk con maggior spazio libero
 817 hard disk con minor spazio libero
+818 go out of the group
+819 machine(s) add to the group
+820 Last contact
+821 PDA/SMARTPHONE

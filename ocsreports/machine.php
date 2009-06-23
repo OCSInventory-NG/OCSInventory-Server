@@ -183,8 +183,9 @@ $lblHdw = Array($l->g(54), $l->g(26), $l->g(63), $l->g(92), $l->g(61), $l->g(96)
 $imgHdw = Array("processeur", "memoire","stockage","disque","video","son","reseau", "controleur", "slot","port" );
 $lblSof = Array($l->g(273), $l->g(20),$l->g(512), $l->g(211));
 $imgSof = Array("bios", "logiciels","paquets", "registre");
-$lblOut = Array($l->g(97),$l->g(91),$l->g(79),$l->g(270));
-$imgOut = Array("moniteur", "peripherique", "imprimante", "modem");
+$lblOut = Array($l->g(97),$l->g(91),$l->g(79),$l->g(270),$l->g(821));
+$imgOut = Array("moniteur", "peripherique", "imprimante", "modem","mob_term");
+
 echo "<br><br>";
 
 echo "<table width='80%' border=0 align='center' cellpadding='0' cellspacing='0'>
@@ -259,6 +260,7 @@ if($_GET["tout"]==1)
 	print_packets($systemid);
 	print_modems($systemid);
 	print_registry($systemid);
+	print_mobile($systemid);
 }
 
 switch ($opt) :
@@ -302,6 +304,10 @@ switch ($opt) :
 						break;
 	case $l->g(512) : print_packets($systemid);
 						break;
+	case 'Terminaux mobiles' : print_mobile($systemid);
+							   break;
+	
+
 	default: print_inventory($systemid);
 						break;
 	endswitch;					
@@ -316,6 +322,88 @@ if(!isset($_GET["tout"]))
 echo "</tr></table></body>";
 echo "</html>";
 exit;
+function print_mobile($systemid){
+	global $l,$td1,$td3;	
+	require_once('require/function_table_html.php');
+	print_item_header($l->g(223));
+	$queryDetails = 'SELECT JAVANAME,JAVAPATHLEVEL,JAVACOUNTRY,JAVACLASSPATH,JAVAHOME FROM javainfo WHERE hardware_id='.$systemid;
+	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or mysql_error($_SESSION["readServer"]);
+	$item = mysql_fetch_object($resultDetails);
+	echo '<table BORDER="0" WIDTH = "95%" ALIGN = "Center" CELLPADDING="0" BGCOLOR="#C7D9F5" BORDERCOLOR="#9894B5">';
+	echo "<tr>";
+	echo $td1."JAVANAME </td> ".$td1." JAVAPATHLEVEL </td> ".$td1."JAVACOUNTRY</td>".$td1."JAVACLASSPATH</td>".$td1."JAVAHOME</td></tr>";
+	echo "<tr>";
+	echo "$td3".textDecode($item->JAVANAME)."</td>
+	      $td3".textDecode($item->JAVAPATHLEVEL)."</td>
+	      $td3".textDecode($item->JAVACOUNTRY)."</td>
+	      $td3".textDecode($item->JAVACLASSPATH)."</td>
+	      $td3".textDecode($item->JAVAHOME)."</td>";
+	echo "</tr>";
+	echo "</table>";
+	
+	$list_fields= array('ID'=>'ID',
+						'JOURNALLOG'=>'JOURNALLOG',
+						'LISTENERNAME'=>'LISTENERNAME',
+						'DATE'=>'DATE',
+						'STATUS'=>'STATUS',
+						'ERRORCODE'=>'ERRORCODE');
+	$form_name='info_log';
+	echo "<form name='".$form_name."' id='form' action='' method='post'>";
+	$table_name="TAB_JOURNALLOG";	
+	$default_fields=$list_fields;
+	//$_SESSION['cvs'][$table_name]="";
+	$limit=nb_page($form_name,100,"","");
+	$queryDetails = 'SELECT ';
+	foreach ($list_fields as $key=>$value){
+		$queryDetails .= $key.',';		
+	} 
+	$queryDetails=substr($queryDetails,0,-1);
+	$queryDetails .= ' FROM journallog WHERE hardware_id='.$systemid;
+	if ($_POST['tri'] == "")
+	$_POST['tri']=1;
+	if ($_POST['sens'] == "")
+	$_POST['sens']='ASC';
+	$queryDetails.= " order by ".$_POST['tri']." ".$_POST['sens'];
+	//pour le csv
+	//$_SESSION['cvs'][$table_name] .= " order by ".$_POST['tri']." ".$_POST['sens'];
+	
+	$queryDetails.=" limit ".$limit["BEGIN"].",".$limit["END"];
+	$_SESSION['cvs'][$table_name]=$queryDetails;
+	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or mysql_error($_SESSION["readServer"]);
+		
+	$i=0;
+	while($item = mysql_fetch_object($resultDetails)){
+		foreach($list_fields as $key=>$value){
+			$data[$i][$key]=$item ->$value;
+			$col[$i]=$key;
+			if ($_POST['sens'] == "ASC")
+				$sens="DESC";
+			else
+				$sens="ASC";
+			$deb="<a OnClick='tri(\"".$col[$i]."\",\"".$sens."\",\"form\")' >";
+			$fin="</a>";
+			$entete[$col[$i]]=$deb.$value.$fin;
+		}
+		$i++;
+	}
+	if ($i != 0){
+	$title=$i.$l->g(90)."<a href='cvs.php?tablename=".$table_name."'><small>(".$l->g(136).")</small></a>";
+	$list_col_cant_del="";
+	//$list_col_aff=array('NAME','WORKGROUP','OSNAME','OSVERSION','OSCOMMENTS','PROCESSORT','SUP');
+	$result_with_col=gestion_col($entete,$data,$list_col_cant_del,$form_name,$table_name,$list_fields,$default_fields);
+	tab_entete_fixe($result_with_col['entete'],$result_with_col['data'],$title,"100","");
+	show_page($i,'form');
+	echo "<input type='hidden' id='tri' name='tri' value='".$_POST['tri']."'>";
+	echo "<input type='hidden' id='sens' name='sens' value='".$_POST['sens']."'>";
+	echo "<input type='hidden' value='".$_POST['Valid-search']."' name='Valid-search'>";
+	}
+//	echo "</table>";
+	echo "</form>";
+	
+	
+}
+
+
 
 function print_perso($systemid) {
 	global $l, $td1, $td2, $td3, $td4;
@@ -784,7 +872,7 @@ function print_networks($systemid)
 		$td3".textDecode($item->TYPE)."       </td>
 		$td3".textDecode($item->SPEED)."      </td>
 		$td3".textDecode($item->MACADDR).($const?"<br>($const)":"");
-		blacklist("select ID from blacklist_macaddresses where macaddress='".textDecode($item->MACADDR)."'",textDecode($item->MACADDR),$l->g(704)." ".$l->g(708),$l->g(705)." ".$l->g(708),"Réseau(x)");
+		blacklist("select ID from blacklist_macaddresses where macaddress='".textDecode($item->MACADDR)."'",textDecode($item->MACADDR),$l->g(704)." ".$l->g(708),$l->g(705)." ".$l->g(708),"Reseau(x)");
 		echo "</td>";
 		echo "$td3".textDecode($item->STATUS)."     </td>
 		$td3".textDecode($item->IPADDRESS)."  </td>
@@ -1168,8 +1256,9 @@ function isAvail($lbl) {
 							break;
 		case $l->g(512) : $tble = "download_history";
 							break;					
-		case $l->g(54):	return true;
-							break;
+		case $l->g(821): $tble = "javainfo";
+							break;		
+		case $l->g(54):	return true;	
 	}
 	$resAv = mysql_query("SELECT hardware_id FROM $tble WHERE hardware_id=$systemid", $_SESSION["readServer"] );
 	//echo "SELECT hardware_id FROM $tble WHERE hardware_id=$systemid";
@@ -1185,7 +1274,7 @@ function blacklist($sql_verif_blacklist,$serial_mac,$lblpopup_blacklist,$lblpopu
 	<script language=javascript>
 		function confirme(did,champ,lbl){
 			if(confirm(lbl+" ?"))
-				window.location="machine.php?systemid=<? echo $systemid ?>&option=<? echo $direct ?>&"+champ+"="+did;
+				window.location="machine.php?systemid=<?php echo $systemid ?>&option=<?php echo $direct ?>&"+champ+"="+did;
 		}
 	</script>
 	<?php
@@ -1211,7 +1300,7 @@ function update_blacklist(){
 		@mysql_query("INSERT INTO blacklist_serials (SERIAL) value ('".$_GET['black']."')", $_SESSION["writeServer"]);
 
 	//blacklist mac
-	if (isset($_GET['black']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Réseau(x)")
+	if (isset($_GET['black']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Reseau(x)")
 		@mysql_query("INSERT INTO blacklist_macaddresses (MACADDRESS) value ('".$_GET['black']."')", $_SESSION["writeServer"]);
 		
 	// unblacklist serial
@@ -1219,7 +1308,7 @@ function update_blacklist(){
 		@mysql_query("DELETE FROM blacklist_serials WHERE id=".$_GET['noblack'], $_SESSION["writeServer"]);
 		
 	// unblacklist mac 
-	if (isset($_GET['noblack']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Réseau(x)")	
+	if (isset($_GET['noblack']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Reseau(x)")	
 		@mysql_query("DELETE FROM blacklist_macaddresses WHERE id=".$_GET['noblack'], $_SESSION["writeServer"]);
 	
 }
