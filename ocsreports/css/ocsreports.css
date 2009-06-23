@@ -46,6 +46,7 @@ a.deco {
 input 
 {
 	cursor: pointer;
+	color: black;
 }
 
 .lienBleu  {
@@ -55,7 +56,8 @@ input
 .bouton,select,input,textarea,option {
 	background-color:#C7D9F5;
 	border-color:#A1B1F9; 
-	border-width:2px;	
+	border-width:2px;
+	color: black;	
 }
 
 option.hi {
@@ -77,6 +79,7 @@ option.hi {
 .textbox 
 {
 	border: thin solid;
+	color: black;
 }
 
 table.Erreur 
