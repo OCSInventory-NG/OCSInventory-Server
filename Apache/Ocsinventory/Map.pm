@@ -41,6 +41,7 @@ our %DATA_MAP= (
        PROCESSORN => {},
        MEMORY => {},
        SWAP => {},
+       DEFAULTGATEWAY => {},
        IPADDR => {},
        USERID => { filter => 1 },
        TYPE => {},

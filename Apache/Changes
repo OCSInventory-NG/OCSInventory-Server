@@ -1,6 +1,9 @@
 Revision history for Apache::Ocsinventory
-	* SOAP Engine: Bug fix: https://sourceforge.net/tracker/?func=detail&atid=487492&aid=2787130&group_id=58373
+	
+	* Added DEFAULTGATEWAY support
 	* Added inventory of virtualization (Philippe Libat)
+	* Fixed a bug in SOAP Engine 
+	  https://sourceforge.net/tracker/?func=detail&atid=487492&aid=2787130&group_id=58373
 
 1.02 final
 	* Handling the trailing '/' in deploy feature and calling _end in more standard way (Ocsinventory.pm)
