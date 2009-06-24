@@ -11,6 +11,10 @@
 //Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.14 $)
 
 PrintEnTete($l->g(465));
+//fix Serious security bug in tele_activate.php - ID: 2797878 (tracker sourceforge)
+if (isset($_GET["suppack"]) and !is_numeric($_GET["suppack"])){
+	unset($_GET["suppack"]);	
+}
 //activate for server's group
 if(isset($_POST["actpack"]) and $_POST['activat_option'] == "for_server")
 {
