@@ -48,6 +48,7 @@ sub _init_map{
     $sectionsMeta->{$section}->{delOnReplace} = 1 if $DATA_MAP{$section}->{delOnReplace};
     $sectionsMeta->{$section}->{writeDiff} = 1 if $DATA_MAP{$section}->{writeDiff};
     $sectionsMeta->{$section}->{cache} = 1 if $DATA_MAP{$section}->{cache};
+    $sectionsMeta->{$section}->{name} = $section;
     # $sectionsMeta->{$section}->{hasChanged} is set while inventory update
      
     # Parse fields of the current section
@@ -68,6 +69,10 @@ sub _init_map{
       }
       if(defined $DATA_MAP{$section}->{fields}->{$field}->{fallback}){
         $sectionsMeta->{$section}->{fields}->{$field}->{fallback} = $DATA_MAP{$section}->{fields}->{$field}->{fallback};
+      }
+      
+      if(defined $DATA_MAP{$section}->{fields}->{$field}->{type}){
+        $sectionsMeta->{$section}->{fields}->{$field}->{type} = $DATA_MAP{$section}->{fields}->{$field}->{type};
       }
       $field_index++;      
     }
@@ -92,19 +97,29 @@ sub _init_map{
 
 sub _get_bind_values{
   my ($refXml, $sectionMeta, $arrayToFeed) = @_;
-  for ( @{ $sectionMeta->{field_arrayref} } ) {
-    if(defined($refXml->{$_}) && $refXml->{$_} ne '' && $refXml->{$_} ne '??' && $refXml->{$_}!~/N\/?A/){
-      push @$arrayToFeed, $refXml->{$_};
+  
+  my $bind_value;
+
+  for my $field ( @{ $sectionMeta->{field_arrayref} } ) {
+    if(defined($refXml->{$field}) && $refXml->{$field} ne '' && $refXml->{$field} ne '??' && $refXml->{$field}!~/N\/?A/){
+      $bind_value = $refXml->{$field}
     }
     else{
-       if( defined $sectionMeta->{fields}->{$_}->{fallback} ){
-         push @$arrayToFeed, $sectionMeta->{fields}->{$_}->{fallback};
-         &_log( 000, 'fallback', "$_:".$sectionMeta->{fields}->{$_}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+       if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
+         $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
+         &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
        }
        else{
-         push @$arrayToFeed, '';
+         $bind_value = '';
        }
     }
+    # We have to substitute the value with the ID matching "type_section_field.name" if the field is tagged "type".
+    # It allows to support different DB structures
+    if( defined $sectionMeta->{fields}->{$field}->{type} ){
+      $bind_value = _get_typed_value($sectionMeta->{name}, $field, $bind_value);
+    }
+    
+    push @$arrayToFeed, $bind_value;
   }
 }
 
@@ -131,5 +146,12 @@ sub _has_changed{
     &_log( 524, 'inventory', "$section (no checksum)") if $ENV{'OCS_OPT_LOGLEVEL'};
     return 1;
   }
+}
+
+sub _get_typed_value {
+  #TODO: find type_$section_$field.ID for type_$section_$field.NAME
+  #TODO: create it if needed
+  my ($section, $field, $value) = @_;
+  return $value ;
 }
 1;

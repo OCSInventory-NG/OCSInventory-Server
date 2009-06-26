@@ -17,7 +17,7 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / %DATA_MAP /;
 
-# Field's attributes : cache, filter, noXml, noSql, fallback
+# Field's attributes : cache, filter, noXml, noSql, fallback, type
 
 our %DATA_MAP= (
   hardware => {
