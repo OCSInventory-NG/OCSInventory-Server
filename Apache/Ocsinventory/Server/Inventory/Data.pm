@@ -116,7 +116,7 @@ sub _get_bind_values{
     # We have to substitute the value with the ID matching "type_section_field.name" if the field is tagged "type".
     # It allows to support different DB structures
     if( defined $sectionMeta->{fields}->{$field}->{type} ){
-      $bind_value = _get_typed_value($sectionMeta->{name}, $field, $bind_value);
+      $bind_value = _get_type_id($sectionMeta->{name}, $field, $bind_value);
     }
 
     if($ENV{'OCS_UNICODE_SUPPORT'}) {
@@ -155,10 +155,42 @@ sub _has_changed{
   }
 }
 
-sub _get_typed_value {
-  #TODO: find type_$section_$field.ID for type_$section_$field.NAME
-  #TODO: create it if needed
-  my ($section, $field, $value) = @_;
-  return $value ;
+sub _get_type_id {
+#TODO: create it if needed
+# Type table structure
+# CREATE TABLE type_${section}_$field (
+#   ID INTEGER NOT NULL auto_increment,
+#   NAME VARCHAR(255))
+# ENGINE=MyIsam, DEFAULT CHARSET=UTF8 ;
+# For migration, add the following line :
+# ALTER TABLE $section CHANGE COLUMN $field $field ID INTEGER NOT NULL ;
+
+  my ($section, $field, $value) = @_ ;
+  
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} ;
+  
+  my $id ;
+
+  my $table_name = 'type_'.lc $section.'_'.lc $field ;
+
+  my $existsReq = $dbh->prepare("SELECT ID FROM $table_name WHERE NAME=?") ;
+  my $createSql = "INSERT INTO $table_name(ID,NAME) VALUES(NULL,?)" ;
+  
+  $existsReq->execute($value) ;
+  # It exists
+  if($existsReq->rows){
+    my $row = $existsReq->fetchrow_hashref() ;
+    $id = $row->{ID} ;
+  }
+  # It does not exist
+  else{
+    $dbh->do($createSql, {}, $value) && $existsReq->execute($value) ;
+    my $row = $existsReq->fetchrow_hashref() ;
+    $id = $row->{ID} ;
+  }
+  return $id ;
 }
 1;
+
+
+

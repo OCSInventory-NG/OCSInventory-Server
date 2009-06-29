@@ -1,4 +1,5 @@
 Revision history for Apache::Ocsinventory
+ 	* DB schema changes support through "type=>1" field meta information in Map.pm
 	* Unicode support
 	  https://sourceforge.net/tracker/index.php?func=detail&aid=2796796&group_id=58373&atid=487495
 	  Thanks to Andrek

@@ -134,6 +134,10 @@ sub build_xml_standard_section{
   while ( my $row = $sth->fetchrow_hashref() ){    
     for( keys(%{$DATA_MAP{ $section }->{fields}}) ){
       next if $DATA_MAP{ $section }->{fields}->{$_}->{noSql};
+      # New DB schema support
+      if( $DATA_MAP{ $section }->{fields}->{$_}->{type} ){
+       $row->{ $_ } = get_type_name($section, $_, $row->{ $_ }); 
+      }     
       $element{$_} = [ $row->{ $_ } ];
     }
     

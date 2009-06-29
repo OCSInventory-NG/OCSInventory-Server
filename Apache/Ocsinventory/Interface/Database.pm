@@ -20,6 +20,7 @@ our @EXPORT = qw /
   get_sth
   do_sql
   get_table_pk
+  get_type_name
   untaint_dbstring
   untaint_dbstring_lst
 /;
@@ -74,6 +75,20 @@ sub do_sql {
 sub get_table_pk{
   my $section = shift;
   return ($section eq 'hardware')?'ID':'HARDWARE_ID';
+}
+
+sub get_type_name{
+  my ($section, $field, $value) = @_ ;
+
+  my $table_name = 'type_'.lc $section.'_'.lc $field ;  
+  my $name ;
+  
+  my $existsSql = "SELECT NAME FROM $table_name WHERE ID=?" ;
+  my $existsReq = get_sth($existsSql, $value) ;
+  my $row = $existsReq->fetchrow_hashref() ;
+  $name = $row->{NAME} ;
+  $existsReq->finish ; 
+  return $name ;
 }
 
 sub untaint_dbstring{

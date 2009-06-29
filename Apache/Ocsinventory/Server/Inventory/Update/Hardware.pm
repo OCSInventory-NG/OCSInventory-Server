@@ -48,6 +48,7 @@ sub _hardware{
 	MEMORY=".(defined($base->{MEMORY})?$base->{MEMORY}:0).",
 	SWAP=".(defined($base->{SWAP})?$base->{SWAP}:0).",
 	IPADDR=".$dbh->quote($ipAddress).",
+	DEFAULTGATEWAY=".$dbh->quote($base->{DEFAULTGATEWAY}).",
 	ETIME=NULL,
 	$userid
 	TYPE=".(defined($base->{TYPE})?$base->{TYPE}:0).",
