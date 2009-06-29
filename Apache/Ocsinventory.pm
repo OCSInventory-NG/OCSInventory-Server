@@ -185,9 +185,9 @@ sub handler{
     }
     # Unicode support - The XML may not use UTF8
     if($ENV{'OCS_OPT_UNICODE_SUPPORT'}) {
-     if($inflated =~ /^<\?xml\s+version\=\"\d+\.\d+\"\s+encoding\=\"([\w+\-]+)\"\?>/) {
+     if($inflated =~ /^.+encoding="([\w+\-]+)/) {
           my $enc = $1;
-          $inflated =~ s/$enc/utf8/g;
+          $inflated =~ s/$enc/UTF-8/;
           Encode::from_to($inflated, "$enc", "utf8");
       }
     }
