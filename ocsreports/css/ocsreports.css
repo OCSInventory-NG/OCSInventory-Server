@@ -1,0 +1,290 @@
+/* OCSReports Style Sheet */
+
+
+body {
+	background-color:#FFFFFF;
+	font-family: Verdana;
+	font-size: 8pt;
+	text-align: center;
+}
+
+.fondu {
+	background-image: url(../image/fond.png);
+	width:100%;
+	background-position : top center ;
+	background-repeat: no-repeat;
+		background-attachment: fixed;
+}
+
+a, img, .lienBleu, .norm, td, b,.warn {  
+	text-decoration: none;
+	border-width: 0px;
+	font-family: Verdana;
+	font-size: 8pt;
+}
+
+.warn {
+	font-size: 10pt;
+	color: red;
+	font-weight:bold;
+}
+
+a,a:visited, .lienBleu {
+	cursor: pointer;
+	color: blue;	
+}
+
+a:hover {
+	color: red;
+}
+
+a.deco {
+	color:#C7D9F5;
+	font-size: 8pt;
+}
+
+input 
+{
+	cursor: pointer;
+}
+
+.lienBleu  {
+	color: blue;
+}
+
+.bouton,select,input,textarea,option {
+	background-color:#C7D9F5;
+	border-color:#A1B1F9; 
+	border-width:2px;	
+}
+
+option.hi {
+	background-color:#FFFFFF;
+}
+
+.dropdown {
+	border: thin solid;
+}
+
+.Items {
+	border-width: 2px;
+	border-bottom-color:#666666;
+	border-left-color:#D6D6D6;
+	border-right-color:#666666;
+	border-top-color:#D6D6D6;
+}
+
+.textbox 
+{
+	border: thin solid;
+}
+
+table.Erreur 
+{
+	border-color: #A1B1F9;
+	border-spacing: 0px;
+	border-style: solid;
+	border-width: 2px;
+	border-collapse: collapse;
+}
+
+th.Erreur 
+{
+	background-color: #C7D9F5;
+	border-bottom-color: #A1B1F9;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-collapse: collapse;
+}
+
+td.Machine
+{
+	 vertical-align:top ;
+	 font-size:8pt;
+}
+
+td#color
+{
+	background-color:#C7D9F5 ;
+}
+
+td#type
+{
+font-family:Tahoma;
+font-size:8pt;
+text-align:center;
+font-weight:bold;
+}
+	
+table.Fenetre, table.Main
+{
+	background-color: white;
+	border-color: #A1B1F9;
+	border-spacing: 0px;
+	border-style: solid;
+	border-width: 2px;
+	border-collapse: collapse;
+}
+
+table.Fenetre 
+{	
+	width:62%;
+}
+
+table.Main 
+{	
+	width:95%;
+}
+
+
+table.headfoot 
+{
+	background-color: #C7D9F5;
+	border-color: #000000;
+	border-spacing: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	width:100%;
+}
+
+select.ge {
+	background-color: #C7D9F5;
+	height: 246px;
+	width: 350px;
+}
+
+.boutonP {
+	background-color: #C7D9F5;
+	border-color: #A1B1F9;
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+	font-size: 8pt;
+}
+
+.boutonG {
+	background-color: #C7D9F5;
+	border-color: #A1B1F9;
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+}
+
+.Lien {
+	border-left-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+	border-top-color: #FFFFFF;
+	border-right-color: #FFFFFF;
+}
+
+.Main {
+	cursor: pointer;
+}
+
+#fenetre 
+{
+	position: absolute;
+	top: 20%;
+	left: 30%;
+}
+
+#search {
+	background-color: #C7D9F5;
+	border-color: #A1B1F9;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	width: 240px;
+}
+
+dl, dt, dd, ul, li {
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+
+#menu dt {
+cursor: pointer;
+margin: 2px 0;
+text-align: center;
+font-weight: bold;
+}
+
+#menu dd {
+position: absolute;
+z-index: 100;
+margin-top: 5px;
+width: 18em;
+background: #C7D9F5;
+border: 1px solid gray;
+}
+
+#menu ul {
+padding: 2px;
+}
+#menu li {
+text-align: center;
+font-size: 85%;
+height: 18px;
+line-height: 18px;
+}
+#menu li a, #menu dt a {
+color: #000;
+text-decoration: none;
+display: block;
+}
+
+#menu li a:hover {
+text-decoration: underline;
+}
+div.tableContainer {
+	overflow: auto;
+	margin: 0 auto;
+	text-align: center;
+	}
+
+table.ta {
+	width: 99%;		/*100% of container produces horiz. scroll in Mozilla*/
+	border: 1px slategray;
+	}
+	
+tbody.ta	{  /* child selector syntax which IE6 and older do not support*/
+	overflow: auto; 
+	overflow-x: hidden;
+	}
+	
+th.ta	{
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	width: 50px;
+	background-color: #c7d9f5;
+	color: steelblue;
+	/*border: solid slategray thin;*/
+/*border-left: solid 1px slategray;*/
+	border-bottom: solid 1px slategray;
+	border-top: solid 1px slategray;
+	border-left: solid 1px slategray;
+	position:relative; 
+	/*top: expression(document.getElementById('data').scrollTop-2); /*IE5+ only*/
+	}
+
+tr.ta {
+	text-align: center;
+	border-right:solid 1px slategray;
+}
+	
+td.ta	{
+	color: #000;
+	text-align: center;
+	/*padding-right: 2px;*/
+	font-size: 12px;
+	font-family: Arial,sans-serif;
+	border-bottom: solid 1px slategray;
+	border-left: solid 1px slategray;
+	
+	}
+
+td.ta:last-child {border-right: solid 1px slategray;} /*prevent Mozilla scrollbar from hiding cell content*/
+th.ta:last-child {border-right: solid 1px slategray;} 

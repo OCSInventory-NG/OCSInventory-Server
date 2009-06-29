@@ -1,0 +1,8 @@
+<!--Update response-->
+<?xml version=1.0 encoding="ISO-8859-1"?>
+<!DOCTYPE REPLY[
+<!ELEMENT REPLY(RESPONSE,AGENT?,DMI?)>
+<!ELEMENT RESPONSE(#PCDATA)>
+<!ELEMENT AGENT(#PCDATA)>
+<!ELEMENT DMI(#PCDATA)>
+]>

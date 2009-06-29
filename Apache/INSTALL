@@ -1,0 +1,61 @@
+################################################################################
+#
+# OCS Inventory NG Communication Server Perl Module Setup
+#
+# Copyleft 2006 Pascal DANEK
+# Web: http://www.ocsinventory-ng.org
+#
+# This code is open source and may be copied and modified as long as the source
+# code is always made freely available.
+# Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
+################################################################################
+
+This module handles communication between OCS Inventory NG agents and server.
+
+It acts as an Apache extension and require following PERL Modules.
+- 'DBI'             => 1.40 or higher
+- 'Apache::DBI'     => 0.93 or higher
+- 'DBD::mysql'      => 2.9004 or higher
+- 'Compress::Zlib'  => 1.33 or higher
+- 'XML::Simple'     => 2.12 or higher
+- 'Net::IP'         => 1.21 or higher
+- 'SOAP::Lite'      => 0.66 or higher used only with SOAP web service
+- 'XML::Entities'   => 0.02 or higher used only with SOAP web service
+
+To setup it, just follow traditional PERL Module installation procedure.
+- perl Makefile.PL
+- make
+- make install
+
+This will install OCS Inventory NG Communication Server PERL Module into
+standard PERL includes directory.
+
+Next, you have to to configure Apache web server to load Communication Server
+at startup. You can use provided etc/ocsinventory/ocsinventory-server.conf file
+as sample.
+
+Apache must have module mod_perl enabled. As configuration differs from mod_perl
+1.999_21 or previous AND mod_perl 1.999_22 or higher, you must specify which
+release of mod_perl your Apache is using. On Linux computers, you can find which
+release of mod_perl is installed by running the following command:
+- On RPM enabled OS, rpm -q mod_perl
+- On DPKG enabled OS, dpkg -l libapache*-mod-perl*
+You must set the value of PERL constant OCS_MODPERL_VERSION to 1 if mod_perl
+1.999_21 or previous is used by Apache, or to 2 if mod_perl 1.999_22 and higher
+is used by Apache.
+
+Update constants OCS_DB_HOST and OCS_DB_PORT to specify where is MySQL database
+server. Generally, set localhost and 3306 if MySQL is on the same computer.
+
+Update constant OCS_LOGPATH to specify where Communication Server must write
+logs, if they are enabled. Remember to allow web server to write in this
+directory !
+
+File etc/logrotate.d/ocsinventory-server is a sample to enable rotation of
+Communication Server logs.
+
+Directory binutils contains usefull perl scripts to batch import locally 
+generated inventory results (.ocs files), to analyse Communication Server
+logs... Refer to README in directory.
+
+Enjoy ;-)
