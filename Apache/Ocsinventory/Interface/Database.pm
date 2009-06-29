@@ -48,9 +48,12 @@ sub database_connect{
     $dbUser = $ENV{'OCS_DB_USER'};
     $dbPwd  = $Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD');
   }
-  
-  return DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd );
+
+  my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd );
+  $dbh->do("SET NAMES 'utf8'") if($dbh && $ENV{'OCS_OPT_UNICODE_SUPPORT'});
+  return $dbh;  
 }
+
 # Process the sql requests (prepare)
 sub get_sth {
   my ($sql, @values) = @_;

@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
-	
+	* Unicode support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2796796&group_id=58373&atid=487495
+	  Thanks to Andrek
 	* Added DEFAULTGATEWAY support
 	* Added inventory of virtualization (Philippe Libat)
 	* Fixed a bug in SOAP Engine 

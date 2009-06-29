@@ -118,8 +118,15 @@ sub _get_bind_values{
     if( defined $sectionMeta->{fields}->{$field}->{type} ){
       $bind_value = _get_typed_value($sectionMeta->{name}, $field, $bind_value);
     }
-    
-    push @$arrayToFeed, $bind_value;
+
+    if($ENV{'OCS_UNICODE_SUPPORT'}) {
+      my $utf8 = $bind_value;
+      utf8::decode($utf8);
+      push @$arrayToFeed, $utf8;
+    }
+    else {
+      push @$arrayToFeed, $bind_value;
+    }
   }
 }
 

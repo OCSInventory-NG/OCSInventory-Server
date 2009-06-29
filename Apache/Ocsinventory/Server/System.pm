@@ -172,7 +172,9 @@ sub _database_connect{
   $params{'mysql_socket'} = $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'} if $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'};
 
   # Connection...
-  return DBI->connect("DBI:mysql:database=$database;host=$host;port=$port", $user, $password, \%params);
+  my $dbh = DBI->connect("DBI:mysql:database=$database;host=$host;port=$port", $user, $password, \%params);
+  $dbh->do("SET NAMES 'utf8'") if($dbh && $ENV{'OCS_OPT_UNICODE_SUPPORT'});
+  return $dbh;
 }
 
 sub _check_deviceid{

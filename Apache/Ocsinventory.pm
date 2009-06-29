@@ -38,6 +38,7 @@ use Apache::Ocsinventory::Server::Groups;
 
 # To compress the tx and read the rx
 use Compress::Zlib;
+use Encode;
 
 # Globale structure
 our %CURRENT_CONTEXT;
@@ -182,6 +183,15 @@ sub handler{
         return &_end(APACHE_SERVER_ERROR);
       }
     }
+    # Unicode support - The XML may not use UTF8
+    if($ENV{'OCS_OPT_UNICODE_SUPPORT'}) {
+     if($inflated =~ /^<\?xml\s+version\=\"\d+\.\d+\"\s+encoding\=\"([\w+\-]+)\"\?>/) {
+          my $enc = $1;
+          $inflated =~ s/$enc/utf8/g;
+          Encode::from_to($inflated, "$enc", "utf8");
+      }
+    }
+
     $CURRENT_CONTEXT{'DATA'} = \$inflated;
     ##########################
     # Parse the XML request
