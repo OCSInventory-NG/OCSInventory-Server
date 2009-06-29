@@ -27,8 +27,8 @@ if ($_POST['RESET']=="RESET")
 unset($_POST['search']);
 //filtre
 if ($_POST['search']){
-	$search_cache=" and cache.name like '%".$_POST['search']."%' ";
-	$search_count=" and extracted like '%".$_POST['search']."%' ";
+	$search_cache=" and cache.name like '%".mysql_escape_string($_POST['search'])."%' ";
+	$search_count=" and extracted like '%".mysql_escape_string($_POST['search'])."%' ";
 }
 else{
 	$search="";
@@ -110,7 +110,8 @@ if ($_POST['onglet'] == 'CAT'){
 	} 
 	$querydico=substr($querydico,0,-1);
 	$querydico .= " from dico_soft left join ".$table." cache on dico_soft.extracted=cache.name
-			 where formatted='".$list_cat[$_POST['onglet_soft']]."' ".$search_count." group by EXTRACTED";
+			 where formatted='".mysql_escape_string($list_cat[$_POST['onglet_soft']])."' ".$search_count." group by EXTRACTED";
+
 }
 /*******************************************************CAS OF NEW*******************************************************/
 if ($_POST['onglet'] == 'NEW'){
@@ -118,7 +119,7 @@ if ($_POST['onglet'] == 'NEW'){
 	$result_search_dico_soft = mysql_query( $search_dico_soft, $_SESSION["readServer"]);
 	$list_dico_soft="'";
 	while($item_search_dico_soft = mysql_fetch_object($result_search_dico_soft)){
-		$list_dico_soft.=$item_search_dico_soft -> name."','";
+		$list_dico_soft.=addslashes($item_search_dico_soft -> name)."','";
 	}
 	$list_dico_soft=substr($list_dico_soft,0,-2);
 	
@@ -140,6 +141,7 @@ if ($_POST['onglet'] == 'NEW'){
 				 from ".$table." cache 
 				 where substr(trim(name),1,1) is not null and name not in (".$list_dico_soft.")
 			and name not in (".$list_ignored_soft.") ".$search_cache;	
+	//echo $sql_list_alpha;
 	$first='';
 	//execute the query only if necessary 
 	if($_SESSION['REQ_ONGLET_SOFT'] != $sql_list_alpha){
@@ -166,7 +168,7 @@ if ($_POST['onglet'] == 'NEW'){
 	}
 	if (!isset($_POST['onglet_soft']))
 	$_POST['onglet_soft']=$_SESSION['FIRST_DICO'];
-	 onglet($list_alpha,$form_name,"onglet_soft",20);
+	 onglet($list_alpha,$form_name,"onglet_soft",15);
 	
 	//search all soft for the tab as selected 
 	$search_soft="select distinct name from ".$table." cache
