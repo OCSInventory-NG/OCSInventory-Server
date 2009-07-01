@@ -355,7 +355,7 @@ our %DATA_MAP= (
        FILENAME => {},
        FILESIZE => { fallback=>0 },
        SOURCE => { fallback=>0 }
-   },
+   }
   },
   
   netmap => {
@@ -373,28 +373,61 @@ our %DATA_MAP= (
        NETID => {},
        DATE => {},
        NAME => {}
-   },
+   }
   },
 
   virtualmachines => {
-	  mask => 131072,
-	  multi => 1,
-	  auto => 1,
-	  delOnReplace => 1,
-	  sortBy => 'NAME',
-	  writeDiff => 1,
-	  cache => 0,
-	  fields =>  {
-		  NAME => {},
-		  MEMORY => {},
-		  UUID => {},
-		  STATUS => {},
-		  SUBSYSTEM => {},
-		  VMTYPE => {},
-		  VCPU => {},
-	  },
+    mask => 131072,
+    multi => 1,
+    auto => 1,
+    delOnReplace => 1,
+    sortBy => 'NAME',
+    writeDiff => 1,
+    cache => 0,
+    fields =>  {
+      NAME => {},
+      MEMORY => {},
+      UUID => {},
+      STATUS => {},
+      SUBSYSTEM => {},
+      VMTYPE => {},
+      VCPU => {},
+    }
   },
 
+javainfo => {
+    mask => 0,
+    multi => 0,
+    auto => 1,
+    delOnReplace => 1,
+    sortBy => 'JAVANAME',
+    writeDiff => 0,
+    cache => 0,
+    fields => {
+      JAVANAME => { fallback=>'noname' },
+      JAVAPATHLEVEL => { fallback=>0 },
+      JAVACOUNTRY => {},
+      JAVACLASSPATH => {},
+      JAVAHOME => {}
+    }
+  },
+
+  journallog => {
+    mask => 0,
+    multi => 1,
+    auto => 1,
+    delOnReplace => 0,
+    sortBy => '',
+    writeDiff => 0,
+    cache => 0,
+    fields => {
+      JOURNALLOG => {},
+      LISTENERNAME => { fallback=>'noname' },
+      DATE => {},
+      STATUS => { fallback=>0 },
+      ERRORCODE => {}
+    }
+  }
 
 ); 
 1;

@@ -498,7 +498,28 @@ CREATE TABLE engine_persistent (
  TVALUE varchar(255) default NULL,
   UNIQUE KEY NAME (NAME),
   KEY ID (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE journallog (
+  HARDWARE_ID INT(11) not null,
+  ID integer auto_increment not null,
+  JOURNALLOG LONGTEXT,
+  LISTENERNAME VARCHAR(255) default 'NONAME',
+  `DATE` VARCHAR(255) default null,
+  STATUS INTEGER default 0,
+  ERRORCODE INTEGER default 0,
+  PRIMARY KEY(HARDWARE_ID,ID)
+) ENGINE=INNODB;
+
+CREATE TABLE javainfo (
+  HARDWARE_ID INT(11) not null,
+  JAVANAME VARCHAR(255) default 'NONAME',
+  JAVAPATHLEVEL INTEGER default 0,
+  JAVACOUNTRY VARCHAR(255),
+  JAVACLASSPATH VARCHAR(255) default null,
+  JAVAHOME VARCHAR(255) default null,
+  PRIMARY KEY (HARDWARE_ID)
+)ENGINE=INNODB;
 
 ALTER TABLE devices ADD INDEX IVALUE (IVALUE);
 ALTER TABLE devices ADD INDEX NAME (NAME);
@@ -756,7 +777,7 @@ INSERT INTO operators VALUES ('admin','admin','admin','admin',1, 'Default admini
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs IDENTIFIED BY 'ocs';
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs@localhost IDENTIFIED BY 'ocs';
 
-INSERT INTO config VALUES ('GUI_VERSION', 0, '5003', 'Version of the installed GUI and database');
+INSERT INTO config VALUES ('GUI_VERSION', 0, '5004', 'Version of the installed GUI and database');
 
 CREATE TABLE download_servers (
   HARDWARE_ID int(11) NOT NULL,

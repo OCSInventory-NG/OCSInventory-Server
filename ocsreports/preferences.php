@@ -20,7 +20,7 @@ define("MAX_CACHED_REGISTRY", 200 );	// Max number of registry that may be retur
 define("USE_CACHE", 0 );				//Do we use cache tables ?
 define("UPDATE_CHECKSUM", 1 );			// do we need to update software checksum when using dictionnary ?
 define("UTF8_DEGREE", 0 );				// 0 For non utf8 database, 1 for utf8
-define("GUI_VER", "5003");				// Version of the GUI
+define("GUI_VER", "5004");				// Version of the GUI
 define("MAC_FILE", "files/oui.txt");	// File containing MAC database
 define("TAG_LBL", "Tag");				// Name of the tag information
 define("DB_NAME", "ocsweb");			// Database name

@@ -1,4 +1,6 @@
 Revision history for Apache::Ocsinventory
+	* Mobile devices support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2810746&group_id=58373&atid=487495
 	* Fixed the "bad software import bug"
 	  https://sourceforge.net/tracker/index.php?func=detail&aid=2129983&group_id=58373&atid=487492
  	* DB schema changes support through "type=>1" field meta information in Map.pm
