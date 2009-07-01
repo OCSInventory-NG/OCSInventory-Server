@@ -93,7 +93,7 @@ sub _init_map{
 sub _get_bind_values{
   my ($refXml, $sectionMeta, $arrayToFeed) = @_;
   for ( @{ $sectionMeta->{field_arrayref} } ) {
-    if(defined($refXml->{$_}) && $refXml->{$_} ne '' && $refXml->{$_} ne '??' && $refXml->{$_}!~/N\/?A/){
+    if(defined($refXml->{$_}) && $refXml->{$_} ne '' && $refXml->{$_} ne '??' && $refXml->{$_}!~/^N\/?A$/){
       push @$arrayToFeed, $refXml->{$_};
     }
     else{
