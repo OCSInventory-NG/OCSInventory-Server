@@ -1,4 +1,6 @@
 Revision history for Apache::Ocsinventory
+	* Fixed .ocs files generation on windows server
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2817320&group_id=58373&atid=487492
 	* Mobile devices support
 	  https://sourceforge.net/tracker/index.php?func=detail&aid=2810746&group_id=58373&atid=487495
 	* Fixed the "bad software import bug"
