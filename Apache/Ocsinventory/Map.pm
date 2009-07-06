@@ -376,5 +376,40 @@ our %DATA_MAP= (
        NAME => {}
    },
   },
+
+# Mobile devices support 
+  javainfo => {
+    mask => 0,
+    multi => 0,
+    auto => 1,
+    delOnReplace => 1,
+    sortBy => 'JAVANAME',
+    writeDiff => 0,
+    cache => 0,
+    fields => {
+      JAVANAME => { fallback=>'noname' },
+      JAVAPATHLEVEL => { fallback=>0 },
+      JAVACOUNTRY => {},
+      JAVACLASSPATH => {},
+      JAVAHOME => {}
+    },
+  },
+
+  journallog => {
+    mask => 0,
+    multi => 1,
+    auto => 1,
+    delOnReplace => 0,
+    sortBy => '',
+    writeDiff => 0,
+    cache => 0,
+    fields => {
+      JOURNALLOG => {},
+      LISTENERNAME => { fallback=>'noname' },
+      DATE => {},
+      STATUS => { fallback=>0 },
+      ERRORCODE => {}
+    },
+  },
 ); 
 1;

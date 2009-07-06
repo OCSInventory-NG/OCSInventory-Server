@@ -40,6 +40,7 @@ sub _generate_ocs_file{
   }
   else{
     if($format=~/^ocs$/i){
+      binmode FILE ;
       print FILE ${$Apache::Ocsinventory::CURRENT_CONTEXT{'RAW_DATA'}};
     }
     elsif($format=~/^xml$/i){
