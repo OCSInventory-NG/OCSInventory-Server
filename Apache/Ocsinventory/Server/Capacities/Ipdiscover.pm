@@ -56,7 +56,8 @@ sub _ipdiscover_prolog_resp{
   my $resp = shift;
   
   my ($ua, $os, $v);
-  
+ 
+  return unless ref($current_context->{'PARAMS'}{'IPDISCOVER'}) eq 'HASH';
   my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
   my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
   my $groupsParams  = $current_context->{'PARAMS_G'};
@@ -137,6 +138,7 @@ sub _ipdiscover_main{
   my $DeviceID = $current_context->{'DATABASE_ID'};
   my $dbh = $current_context->{'DBI_HANDLE'};
   my $result = $current_context->{'XML_ENTRY'};
+  return unless ref($current_context->{'PARAMS'}{'IPDISCOVER'}) eq 'HASH';
   my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
   my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
   my $groupsParams  = $current_context->{'PARAMS_G'};
