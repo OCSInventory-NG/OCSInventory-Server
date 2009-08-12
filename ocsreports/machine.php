@@ -25,7 +25,7 @@ unset( $_SESSION["isgroup"] );
 
 if (isset($_GET['systemid'])) {
 	$systemid = $_GET['systemid'];
-	if ($systemid == "")
+	if ($systemid == "" or !is_numeric($systemid))
 	{
 		echo "Please Supply A System ID";
 		die();
@@ -33,7 +33,12 @@ if (isset($_GET['systemid'])) {
 }
 elseif (isset($_POST['systemid'])) {
 	$systemid = $_POST['systemid'];
+	if ($systemid == "" or !is_numeric($systemid)){
+		echo "Please Supply A System ID";
+		die();
+	}
 }
+
 //for update blacklist serial or mac
 update_blacklist();
 
@@ -784,7 +789,7 @@ function print_networks($systemid)
 		$td3".textDecode($item->TYPE)."       </td>
 		$td3".textDecode($item->SPEED)."      </td>
 		$td3".textDecode($item->MACADDR).($const?"<br>($const)":"");
-		blacklist("select ID from blacklist_macaddresses where macaddress='".textDecode($item->MACADDR)."'",textDecode($item->MACADDR),$l->g(704)." ".$l->g(708),$l->g(705)." ".$l->g(708),"Réseau(x)");
+		blacklist("select ID from blacklist_macaddresses where macaddress='".textDecode($item->MACADDR)."'",textDecode($item->MACADDR),$l->g(704)." ".$l->g(708),$l->g(705)." ".$l->g(708),"Reseau(x)");
 		echo "</td>";
 		echo "$td3".textDecode($item->STATUS)."     </td>
 		$td3".textDecode($item->IPADDRESS)."  </td>
@@ -1185,7 +1190,7 @@ function blacklist($sql_verif_blacklist,$serial_mac,$lblpopup_blacklist,$lblpopu
 	<script language=javascript>
 		function confirme(did,champ,lbl){
 			if(confirm(lbl+" ?"))
-				window.location="machine.php?systemid=<? echo $systemid ?>&option=<? echo $direct ?>&"+champ+"="+did;
+				window.location="machine.php?systemid=<?php echo $systemid ?>&option=<?php echo $direct ?>&"+champ+"="+did;
 		}
 	</script>
 	<?php
@@ -1211,7 +1216,7 @@ function update_blacklist(){
 		@mysql_query("INSERT INTO blacklist_serials (SERIAL) value ('".$_GET['black']."')", $_SESSION["writeServer"]);
 
 	//blacklist mac
-	if (isset($_GET['black']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Réseau(x)")
+	if (isset($_GET['black']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Reseau(x)")
 		@mysql_query("INSERT INTO blacklist_macaddresses (MACADDRESS) value ('".$_GET['black']."')", $_SESSION["writeServer"]);
 		
 	// unblacklist serial
@@ -1219,7 +1224,7 @@ function update_blacklist(){
 		@mysql_query("DELETE FROM blacklist_serials WHERE id=".$_GET['noblack'], $_SESSION["writeServer"]);
 		
 	// unblacklist mac 
-	if (isset($_GET['noblack']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Réseau(x)")	
+	if (isset($_GET['noblack']) &  $_SESSION["lvluser"]==SADMIN & $_GET['option'] == "Reseau(x)")	
 		@mysql_query("DELETE FROM blacklist_macaddresses WHERE id=".$_GET['noblack'], $_SESSION["writeServer"]);
 	
 }
