@@ -57,7 +57,8 @@ our %DATA_MAP= (
        QUALITY => {},
        FIDELITY => {},
        SSTATE => { noXml => 1 },
-       USERAGENT => { noXml => 1 }
+       USERAGENT => { noXml => 1 },
+       ASSETTAG => {}
      },
   },
   

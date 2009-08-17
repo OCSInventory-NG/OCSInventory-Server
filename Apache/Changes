@@ -1,4 +1,6 @@
 Revision history for Apache::Ocsinventory
+	* Added ASSETTAG support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2804146&group_id=58373&atid=487495
 	* Added DNS device informations
 	  https://sourceforge.net/tracker/?func=detail&aid=1566957&group_id=58373&atid=487495
 	* Fixed .ocs files generation on windows server
