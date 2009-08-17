@@ -43,6 +43,7 @@ our %DATA_MAP= (
        SWAP => {},
        DEFAULTGATEWAY => {},
        IPADDR => {},
+       DNS => {},
        USERID => { filter => 1 },
        TYPE => {},
        DESCRIPTION => {},
