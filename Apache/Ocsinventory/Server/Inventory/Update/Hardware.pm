@@ -48,6 +48,7 @@ sub _hardware{
 	MEMORY=".(defined($base->{MEMORY})?$base->{MEMORY}:0).",
 	SWAP=".(defined($base->{SWAP})?$base->{SWAP}:0).",
 	IPADDR=".$dbh->quote($ipAddress).",
+	DNS=".$dbh->quote($base->{DNS}).",
 	DEFAULTGATEWAY=".$dbh->quote($base->{DEFAULTGATEWAY}).",
 	ETIME=NULL,
 	$userid
@@ -57,6 +58,7 @@ sub _hardware{
 	WINOWNER=".$dbh->quote($base->{WINOWNER}).",
 	WINPRODID=".$dbh->quote($base->{WINPRODID}).",
 	WINPRODKEY=".$dbh->quote($base->{WINPRODKEY})."
+	ASSETTAG=".$dbh->quote($base->{ASSETTAG})."
 	 WHERE ID=".$deviceId)
   or return(1);
 	
