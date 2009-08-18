@@ -551,8 +551,9 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 		else
 			$_SESSION["c"]=$_GET["c"];		
 			
-		if($deletable)
-		{?>
+		//if($deletable)
+		//{
+		?>
 			<script language=javascript>
 				function confirme(did, typ, nam, target)
 				{
@@ -569,7 +570,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			</script>
 		<?php 
 
-		}
+		//}
 		/* TODO: revoir bouton rouge		
 		if( $req->countId == "h.id" ) //computer in devices
 			echo "<td width='15px'>&nbsp;</td>";*/
@@ -632,7 +633,7 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 			$cpt++;
 		}
 		
-		if( ($deletable||$modeRedon) && $req->countId == "h.id" and $_GET['multi'] != 29 )
+		if( $req->countId == "h.id" and $_GET['multi'] != 29 )
 		{
 			echo "<td>&nbsp;</td>";
 		}
@@ -770,10 +771,10 @@ function ShowResults($req,$sortable=true,$modeCu=false,$modeRedon=false,$deletab
 
 			}
 
-			if( $deletable && isset($item["h.id"]) and $_GET['multi'] != 29) {
+			if( isset($item["h.id"]) and $_GET['multi'] != 29) {
 				echo "<td align=center><a href='#' OnClick='confirme(\"".$item["h.id"]."\",0,".(isset($item[$l->g(23)])?"\"".htmlentities($item[$l->g(23)])."\"":"\"\"").",".($_GET["lareq"]==$l->g(583)?2:1).");'><img src=image/supp.png></a></td>";
 			}
-			else if( $deletable && isset($item[$l->g(95)]) ) {
+			else if(isset($item[$l->g(95)]) ) {
 				echo "<td align=center><a href='#' OnClick='confirme(\"".$item[$l->g(95)]."\",1,\"\",1);'><img src=image/supp.png></a></td>";
 			}
 
