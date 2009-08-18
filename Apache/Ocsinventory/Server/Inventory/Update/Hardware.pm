@@ -57,8 +57,9 @@ sub _hardware{
 	WINCOMPANY=".$dbh->quote($base->{WINCOMPANY}).",
 	WINOWNER=".$dbh->quote($base->{WINOWNER}).",
 	WINPRODID=".$dbh->quote($base->{WINPRODID}).",
-	WINPRODKEY=".$dbh->quote($base->{WINPRODKEY})."
-	ASSETTAG=".$dbh->quote($base->{ASSETTAG})."
+	WINPRODKEY=".$dbh->quote($base->{WINPRODKEY}).",
+	ASSETTAG=".$dbh->quote($base->{ASSETTAG}).",
+	IPSRC=".$dbh->quote($Apache::Ocsinventory::CURRENT_CONTEXT{IPADDRESS})."
 	 WHERE ID=".$deviceId)
   or return(1);
 	
