@@ -232,7 +232,8 @@ our %DATA_MAP= (
        TOTAL => { fallback=>0 },
        FREE => { fallback=>0 },
        VOLUMN => {},
-       NUMFILES => { fallback=>0}
+       NUMFILES => { fallback=>0},
+       CREATEDATE => {}
    }
   },
   

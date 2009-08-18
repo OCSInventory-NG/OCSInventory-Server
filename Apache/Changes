@@ -1,4 +1,6 @@
 Revision history for Apache::Ocsinventory
+	* Added DRIVES/CREATEDATE support
+	  https://sourceforge.net/tracker/?func=detail&atid=487495&aid=2275640&group_id=58373
 	* Added ASSETTAG support
 	  https://sourceforge.net/tracker/index.php?func=detail&aid=2804146&group_id=58373&atid=487495
 	* Added DNS device informations
