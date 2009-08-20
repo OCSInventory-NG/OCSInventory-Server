@@ -1,4 +1,5 @@
 Revision history for Apache::Ocsinventory
+	* Download: Added ERR_ALREADY_IN_HISTORY status code (package affected but already in history)
 	* Added source IP in inventory
 	  https://sourceforge.net/tracker/?func=detail&aid=2807594&group_id=58373&atid=487495
 	* Added DRIVES/CREATEDATE support
