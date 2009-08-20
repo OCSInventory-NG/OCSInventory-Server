@@ -232,6 +232,8 @@ function show_modif($name,$input_name,$input_type,$input_reload = "",$configinpu
 		return $champs;
 	}elseif($input_type == 3)
 	return $name;
+	elseif ($input_type == 4)
+	 return "<input size='".$configinput['SIZE']."' type='password' name='".$input_name."'>";
 	
 }
 

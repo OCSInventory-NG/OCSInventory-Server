@@ -6,10 +6,16 @@ require_once('require/function_search.php');
 if ($_POST['onglet'] == "" or !isset($_POST['onglet']))
 $_POST['onglet']=3;
  //définition des onglets
-$data_on[1]=$l->g(140);
-$data_on[2]=$l->g(141);
-$data_on[3]=$l->g(142);
+$data_on[1]=$l->g(242);
+$data_on[2]=$l->g(243);
+$data_on[3]=$l->g(619);
 $data_on[4]=$l->g(244);
+
+//liste des profils
+$list_profil[1]=$l->g(242);
+$list_profil[2]=$l->g(243);
+$list_profil[3]=$l->g(619);
+
 $form_name = "admins";
 echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
 onglet($data_on,$form_name,"onglet",4);
@@ -44,15 +50,39 @@ if (isset($_POST['SUP_PROF']) and $_POST['SUP_PROF'] != ''){
 }
 //ajout d'un user
 if (isset($_POST['Valid_modif_x'])){
-	//on supprime l'utilisateur si celui-ci existe
-	$sql="delete from operators where id= '".$_POST['SELECTION']."'";
-	mysql_query($sql, $_SESSION["writeServer"]);
-	//on ajoute l'utilisateur avec son profil et différentes infos
-	$sql=" insert into operators (id,lastname,accesslvl) 
-			value ('".$_POST['SELECTION']."','".$_POST['GRADE']." ".$_POST['SELECTION']."(".$_POST['ABREGE'].")','".$_POST['PROFIL']."')";
-		mysql_query($sql, $_SESSION["writeServer"]);
-		//regénération du cache
-		$tab_options['CACHE']='RESET';
+	if (trim($_POST['ID']) == "")
+		$ERROR=$l->g(997);
+	if (!array_key_exists($_POST['ACCESSLVL'], $list_profil))
+		$ERROR=$l->g(998);
+	if (!isset($ERROR)){
+		$sql="select id from operators where id= '".$_POST['ID']."'";
+		$res=mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
+		$row=mysql_fetch_object($res);
+		if (isset($row->id)){
+			$ERROR=$l->g(999);
+			echo "<script>alert('".$ERROR."')</script>";
+		}else{
+		
+			$sql=" insert into operators (id,firstname,lastname,accesslvl,comments";
+			if (isset($_POST['PASSWORD']))
+				$sql.=",passwd";
+			$sql.=") value ('".$_POST['ID']."',
+							'".$_POST['FIRSTNAME']."',
+							'".$_POST['LASTNAME']."',
+							'".$_POST['ACCESSLVL']."',
+							'".$_POST['COMMENTS']."'";
+			if (isset($_POST['PASSWORD']))
+				$sql.=",'".md5($_POST['PASSWORD'])."'";
+			$sql.=")";
+			//echo $sql;
+			mysql_query($sql, $_SESSION["writeServer"]);
+			unset($_SESSION['DATA_CACHE'],$_POST['ID'],$_POST['FIRSTNAME'],$_POST['LASTNAME'],
+					$_POST['ACCESSLVL'],$_POST['COMMENTS'],$_POST['PASSWORD']);
+			$msg=$l->g(373);
+		}		
+	}else
+	echo "<script>alert('".$ERROR."')</script>";
+
 	}
 
 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
@@ -60,9 +90,51 @@ echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' BGCOLOR='#C
 
 
 //add user
-if ($_POST['onglet'] == 4){
-//VERSION INTERNET A DEVELOPPER
+if ($_POST['onglet'] == 4){	
 
+	$tab_typ_champ[0]['DEFAULT_VALUE']=$_POST['ID'];
+	$tab_typ_champ[0]['INPUT_NAME']="ID";
+	$tab_typ_champ[0]['CONFIG']['SIZE']=60;
+	$tab_typ_champ[0]['CONFIG']['MAXLENGTH']=255;
+	$tab_typ_champ[0]['INPUT_TYPE']=0;
+	$tab_name[0]=$l->g(995).": ";
+	
+	$tab_typ_champ[1]['DEFAULT_VALUE']=$_POST['FIRSTNAME'];
+	$tab_typ_champ[1]['INPUT_NAME']="FIRSTNAME";
+	$tab_typ_champ[1]['CONFIG']['SIZE']=60;
+	$tab_typ_champ[1]['CONFIG']['MAXLENGTH']=255;
+	$tab_typ_champ[1]['INPUT_TYPE']=0;
+	$tab_name[1]=$l->g(49).": ";
+	
+	$tab_typ_champ[2]['DEFAULT_VALUE']=$_POST['LASTNAME'];
+	$tab_typ_champ[2]['INPUT_NAME']="LASTNAME";
+	$tab_typ_champ[2]['CONFIG']['SIZE']=60;
+	$tab_typ_champ[2]['CONFIG']['MAXLENGTH']=255;
+	$tab_typ_champ[2]['INPUT_TYPE']=0;
+	$tab_name[2]=$l->g(996).": ";
+	
+	$tab_typ_champ[3]['DEFAULT_VALUE']=$_POST['COMMENTS'];
+	$tab_typ_champ[3]['INPUT_NAME']="COMMENTS";
+	$tab_typ_champ[3]['CONFIG']['SIZE']=60;
+	$tab_typ_champ[3]['CONFIG']['MAXLENGTH']=255;
+	$tab_typ_champ[3]['INPUT_TYPE']=0;
+	$tab_name[3]=$l->g(51).": ";
+		
+	$tab_typ_champ[4]['DEFAULT_VALUE']=$list_profil;
+	$tab_typ_champ[4]['INPUT_NAME']="ACCESSLVL";
+	$tab_typ_champ[4]['INPUT_TYPE']=2;
+	$tab_name[4]=$l->g(66).":";
+	if ($_SESSION['cnx_origine'] == "LOCAL"){
+		//rajouter le password si authentification locale
+		$tab_typ_champ[5]['DEFAULT_VALUE']=$_POST['PASSWORD'];
+		$tab_typ_champ[5]['INPUT_NAME']="PASSWORD";
+		$tab_typ_champ[5]['CONFIG']['SIZE']=30;
+		$tab_typ_champ[5]['INPUT_TYPE']=0;
+		$tab_name[5]=$l->g(217).":";
+	}
+	if (isset($msg))
+	echo "<font color=green>".$msg."</font>";
+	tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$l->g(244),$comment="");
 }else{
 	echo "<tr><td align=center>";
 	//affichage

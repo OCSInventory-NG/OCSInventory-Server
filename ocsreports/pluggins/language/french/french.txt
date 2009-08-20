@@ -537,7 +537,7 @@
 616 Périmètre de l'utilisateur
 617 Nouveau
 618 Perimètre
-619 Utilisateur local
+619 Utilisateur restreint
 620 <br>Vous n'avez aucune machine affectée, merci de faire une demande d'affectation de codes unités (par e-mail) à <a href=mailto:erwan.goalou@gendarmerie.defense.gouv.fr> gendarme GOALOU (erwan.goalou@gendarmerie.defense.gouv.fr)</a><br><br> en spécifiant sur quelles unités vous devez avoir la visibilité.</font></center>
 621 Ce groupe n'a pas été créé. Ce nom existe déja.
 622 En cache
@@ -915,6 +915,14 @@
 992 Estimation du temps de télédéploiement
 993 Les champs en rouge sont en erreur
 994 PDA/SMARTPHONE
+995 ID utilisateur
+996 LASTNAME
+997 ID utilisateur obligatoire
+998 choisissez un profil valide
+999 Cet ID utilisateur existe déjà
+
+
+
 
 
 5000 [DEBUG]requete d'insertion de machines =>[DEBUG]
