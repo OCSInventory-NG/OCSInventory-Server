@@ -200,29 +200,29 @@ if($dbf_handle = @fopen($db_file, "r")) {
 	foreach ( explode(";", "$sql_query") as $sql_line) {
 		$li++;
 		//echo $sql_line."<br>";
-//		if(!mysql_query($sql_line)) {
-//			if (mysql_errno()==1044 && strpos($sql_line, "GRANT ALL")!==false) {
-//				// Provided user not MySQL Administror
-//				$keepuser=true;
-//				continue;
-//			}
-//			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1065 || mysql_errno()==1060 || mysql_errno()==1054 || mysql_errno()==1091 || mysql_errno()==1061) 
-//				continue;		
-//
-//			if(  mysql_errno()==1071 ) {
-//				echo "<br><center><font color=red><b>ERROR: line $li: query:[$sql_line] failed, KEY was too long<br>You need to redo this query later or you will experience severe performance issues.</b><br>";
-//				continue;
-//			}
-//			
-//			if(mysql_errno()==1007 || mysql_errno()==1050) {
-//				$dejaLance = 1;
-//				continue;
-//			}
-//			
-//			echo "<br><center><font color=red><b>ERROR: line $li: query:[$sql_line] failed</b><br>";
-//			echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
-//			$nberr++;
-//		}
+		if(!mysql_query($sql_line)) {
+			if (mysql_errno()==1044 && strpos($sql_line, "GRANT ALL")!==false) {
+				// Provided user not MySQL Administror
+				$keepuser=true;
+				continue;
+			}
+			if(  mysql_errno()==1062 || mysql_errno()==1061 || mysql_errno()==1065 || mysql_errno()==1060 || mysql_errno()==1054 || mysql_errno()==1091 || mysql_errno()==1061) 
+				continue;		
+
+			if(  mysql_errno()==1071 ) {
+				echo "<br><center><font color=red><b>ERROR: line $li: query:[$sql_line] failed, KEY was too long<br>You need to redo this query later or you will experience severe performance issues.</b><br>";
+				continue;
+			}
+			
+			if(mysql_errno()==1007 || mysql_errno()==1050) {
+				$dejaLance = 1;
+				continue;
+			}
+			
+			echo "<br><center><font color=red><b>ERROR: line $li: query:[$sql_line] failed</b><br>";
+			echo "<b>mysql error: ".mysql_error()." (err:".mysql_errno().")</b></font></center>";
+			$nberr++;
+		}
 		echo ".";
 		flush();
 	}
