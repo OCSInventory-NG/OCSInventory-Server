@@ -69,7 +69,7 @@
  */ 
  
  function ligne($name,$lbl,$type,$data,$data_hidden='',$readonly=''){
- 
+ global $l;
 
  	echo "<TR height=65px bgcolor='#F2F2F2' BORDERCOLOR='#9894B5'><td align='center' width='150px'>".$name;
 	echo "<br><font size=1 color=green><i>".$lbl."</i></font></td><td align='left' width='150px'>";
@@ -242,6 +242,7 @@ function look_perso_values($champs,$origine,$systemid){
  * 
  */
  function insert_update($name,$value,$default_value,$field){
+ 	global $l;
  if ($default_value != $value){
  	if ($default_value != '')
 			$sql="update config set ".$field." = '".$value."' where NAME ='".$name."'";
@@ -257,6 +258,7 @@ function look_perso_values($champs,$origine,$systemid){
  }
 
  function delete($name){
+ 	global $l;
  	$sql="delete from config where name='".$name."'";
  	//echo $sql."<br>";
  	if( ! @mysql_query( $sql, $_SESSION["writeServer"] )) {
