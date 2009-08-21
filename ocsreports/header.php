@@ -37,13 +37,13 @@ if (!isset($no_error))
 $no_error='NO';
 /**************************************mise en place des répertoires de pluggins et d'auhentification************************************/
 if (!isset($_SESSION['plugin_rep']) or !isset($_SESSION['CONF_MYSQL'])){
-	$rep=explode("/", $_SERVER["DOCUMENT_ROOT"].$_SERVER["PHP_SELF"]);
-	array_pop($rep);
-	$_SESSION['backend']=implode('/',$rep)."/backend/";
-	$_SESSION['plugin_rep']=implode('/',$rep)."/pluggins/";
-	$_SESSION['CONF_MYSQL']=implode('/',$rep)."/dbconfig.inc.php";
-	$_SESSION['HEADER_HTML']=implode('/',$rep)."/require/html_header.php";
-	$_SESSION['FOOTER_HTML']=implode('/',$rep)."/footer.php";
+//	$rep=explode("/", $_SERVER["DOCUMENT_ROOT"].$_SERVER["PHP_SELF"]);
+//	array_pop($rep);
+	$_SESSION['backend']="backend/";
+	$_SESSION['plugin_rep']="pluggins/";
+	$_SESSION['CONF_MYSQL']="dbconfig.inc.php";
+	$_SESSION['HEADER_HTML']="require/html_header.php";
+	$_SESSION['FOOTER_HTML']="footer.php";
 }
 
 /*****************************************************GESTION DU LOGOUT*********************************************/
