@@ -11,10 +11,10 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html
 <?php 
 
-	if($l->g(0)) 
-		echo "; charset=".$l->g(0).";";
-	else
-		echo "; charset=ISO-8859-1;";	
+//	if($l->g(0)) 
+//		echo "; charset=".$l->g(0).";";
+//	else
+		echo "; charset=UTF-8;";	
 ?>
 ">
 <link rel="shortcut icon" href="favicon.ico" />
