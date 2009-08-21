@@ -9,8 +9,9 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.15 $)
-
+@session_start();
 $header_html="NO";
+unset($_SESSION['LANGUAGE']);
 require_once("header.php");
 require('require/function_stats.php');
 if($_SESSION["lvluser"]==SADMIN){
