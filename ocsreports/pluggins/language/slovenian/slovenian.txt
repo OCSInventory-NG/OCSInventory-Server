@@ -1,181 +1,181 @@
 0 UTF-8
-2 Vsi ra�?unalniki
-3 Ra�?unalniki z programsko opremo...
+2 Vsi raÄ?unalniki
+3 RaÄ?unalniki z programsko opremo...
 5 Unity codes under my responsibility
-9 Iskanje po razli�?nih kriterijih
+9 Iskanje po razliÄ?nih kriterijih
 12 Vrednost oznake
-13 Pošlji
+13 PoĹĄlji
 17 Agent
 19 Verzija programske opreme
 20 Programska oprema
-23 Ra�?unalnik
+23 RaÄ?unalnik
 24 Uporabnik
 25 Operacijski sistem
 26 Pomnilnik
 27 Hitrost pomnilnika (MHz)
-28 � tevilo ra�?unalnikov
+28 Ĺ tevilo raÄ?unalnikov
 30 Iskanje
 31 Izberi parametre
 32 Izberi
 33 Domena
-34 IP številka
-35 Ime ra�?unalnika
-36 Serijska številka
+34 IP ĹĄtevilka
+35 Ime raÄ?unalnika
+36 Serijska ĹĄtevilka
 41 Ponovni zagon
 42 Ni rezultatov
 43 Osnovni meni
 45 Prazen prostor
 46 Zadnji popis
-48 Podrobnosti ra�?unalnika
+48 Podrobnosti raÄ?unalnika
 49 Ime
 50 Menjava
 51 Komentarji
 53 Opis 
 54 Procesor(ji)
-55 � tevilka
+55 Ĺ tevilka
 56 Administrtrativni podatki
 61 Video kartica
 62 Resolucija
-63 Skladiš�?e
+63 SkladiĹĄÄ?e
 64 Proizvajalec
 65 Model
 66 Tip
 67 Velikost diska
 69 Urejevalnik
-70 Dolo�?itev
+70 DoloÄ?itev
 79 Tiskalnik (i)
 80 Zajem 
 81 Status
-82 Omrežje(a)
+82 OmreĹžje(a)
 83 Kapaciteta
 84 Vmesnik 
 85 Pismo
-86 Datote�?ni sistem
-87 Kon�?no
+86 DatoteÄ?ni sistem
+87 KonÄ?no
 88 Prosto
 90 Rezultat(i)
 91 Vhodne enote
 92 Disk(i)
 93 Kontroler(ji)
-94 � tevilka Slota
-95 MAC številka
+94 Ĺ tevilka Slota
+95 MAC ĹĄtevilka
 96 Zvok
 97 Monitor(ji)
-98 Bodi pazljiv, izbereš lahko samo 8 možnosti!
-99 Podrobnosti ra�?unalnika
+98 Bodi pazljiv, izbereĹĄ lahko samo 8 moĹžnosti!
+99 Podrobnosti raÄ?unalnika
 103 Nadgradnja
 107 Nastavitve
 108 Zahteva registra
 111 Windows licenca
-113 Prekli�?i
+113 PrekliÄ?i
 114 Register
 115 Nadgradi
 116 Dodaj
 117 Registrer
-119 Ali res želiš izbrisati ta ra�?unalnik 
-122 Izbriši
+119 Ali res ĹželiĹĄ izbrisati ta raÄ?unalnik 
+122 IzbriĹĄi
 129 Je enako
 130 Ni enako
 134 Dodaj novo datoteko v podatkovno bazo
-135 Bodi previden, si tik pred tem, da za vedno izbrišeš to datoteko!
+135 Bodi previden, si tik pred tem, da za vedno izbriĹĄeĹĄ to datoteko!
 136 Prenos
 137 Datoteka
-168 Ta format datoteke je napa�?en (biti mora zip, ocsagent.exe, ocspackage.exe, pl ali unix binary)
-170 Datoteka že obstaja !
+168 Ta format datoteke je napaÄ?en (biti mora zip, ocsagent.exe, ocspackage.exe, pl ali unix binary)
+170 Datoteka Ĺže obstaja !
 171 Datoteka izbrisana
 172 Pojavila se je napaka, datoteka je
 173 ne bo dodano v podatkovno bazo
 174 Varnost
 175 Duplikati
 176 IPs
-177 Združi odve�?ne ra�?unalnike
-178 Seštevek ra�?unalnikov z oznakami
+177 ZdruĹži odveÄ?ne raÄ?unalnike
+178 SeĹĄtevek raÄ?unalnikov z oznakami
 180 Uporabnik ni registriran
-182 Ra�?unalniki z dolo�?eno oznako
+182 RaÄ?unalniki z doloÄ?eno oznako
 183 Prenos
 184 Ta datoteka ne vsebuje "use constant version"
 185 Vrednost mora biti nad 1
 186 Ta datoteka ne vsebuje "ver"-podatkov
 187 To ni veljavna zip datoteka
 188 Nazaj
-189 Izbrati morate najmanj dva ra�?unalnika
-190 Informacija o ra�?unu
-191 izbriši
+189 Izbrati morate najmanj dva raÄ?unalnika
+190 Informacija o raÄ?unu
+191 izbriĹĄi
 192 Redundancy summary
-193 Ime gostitelja + Serijska številka
-194 Ime gostitelja + Mac številka
-195 Mac številka + Serijska številka
+193 Ime gostitelja + Serijska ĹĄtevilka
+194 Ime gostitelja + Mac ĹĄtevilka
+195 Mac ĹĄtevilka + Serijska ĹĄtevilka
 196 Samo ime gostitelja
 197 Samo serijsko
-198 Samo Mac številko
+198 Samo Mac ĹĄtevilko
 199 Redundancy
 200 Corresponding relay decremented
-201 MANJ� I KOT
-202 VEČJIKOT
+201 MANJĹ I KOT
+202 VEÄJIKOT
 203 MED
 204 IZVEN
-205 Omogo�?eno
+205 OmogoÄ?eno
 206 shranjeno za
 207 Prehod
 208 maska
 209 BIOS Verzija
 210 BIOS Datum
 211 Register
-212 Ime klju�?a
-213 Vrednost Klju�?a
+212 Ime kljuÄ?a
+213 Vrednost KljuÄ?a
 214 Natisni to stran
-215 Pokaži vse
-216 Geslo je napa�?no
+215 PokaĹži vse
+216 Geslo je napaÄ?no
 217 Geslo
 218 Verzija Agentov
-219 nepopisan mrežni vmesnik
-220 izbriši
-221 Ra�?unalniki zbrani po IP številki
-222 Opozorilo! Vsi izbrani ra�?unalniki bodo združeni v en ra�?unalnik! Ste prepri�?ani?
+219 nepopisan mreĹžni vmesnik
+220 izbriĹĄi
+221 RaÄ?unalniki zbrani po IP ĹĄtevilki
+222 Opozorilo! Vsi izbrani raÄ?unalniki bodo zdruĹženi v en raÄ?unalnik! Ste prepriÄ?ani?
 223 Informacije
 224 Vrednost
 225 Podatki administratorja
-226 je bil uspešno izbrisan iz uporabniške tabele
-227 Ste prepri�?ani da želite izbrisati stolpec
+226 je bil uspeĹĄno izbrisan iz uporabniĹĄke tabele
+227 Ste prepriÄ?ani da Ĺželite izbrisati stolpec
 228 Vnesite nove administrativne podatke
 229 Besedilo (255)
-230 � tevilo 
+230 Ĺ tevilo 
 231 Real
 232 Datum
 233 Trenutni podatki
-234 je bilo uspešno venšeno
+234 je bilo uspeĹĄno venĹĄeno
 235 Uporabniki
 236 Spremeni geslo
 237 Novo geslo
 238 Potrditev
 239 Izpolniti morate vsa polja
 240 Geslo se ne ujema
-241 Geslo je bilo uspešno spremenjeno
+241 Geslo je bilo uspeĹĄno spremenjeno
 242 Administrator
 243 Uporabnik
 244 Dodaj novega uporabnika
-245 je bil uspešno izbrisan
-246 Si prepri�?an, da želiš izbrisati uporabnika
+245 je bil uspeĹĄno izbrisan
+246 Si prepriÄ?an, da ĹželiĹĄ izbrisati uporabnika
 247 MySql uporabnik
 248 MySql geslo
 249 Ne morem se povezati v MySql. Prosim vnesi pravilno uporabnika/geslo.
 250 MySql gostitelj
 251 Odjava
-252 Ime (ti izbiraš)        	
+252 Ime (ti izbiraĹĄ)        	
 253 Registersko gnezdo
-254 Pot do klju�?a(Primer: Programska opremaMozilla)  	
-255 Ime klju�?a, ki bo bran (* za vse)
+254 Pot do kljuÄ?a(Primer: Programska opremaMozilla)  	
+255 Ime kljuÄ?a, ki bo bran (* za vse)
 256 Izberi 
-257 Klju�? za registracijo
-258 Vrednost registrirnega klju�?a
+257 KljuÄ? za registracijo
+258 Vrednost registrirnega kljuÄ?a
 259 Napaka, podatek ne more biti vstavljen (specialni znaki niso dovoljeni
-260 Ozna�?ba spremenjene datoteke je pravilna
-261 Ozna�?ena datoteka je izbrisana
+260 OznaÄ?ba spremenjene datoteke je pravilna
+261 OznaÄ?ena datoteka je izbrisana
 262 Vrsta v oznaki
-263 Ozna�?ite datote�?no nastavitev
-264 Ne ozna�?i datoteke
+263 OznaÄ?ite datoteÄ?no nastavitev
+264 Ne oznaÄ?i datoteke
 265 Kar koli
-266 Napa�?en datum
+266 NapaÄ?en datum
 267 mm/dd/yyyy
 268 Hitrost
 269 %d/%m/%Y
@@ -194,119 +194,119 @@
 282 Prehodi
 283 Namen
 284 Proizvajalec BIOS-ov
-285 Izberite parameter, ki ga želite spremeniti
+285 Izberite parameter, ki ga Ĺželite spremeniti
 286 Service pack
 287 Lokalni uvoz
-288 Lokalno uvažanje
-289 Podatki o omrežju
-290 Ip povpraševanje
-291 Experten na�?in
-292 Dodaj / izbriši mrežno napravo
-293 Tipi mrežnih naprav
+288 Lokalno uvaĹžanje
+289 Podatki o omreĹžju
+290 Ip povpraĹĄevanje
+291 Experten naÄ?in
+292 Dodaj / izbriĹĄi mreĹžno napravo
+293 Tipi mreĹžnih naprav
 294 Imena poddomen
 295 Klikni za urejanje
 296 Uid
 297 Ne morem pisati v mapo
 298 Vsa polja morajo biti polna
-299 Napa�?na IP številka (biti mora: x.x.x.x)
-300 Napa�?na maska: biti mora: x.x.x.x ali xx (xx<32)
-301 Omrežje vstavljeno
-302 Omrežje izbrisano
+299 NapaÄ?na IP ĹĄtevilka (biti mora: x.x.x.x)
+300 NapaÄ?na maska: biti mora: x.x.x.x ali xx (xx<32)
+301 OmreĹžje vstavljeno
+302 OmreĹžje izbrisano
 303 Dodaj poddomeno
-304 Ime omrežja
+304 Ime omreĹžja
 305 Uid
-306 Lista podomrežij
+306 Lista podomreĹžij
 307 Dodaj tip
 308 Ime tipa
-309 Tip mrežne naprave
+309 Tip mreĹžne naprave
 310 IpDiscover less than
 311 Gostitelji
 312 IpDiscover
-313 Prehodi ra�?unalnikov
+313 Prehodi raÄ?unalnikov
 314 IpDiscover gateway computers
-315 Ne popisani ra�?unalniki
-316 Podmreža
+315 Ne popisani raÄ?unalniki
+316 PodmreĹža
 317 ANALIZIRANJE
 318 DNS ime
-319 Podatki analize omrežja
-320 Te analize so že bile izvedene
-321 Ali želiš videti podatke iz vmesnika (cache) ?
+319 Podatki analize omreĹžja
+320 Te analize so Ĺže bile izvedene
+321 Ali ĹželiĹĄ videti podatke iz vmesnika (cache) ?
 322 Podatki iz vmesnika (cache)
 323 generirano na
 324 Gostitelj je ocenjen kot
 325 prazno
 326 nebena maska ni vpisana
-327 Podrobnosti ra�?unalnika
+327 Podrobnosti raÄ?unalnika
 328 Odkrito
 329 Popisano
 330 NetBIOS ime
-331 � tevilka omrežja
-332 Prosim po�?akaj...
-333 Dodaj novo mrežno napravo
-334 Lista mrežnih naprav
+331 Ĺ tevilka omreĹžja
+332 Prosim poÄ?akaj...
+333 Dodaj novo mreĹžno napravo
+334 Lista mreĹžnih naprav
 335 Tip naprave
 336 Opis naprave
-337 PROGRAM NI POSLAL NIČESAR
+337 PROGRAM NI POSLAL NIÄESAR
 338 Omejen mode
-339 Potrebujete ipdiscover-util.pl (Samo Linux) za napredni na�?in
-340 Prikaži
+339 Potrebujete ipdiscover-util.pl (Samo Linux) za napredni naÄ?in
+340 PrikaĹži
 341 ni izvedljivo, nastaviti morate pravice izvajanja
 342 Nastaviti morate pravico pisanja v korensko mapo
 344 NAPAKA
-345 TA ANALIZA TRENUTNO POTEKA, PROSIM POSKUSI ČEZ NEKAJ MINUT
+345 TA ANALIZA TRENUTNO POTEKA, PROSIM POSKUSI ÄEZ NEKAJ MINUT
 346 PRED
 347 ZA
 348 Uporabnik Windows-ov
 349 Dodaj stolpec
 350 Tip CPU-ja
-351 število CPU-jev
+351 ĹĄtevilo CPU-jev
 352 Na zadnje prispelo
 353 Kvaliteta
 354 Zvestoba
 355 Podjetje
 356 Lastnik
-357 Uporabniški agent
+357 UporabniĹĄki agent
 358 Wildcards: ? (en znak), * (nekaj znakov)
-359 Serijska št. Monitorja
+359 Serijska ĹĄt. Monitorja
 360 Proizvedeno(teden/leto)
-362 Omrežje
-363 že obstaja
+362 OmreĹžje
+363 Ĺže obstaja
 364 Popisano
 365 Ne- popisano
 366 Identificirano
-367 Naprave omrežja
-368 omrežja
+367 Naprave omreĹžja
+368 omreĹžja
 369 Dodano od
 370 Postavitev
 371 Vse komponente
 372 Izberi komponente
 373 Registrirani uporabniki
-374 Registrirana družba
+374 Registrirana druĹžba
 375 OCS NG Verzija agenta
-376 Ra�?unalnik je zaklenjen. Prosim ponovno poskusi �?ez nekaj minut.
+376 RaÄ?unalnik je zaklenjen. Prosim ponovno poskusi Ä?ez nekaj minut.
 377 Hitrost procesorja(Mhz)
 380 Slovar
-381 � tevilo
+381 Ĺ tevilo
 382 Ime programske opreme
 383 Stran
 384 Premakni VSE
 385 v novo kategorijo
 386 ALI
-387 na obstoje�?o kategorijo
+387 na obstojeÄ?o kategorijo
 388 Kategorija
-389 Ni�?
+389 NiÄ?
 390 Kategorije slovarja
 391 Ime kategorije
-392 Izbriši
-393 Iš�?i
-394 Iš�?i po kategoriji
-395 Iš�?i programsko opremo POVSOD
+392 IzbriĹĄi
+393 IĹĄÄ?i
+394 IĹĄÄ?i po kategoriji
+395 IĹĄÄ?i programsko opremo POVSOD
 396 Ponastavi
 397 Pojdi v kategorijo
 398 Lista kategorijCategories list
-410 NATANČNO TAKO
-411 Polje mora vsebovati samo številke !
-412 Zbrano funkcionalnost klju�?a registra
+410 NATANÄNO TAKO
+411 Polje mora vsebovati samo ĹĄtevilke !
+412 Zbrano funkcionalnost kljuÄ?a registra
 413 Samodejno nadgradnjo funkcionalnosti
 414 Samodejno uporabno postavitev 
 415 Deletion logging functionality (needed by GLPI).
@@ -324,14 +324,14 @@
 427 Defines criteria that must be equals for two computers to be automatically merged.
 428 Razviti
 429 Frekvenca
-430 Množi�?na obdelava
+430 MnoĹžiÄ?na obdelava
 431 Aktiviraj
-432 Ne obveš�?en
+432 Ne obveĹĄÄ?en
 433 Vpliv
 434 Gradnik paketov
 435 Gradnja novega paketa
 436 Ne morem odpreti datoteke
-437 Vaš paket je bil uspešno izdelan v mapi
+437 VaĹĄ paket je bil uspeĹĄno izdelan v mapi
 438 Gradnja novega paketa
 439 Protokol
 440 Prioritete
@@ -344,56 +344,56 @@
 447 Obvesti uporabnika
 448 Upozori uporabnika
 449 Besedilo
-450 Odštevanje
+450 OdĹĄtevanje
 451 Uporabnik lahko prekine
-452 Uporabnik lahko odlaša
-453 Dokon�?anje namestitve potrebuje poseg uporabnika
+452 Uporabnik lahko odlaĹĄa
+453 DokonÄ?anje namestitve potrebuje poseg uporabnika
 454 NE
 455 DA
 456 Izvedi
 457 Shrani
-458 Zaženi
-459 Odštevanje mora biti številka
-460 Unikaten ozna�?evalnik
+458 ZaĹženi
+459 OdĹĄtevanje mora biti ĹĄtevilka
+460 Unikaten oznaÄ?evalnik
 461 Digest
 462 Celotna velikost
 463 Velikost odlomkov(1 KB min)
-464 � tevilo odlomkov
+464 Ĺ tevilo odlomkov
 465 Aktivacija paketa
 466 OPOZORILO: Ne najdem informacijske datoteke v
 467 OPOZORILO: Ne najdem odlomkov datotek pri
-468 Si prepri�?an, da želiš vklju�?iti ta paket ?
+468 Si prepriÄ?an, da ĹželiĹĄ vkljuÄ?iti ta paket ?
 469 Paket je aktivirn, sedaj je lahko razvit
 470 Https url (varni url)
 471 Odlomki url
 472 NAPAKA: ne morem izbrisati mape
-473 Časovni žig mora biti številka
-474 Časovni žig mora biti dolg 10 digitov
-475 Časovni žig
-476 Ali omogo�?i paket ro�?no
+473 Äasovni Ĺžig mora biti ĹĄtevilka
+474 Äasovni Ĺžig mora biti dolg 10 digitov
+475 Äasovni Ĺžig
+476 Ali omogoÄ?i paket roÄ?no
 477 Delujte na paket
-478 Ra�?unalnik(i)
-479 Noben ra�?unalnik ni izbran
+478 RaÄ?unalnik(i)
+479 Noben raÄ?unalnik ni izbran
 480 odlomki
 481 Aktivirani paketi
-482 ČAKAJOČE OBVESTILO
-483 Potrditev USPE� NA
+482 ÄAKAJOÄE OBVESTILO
+483 Potrditev USPEĹ NA
 484 Delujte na po meri narejeno pogostnost
 485 Zmeraj popisano
 486 Nikoli popisano
-487 Ro�?no
+487 RoÄ?no
 488 Privzeto
-489 Obnašanje IPraziskovaleca
+489 ObnaĹĄanje IPraziskovaleca
 490 NIKOLI IPraziskovalec
-491 ZMERAJ IPraziskovalec omrežij
-492 IZVOLJEN IPraziskovalec omrežja
+491 ZMERAJ IPraziskovalec omreĹžij
+492 IZVOLJEN IPraziskovalec omreĹžja
 493 Privzeto Default (lahko je izvoljen)
 494 Po meri izdelana pogostost popisa
 495 Popisan vsak
 496 dan(dnevov)
 497 Privzeto, uporabljen je 'FREQUENCY' parameter.
 498 Paket
-499 strežnik
+499 streĹžnik
 500 Customization
 501 dodaj paket
 502 Izvoljen
@@ -411,16 +411,16 @@
 514 Aktiviraj
 515 Aktivirano
 516 KB
-517 Ta obcija je lahko razvita samo na enem ra�?unalniku v danem �?asu.
+517 Ta obcija je lahko razvita samo na enem raÄ?unalniku v danem Ä?asu.
 518 Prisili IPrazikovalec
-519 Ra�?unalnik je že izvoljen za omrežje
-520 Ra�?unalnik je že PRISILIL IPraziskovalec za omrežje
-521 Ra�?unalnik je že PRISILJEN v ne izvoljivost
-522 Standardni ra�?unalnik
+519 RaÄ?unalnik je Ĺže izvoljen za omreĹžje
+520 RaÄ?unalnik je Ĺže PRISILIL IPraziskovalec za omreĹžje
+521 RaÄ?unalnik je Ĺže PRISILJEN v ne izvoljivost
+522 Standardni raÄ?unalnik
 523 Vrni se nazaj k standardnemu stanju
-524 NIKOLI VEČ ne vplivaj
-525 SI PREPRIČAN ?
-526 NOBEN RAČUNALNIK NI SIMULIRAN
+524 NIKOLI VEÄ ne vplivaj
+525 SI PREPRIÄAN ?
+526 NOBEN RAÄUNALNIK NI SIMULIRAN
 527 Januar
 528 Februar
 529 Marec
@@ -437,39 +437,39 @@
 540 Ponedeljek
 541 Torek
 542 Sreda
-543 Četrtek
+543 Äetrtek
 544 Petek
 545 Sobota
 546 in state
 547 vse
 548 Vse razen USPEHA
-549 Datoteka (razvita na ra�?unalnikih odjemalcev)
+549 Datoteka (razvita na raÄ?unalnikih odjemalcev)
 550 Datoteka File (ne obvezna, lahko uporabljena od "execute" ukaza)
-551 Ime tega paketa že obstaja
-552 <i>Moraš narediti ra�?unalniško iskanje in nato pritisni na 'razviti' za namestitev teh aktiviranih paketov<br>Prav tako lahko namestite paket na posamezen ra�?unalnik z uporabo 'customization' ukaza za katerokoli podrobnost ra�?unalnika</i>.
-553 Windows klju�?
-554 Monitor: serijska številka
+551 Ime tega paketa Ĺže obstaja
+552 <i>MoraĹĄ narediti raÄ?unalniĹĄko iskanje in nato pritisni na 'razviti' za namestitev teh aktiviranih paketov<br>Prav tako lahko namestite paket na posamezen raÄ?unalnik z uporabo 'customization' ukaza za katerokoli podrobnost raÄ?unalnika</i>.
+553 Windows kljuÄ?
+554 Monitor: serijska ĹĄtevilka
 555 Monitor: proizvajalec
 556 Monitor: zajeto
 557 Uporabnikova domena
 558 Simulirani paketi
 559 Ta datoteka ni .ocs
-560 Na strežnik
+560 Na streĹžnik
 561 Neznano (izbrisan paket)
-562 Omrežja imajo uid:
+562 OmreĹžja imajo uid:
 563 Proizvajalec
-564 Agent za avto-sprožitev pogostosti
-565 Strežnik uporabljen za lokalni popise
+564 Agent za avto-sproĹžitev pogostosti
+565 StreĹžnik uporabljen za lokalni popise
 566 Vrata uporabljena za lokalni popis
 567 IPraziskovalec  latenca
 568 RAM(MB)
 569 CPU(MHz)
-570 Pomo�?
+570 PomoÄ?
 571 Potrdi vse
 572 Uspelo
 573 Napake
 574 Stanja
-575 Nedelujo�?i niso obveš�?eni
+575 NedelujoÄ?i niso obveĹĄÄ?eni
 576 Prilagojeno IPraziskovalcu
 577 Group name
 580 All computers (replay)

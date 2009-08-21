@@ -1,48 +1,48 @@
 0 iso-8859-1
 2 Todos los computadores
 3 Computadores con sotfware...
-5 CÛdigos de elementos bajo mi responsabilidad
-9 B˙squeda por varios criterios
+5 C√≥digos de elementos bajo mi responsabilidad
+9 B√∫squeda por varios criterios
 12 Valor de la etiqueta
 13 Aceptar
 17 Agente
-19 VersiÛn del software
+19 Versi√≥n del software
 20 Software
 23 Computador
 24 Nombre usuario
 25 Sistema Operativo
 26 Memoria
 27 Velocidad de la memoria (MHz)
-28 N˙mero de computadores
+28 N√∫mero de computadores
 30 Buscar
-31 Seleccionar un par·metro
+31 Seleccionar un par√°metro
 32 Seleccionar
 33 Dominio
-34 DirecciÛn IP
+34 Direcci√≥n IP
 35 Nombre del computador
-36 N˙mero serial
+36 N√∫mero serial
 41 Inicializar
 42 No hay resultados
-43 Men˙ principal
+43 Men√∫ principal
 45 Espacio libre
-46 ⁄ltimo inventario
+46 √öltimo inventario
 48 Detalles del computador
 49 Nombre
 50 Memoria virtual
 51 Comentarios
-53 DescripciÛn
+53 Descripci√≥n
 54 Procesador(es)
-55 N˙mero
+55 N√∫mero
 56 Datos administrativos
 61 Tarjeta de video
-62 ResoluciÛn
+62 Resoluci√≥n
 63 Almacenamiento
 64 Fabricante
 65 Modelo
 66 Tipo
-67 TamaÒo del disco
+67 Tama√±o del disco
 69 Editor
-70 DesignaciÛn
+70 Designaci√≥n
 79 Impresora(s)
 80 Identificador
 81 Estado
@@ -57,11 +57,11 @@
 91 Dispositivos entrada
 92 Disco(s)
 93 Controlador(es)
-94 N˙mero de ranuras
-95 DirecciÛn MAC
+94 N√∫mero de ranuras
+95 Direcci√≥n MAC
 96 Sonido
 97 Monitor(es)
-98 AtenciÛn, °solamente puede seleccionar 8 opciones!
+98 Atenci√≥n, ¬°solamente puede seleccionar 8 opciones!
 99 Detalles del computador
 103 Actualizar
 107 Configurar
@@ -72,133 +72,133 @@
 115 Actualizar
 116 Adicionar
 117 Registro
-119 øRealmente desea borrar el computador?
+119 ¬øRealmente desea borrar el computador?
 122 Borrar
 129 IGUAL
 130 DIFERENTE
 134 Adicionar un nuevo archivo a la base
-135 Tenga cuidado, °est· a punto de borrar este archivo en forma definitiva!
+135 Tenga cuidado, ¬°est√° a punto de borrar este archivo en forma definitiva!
 136 Descargar
 137 Archivo
-168 Este formato de archivo no es v·lido (debe ser zip, pl o binario unix)
-170 °Ya existe el mismo archivo!
+168 Este formato de archivo no es v√°lido (debe ser zip, pl o binario unix)
+170 ¬°Ya existe el mismo archivo!
 171 Archivo borrado
-172 ApareciÛ un error, el archivo
-173 no se adicionar· a la base
+172 Apareci√≥ un error, el archivo
+173 no se adicionar√° a la base
 174 Seguridad
 175 Duplicados
 176 Ips
 177 Mezclar computadores redundantes
-178 Etiqueta / DistribuciÛn de PCs
+178 Etiqueta / Distribuci√≥n de PCs
 180 Usuario no registrado
 182 Computadores que tienen una etiqueta dada
 183 Descargar
-184 Este archivo no contiene "use versiÛn constante"
-185 La versiÛn debe ser mayor de 1
-186 Este archivo no contiene el archivo de versiÛn
-187 Este archivo no es un archivo zip v·lido
+184 Este archivo no contiene "use versi√≥n constante"
+185 La versi√≥n debe ser mayor de 1
+186 Este archivo no contiene el archivo de versi√≥n
+187 Este archivo no es un archivo zip v√°lido
 188 Volver
 189 Debe seleccionar al menos 2 computadores
 190 Cuentainfo:
 191 borrado
 192 Resumen redundancia
-193 Nombre del computador + N˙mero serial
-194 Nombre del computador + DirecciÛn MAC
-195 DirecciÛn MAC + N˙mero serial
-196 SÛlo nombre del computador
-197 SÛlo serial
-198 SÛlo direcciÛn MAC
+193 Nombre del computador + N√∫mero serial
+194 Nombre del computador + Direcci√≥n MAC
+195 Direcci√≥n MAC + N√∫mero serial
+196 S√≥lo nombre del computador
+197 S√≥lo serial
+198 S√≥lo direcci√≥n MAC
 199 Redundancia
-200 ReenvÌo correspondiente decrementado
-201 M¡S PEQUE—O
-202 M¡S GRANDE
+200 Reenv√≠o correspondiente decrementado
+201 M√ÅS PEQUE√ëO
+202 M√ÅS GRANDE
 203 ENTRE
 204 DIFERENTE DE
 205 Habilitado
 206 grabado para
 207 Punto de salida
-208 m·scara
-209 VersiÛn BIOS
+208 m√°scara
+209 Versi√≥n BIOS
 210 Fecha BIOS
 211 Registro
 212 Nombre clave
 213 Valor clave
-214 Imprimir esta p·gina
+214 Imprimir esta p√°gina
 215 Mostrar todo
-216 Error de contraseÒa
-217 ContraseÒa
+216 Error de contrase√±a
+217 Contrase√±a
 218 Versiones de agentes
 219 interfaces de red sin inventariar
 220 borrado
 221 Computadores que registran IPs
-222 °Aviso! °Todos los computadores seleccionados se van a mezclar como un ˙nico computador! øEst· seguro?
-223 InformaciÛn
+222 ¬°Aviso! ¬°Todos los computadores seleccionados se van a mezclar como un √∫nico computador! ¬øEst√° seguro?
+223 Informaci√≥n
 224 Valor
 225 Infoadmin
-226 se borrÛ exitosamente de la tabla accountinfo
-227 øEsta seguro que desea borrar la columna
+226 se borr√≥ exitosamente de la tabla accountinfo
+227 ¬øEsta seguro que desea borrar la columna
 228 Introduzca el nuevo campo a agregar
 229 Texto (255)
 230 Entero
 231 Real
 232 Fecha
 233 Datos existentes:
-234 se insertÛ exitosamente
+234 se insert√≥ exitosamente
 235 Usuarios
-236 Cambiar contraseÒa
-237 Nueva contraseÒa
-238 ConfirmaciÛn
+236 Cambiar contrase√±a
+237 Nueva contrase√±a
+238 Confirmaci√≥n
 239 Debe llenar todos los campos
-240 Sus contraseÒas son diferentes
-241 Se modificÛ su contraseÒa exitosamente
+240 Sus contrase√±as son diferentes
+241 Se modific√≥ su contrase√±a exitosamente
 242 Administrador
 243 Usuario
 244 Adicionar un nuevo usuario
-245 se borrÛ exitosamente
-246 øEst· seguro que desea borrar el usuario
+245 se borr√≥ exitosamente
+246 ¬øEst√° seguro que desea borrar el usuario
 247 Usuario MySQL
-248 ContraseÒa MySQL
-249 No se puede conectar a MySQL. Por favor introduzca un usuario/contraseÒa v·lidos.
+248 Contrase√±a MySQL
+249 No se puede conectar a MySQL. Por favor introduzca un usuario/contrase√±a v√°lidos.
 250 Nombre del servidor MySQL
 251 Salir
 252 Nombre (usted elije)
 253 La rama del registro
-254 UbicaciÛn de la clave (por ejemplo: SOFTWAREMozilla)
-255 Nombre de la clave que se leer· (* para todos)
+254 Ubicaci√≥n de la clave (por ejemplo: SOFTWAREMozilla)
+255 Nombre de la clave que se leer√° (* para todos)
 256 Elegir
 257 Clave del Registro
 258 Valor de la clave del Registro
 259 Error, no se pudieron insertar los datos (no se permite caracteres especiales)
-260 ModificaciÛn exitosa del archivo de etiqueta
+260 Modificaci√≥n exitosa del archivo de etiqueta
 261 Archivo de etiqueta borrado
 262 Introduzca la etiqueta
-263 Archivo de configuraciÛn de la etiqueta
+263 Archivo de configuraci√≥n de la etiqueta
 264 No existe archivo de etiqueta ahora
 265 Algo
-266 Fecha inv·lida
+266 Fecha inv√°lida
 267 dd/mm/AAAA
 268 Velocidad
 269 %d/%m/%Y
-270 MÛdem(s)
+270 M√≥dem(s)
 271 Ranura(s)
 272 Puerto(s)
 273 BIOS
 274 Nombre del SO
-275 VersiÛn del SO
+275 Versi√≥n del SO
 276 Chipset
-277 VersiÛn
+277 Versi√≥n
 278 Controlador
 279 Puerto
 280 Tipo de MIB
 281 IP DHCP
 282 Puntos de enlace
-283 PropÛsito
+283 Prop√≥sito
 284 Fabricante del BIOS
-285 Seleccione un par·metro a modificar
+285 Seleccione un par√°metro a modificar
 286 Service pack
 287 Importar localmente
 288 Importar localmente
-289 InformaciÛn de la red
+289 Informaci√≥n de la red
 290 Consultas por IP
 291 Modo experto
 292 Adicionar / borrar un dispositivo de red
@@ -208,8 +208,8 @@
 296 Uid
 297 No se puede escribir en el directorio
 298 Se deben llenar todos los campos
-299 DirecciÛn IP inv·lida (debe ser: x.x.x.x)
-300 M·scara inv·lida: debe ser: x.x.x.x o xx (xx<32)
+299 Direcci√≥n IP inv√°lida (debe ser: x.x.x.x)
+300 M√°scara inv√°lida: debe ser: x.x.x.x o xx (xx<32)
 301 Red insertada
 302 Red borrada
 303 Adicionar una subred
@@ -228,39 +228,39 @@
 316 Subred
 317 ANALIZAR
 318 Nombre DNS
-319 Resultados del an·lisis de red
-320 Este an·lisis ya se hizo el
-321 ødesea mirar los datos del cachÈ?
-322 Datos del cachÈ
+319 Resultados del an√°lisis de red
+320 Este an√°lisis ya se hizo el
+321 ¬ødesea mirar los datos del cach√©?
+322 Datos del cach√©
 323 generado el
-324 M¡QUINAS EVALUADAS COMO
-325 vacÌo
-326 no se especificÛ la m·scara
+324 M√ÅQUINAS EVALUADAS COMO
+325 vac√≠o
+326 no se especific√≥ la m√°scara
 327 Detalles del computador
 328 Descubiertos
 329 Inventariados
 330 Nombre NetBIOS
-331 N˙mero de red
+331 N√∫mero de red
 332 Por favor espere...
 333 Adicionar un nuevo dispositivo de red
 334 Lista de dispositivos de red
 335 Tipo de dispositivo
-336 DescripciÛn del dispositivo
-337 EL PROGRAMA NO ENVI” NADA
+336 Descripci√≥n del dispositivo
+337 EL PROGRAMA NO ENVI√ì NADA
 338 Modo limitado
 339 Para modo experto necesita ipdiscover-util.pl (solo Linux)
 340 Mostrar
-341 no se puede correr, debe revisar los permisos de ejecuciÛn
-342 Necesita asignar permisos de escritura en el directorio raÌz para usar
+341 no se puede correr, debe revisar los permisos de ejecuci√≥n
+342 Necesita asignar permisos de escritura en el directorio ra√≠z para usar
 344 Error
-345 ESTE AN¡LISIS EST¡ EN EJECUCI”N, INTENTE NUEVAMENTE EN UNOS MINUTOS
+345 ESTE AN√ÅLISIS EST√Å EN EJECUCI√ìN, INTENTE NUEVAMENTE EN UNOS MINUTOS
 346 ANTES
-347 DESPU…S
+347 DESPU√âS
 348 Usuario Windows
 349 Adicionar columna
 350 Tipo de CPU
-351 N˙mero de CPU
-352 ⁄ltimo inventario
+351 N√∫mero de CPU
+352 √öltimo inventario
 353 Calidad
 354 Fidelidad
 355 Entidad
@@ -268,7 +268,7 @@
 357 Agente de usuario
 358 Comodines: ? (un caracter), * (varios caracteres)
 359 Serial del monitor
-360 Fabricado en (semana/aÒo)
+360 Fabricado en (semana/a√±o)
 362 La red
 363 ya existe
 364 Inventariado
@@ -277,51 +277,51 @@
 367 Dispositivos de red
 368 de red
 369 Enviado por
-370 InstalaciÛn
+370 Instalaci√≥n
 371 Todos los componentes
 372 Seleccione los componentes
 373 Usuario registrado
 374 Sociedad registrada
-375 VersiÛn del Agente OCS NG
+375 Versi√≥n del Agente OCS NG
 376 Computador bloqueado. Por favor vuelva a intentar en unos minutos
 377 Velocidad del procesador (MHz)
 380 Diccionario
-381 N˙mero
+381 N√∫mero
 382 Nombre del programa
-383 La p·gina
+383 La p√°gina
 384 Mover TODOS
-385 a una categorÌa nueva
+385 a una categor√≠a nueva
 386 O
-387 a un categorÌa existente
-388 CategorÌa
+387 a un categor√≠a existente
+388 Categor√≠a
 389 Nada
-390 CategorÌas del diccionario
-391 Nombre de la categorÌa
+390 Categor√≠as del diccionario
+391 Nombre de la categor√≠a
 392 Borrar
 393 Buscar
-394 Buscar categorÌa
+394 Buscar categor√≠a
 395 Buscar software EN TODA LA BASE DE DATOS
 396 Inicializar
-397 Ir a la categorÌa
-398 Lista de categorÌas
+397 Ir a la categor√≠a
+398 Lista de categor√≠as
 410 EXACTAMENTE
-411 °Los campos deben contener ˙nicamente n˙meros!
+411 ¬°Los campos deben contener √∫nicamente n√∫meros!
 412 Funcionalidad de extraer claves del registro
-413 Funcionalidad de actualizaciÛn autom·tica
-414 Funcionalidad de instalaciÛn autom·tica
+413 Funcionalidad de actualizaci√≥n autom√°tica
+414 Funcionalidad de instalaci√≥n autom√°tica
 415 Funcionalidad de borrado de archivos log (lo necesita GLPI).
 416 Funcionalidad de registro de eventos.
-417 Funcionalidad de distribuciÛn autom·tica de software.
+417 Funcionalidad de distribuci√≥n autom√°tica de software.
 418 Funcionalidad de diferenciar inventarios.
-419 N˙mero m·ximo de dÌas antes de que se reemplace un computador identificado por ipdiscover.
-420 DistribuciÛn autom·tica de software: ver documentaciÛn.
-421 DistribuciÛn autom·tica de software: ver documentaciÛn.
-422 DistribuciÛn autom·tica de software: ver documentaciÛn.
-423 DistribuciÛn autom·tica de software: ver documentaciÛn.  (Ya no se descargar·n paquetes con una prioridad igual o mayor).
-424 Validez de un paquete como de su consideraciÛn por el agente.
-425 N˙mero m·ximo de computadores por punto de enlace descubriendo IPs en la red.
-426 Validez de inventarios. (SIEMPRE: inventario en cada conexiÛn. NUNCA: no  inventariar)
-427 Define criterios que deben ser iguales para los dos computadores a mezclarse autom·ticamente.
+419 N√∫mero m√°ximo de d√≠as antes de que se reemplace un computador identificado por ipdiscover.
+420 Distribuci√≥n autom√°tica de software: ver documentaci√≥n.
+421 Distribuci√≥n autom√°tica de software: ver documentaci√≥n.
+422 Distribuci√≥n autom√°tica de software: ver documentaci√≥n.
+423 Distribuci√≥n autom√°tica de software: ver documentaci√≥n.  (Ya no se descargar√°n paquetes con una prioridad igual o mayor).
+424 Validez de un paquete como de su consideraci√≥n por el agente.
+425 N√∫mero m√°ximo de computadores por punto de enlace descubriendo IPs en la red.
+426 Validez de inventarios. (SIEMPRE: inventario en cada conexi√≥n. NUNCA: no  inventariar)
+427 Define criterios que deben ser iguales para los dos computadores a mezclarse autom√°ticamente.
 428 Instalar
 429 Frequencia
 430 Procesamiento masivo
@@ -329,15 +329,15 @@
 432 No notificado
 433 Afectar
 434 Generador de paquetes
-435 Nueva generaciÛn de paquete
+435 Nueva generaci√≥n de paquete
 436 No puedo abrir el archivo
 437 Su paquete fue creado exitosamente en el directorio
 438 Creando paquete nuevo
 439 Protocolo
 440 Prioridad
 441 Algoritmo digest
-442 CodificaciÛn digest
-443 AcciÛn
+442 Codificaci√≥n digest
+443 Acci√≥n
 444 Comando
 445 Ruta
 446 Nombre de archivo
@@ -347,28 +347,28 @@
 450 Cuenta regresiva
 451 El usuario puede abortar
 452 El usuario puede esperar
-453 Se necesita acciÛn del usuario para terminar la instalaciÛn
+453 Se necesita acci√≥n del usuario para terminar la instalaci√≥n
 454 NO
 455 SI
 456 Ejecutar
 457 Copiar
 458 Lanzar
-459 Cuenta regresiva debe ser un n˙mero
-460 Id. ˙nico
+459 Cuenta regresiva debe ser un n√∫mero
+460 Id. √∫nico
 461 Digest
-462 TamaÒo total
-463 TamaÒo de cada parte (mÌn 1 KB)
-464 N˙mero de partes
-465 ActivaciÛn de paquete
-466 AVISO: No puedo encontrar el archivo de informaciÛn en
+462 Tama√±o total
+463 Tama√±o de cada parte (m√≠n 1 KB)
+464 N√∫mero de partes
+465 Activaci√≥n de paquete
+466 AVISO: No puedo encontrar el archivo de informaci√≥n en
 467 AVISO: No puedo encontrar las partes del archivo en
-468 øSeguro que desea activar este paquete?
+468 ¬øSeguro que desea activar este paquete?
 469 Paquete activado, ahora lo puede afectar
 470 URL https
 471 Partes URL 
 472 ERROR: No se puede borrar el directorio
-473 Fecha y hora (timestamp) debe ser un n˙mero
-474 Fecha y hora (timestamp) debe tener 10 dÌgitos de longitud
+473 Fecha y hora (timestamp) debe ser un n√∫mero
+474 Fecha y hora (timestamp) debe tener 10 d√≠gitos de longitud
 475 Fecha y hora (timestamp)
 476 O activar un paquete manualmente
 477 Afectar un paquete
@@ -376,8 +376,8 @@
 479 No se seleccionaron computadores
 480 Partes
 481 Paquetes activados
-482 ESPERANDO NOTIFICACI”N
-483 Validar …XITOS
+482 ESPERANDO NOTIFICACI√ìN
+483 Validar √âXITOS
 484 Frecuencia personalizada
 485 Siempre inventariado
 486 Nunca inventariado
@@ -390,14 +390,14 @@
 493 Predeterminado (se puede elegir)
 494 Frecuencia de inventarios personalizada
 495 Siempre inventariado
-496 dÌas
-497 Predeterminado, utiliza el par·metro 'FREQUENCY'.
+496 d√≠as
+497 Predeterminado, utiliza el par√°metro 'FREQUENCY'.
 498 Paquete
 499 Servidor
 500 Personalizar
 501 Adicionar paquete
 502 Elegido
-503 Se eligiÛ forzar
+503 Se eligi√≥ forzar
 504 Sin elegir
 505 Elegibles
 506 No elegibles
@@ -406,21 +406,21 @@
 509 CUALQUIERA
 510 Sin paquetes
 511 segundos
-512 DistribuciÛn software
+512 Distribuci√≥n software
 513 Crear
 514 Activar
 515 Activados
 516 KB
-517 Esta opciÛn solamente se puede afectar a un computador a la vez.
+517 Esta opci√≥n solamente se puede afectar a un computador a la vez.
 518 Forzar IpDiscover
-519 El computador ya est· elegido para la red
-520 El computador ya FORZ” ipdiscover para la red
-521 El computer ya est· en estado inelegible FORZADO
-522 Computador est·ndar
-523 Revertir a estado est·ndar
+519 El computador ya est√° elegido para la red
+520 El computador ya FORZ√ì ipdiscover para la red
+521 El computer ya est√° en estado inelegible FORZADO
+522 Computador est√°ndar
+523 Revertir a estado est√°ndar
 524 NUNCA volver a afectar
-525 øEST¡ SEGURO(A)?
-526 NING⁄N COMPUTADOR AFECTADO
+525 ¬øEST√Å SEGURO(A)?
+526 NING√öN COMPUTADOR AFECTADO
 527 Enero
 528 Febrero
 529 Marzo
@@ -436,17 +436,17 @@
 539 Domingo
 540 Lunes
 541 Martes
-542 MiÈrcoles
+542 Mi√©rcoles
 543 Jueves
 544 Viernes
-545 S·bado
+545 S√°bado
 546 en estado
 547 todos
-548 Todos excepto …XITO
+548 Todos excepto √âXITO
 549 Archivo (instalado en computadores clientes)
 550 Archivo (opcional, la orden "ejecutar" lo puede usar)
 551 Este nombre de paquete ya existe
-552 <i>Hga una b˙squeda de computadores y luego haga clic en 'instalar' para afectar los paquetes activados.<br>TambiÈn puede afectar un paquete a un computador utilizando la opciÛn 'personalizar' de la p·gina de detalles del computador deseado</i>.
+552 <i>Hga una b√∫squeda de computadores y luego haga clic en 'instalar' para afectar los paquetes activados.<br>Tambi√©n puede afectar un paquete a un computador utilizando la opci√≥n 'personalizar' de la p√°gina de detalles del computador deseado</i>.
 553 Clave Windows
 554 Monitor: serial
 555 Monitor: fabricante
@@ -458,7 +458,7 @@
 561 Desconocido (paquete borrado)
 562 Redes que tienen uid:
 563 Fabricante
-564 Frecuencia de auto-ejecuciÛn del agente
+564 Frecuencia de auto-ejecuci√≥n del agente
 565 Servidor usado para inventarios locales
 566 Puerto usado para inventarios locales
 567 Latencia de ipdiscover
@@ -466,217 +466,217 @@
 569 CPU(MHz)
 570 Ayuda
 571 Validar todos
-572 …xito
+572 √âxito
 573 Errores
-574 EstadÌsticas
+574 Estad√≠sticas
 575 Sin afectar no notificados
 576 Ipdiscover personalizado
 577 Nombre del grupo
 580 Todos los computadores (replay)
-581 Todos los computadores (en cachÈ)
+581 Todos los computadores (en cach√©)
 582 y
 583 Grupos
 584 Para la consulta
-585 Para la selecciÛn
+585 Para la selecci√≥n
 586 Nuevo grupo
-587 Nuevo grupo est·tico
+587 Nuevo grupo est√°tico
 588 Sobreescribir grupo
-589 adicionar est·ticamente al grupo
+589 adicionar est√°ticamente al grupo
 590 Inicializar estado
-591 Incluir est·ticamente
-592 Excluir est·ticamente
-593 Fecha de creaciÛn
-594 CachÈ generado el
-595 GRUPO EST¡TICO
-596 INCLUIDO DIN¡MICAMENTE
-597 EXCLUIDO EST¡TICAMENTE
+591 Incluir est√°ticamente
+592 Excluir est√°ticamente
+593 Fecha de creaci√≥n
+594 Cach√© generado el
+595 GRUPO EST√ÅTICO
+596 INCLUIDO DIN√ÅMICAMENTE
+597 EXCLUIDO EST√ÅTICAMENTE
 598 Incluir
 599 Inicializar
 600 Excluir
-601 AfectaciÛn masiva
+601 Afectaci√≥n masiva
 602 Necesita enviar un archivo
-603 Ning˙n computador encontrado, por favor revise su archivo
+603 Ning√∫n computador encontrado, por favor revise su archivo
 604 computador(es) exitosamente afectado(s)
 605 computador(es) fallido(s)
 606 Archivo de computadores
 607 Grupo
 608 creado
 609 sobreescrito
-610 EST·TICAMENTE INCLUIDO
+610 EST√°TICAMENTE INCLUIDO
 611 SIN CACHE
-612 EST¡TICO
-613 DIN¡MICO
+612 EST√ÅTICO
+613 DIN√ÅMICO
 614 EXCLUIDO
 615 Consulta
-616 PerÌmetro de usuario
+616 Per√≠metro de usuario
 617 Nuevo
-618 PerÌmetro
+618 Per√≠metro
 619 Usuario local
-620 Ning˙n computador en su perÌmetro.
-621 El grupo no fue creado, el nombre ya est· en uso
-622 En cachÈ
-623 La informaciÛn que intenta acceder no existe
-624 øRealmente desea borrar el grupo?
+620 Ning√∫n computador en su per√≠metro.
+621 El grupo no fue creado, el nombre ya est√° en uso
+622 En cach√©
+623 La informaci√≥n que intenta acceder no existe
+624 ¬øRealmente desea borrar el grupo?
 625 Habilitar este cambio
 626 Deshabilitar este cambio
-627 Al menos uno de los campos est· vacÌo... No se hace la ActualizaciÛn.
+627 Al menos uno de los campos est√° vac√≠o... No se hace la Actualizaci√≥n.
 628 Servidores
-629 Nuevo grupo de servidores de redistribuciÛn
+629 Nuevo grupo de servidores de redistribuci√≥n
 630 Un grupo de servidores existentes
 631 Adicionar a
 632 Colapsar (crush)
-633 AdministraciÛn de grupos de servidores
-634 AcciÛn deseada
+633 Administraci√≥n de grupos de servidores
+634 Acci√≥n deseada
 635 Nuevo nombre
-636 DescripciÛn
+636 Descripci√≥n
 637 Reemplazar
-638 EL NOMBRE DEL GRUPO NO PUEDE ESTAR VACÕO
+638 EL NOMBRE DEL GRUPO NO PUEDE ESTAR VAC√çO
 639 ESTE SERVIDOR DE GRUPOS NO EXISTE
-640 øRealmente desea borrar
-641 AdministraciÛn de servidores de redistribuciÛn
+640 ¬øRealmente desea borrar
+641 Administraci√≥n de servidores de redistribuci√≥n
 642 el grupo
 643 Todos los computadores
-644 esta m·quina
+644 esta m√°quina
 645 DETALLE DE GRUPOS
 646 URL
-647 N⁄MERO DE PUERTO
-648 LISTA DE ALMAC…N (STORE)
-649 ACTIVACI”N AUTOM¡TICA
-650 ACTIVACI”N MANUAL
+647 N√öMERO DE PUERTO
+648 LISTA DE ALMAC√âN (STORE)
+649 ACTIVACI√ìN AUTOM√ÅTICA
+650 ACTIVACI√ìN MANUAL
 651 Grupo de servidores
 652 Maquina(s)
 653 Lista negra DE direcciones MAC
-654 Introduzca una nueva direcciÛn MAC para incluir en lista negra
-655 InserciÛn realizada
+654 Introduzca una nueva direcci√≥n MAC para incluir en lista negra
+655 Inserci√≥n realizada
 656 Este dato ya existe en la lista
-657 °°°Los campos en rojo tiene error!!! (campos vacÌos o tamaÒo < 2) 
-658 la m·quina no tiene servidores de redistribuciÛn. <br>Es necesario asÌ afectar este paquete individualmente.
+657 ¬°¬°¬°Los campos en rojo tiene error!!! (campos vac√≠os o tama√±o < 2) 
+658 la m√°quina no tiene servidores de redistribuci√≥n. <br>Es necesario as√≠ afectar este paquete individualmente.
 659 Los computadores ya tienen este paquete instalado remotamente. El estado de paquete para estos equipos es ahora
 660 GRUPO DE SERVIDORES NO EXISTE
-661 PAQUETES PARA SERVIDOR DE REDISTRIBUCI”N
-662 Reglas de afectaciÛn
+661 PAQUETES PARA SERVIDOR DE REDISTRIBUCI√ìN
+662 Reglas de afectaci√≥n
 663 PROBLEMA INTERNO
-664 AcciÛn efectuada
-665 M¡QUINA NO SELECCIONADA. GRUPO DE SERVIDORES NO CREADO
+664 Acci√≥n efectuada
+665 M√ÅQUINA NO SELECCIONADA. GRUPO DE SERVIDORES NO CREADO
 666 Grupo de servidores hecho
 667 PARA EL PAQUETE
-668 øafectar con cual regla?
-669 ATENCI”N: hay duplicados de prioridad < br > Solo se mantendr· una regla!
+668 ¬øafectar con cual regla?
+669 ATENCI√ìN: hay duplicados de prioridad < br > Solo se mantendr√° una regla!
 670 Una regla ya tiene este nombre
-671 °El nombre de esta regla no puede estar en blanco!
-672 °°°Esta regla no existe!!!
-673 La administraciÛn de las reglas de afectaciÛn
+671 ¬°El nombre de esta regla no puede estar en blanco!
+672 ¬°¬°¬°Esta regla no existe!!!
+673 La administraci√≥n de las reglas de afectaci√≥n
 674 NOMBRE DE LA REGLA
 675 PRIORIDAD
-676 VALOR DE M¡QUINA
+676 VALOR DE M√ÅQUINA
 677 OPERADOR
 678 VALOR DEL SERVIDOR
 679 NOMBRE
 680 DOMINIO
 681 USUARIO
-682 para Adicionar una condiciÛn adicional 
+682 para Adicionar una condici√≥n adicional 
 683 Validar la regla
-684 Se debe cambiar el tamaÒo de los siguientes campos 
+684 Se debe cambiar el tama√±o de los siguientes campos 
 685 Adicionar una regla
-686 La condiciÛn
+686 La condici√≥n
 687 Usted no puede borrarlo.
-688 °Los paquetes est·n afectados a este grupo!
-689 °Los paquetes est·n afectados a este servidor!
+688 ¬°Los paquetes est√°n afectados a este grupo!
+689 ¬°Los paquetes est√°n afectados a este servidor!
 690 Usted no puede borrar todas los computadores.
-691 Valores genÈricos: $IP$ y $NAME$
+691 Valores gen√©ricos: $IP$ y $NAME$
 692 Usted modifica TODOS ALL los valores de los servidores
 693 Usted modifica los valores de los siguientes servidores
 694 para encontrar los valores predeterminados, valide los campos libres
 695 Modifique el grupo de servidroes
 696 para Mostrar los paquetes activados para afectar en
-697 una m·quina
+697 una m√°quina
 698 un grupo de servidores
-699 øEst· seguro que desea afectar este paquete en estos computadores?
+699 ¬øEst√° seguro que desea afectar este paquete en estos computadores?
 700 Opciones de lista negra
-701 Lista negra del n˙mero serial
-702 Introduzca un nuevo n˙mero serial para colocar en lista negra
+701 Lista negra del n√∫mero serial
+702 Introduzca un nuevo n√∫mero serial para colocar en lista negra
 703 Listas negras
-704 øEst· seguro que desea colocar en lista negra
-705 øEst· seguro que desea quitar de la lista negra
+704 ¬øEst√° seguro que desea colocar en lista negra
+705 ¬øEst√° seguro que desea quitar de la lista negra
 706 Quitar de lista negra
-707 este n˙mero serial
-708 esta direcciÛn mac
+707 este n√∫mero serial
+708 esta direcci√≥n mac
 709 PROLOG_FREQ personalizado
 710 Customized download
 711 Taken into account modifications
 712 Archivo de idioma
 712 Archivo de idioma
-713 øEst· seguro que desea reemplazar este archivo de idioma?
+713 ¬øEst√° seguro que desea reemplazar este archivo de idioma?
 714  Archivo de idioma de referencia
 715 Seleccione el  archivo de idioma a modificar
 716 Actualizar archivo de idioma
 717 Personalizado
 718 Ignorar
 719 (por segundo)
-720 Tiempo de espera entre 2 ciclos de distribuciÛn
+720 Tiempo de espera entre 2 ciclos de distribuci√≥n
 721 Tiempo de espera entre 2 fragmentos descargados
-722 Tiempos de espera entre 2 periodos de distribuciÛn
-723 prioridad m·xima de paquetes descargados <br> (los paquetes de una prioridad m·s alta son ignorados)
+722 Tiempos de espera entre 2 periodos de distribuci√≥n
+723 prioridad m√°xima de paquetes descargados <br> (los paquetes de una prioridad m√°s alta son ignorados)
 724 Tiempo entre 2 contactos entre el agente y el servidor
 725 (en la hora)
-726 URI de servidores de redistribuciÛn ($IP y NAME$ son los valores genÈricos)
+726 URI de servidores de redistribuci√≥n ($IP y NAME$ son los valores gen√©ricos)
 727 Directorio de destino de los paquetes
 728 Inventario
 729 computadores
 730 horas
-731 OpciÛn de registro en la bse de toda acciÛn de inventarios.
+731 Opci√≥n de registro en la bse de toda acci√≥n de inventarios.
 732 milisegundo(s)
 733 Inactivo
 734 Archivos de inventario
 735 Filtros
-736 Habilitar la opciÛn de grupos de computadores
-737 N˙mero aleatorio calculado en el rango definido.  DiseÒado para evitar el cÛmputo de muchos grupos en el mismo proceso
-738 Especifique la validez de los grupos de computadores (predeterminado: calcular una vez al dÌa - mire lapso (offset))
+736 Habilitar la opci√≥n de grupos de computadores
+737 N√∫mero aleatorio calculado en el rango definido.  Dise√±ado para evitar el c√≥mputo de muchos grupos en el mismo proceso
+738 Especifique la validez de los grupos de computadores (predeterminado: calcular una vez al d√≠a - mire lapso (offset))
 739 Mejoras de seguridad futuras
 740 Validez de un bloqueo de computador
-741 Configurar el motor para actualizar el inventario respecto al valor CHECKSUM del agente (carga backend DB m·s bajo)
-742 Hace que el motor considereun inventario como una transacciÛn (menor concurrencia, mejor uso del disco)
-743 Configurar motor para hacer una actualizaciÛn diferencial de las secciones del inventario (a nivel de registro). Carga backend DB m·s bajo, carga de frontend m·s alto
-744 Aceptar un inventario ˙nicamente si lo solicita el servidor(rechazar inventarios "forzados")
-745 Especifique cuando el motor limpiar· las estructuras de cachÈ del inventario
-746 Especifique la diferencia mÌnima para reemplazar un agente ipdiscover
-747 Deshabilitar el tiempo antes de una primera elecciÛn (no recomendado)
+741 Configurar el motor para actualizar el inventario respecto al valor CHECKSUM del agente (carga backend DB m√°s bajo)
+742 Hace que el motor considereun inventario como una transacci√≥n (menor concurrencia, mejor uso del disco)
+743 Configurar motor para hacer una actualizaci√≥n diferencial de las secciones del inventario (a nivel de registro). Carga backend DB m√°s bajo, carga de frontend m√°s alto
+744 Aceptar un inventario √∫nicamente si lo solicita el servidor(rechazar inventarios "forzados")
+745 Especifique cuando el motor limpiar√° las estructuras de cach√© del inventario
+746 Especifique la diferencia m√≠nima para reemplazar un agente ipdiscover
+747 Deshabilitar el tiempo antes de una primera elecci√≥n (no recomendado)
 748 Habilitar grupos para ipdiscover (por ejemplo, para prevenir que algunos grupos sean agentes ipdiscover)
-749 Use con ocsinventory-local, habilitar la opciÛn multi entidades
+749 Use con ocsinventory-local, habilitar la opci√≥n multi entidades
 750 Generar ya sea archivo comprimido o texto XML limpio
-751 Especifique si desea hacer seguimiento de todos los inventarios entre sincronizaciones con el servidor de m·s alto nivel
+751 Especifique si desea hacer seguimiento de todos los inventarios entre sincronizaciones con el servidor de m√°s alto nivel
 752 Ruta del directorio de archivos ocs (debe tener permiso de escritura)
 753 Habilitar filtros stack prolog
-754 Habilitar el sistema de filtros b·sicos para algunas cosas "al vuelo"
-755 Habilitar el filtro flooding de inventarios. Se permite una direcciÛn ip dedicada para enviar un computador nuevo ˙nicamente una vez en este periodo
-756 DefiniciÛn de periodo para INVENTORY_FILTER_FLOOD_IP
+754 Habilitar el sistema de filtros b√°sicos para algunas cosas "al vuelo"
+755 Habilitar el filtro flooding de inventarios. Se permite una direcci√≥n ip dedicada para enviar un computador nuevo √∫nicamente una vez en este periodo
+756 Definici√≥n de periodo para INVENTORY_FILTER_FLOOD_IP
 757 Habilitar filtro stack para inventarios
 758 Especifique si desea hacer seguimiento a paquetes afectados para un grupo a nivel de computadores
 759 debe ser mayor o igual a
 760 Servicio web
 761 Habilitar/deshabilitar servicio soap
-762 TamaÒo de la p·gina de resultados (tenga en cuenta los factores de desempeÒo)
-763 Incluir el archivo de sus propios mÛdulos
-764 Las opciones de abajo no son parametrizables vÌa GUI.<br>(consulte ocsinventory-server.conf)
+762 Tama√±o de la p√°gina de resultados (tenga en cuenta los factores de desempe√±o)
+763 Incluir el archivo de sus propios m√≥dulos
+764 Las opciones de abajo no son parametrizables v√≠a GUI.<br>(consulte ocsinventory-server.conf)
 765 todos los programas
-766 NING⁄N RESULTADO
+766 NING√öN RESULTADO
 767 TENGA CUIDADO: RESULTADO CON FILTRO
-768 N˙mero de registros
+768 N√∫mero de registros
 769 Transferencia hecha
-770 ACTUALIZACI”N DE
-771 Esta categorÌa ya existe
-772 El nombre de la categorÌa no puede ser nula
-773 Debe seleccionar el nombre de la categorÌa
-774 Trae de hacer una transferencia de esta categorÌa hace la misma categorÌa
-775 Directorio de creaciÛn de paquetes
-776 Directorio de interÈs en cache de an·lisis de ipdiscover
-777 Validez de una sesiÛn
+770 ACTUALIZACI√ìN DE
+771 Esta categor√≠a ya existe
+772 El nombre de la categor√≠a no puede ser nula
+773 Debe seleccionar el nombre de la categor√≠a
+774 Trae de hacer una transferencia de esta categor√≠a hace la misma categor√≠a
+775 Directorio de creaci√≥n de paquetes
+776 Directorio de inter√©s en cache de an√°lisis de ipdiscover
+777 Validez de una sesi√≥n
 778 GRUPOS DE TRABAJO diferentes
 779 TAG diferentes
 780 IPSUBNET diferentes
-781 Equipos con distribuciÛn de software pendiente
+781 Equipos con distribuci√≥n de software pendiente
 782 Equipos con paquetes con error
-783 N˙mero de SO diferentes
+783 N√∫mero de SO diferentes
 784 Versiones de agentes
 785 Procesadores diferentes
 786 Resoluciones diferentes
@@ -689,25 +689,25 @@
 793 Computadores en la base
 794 Computadores vistos
 795 Computadores que contactaron al servidor hoy
-796 N˙mero de computadores inventariados hoy
-797 Computadores no vistos desde hace m·s de
+796 N√∫mero de computadores inventariados hoy
+797 Computadores no vistos desde hace m√°s de
 798 ACTIVIDAD
 799 HARDWARE
 800 OTROS
 801 No mostrar este campo
 802 Mostrar este campo
-803 LÌmite de tiempo desde que el equipo no contacta al servidor
-804 Velocidad mÌnima del procesador
-805 Velocidad m·xima del procesador
-806 Cantidad de RAM mÌnima
-807 Cantidad de RAM m·xima
-808 DistribuciÛn
-809 GRUPOS EST¡TICOS
-810 GRUPOS DIN¡MICOS
-811 øEst· seguro de que quiere modificar la visibilidad del grupo
-812 El software en 0 est· presente en el CACHE pero no hay m·s settled en los equipos.<br>No se puede colocar en una categorÌa de diccionario
-813 n˙mero de discos duro con espacio libre >
-814 n˙mero de discos duro con espacio libre <
-815 n˙mero de discos duro con tamaÒo restante entre
-816 tamaÒo de disco duro m·ximo restante
-817 tamaÒo de disco duro mÌnimo restante
+803 L√≠mite de tiempo desde que el equipo no contacta al servidor
+804 Velocidad m√≠nima del procesador
+805 Velocidad m√°xima del procesador
+806 Cantidad de RAM m√≠nima
+807 Cantidad de RAM m√°xima
+808 Distribuci√≥n
+809 GRUPOS EST√ÅTICOS
+810 GRUPOS DIN√ÅMICOS
+811 ¬øEst√° seguro de que quiere modificar la visibilidad del grupo
+812 El software en 0 est√° presente en el CACHE pero no hay m√°s settled en los equipos.<br>No se puede colocar en una categor√≠a de diccionario
+813 n√∫mero de discos duro con espacio libre >
+814 n√∫mero de discos duro con espacio libre <
+815 n√∫mero de discos duro con tama√±o restante entre
+816 tama√±o de disco duro m√°ximo restante
+817 tama√±o de disco duro m√≠nimo restante
