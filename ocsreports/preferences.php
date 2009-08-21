@@ -27,9 +27,9 @@ else if( ! isset($_SESSION["usecache"]) ) {
 //GESTION LOGS
 if ($_SESSION['LOG_GUI'] == 1){
 	define("DB_LOG_NAME", DB_NAME);
-	if ($_SESSION['LOG_DIR'] == "")
-		define("LOG_FILE", $_SERVER["DOCUMENT_ROOT"]."/oscreport/log.csv");
-	else
+//	if ($_SESSION['LOG_DIR'] == "")
+//		define("LOG_FILE", $_SERVER["DOCUMENT_ROOT"]."/oscreport/log.csv");
+//	else
 		define("LOG_FILE", $_SESSION['LOG_DIR']."/log.csv");
 	$logHandler = @fopen( LOG_FILE, "a");
 }

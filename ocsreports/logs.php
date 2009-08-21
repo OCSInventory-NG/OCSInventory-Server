@@ -11,9 +11,9 @@ echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
 echo "<table cellspacing='5' width='80%' BORDER='0' ALIGN = 'Center' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'><tr><td colspan=10></td></tr>";
 echo "<tr><td align=center>".$l->g(950)."</td><td align=center>".$l->g(951)."</td><td align=center>".$l->g(952)."</td><td align=center>".$l->g(953)."</td></tr>";
 if ($_POST['onglet'] == 'GUI_LOGS' or $_POST['onglet'] == ""){
-	if ($_SESSION['LOG_DIR'] == '')
-	$Directory=$_SERVER["DOCUMENT_ROOT"]."/ocsreports/";
-	else
+//	if ($_SESSION['LOG_DIR'] == '')
+//	$Directory="";
+//	else
 	$Directory=$_SESSION['LOG_DIR']."/";
 	ScanDirectory($Directory,"csv");
 }
