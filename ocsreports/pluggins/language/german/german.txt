@@ -1,4 +1,3 @@
-0 iso-8859-9
 1 Anfragen  
 2 Alle Computer
 3 Computer mit Software...

@@ -1,4 +1,3 @@
-0 iso-8859-2
 2 Wszystkie komputery
 3 Komputery z oprogramowaniem...
 5 Unity codes under my responsibility

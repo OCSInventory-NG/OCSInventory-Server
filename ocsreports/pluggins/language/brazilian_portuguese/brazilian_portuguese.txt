@@ -1,4 +1,3 @@
-0 iso-8859-1
 1 Requisi��es
 2 Todos os computadores
 3 Computadores com software...

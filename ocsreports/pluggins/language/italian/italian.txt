@@ -1,4 +1,3 @@
-0 iso-8859-1
 2 Tutti i computer
 3 Computer con software...
 5 Apparati di cui sono responsabile

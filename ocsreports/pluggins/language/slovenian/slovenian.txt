@@ -1,4 +1,3 @@
-0 UTF-8
 2 Vsi raÄ?unalniki
 3 RaÄ?unalniki z programsko opremo...
 5 Unity codes under my responsibility

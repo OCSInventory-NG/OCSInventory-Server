@@ -1,4 +1,3 @@
-0 iso-8859-1
 2 Todos los computadores
 3 Computadores con sotfware...
 5 Códigos de elementos bajo mi responsabilidad

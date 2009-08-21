@@ -1,4 +1,3 @@
-0 iso-8859-1
 2 Toutes les machines
 9 Recherche multicritères
 13 Envoyer
