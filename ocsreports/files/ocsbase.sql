@@ -785,7 +785,7 @@ INSERT INTO operators VALUES ('admin','admin','admin','admin',1, 'Default admini
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs IDENTIFIED BY 'ocs';
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs@localhost IDENTIFIED BY 'ocs';
 
-INSERT INTO config VALUES ('GUI_VERSION', 0, '5005', 'Version of the installed GUI and database');
+INSERT INTO config VALUES ('GUI_VERSION', 0, '5006', 'Version of the installed GUI and database');
 
 CREATE TABLE download_servers (
   HARDWARE_ID int(11) NOT NULL,
@@ -845,6 +845,7 @@ insert into config (NAME,IVALUE,TVALUE,COMMENTS) values ('GUI_REPORT_AGIN_MACH',
 ALTER TABLE download_enable ADD SERVER_ID INT(11);
 ALTER TABLE download_enable ADD GROUP_ID INT(11);
 ALTER TABLE groups ADD REVALIDATE_FROM INT(11);
+ALTER TABLE groups ADD XMLDEF longtext;
 
 CREATE TABLE prolog_conntrack (
   ID int(11) NOT NULL auto_increment,
