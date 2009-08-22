@@ -32,7 +32,7 @@ if (isset($_POST['VALID_MODIF'])){
 //suppression d'une liste de users
 if (isset($_POST['del_check']) and $_POST['del_check'] != ''){
 	$list = "'".implode("','", explode(",",$_POST['del_check']))."'";
-	$sql_delete="delete from codeunite where login in (".$list.")";
+	$sql_delete="delete from tags where login in (".$list.")";
 	mysql_query($sql_delete, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));	
 	$sql_delete="delete from operators where id in (".$list.")";
 	mysql_query($sql_delete, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));	
@@ -42,7 +42,7 @@ if (isset($_POST['del_check']) and $_POST['del_check'] != ''){
 
 //suppression d'un user
 if (isset($_POST['SUP_PROF']) and $_POST['SUP_PROF'] != ''){
-	$sql_delete="delete from codeunite where login='".$_POST['SUP_PROF']."'";
+	$sql_delete="delete from tags where login='".$_POST['SUP_PROF']."'";
 	mysql_query($sql_delete, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));	
 	$sql_delete="delete from operators where id= '".$_POST['SUP_PROF']."'";
 	mysql_query($sql_delete, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["writeServer"]));	
@@ -156,6 +156,12 @@ if ($_POST['onglet'] == 4){
 	$queryDetails=substr($queryDetails,0,-1);
 	$queryDetails .= " FROM operators where ACCESSLVL=".$_POST['onglet'];
 	$tab_options['FILTRE']=array('LASTNAME'=>'LASTNAME','ID'=>'ID');
+	if ($_POST['onglet'] == ADMIN){
+		$tab_options['LIEN_LBL']['ID']='admin_perim.php?id=';
+		$tab_options['LIEN_CHAMP']['ID']='ID';
+		$tab_options['LIEN_TYPE']['ID']='POPUP';
+		$tab_options['POPUP_SIZE']['ID']="width=550,height=650";
+	}
 	tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$queryDetails,$form_name,100,$tab_options);
 		//traitement par lot
 	$img['image/sup_search.png']=$l->g(162);

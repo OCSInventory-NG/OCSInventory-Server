@@ -1,6 +1,8 @@
 <?php
 /*******************************************************AFFICHAGE HTML DU HEADER*******************************************/
 //require("fichierConf.class.php");
+
+
 //global $l;
 ?>
 <html>
@@ -8,22 +10,13 @@
 <TITLE>OCS Inventory</TITLE>
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html
-<?php 
-
-//	if($l->g(0)) 
-//		echo "; charset=".$l->g(0).";";
-//	else
-		echo "; charset=UTF-8;";	
-?>
-">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html"; charset="UTF-8";>
 <link rel="shortcut icon" href="favicon.ico" />
 <LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
 <script language='javascript' type='text/javascript' src='js/function.js'></script>
-<?php incPicker(); ?>
+<?php incPicker(); 
+echo "</head>"; 
 
-</head> 
-<?php 
 
 echo "<body bottommargin='0' leftmargin='0' topmargin='0' rightmargin='0' marginheight='0' marginwidth='0'>";
 //on affiche l'entete de la page
@@ -35,6 +28,7 @@ if( !isset($_GET["popup"] )) {
 	}
 //TODO: revoir ça!!! si la variable $ban_head est à 'no', on n'affiche pas l'entete... 
 //echo "<font color=RED><B>ENVIRONNEMENT DE DEV</B></font>";
+
 echo "<table  border='0' class='headfoot' ";
 if ($ban_head=='no') echo "style='display:none;'";
 echo "><tr><td width= 10%><table width= 50% align=center border='0'><tr>

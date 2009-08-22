@@ -23,7 +23,7 @@ if (isset($rowOp -> accesslvl)){
 	//Si l'utilisateur a des droits limités
 	//on va rechercher les tags sur lesquels il a des droits
 	if ($lvluser == 3){
-		$sql="select code from codeunite where login='".$_SESSION["loggeduser"]."'";
+		$sql="select tag from TAG where login='".$_SESSION["loggeduser"]."'";
 		$res=mysql_query($sql, $link_ocs) or die(mysql_error($link_ocs));
 		while ($row=mysql_fetch_object($res)){	
 			$list_tag[$row->code]=$row->code;
