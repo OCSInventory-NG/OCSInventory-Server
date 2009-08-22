@@ -1,5 +1,5 @@
 <?php
-//require ('fichierConf.class.php');
+require ('fichierConf.class.php');
 //require('req.class.php');
 $ban_head='no';
 require_once("header.php");

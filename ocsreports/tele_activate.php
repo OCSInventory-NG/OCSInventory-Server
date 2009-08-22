@@ -142,10 +142,10 @@ $tab_options['LBL']=array('ZIP'=>"Archives",
 							  'STAT'=>$l->g(574),
 						      'ACTIVE'=>$l->g(431),
 							  'SHOWACTIVE'=>$l->g(49),
-							  'NO_NOTIF'=>'Non notifié',
-							  'NOTI'=>'Notifié',
-							  'SUCC'=>'Succès',
-							  'ERR_'=>'Erreur');
+							  'NO_NOTIF'=>$l->g(432),
+							  'NOTI'=>$l->g(1000),
+							  'SUCC'=>$l->g(572),
+							  'ERR_'=>$l->g(344));
 $tab_options['REQUEST']['STAT']='select distinct fileid AS FIRST from devices d,download_enable de where d.IVALUE=de.ID';
 $tab_options['FIELD']['STAT']='FILEID';
 $tab_options['REQUEST']['SHOWACTIVE']='select distinct fileid AS FIRST from download_enable';
@@ -167,7 +167,7 @@ $_SESSION['SQL_DATA_FIXE'][$table_name]['NO_NOTIF']="select count(*) as NO_NOTIF
 			from devices d,download_enable de 
 			where d.IVALUE=de.ID  and d.name='DOWNLOAD' and d.tvalue IS NULL group by FILEID";							
 	
-$tab_options['FILTRE']=array('FILEID'=>'Timestamp','NAME'=>'Nom');
+$tab_options['FILTRE']=array('FILEID'=>'Timestamp','NAME'=>$l->g(49));
 $tab_options['TYPE']['ZIP']=$_POST['SHOW_SELECT'];
 $result_exist=tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$querypack,$form_name,95,$tab_options); 
 	//traitement par lot

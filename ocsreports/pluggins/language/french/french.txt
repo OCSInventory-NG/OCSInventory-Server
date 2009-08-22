@@ -919,6 +919,7 @@
 997 ID utilisateur obligatoire
 998 choisissez un profil valide
 999 Cet ID utilisateur existe déjà
+1000 Notifié
 
 
 

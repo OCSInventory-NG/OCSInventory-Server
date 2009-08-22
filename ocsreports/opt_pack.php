@@ -95,8 +95,8 @@ if(($_POST['CHOISE'] != '' and $_POST['onglet'] == 'MACH')
 	$querypack .= "where a.FILEID=e.FILEID and e.SERVER_ID is null ";
 	else
 	$querypack .= ", hardware h where a.FILEID=e.FILEID and h.id=e.group_id and  e.SERVER_ID is not null ";
-	$tab_options['QUESTION']['SELECT']="Etes-vous sûr de vouloir affecter ce paquet à ces machines?";
-	$tab_options['FILTRE']=array('e.FILEID'=>'Timestamp','a.NAME'=>'Nom');
+	$tab_options['QUESTION']['SELECT']=$l->g(699);
+	$tab_options['FILTRE']=array('e.FILEID'=>'Timestamp','a.NAME'=>$l->g(49));
 	//echo $querypack;
 	$result_exist=tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$querypack,$form_name,100,$tab_options); 
 }
