@@ -31,8 +31,15 @@ class language
 	}		
 	function g($i)
 	{
-		return $this->tableauMots[$i];
+		//If word doesn't exist for language, return default english word 
+		if ($this->tableauMots[$i] == NULL) {
+			$defword = new language;
+			$defword->language(english);
+			return $defword->tableauMots[$i];
+		}
+		return $this->tableauMots[$i]; 
 	}
+
 }		
 
 ?>
