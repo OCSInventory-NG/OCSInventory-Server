@@ -537,7 +537,7 @@
 617 Nouveau
 618 Perimètre
 619 Utilisateur restreint
-620 <br>Vous n'avez aucune machine affectée, merci de faire une demande d'affectation de codes unités (par e-mail) à <a href=mailto:erwan.goalou@gendarmerie.defense.gouv.fr> gendarme GOALOU (erwan.goalou@gendarmerie.defense.gouv.fr)</a><br><br> en spécifiant sur quelles unités vous devez avoir la visibilité.</font></center>
+620 <br>Vous n'avez aucune machine affectée, merci de faire une demande d'affectation droits<br><br> en spécifiant sur quels tags vous devez avoir la visibilité.</center>
 621 Ce groupe n'a pas été créé. Ce nom existe déja.
 622 En cache
 623 L'information que vous essayez de voir n'existe pas.
