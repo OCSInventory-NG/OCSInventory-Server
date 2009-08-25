@@ -785,7 +785,7 @@ INSERT INTO operators VALUES ('admin','admin','admin','admin',1, 'Default admini
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs IDENTIFIED BY 'ocs';
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs@localhost IDENTIFIED BY 'ocs';
 
-INSERT INTO config VALUES ('GUI_VERSION', 0, '5006', 'Version of the installed GUI and database');
+INSERT INTO config VALUES ('GUI_VERSION', 0, '5007', 'Version of the installed GUI and database');
 
 CREATE TABLE download_servers (
   HARDWARE_ID int(11) NOT NULL,
@@ -855,3 +855,15 @@ CREATE TABLE prolog_conntrack (
   KEY ID (ID),
   KEY DEVICEID (DEVICEID)
 ) ENGINE=MEMORY; 
+
+CREATE TABLE itmgmt_comments (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  HARDWARE_ID int(11) NOT NULL,
+  COMMENTS longtext,
+  USER_INSERT varchar(100) DEFAULT NULL,
+  DATE_INSERT date DEFAULT NULL,
+  ACTION varchar(255) DEFAULT NULL,
+  VISIBLE int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM;
+
