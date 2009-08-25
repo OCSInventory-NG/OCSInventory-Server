@@ -10,7 +10,7 @@ if ($_POST['onglet'] != $_POST['old_onglet']){
 	$_POST['old_onglet']=$old_onglet;
 	$_POST['onglet']=$onglet;
 }
-if ($_GET['origine']!= "mach"){
+if ($_GET['origine']!= "mach" and $_GET['origine']!= "group"){
 	if (isset($_GET['idchecked']) and $_GET['idchecked'] != ""){
 		$choise_req_selection['REQ']=$l->g(584);
 		$choise_req_selection['SEL']=$l->g(585);

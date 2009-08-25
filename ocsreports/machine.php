@@ -23,6 +23,11 @@ if (!is_object($item)){
 	echo "<center><B><font color=red size=4>".$item."</font></B></center>";
 	die();
 }
+//you can't view groups'detail by this way
+if ( $item->DEVICEID == "_DOWNLOADGROUP_"
+	or $item->DEVICEID == "_SYSTEMGROUP_"){
+	die('FORBIDDEN');	
+}
 $systemid=$item -> ID;
 
 // COMPUTER SUMMARY

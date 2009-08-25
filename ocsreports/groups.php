@@ -14,6 +14,7 @@ if($_POST['Valid_modif_x']){
 	}else
 	$color="red";
 	$msg=$result['RESULT'];	
+	$tab_options['CACHE']='RESET';
 }
 //annule la création d'un groupe statique
 if ($_POST['Reset_modif_x']) 
@@ -35,6 +36,7 @@ if ($_POST['SUP_PROF'] != ""){
 	else
 	$color="green";
 	$msg=$result['LBL'];
+	$tab_options['CACHE']='RESET';
 }
 //si un message
 if ($msg != "")
@@ -75,7 +77,7 @@ $tab_options['LBL']['GROUP_NAME']="Nom";
 $table_name="LIST_GROUPS";
 $default_fields= array('GROUP_NAME'=>'GROUP_NAME','DESCRIPTION'=>'DESCRIPTION','CREATE'=>'CREATE','NBRE'=>'NBRE','SUP'=>'SUP','CHECK'=>'CHECK');
 $list_col_cant_del=array('GROUP_NAME'=>'GROUP_NAME','SUP'=>'SUP','CHECK'=>'CHECK');
-$querygroup = 'SELECT distinct ';
+$querygroup = 'SELECT ';
 foreach ($list_fields as $key=>$value){
 	if($key != 'SUP' and $key != 'CHECK' and $key != 'NBRE')
 	$querygroup .= $value.',';		
@@ -107,6 +109,7 @@ if ($_POST['onglet'] == "SERV"){
 	$sql_nb_mach .=" group by group_id";
 
 }
+$querygroup.=" group by h.ID";
 $result = mysql_query($sql_nb_mach, $_SESSION["readServer"]) or mysql_error($_SESSION["readServer"]);
 while($item = mysql_fetch_object($result)){
 	//on force les valeurs du champ "nombre" à l'affichage

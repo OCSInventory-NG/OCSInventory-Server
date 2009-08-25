@@ -34,6 +34,7 @@ if( $_SESSION["lvluser"]!=LADMIN && $_SESSION["lvluser"]!=SADMIN  ){
 	die("FORBIDDEN");
 }
 
+
 if (isset($_GET['state']))
 {
 	$state = $_GET['state'];
@@ -205,33 +206,28 @@ if ($server_group){
 		$i++;	
 	}
 
+	if (isset($PACK_LIST)){
 	echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	echo "<tr><td height=20px colspan=10 align='center'>".$l->g(481)."</td></tr>";
 	echo "<tr><td></td>";
-		foreach ($PACK_LIST[0] as $key=>$value){
-			echo $td2."<i><b>".$key."</b></i></td>";
-			
-		}
-		echo "</tr>";
+	foreach ($PACK_LIST[0] as $key=>$value){
+		echo $td2."<i><b>".$key."</b></i></td>";
+	}
+	echo "</tr>";
 	$i=0;
 	while ($PACK_LIST[$i]){
 		echo "<tr>";
 		echo "<td bgcolor='white' align='center' valign='center'><img width='15px' src='image/red.png'></td>";
 		$ii++; $td3 = $ii%2==0?$td2:$td4;
 			foreach ($PACK_LIST[$i] as $key=>$value){
-				
-				
-				
-
-				echo $td3.$value."</td>";			
-
-				
+				echo $td3.$value."</td>";							
 			}
 			echo "</tr>";
 		$i++;
 			//print_r($valDeploy);
 		}
 	echo "</table><br>";
+	}
 	require("server_redistrib.php");
 }else{
 	
@@ -566,8 +562,14 @@ function print_perso($systemid) {
 			//print_r($valDeploy);
 		}
 	}
-	if( $_SESSION["lvluser"]==SADMIN )
-		echo "<tr><td colspan='10' align='right'><a href='index.php?multi=24&systemid=$systemid&isgroup=1'>".$l->g(501)."</a></td></tr>";	
+	if( $_SESSION["lvluser"]==SADMIN ){
+	echo "<tr>
+		<td colspan='10' align='right'>
+		<a href=# Onclick=window.open(\"multi_lot.php?img=image/tele_search.png&idchecked=".$systemid."&origine=group\",\"rollo\",\"location=0,status=0,scrollbars=1,menubar=0,resizable=0,width=800,height=500\");>".$l->g(501)."
+		</a>
+		</td></tr>";
+	//	echo "<tr><td colspan='10' align='right'><a href='index.php?multi=24&systemid=$systemid&isgroup=1'>".$l->g(501)."</a></td></tr>";	
+	}
 	echo "</table><br>";
 }
 
