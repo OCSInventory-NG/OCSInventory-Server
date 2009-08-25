@@ -895,8 +895,15 @@
 998 choose a valid profile
 999 This user ID already exists
 1000 Notified
-
-
+1001 Red fields are in errors!
+1002 Estimated time for deploy
+1003 Redistribution servers packages parameters
+1004 It's not possible to create the packages creation directory
+1005 The package creationis not possible so
+1006 don't have wrinting rights
+1007 The directory
+1008 Use on this redistribution package
+1009 Servers storage directory
 
 5000 [DEBUG]computers insertions request =>[DEBUG]
 5001 [DEBUG]REQUEST MADE => [DEBUG]
