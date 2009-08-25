@@ -913,7 +913,7 @@
 5005 [DEBUG]Cache total use[DEBUG]
 5006 [DEBUG]array count request[DEBUG]
 5007 [DEBUG]Cache use for lines number[DEBUG]
-5008 [DEBUG]array requestu[DEBUG]
+5008 [DEBUG]array request[DEBUG]
 5009 [DEBUG]RAW DATAS[DEBUG]  
 5010 [DEBUG]table field=[DEBUG]
 5011 [DEBUG]Comparison field=[DEBUG]
