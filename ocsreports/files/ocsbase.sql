@@ -867,3 +867,4 @@ CREATE TABLE itmgmt_comments (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
+UPDATE operators SET passwd=md5('admin') where ID='admin'
