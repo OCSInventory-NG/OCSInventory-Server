@@ -920,10 +920,15 @@
 998 choisissez un profil valide
 999 Cet ID utilisateur existe déjà
 1000 Notifié
-
-
-
-
+1001 Les champs en rouge sont en erreur!
+1002 Temps estimé de déploiement
+1003 Paramètre du paquet des serveurs de redistribution
+1004 Impossible de créer le répertoire de création des paquets
+1005 La création de paquet est donc impossible
+1006 ne possède pas les droits d'écriture
+1007 Le répertoire
+1008 Utilisation sur ce paquet de la redistribution
+1009 Répertoire de stockage sur les serveurs
 
 5000 [DEBUG]requête d'insertion de machines =>[DEBUG]
 5001 [DEBUG]REQUETE JOUEE => [DEBUG]

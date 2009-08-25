@@ -10,8 +10,8 @@
 //====================================================================================
 //Modified on $Date: 2008-06-18 13:26:31 $$Author: airoine $($Revision: 1.15 $)
 @session_start();
-$header_html="NO";
-unset($_SESSION['LANGUAGE']);
+	unset($_SESSION['LANGUAGE']);
+$header_html = 'NO';
 require_once("header.php");
 require('require/function_stats.php');
 if($_SESSION["lvluser"]==SADMIN){
@@ -52,7 +52,7 @@ $sqlStats="SELECT COUNT(id) as 'nb', tvalue as 'txt'
 			WHERE e.fileid='".$_GET["stat"]."'
  				AND e.id=d.ivalue 
 				AND name='DOWNLOAD' 
-				AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_')";
+				AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_' or deviceid='_DOWNLOADGROUP_')";
 if (isset($machines_group))
 	$sqlStats.= " AND hardware_id".$machines_group;
 if (isset($mesmachines))				
@@ -102,16 +102,19 @@ else if( isset($_GET["generatePic"]) ) {
 }
 else {
 	?>
-	<html>
-	<head>
-	<TITLE>OCS Inventory Stats</TITLE>
-	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-	<META HTTP-EQUIV="Expires" CONTENT="-1">
-	<LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
-	</HEAD>
+		<html>
+		<head>
+		<TITLE>OCS Inventory Stats</TITLE>
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Expires" CONTENT="-1">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html"; charset="UTF-8";>
+		<LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>
+		</HEAD>
 	<?php 
+//	$ban_head='no';
+//	require_once("header.php");
 	$sqlStats="SELECT COUNT(DISTINCT HARDWARE_ID) as 'nb' FROM devices d, download_enable e WHERE e.fileid='".$_GET["stat"]."'
-	AND e.id=d.ivalue AND name='DOWNLOAD' AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_') ";
+	AND e.id=d.ivalue AND name='DOWNLOAD' AND hardware_id NOT IN (SELECT id FROM hardware WHERE deviceid='_SYSTEMGROUP_' or deviceid='_DOWNLOADGROUP_') ";
 	if (isset($mesmachines))				
 	$sqlStats.= " AND hardware_id".$mesmachines;
 	if (isset($machines_group))
@@ -156,10 +159,7 @@ else {
 	}
 	echo "<tr bgcolor='#C7D9F5'><td bgcolor='white'>&nbsp;</td><td><b>".$l->g(87)."</b></td><td><b>".$valStats["nb"]."</b></td></tr>";
 	echo "</table><br><br>";
-	?>
-	</BODY>
-	</HTML>
-	<?php 
+	require_once($_SESSION['FOOTER_HTML']);
 }
 
  

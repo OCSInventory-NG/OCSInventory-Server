@@ -152,7 +152,7 @@ if (isset($_POST['valid'])){
 					}
 				}
 				if (msg != ''){
-				alert ('Les champs en rouge sont en erreur!');
+				alert ('".$l->g(1001)."');
 				return false;
 				}else
 				return true;			
@@ -180,7 +180,7 @@ if (isset($_POST['valid'])){
 	$taille_frag=$lign_begin.$l->g(463).$td_colspan2;
 	$taille_frag.= input_pack_taille("tailleFrag","nbfrags",round($size),'8',round($size/1024));
 	$taille_frag.=$l->g(516).$lign_end;	
-	$tps=$lign_begin."Temps estimé de déploiement".$td_colspan2;
+	$tps=$lign_begin.$l->g(1002).$td_colspan2;
 	$tps.= time_deploy();
 	$tps.=$lign_end;
 		
@@ -191,7 +191,7 @@ if (isset($_POST['valid'])){
 	echo "<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>";
 	echo $title_creat.$name_file.$ident.$view_digest.$total_ko.$taille_frag.$nb_frag.$tps;	
 	if($_POST['REDISTRIB_USE'] == 1){
-		$title_creat_redistrib="<tr height='30px'><td colspan='10' align='center'><b>Paramètre du paquet des serveurs de redistribution</b></td></tr>";
+		$title_creat_redistrib="<tr height='30px'><td colspan='10' align='center'><b>".$l->g(1003)."</b></td></tr>";
 		//création du champ de taille de fragments
 		$taille_frag_redistrib=$lign_begin.$l->g(463).$td_colspan2;
 		$taille_frag_redistrib.= input_pack_taille("tailleFrag_redistrib","nbfrags_redistrib",round($size),'8',round($size/1024));
@@ -237,16 +237,16 @@ if (!$_POST){
 	if (!$rep_exist){
 		$creat=@mkdir($document_root."/download/");	
 		if (!$creat){
-			echo "<font color=red size=4><b>".$document_root."/download/"."<br>Impossible de créer le répertoire de création des paquets. 
-					<br>La création de paquet est donc impossible</b></font>";	
+			echo "<font color=red size=4><b>".$document_root."/download/"."<br>".$l->g(1004).". 
+					<br>".$l->g(1005)."</b></font>";	
 			return;
 		}
 	}			
 	//vérification que l'on ai les droits d'écriture sur ce répertoire
 	$rep_ok=is_writable ($document_root."/download/");
 	if (!$rep_ok){
-		echo "<font color=red size=4><b>Le répertoire ".$document_root."/download/  ne possède pas les droits d'écriture. 
-				<br>La création de paquet est donc impossible</b></font>";	
+		echo "<font color=red size=4><b>".$l->g(1007)." ".$document_root."/download/ ".$l->g(1004).". 
+				<br>".$l->g(1005)."</b></font>";	
 		return;
 	}
 	$_POST['document_root']=$document_root."/download/";
@@ -345,7 +345,7 @@ echo "<script language='javascript'>
 			}
 
 			if (msg != ''){
-			alert ('Les champs en rouge sont en erreur!');
+			alert ('".$l->g(1001)."');
 			return false;
 			}else
 			return true;			
@@ -391,7 +391,7 @@ $action=$lign_begin.$l->g(443).":</td><td>".champ_select_block($list_action,'ACT
 <div id='STORE_div' style='display:block'>".$l->g(445).": </div>
 <div id='LAUNCH_div' style='display:none'>".$l->g(446).": </div>".show_modif($_POST['ACTION_INPUT'],'ACTION_INPUT',0,'').$lign_end;
 $notify_user="<tr height='30px' bgcolor='white'><td colspan='2'>".$l->g(448).":</td><td>".champ_select_block($yes_no,'NOTIFY_USER',array('NOTIFY_USER'=>1)).$lign_end;
-$redistrib="<tr height='30px' bgcolor='white'><td colspan='2'>Utilisation sur ce paquet de la redistribution:</td><td>".champ_select_block($yes_no,'REDISTRIB_USE',array('REDISTRIB_USE'=>1)).$lign_end;
+$redistrib="<tr height='30px' bgcolor='white'><td colspan='2'>".$l->g(1008).":</td><td>".champ_select_block($yes_no,'REDISTRIB_USE',array('REDISTRIB_USE'=>1)).$lign_end;
 
 
 echo "<table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5' >";
@@ -414,8 +414,8 @@ echo $title_redistrib.$redistrib;
 	$_POST['REDISTRIB_REP']=$default['DOWNLOAD_REP_CREAT'];
 	if (!$_POST['REDISTRIB_PRIORITY'])
 	$_POST['REDISTRIB_PRIORITY']=$default['DOWNLOAD_PRIORITY'];
-	$redistrib_rep=$lign_begin."Répertoire de création du paquet de redistribution".$td_colspan2.$default['DOWNLOAD_REP_CREAT'].$lign_end;
-	$redistrib_rep_distant=$lign_begin."Répertoire de stockage sur les serveurs".$td_colspan2.$default['DOWNLOAD_SERVER_DOCROOT'].$lign_end;
+	$redistrib_rep=$lign_begin.$l->g(829).$td_colspan2.$default['DOWNLOAD_REP_CREAT'].$lign_end;
+	$redistrib_rep_distant=$lign_begin.$l->g(1009).$td_colspan2.$default['DOWNLOAD_SERVER_DOCROOT'].$lign_end;
 	$redistrib_prio=$lign_begin.$l->g(440).$td_colspan2.show_modif($list_prio,'REDISTRIB_PRIORITY',2,'').$lign_end;
 	echo "<tr><td colspan='3' align=center><div id='REDISTRIB_USE_div' style='display:".($_POST["REDISTRIB_USE"] == 1 ? " block" : "none")."'>";
 	echo $sous_tab_beg;
