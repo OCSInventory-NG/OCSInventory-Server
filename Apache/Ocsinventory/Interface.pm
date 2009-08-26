@@ -42,6 +42,12 @@ sub get_computers_V1{
   return Apache::Ocsinventory::Interface::Inventory::get_computers( $request );
 }
 
+sub delete_computers_by_id_V1{
+  my $class = shift ;
+  my @ids = @_ ;
+  return Apache::Ocsinventory::Interface::delete_computers_by_id( \@ids );
+}
+
 # ===== CONFIGURATION METHODS =====
 
 # Read a general config parameter

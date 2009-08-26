@@ -203,7 +203,7 @@ sub _duplicate_replace{
   if( $result->{CONTENT}->{HARDWARE}->{USERID}!~/system|localsystem/i ){
      $userid = $result->{CONTENT}->{HARDWARE}->{USERID};
   }
-
+  # TODO: catch the queries return code
   # Keeping few informations from hardware 
   $dbh->do(" UPDATE hardware SET QUALITY=".$dbh->quote($quality).",
              FIDELITY=".$dbh->quote($fidelity).",
