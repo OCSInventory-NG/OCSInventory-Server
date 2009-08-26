@@ -362,24 +362,6 @@ our %DATA_MAP= (
    }
   },
   
-  netmap => {
-   mask => 0,
-   multi => 1,
-   auto => 0,
-   delOnReplace => 0,
-   sortBy => 'DATE',
-   writeDiff => 0,
-   cache => 0,
-   fields =>  {
-       IP => {},
-       MAC => {},
-       MASK => {},
-       NETID => {},
-       DATE => {},
-       NAME => {}
-   }
-  },
-
   virtualmachines => {
     mask => 131072,
     multi => 1,
