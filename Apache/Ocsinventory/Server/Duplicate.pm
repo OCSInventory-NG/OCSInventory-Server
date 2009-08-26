@@ -199,33 +199,32 @@ sub _duplicate_replace{
   my $userid = $row->{'USERID'};
   $request->finish;
   
-  # Current userid or previous ?
+  # Current userid or previous one ? 
   if( $result->{CONTENT}->{HARDWARE}->{USERID}!~/system|localsystem/i ){
      $userid = $result->{CONTENT}->{HARDWARE}->{USERID};
   }
-  # Keeping the accountinfos and the devices options
-  unless(  $dbh->do("  UPDATE hardware SET QUALITY=".$dbh->quote($quality).",
-        FIDELITY=".$dbh->quote($fidelity).",
-        CHECKSUM=(".(defined($checksum)?$checksum:CHECKSUM_MAX_VALUE)."|".(defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM})?$result->{CONTENT}->{HARDWARE}->{CHECKSUM}:CHECKSUM_MAX_VALUE)."),
-        USERID=".$dbh->quote($userid)." 
-         WHERE ID=".$DeviceID)
-    and
-    $dbh->do('DELETE FROM accountinfo WHERE HARDWARE_ID=?', {}, $DeviceID)
-    and
-    $dbh->do('UPDATE accountinfo SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
-    and
-    $dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $DeviceID)
-    and
-    $dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device)
-  ){
-    &_unlock($device);
-    return(1);
-  }
 
-  # Updating groups cache
-  $dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device);
+  # Keeping few informations from hardware 
+  $dbh->do(" UPDATE hardware SET QUALITY=".$dbh->quote($quality).",
+             FIDELITY=".$dbh->quote($fidelity).",
+             CHECKSUM=(".(defined($checksum)?$checksum:CHECKSUM_MAX_VALUE)."|".(defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM})?$result->{CONTENT}->{HARDWARE}->{CHECKSUM}:CHECKSUM_MAX_VALUE)."),
+             USERID=".$dbh->quote($userid)." 
+             WHERE ID=".$DeviceID
+  ) ;
+  $dbh->do("DELETE FROM hardware WHERE ID=?", {}, $device) ;
+
+  # We keep the informations of the following tables: devices, accountinfo, itmgmt_comments
+  $dbh->do('DELETE FROM accountinfo WHERE HARDWARE_ID=?', {}, $DeviceID) ;
+  $dbh->do('UPDATE accountinfo SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
+  $dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $DeviceID) ;
+  $dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
+  $dbh->do('UPDATE itmgmt_comments SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
+
+  # The computer may not correspond to the previous group, as its inventory could potentially change
+  $dbh->do('DELETE FROM groups_cache WHERE HARDWARE_ID=?', {}, $device) ;
   
-  # Drop old computer
+  # Drop old computer from "auto" tables in Map
+  # TODO: is it possible to manage the not auto section => not auto for import but auto for deletion ?
   for (keys(%DATA_MAP)){
     next if !$DATA_MAP{$_}->{delOnReplace} || !$DATA_MAP{$_}->{auto};
     unless($dbh->do("DELETE FROM $_ WHERE HARDWARE_ID=?", {}, $device)){
@@ -233,9 +232,8 @@ sub _duplicate_replace{
       return(1);
     }
   }
-  $dbh->do("DELETE FROM hardware WHERE ID=?", {}, $device) or return(1);
 
-  #Trace duplicate
+  # Trace duplicate if needed
   if($ENV{'OCS_OPT_TRACE_DELETED'}){
     unless(  $dbh->do('INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NULL,?,?)', {} , $device,$DeviceID)){
       &_unlock($device);

@@ -24,7 +24,7 @@ our %DATA_MAP= (
    mask => 1,
    multi => 0,
    auto => 0,
-   delOnReplace => 0,
+   delOnReplace => 1,
    sortBy => 'NAME',
    writeDiff => 0,
    cache => 1,
@@ -67,7 +67,7 @@ our %DATA_MAP= (
    mask => 0,
    multi => 1,
    auto => 0,
-   delOnReplace => 0,
+   delOnReplace => 1,
    sortBy => 'TAG',
    writeDiff => 0,
    cache => 0,
@@ -366,7 +366,7 @@ our %DATA_MAP= (
    mask => 0,
    multi => 1,
    auto => 0,
-   delOnReplace => 1,
+   delOnReplace => 0,
    sortBy => 'DATE',
    writeDiff => 0,
    cache => 0,
@@ -431,7 +431,23 @@ javainfo => {
       STATUS => { fallback=>0 },
       ERRORCODE => {}
     }
-  }
+  },
 
-); 
+  itmgmt_comments => {
+    mask => 0,
+    multi => 1,
+    auto => 0,
+    delOnReplace => 0,
+    sortBy => 'DATE_INSERT',
+    writeDiff => 0,
+    cache => 0,
+    fields =>  {
+      COMMENTS => {},
+      USER_INSERT => {},
+      DATE_INSERT => {},
+      ACTION  => {},
+      VISIBLE => {}
+    }
+  }
+);
 1;
