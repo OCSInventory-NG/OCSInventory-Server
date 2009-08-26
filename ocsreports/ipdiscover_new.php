@@ -37,7 +37,7 @@ require_once('require/function_ipdiscover.php');
 	 	//print_r($_SESSION["ipdiscover"][$dpt[$_POST['DPT_CHOISE']]]);
 	 	$tab_options['VALUE']['LBL_RSX']=$_SESSION["ipdiscover"][$dpt[$_POST['DPT_CHOISE']]];
 	// //	foreach ($_SESSION["ipdiscover"][]) ('".$list_rsx."')
-	 	$sql=" select * from (select ipdiscover.RSX as ID,
+	 	$sql=" select * from (select inv.RSX as ID,
 					  inv.c as 'INVENTORIE',
 					  non_ident.c as 'NON_INVENTORIE',
 					  ipdiscover.c as 'IPDISCOVER',
@@ -47,7 +47,7 @@ require_once('require/function_ipdiscover.php');
 					FROM devices 
 					WHERE name='IPDISCOVER' and tvalue in  ('".$list_rsx."')
 					GROUP BY tvalue) 
-				ipdiscover left join
+				ipdiscover right join
 				   (SELECT count(distinct(id)) as c,'INVENTORIE' as TYPE,ipsubnet as RSX
 					FROM networks 
 					WHERE ipsubnet in  ('".$list_rsx."')
@@ -67,7 +67,7 @@ require_once('require/function_ipdiscover.php');
 						GROUP BY netid) 
 				non_ident on non_ident.RSX=ipdiscover.RSX where non_ident.c is not null and ident.c is not null
 					union
-				select ipdiscover.RSX,
+				select inv.RSX,
 					  inv.c,
 					  0,
 					  ipdiscover.c,
@@ -77,7 +77,7 @@ require_once('require/function_ipdiscover.php');
 					FROM devices 
 					WHERE name='IPDISCOVER' and tvalue in  ('".$list_rsx."')
 					GROUP BY tvalue) 
-				ipdiscover left join
+				ipdiscover right join
 				   (SELECT count(distinct(id)) as c,'INVENTORIE' as TYPE,ipsubnet as RSX
 					FROM networks 
 					WHERE ipsubnet in  ('".$list_rsx."')
@@ -97,7 +97,7 @@ require_once('require/function_ipdiscover.php');
 						GROUP BY netid) 
 				non_ident on non_ident.RSX=ipdiscover.RSX where non_ident.c is null and ident.c is not null
 				union
-				select ipdiscover.RSX,
+				select inv.RSX,
 					  inv.c,
 					  non_ident.c,
 					  ipdiscover.c,
@@ -107,7 +107,7 @@ require_once('require/function_ipdiscover.php');
 					FROM devices 
 					WHERE name='IPDISCOVER' and tvalue in  ('".$list_rsx."')
 					GROUP BY tvalue) 
-				ipdiscover left join
+				ipdiscover right join
 				   (SELECT count(distinct(id)) as c,'INVENTORIE' as TYPE,ipsubnet as RSX
 					FROM networks 
 					WHERE ipsubnet in  ('".$list_rsx."')
@@ -127,7 +127,7 @@ require_once('require/function_ipdiscover.php');
 						GROUP BY netid) 
 				non_ident on non_ident.RSX=ipdiscover.RSX where ident.c is null and non_ident.c is not null
 				union
-				select ipdiscover.RSX,
+				select inv.RSX,
 					  inv.c,
 					  0,
 					  ipdiscover.c,
@@ -137,7 +137,7 @@ require_once('require/function_ipdiscover.php');
 					FROM devices 
 					WHERE name='IPDISCOVER' and tvalue in  ('".$list_rsx."')
 					GROUP BY tvalue) 
-				ipdiscover left join
+				ipdiscover right join
 				   (SELECT count(distinct(id)) as c,'INVENTORIE' as TYPE,ipsubnet as RSX
 					FROM networks 
 					WHERE ipsubnet in  ('".$list_rsx."')
@@ -183,7 +183,7 @@ require_once('require/function_ipdiscover.php');
 	$tab_options['LIEN_TYPE']['IDENTIFIE']='POPUP';
 	$tab_options['POPUP_SIZE']['IDENTIFIE']="width=900,height=600";
 	
-	//mise a jour possible des réseaux si on travaille sur le référentiel local
+	//mise a jour possible des rï¿½seaux si on travaille sur le rï¿½fï¿½rentiel local
 	if ( $_SESSION["ipdiscover_methode"] == "local.php" and $_SESSION["lvluser"] == SADMIN){
 		$tab_options['LIEN_LBL']['LBL_RSX']='ipdiscover_admin_rsx.php?prov=ident&value=';
 		$tab_options['LIEN_CHAMP']['LBL_RSX']='ID';

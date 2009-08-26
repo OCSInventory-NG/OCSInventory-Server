@@ -14,7 +14,19 @@ if (isset($_SESSION["mesmachines"]) and $_SESSION["mesmachines"] != '')
 		$req.="	and ".$_SESSION["mesmachines"]." order by ipsubnet";
 $res=mysql_query($req, $link_ocs) or die(mysql_error($link_ocs));
 while ($row=mysql_fetch_object($res)){
-	$list_ip[$row->id][$row->ipsubnet]=$row->name;		
+	if ($row->ipsubnet == null)
+	$ipsubnet=$l->g(885);
+	else
+	$ipsubnet=$row->ipsubnet;
+	if ($row->name == null)
+	$name=$l->g(885);
+	else
+	$name=$row->name;
+	if ($row->id == null)
+	$id=$l->g(885);
+	else
+	$id=$row->id;	
+	$list_ip[$id][$ipsubnet]=$name;		
 }
 $id_subnet="ID";
 if (!isset($list_ip))
