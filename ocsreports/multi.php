@@ -1,16 +1,16 @@
 <?php
 /*
- * Nouvelle recherche multicritère
+ * Nouvelle recherche multicritï¿½re
  * avec utilisation du cache
- * et possibilité de multivaluer les champs
+ * et possibilitï¿½ de multivaluer les champs
  * 
  */
-//limite du nombre de résultat
+//limite du nombre de rï¿½sultat
 //sur les tables de cache
 //ex: software_name_cache, osname_cache...
 
 $limit_result_cache=1000;
-//intégration des fonctions liées à la recherche multicritère
+//intï¿½gration des fonctions liï¿½es ï¿½ la recherche multicritï¿½re
 require_once('require/function_search.php');
 //fonction machines
 require_once('require/function_computors.php');
@@ -18,7 +18,7 @@ require_once('require/function_computors.php');
 $form_name='multisearch';
 //nom du tableau d'affichage
 $table_tabname="TAB_MULTICRITERE";	
-//cas où l'on arrive d'une autre page
+//cas oï¿½ l'on arrive d'une autre page
 //ex: la page des stats
 //$_SESSION['DEBUG'] = 'ON';
 if (isset($_GET['prov'])){
@@ -63,7 +63,7 @@ if (isset($_GET['prov'])){
 //ouverture du formulaire
 echo "<form name='".$form_name."' id='".$form_name."' action='index.php?multi=".$_GET['multi']."' method='post'>";
 
-//recherche des différents champs de accountinfo
+//recherche des diffï¿½rents champs de accountinfo
 $field_of_accountinfo=witch_field_more(array('ACCOUNTINFO'=>1));
 $j=0;
 while($field_of_accountinfo['ACCOUNTINFO'][$j]){
@@ -78,7 +78,7 @@ while($field_of_accountinfo['ACCOUNTINFO'][$j]){
 	$j++;
 }
 //si on ajoute un champ de recherche
-//on efface les données précedemment en cache
+//on efface les donnï¿½es prï¿½cedemment en cache
 if ($_POST['delfield']!="" or $_POST['multiSearch'] != $l->g(32)){
 	unset($_POST['Valid-search']);
 	unset($_SESSION['ID_REQ']);
@@ -87,7 +87,7 @@ if ($_POST['delfield']!="" or $_POST['multiSearch'] != $l->g(32)){
 //cas d'une suppression de machine
 if ($_POST['SUP_PROF'] != ''){	
 	deleteDid($_POST['SUP_PROF']);
-	//on force la valeur cachée de la validation du formulaire 
+	//on force la valeur cachï¿½e de la validation du formulaire 
 	//pour rejouer la requete et ne pas utiliser le cache
 	$_POST['Valid']="SUP";
 }
@@ -114,7 +114,7 @@ if ($_POST['Valid-search'] and $_POST['Valid'] != ''){
 	arsort($_SESSION['multiSearch']);
 }
 
- //cas de la réinitialisation
+ //cas de la rï¿½initialisation
 if ($_POST['reset'] != ""){
 	unset($_SESSION['ID_REQ']);
  	unset ($_SESSION['multiSearch']);
@@ -126,21 +126,21 @@ if ($_POST['delfield'] != ""){
 unset ($_SESSION['multiSearch'][$_POST['delfield']]);
 }
  
- //une recherche est demandée sur des critères
+ //une recherche est demandï¿½e sur des critï¿½res
  //pas d'utilisation de cache
- //bouton de validation actionné
+ //bouton de validation actionnï¿½
  if ($_POST['Valid-search'] and $_POST['Valid'] != ''){
  	unset($_SESSION['SQL_DATA_FIXE']);
  	unset($_SESSION['ID_REQ']);
  	$sqlRequest_Group="";
- 	//on commence par déomposer tous les poste pour
- 	//définir les différentes tables, champs de recherche, valeur à rechercher
+ 	//on commence par dï¿½omposer tous les poste pour
+ 	//dï¿½finir les diffï¿½rentes tables, champs de recherche, valeur ï¿½ rechercher
  	$i=0;
  	//parcourt du tableau de POST
  	foreach ($_POST as $key=>$value){
- 		//on récupère uniquement les POST qui nous intéressent
+ 		//on rï¿½cupï¿½re uniquement les POST qui nous intï¿½ressent
  		if ($key != 'Valid-search' and $key != 'multiSearch'){
- 			//en fonction du nom de la variable, on arrive a savoir quel est la recherche demandée
+ 			//en fonction du nom de la variable, on arrive a savoir quel est la recherche demandï¿½e
  			$valeur=explode("-", $key); 
  		
  			if ($valeur[0] == "InputValue" 
@@ -150,12 +150,12 @@ unset ($_SESSION['multiSearch'][$_POST['delfield']]);
  				$table[$i]=$valeur[1];
  				//en position 2 du tableau, on a toujours le nom du champ sur lequel on effectue la recherche
  				$field[$i]=$valeur[2];
- 				//en position 3 on a le numéro du champ.
+ 				//en position 3 on a le numï¿½ro du champ.
  				$fieldNumber[$i]=$valeur[3];
- 				//on récupère l'élément de comparaison
+ 				//on rï¿½cupï¿½re l'ï¿½lï¿½ment de comparaison
  				$field_compar[$i]=$_POST["SelComp-".$table[$i]."-".$field[$i]."-".$fieldNumber[$i]];
  				
- 				//si le champ de saisi est à vide, on annule la recherche sur ce champ
+ 				//si le champ de saisi est ï¿½ vide, on annule la recherche sur ce champ
  				if ($value == ''){
  					unset($table[$i]);
  					unset($field[$i]);
@@ -163,18 +163,18 @@ unset ($_SESSION['multiSearch'][$_POST['delfield']]);
  					unset($fieldNumber[$i]);
  				}else{ //sinon, on la prend en compte	
 		 				//en fonction de la valeur en position 0, on sait quelle genre de recherche on doit effecuter
-	 				//si on a un SelComp, on récupère la valeur saisie
+	 				//si on a un SelComp, on rï¿½cupï¿½re la valeur saisie
 		 			if ($valeur[0] == "InputValue" or $valeur[0] == "SelFieldValue"){ 				
  						$field_value[$i]=$value;
- 						//on vérifie que le premier champ d'une recherche multicritère
- 						//ou l'on a plusieur fois le même champ n'est pas vide
+ 						//on vï¿½rifie que le premier champ d'une recherche multicritï¿½re
+ 						//ou l'on a plusieur fois le mï¿½me champ n'est pas vide
  						//ex:  3 * le champ IP ADD mais avec le premier champ vide.
- 						//		on se retrouve donc avec un champ AND/OR sur le deuxième champ IP ADD
+ 						//		on se retrouve donc avec un champ AND/OR sur le deuxiï¿½me champ IP ADD
  						//		qu'il ne faut pas prendre en compte
  						if ($i!=0){
  							$k=$i;
- 							//on regarde si dans les champs précédent on a bien
- 							//le même champ pour traiter le champ AND/OR
+ 							//on regarde si dans les champs prï¿½cï¿½dent on a bien
+ 							//le mï¿½me champ pour traiter le champ AND/OR
  							while ($k>0){
  								if ($table[$k] == $table[$i] and $field[$k] == $field[$i]){
  									$field_and_or[$i]=$_POST["SelAndOr-".$table[$i]."-".$field[$i]."-".$fieldNumber[$i]];
@@ -236,11 +236,11 @@ if ($_SESSION['DEBUG'] == 'ON'){
  	echo "</tr></table></font>";
 }
  	$i=0;
- 	//tableau des requêtes à executer
+ 	//tableau des requï¿½tes ï¿½ executer
  	//qui est contruit au fur et a mesure
 	$sql_search=array();
  	while ($table[$i]){
- 		//initialisation de la variable des requêtes temporaires
+ 		//initialisation de la variable des requï¿½tes temporaires
  		$sql_temp="";
  		if ($field_compar[$i] == "" and substr($field_value[$i],0,4) != "ALL_")
  		$field_compar[$i] = "exact";
@@ -262,8 +262,8 @@ if ($_SESSION['DEBUG'] == 'ON'){
 					case "diff":
 						$field_compar[$i]=" like ";
 						$field_compar_origine[$i]="diff";
-						//la gestion de diff est particulière
-						//et nécessite plus de code (voir plus loin dans le code)
+						//la gestion de diff est particuliï¿½re
+						//et nï¿½cessite plus de code (voir plus loin dans le code)
 						break;
 				
 					case "list":
@@ -308,19 +308,19 @@ if ($_SESSION['DEBUG'] == 'ON'){
 
 		//traitement du cas particulier des recherches sur la table DEVICES
 		//le champs de de comparaison ne se fait pas sur $field_value[$i]
-		//le champs $field_compar doit donc se reporter sur le champs complémentaire
+		//le champs $field_compar doit donc se reporter sur le champs complï¿½mentaire
 		if ($table[$i] == "DEVICES"){
 			$original_field=$field[$i];
 			$original_field_value_complement=$field_value_complement[$i];
  			$field_value_complement[$i]=$field_value[$i];
  			$field[$i]="NAME";
  			$field_value[$i] = "'".$original_field."'";
- 			//traitement pour le télédéploiement		
+ 			//traitement pour le tï¿½lï¿½dï¿½ploiement		
  			if ($field_value[$i] == "'DOWNLOAD'"){
  				//on utilise pas le champ ivalue
  				unset($ivalue);
  				//requete pour trouver tous les ID 
- 				//dans ce cas, le champ de recherche doit etre à null
+ 				//dans ce cas, le champ de recherche doit etre ï¿½ null
 				if ($original_field_value_complement == $l->g(482))
 					$tvalue = " AND TVALUE IS NULL ";
 				//gestion de TOUT SAUF SUCCESS
@@ -337,7 +337,7 @@ if ($_SESSION['DEBUG'] == 'ON'){
 				else
 					$tvalue = " AND TVALUE = '".$original_field_value_complement."'";
 				//echo $field_value_complement[$i];
-				//recherche des id activés de ce paquet
+				//recherche des id activï¿½s de ce paquet
 				$sql_temp="select id from download_enable";
 				if ($field_value_complement[$i] != "'NULL'" and 
 						$field_value_complement[$i] != "NULL")
@@ -355,7 +355,7 @@ if ($_SESSION['DEBUG'] == 'ON'){
 				}
 				
 				unset($list);
- 			}//gestion de la configuration des fréquences
+ 			}//gestion de la configuration des frï¿½quences
  			elseif ($field_value[$i] == "'FREQUENCY'" or $field_value[$i] == "'IPDISCOVER'"){
  				
  				//on n'utilise pas le champs tvalue
@@ -364,7 +364,7 @@ if ($_SESSION['DEBUG'] == 'ON'){
  				if ( !strstr($field_value_complement[$i], 'DEFAULT')){
  					if ($field_value_complement[$i] != "'PERSO'") //gestion des cas normaux
 	 				$field_value_complement[$i]=" = ".$field_value_complement[$i];
-	 				else //gestion des valeurs de fréquences personnalisées
+	 				else //gestion des valeurs de frï¿½quences personnalisï¿½es
 	 				$field_value_complement[$i]=" NOT IN ('0','-1')";
  				}elseif (strstr($field_value_complement[$i], 'DEFAULT')){
  					$type_default=explode ( 'DEFAULT', $field_value_complement[$i]);
@@ -380,10 +380,12 @@ if ($_SESSION['DEBUG'] == 'ON'){
 					while( $val_frequency = mysql_fetch_array($result_frequency) ) {
 						$list_frequency .=  $val_frequency['hardware_id'].',';
 					}
+					if ($list_frequency == "")
+					$list_frequency="'' ";
 					//on vide le champ de comparaison 
 					//pour ne pas entrer dans la boucle de traitement
 		 			$field_compar[$i]=" NOT IN ";
-					//création de la fin de requête de recherche
+					//crï¿½ation de la fin de requï¿½te de recherche
 					$field_value[$i] =" (".substr($list_frequency,0,-1).")";
 					$field_modif="field_value";
 					//la requete doit se faire sur la table hardware et sur le champ ID
@@ -397,7 +399,7 @@ if ($_SESSION['DEBUG'] == 'ON'){
 		if (isset($table_cache)){
 			//si on est sur une table de cache
 			if ($table_cache[$table[$i]]){
-				//on remet à zero le tableau de logiciels
+				//on remet ï¿½ zero le tableau de logiciels
 				unset($list);
 				//champ sur lequel s'effectue la recherche
 				$field_temp=$field_cache[$table_cache[$table[$i]]];
@@ -428,8 +430,8 @@ if ($_SESSION['DEBUG'] == 'ON'){
 			
 		}
 		
-		//gestion du champ complémentaire en fonction de la table
-		//si le champs complémentaire existe
+		//gestion du champ complï¿½mentaire en fonction de la table
+		//si le champs complï¿½mentaire existe
 		if (isset($field_value_complement[$i]) and $field_value_complement[$i] != ""){
 			switch ($table[$i]) {
 						case "HARDWARE":
@@ -458,17 +460,17 @@ if ($_SESSION['DEBUG'] == 'ON'){
 		if ($_SESSION['DEBUG'] == 'ON'){
 		echo "<font color=green><B><br><br>".$l->g(5016).$table[$i]."<br>".$l->g(5017).$field[$i]."<br>".$l->g(5018).$field_compar[$i]."<br>".$l->g(5019).$field_value[$i]."<br>".$l->g(5020).$field_value_complement[$i]."<br>".$l->g(5021).$field_and_or[$i]."</B></font>";	
 		}
-		//si une erreur a été rencontrée
-		//le traitement est arrêté (gain de temps)
+		//si une erreur a ï¿½tï¿½ rencontrï¿½e
+		//le traitement est arrï¿½tï¿½ (gain de temps)
 		if (isset($ERROR)){
 		echo "<br><b><font color=red size=4>".$ERROR."</font></b><br>";
 		break;
 		}
-		//si on est dans le cas d'une recherche sur "différent",
-		//on va créer les requêtes dans le tableau $sql_seach['DIFF']
+		//si on est dans le cas d'une recherche sur "diffï¿½rent",
+		//on va crï¿½er les requï¿½tes dans le tableau $sql_seach['DIFF']
 		if ($field_compar_origine[$i] == "diff")
 		$operation="DIFF";
-		else //autremant dans les autres cas, on va créer le tableau de requête dans $sql_seach['NORMAL']
+		else //autremant dans les autres cas, on va crï¿½er le tableau de requï¿½te dans $sql_seach['NORMAL']
 		$operation="NORMAL";
 		//recherche du dernier index de la derniere requete sur la table
 		if (isset($sql_seach[$operation][$table[$i]])){
@@ -489,34 +491,34 @@ if ($_SESSION['DEBUG'] == 'ON'){
 		$field_and_or[$i]=" OR ";
 		
 		
-		//gestion de la non fusion des requêtes pour les tables définies
-		//si on n'est pas dans le cas de "AND/OR" (deux fois le même champ)
+		//gestion de la non fusion des requï¿½tes pour les tables dï¿½finies
+		//si on n'est pas dans le cas de "AND/OR" (deux fois le mï¿½me champ)
 		if (in_array ($table[$i], $tab_no_fusion) and ($field_and_or[$i] == "" or !isset($sql_seach[$operation][$table[$i]]))){
 			$traitement=generate_sql($table[$i]);
 			$sql_seach[$operation][$table[$i]][$i]=$traitement['sql_temp']." ( ".$field[$i].$field_compar[$i].$field_value[$i].$field_value_complement[$i];
-			//si une requête intermédiaire a été jouée
-			//il faut donc la prendre en compte pour la création des groupes
+			//si une requï¿½te intermï¿½diaire a ï¿½tï¿½ jouï¿½e
+			//il faut donc la prendre en compte pour la crï¿½ation des groupes
 			$trait_cache=traitement_cache($sql_temp,$field_modif,$field_value[$i],$field_value_complement[$i]);
 			$sql_cache[$operation][$table[$i]][$i]=$traitement['sql_cache']." ( ".$field[$i].$field_compar[$i].$trait_cache['field_value'].$trait_cache['field_value_complement'];
-		}//si on est dans le cas "AND/OR", on concat les requêtes
+		}//si on est dans le cas "AND/OR", on concat les requï¿½tes
 		elseif(in_array ($table[$i], $tab_no_fusion) and $field_and_or[$i] != "" and isset($sql_seach[$operation][$table[$i]])){
 				$sql_seach[$operation][$table[$i]][$k].= $field_and_or[$i].$field[$i].$field_compar[$i].$field_value[$i].$field_value_complement[$i];		
 			$trait_cache=traitement_cache($sql_temp,$field_modif,$field_value[$i],$field_value_complement[$i]);
 			$sql_cache[$operation][$table[$i]][$k].= $field_and_or[$i].$field[$i].$field_compar[$i].$trait_cache['field_value'].$trait_cache['field_value_complement'];		
 			
-		}//si on est dans un cas normal, on fusionne toutes les requêtes
+		}//si on est dans un cas normal, on fusionne toutes les requï¿½tes
 		else{	
-			//si la requête existe déjà	
+			//si la requï¿½te existe dï¿½jï¿½	
 			if (isset($sql_seach[$operation][$table[$i]])){
-				//si le champ "AND/OR" est vide, on doit concat des champs différents de la même table
+				//si le champ "AND/OR" est vide, on doit concat des champs diffï¿½rents de la mï¿½me table
 //				if ($field_and_or[$i] == "")
 //					$field_and_or[$i]="AND";
 				$sql_seach[$operation][$table[$i]][$k].= $field_and_or[$i].$field[$i].$field_compar[$i].$field_value[$i].$field_value_complement[$i];		
 				$trait_cache=traitement_cache($sql_temp,$field_modif,$field_value[$i],$field_value_complement[$i]);
 				$sql_cache[$operation][$table[$i]][$k].= $field_and_or[$i].$field[$i].$field_compar[$i].$trait_cache['field_value'].$trait_cache['field_value_complement'];			
-			}//si la requête n'existe pas
+			}//si la requï¿½te n'existe pas
 			else{	
-				//on la crée	
+				//on la crï¿½e	
 				$traitement=generate_sql($table[$i]);
 				$sql_seach[$operation][$table[$i]][$i]=$traitement['sql_temp']." ( ".$field[$i].$field_compar[$i].$field_value[$i].$field_value_complement[$i];
 				$trait_cache=traitement_cache($sql_temp,$field_modif,$field_value[$i],$field_value_complement[$i]);
@@ -526,8 +528,8 @@ if ($_SESSION['DEBUG'] == 'ON'){
 		//stockage de la table sur laquelle on requete
 		//pour afficher les champs correspondant
 		$list_tables_request[$table[$i]]=$table[$i];
-		//si une erreur a été rencontrée
-		//le traitement est arrêté (gain de temps)
+		//si une erreur a ï¿½tï¿½ rencontrï¿½e
+		//le traitement est arrï¿½tï¿½ (gain de temps)
 //		if (isset($ERROR)){
 //			echo "ATTENTION: ERREUR ".$ERROR;
 //			break;
@@ -542,7 +544,7 @@ $list_id="";
 //echo "<br><br>";
 //		print_r_V2($sql_seach);
 //		echo "<br><br>";
-	//si un tableau de requête existe
+	//si un tableau de requï¿½te existe
  	if (isset($sql_seach)){
  		//on commence par traiter le cas normal
  		if (isset($sql_seach['NORMAL'])){
@@ -555,8 +557,8 @@ $list_id="";
  		}
  	}
 	
-	//execution des requêtes
-	//si l'utilisateur a des droits limités
+	//execution des requï¿½tes
+	//si l'utilisateur a des droits limitï¿½s
 	//restriction des id 
 	 if ($_SESSION['mesmachines'] != "" and isset($_SESSION['mesmachines'])){
 		$list_id_restraint=substr(substr(computor_list_by_tag(),1),0,-1);
@@ -603,16 +605,16 @@ $list_id="";
 	 $_SESSION['ID_REQ']=$list_id;
 	// print_r($list_tables_request);
 	 $_SESSION['list_tables_request'][$table_tabname]=$list_tables_request;
-	 //passage en SESSION des requêtes pour les groupes dynamiques
+	 //passage en SESSION des requï¿½tes pour les groupes dynamiques
 	 sql_group_cache($cache_sql);
  }
  
- //Utilisation du cache pour éviter de rejouer la recherche
+ //Utilisation du cache pour ï¿½viter de rejouer la recherche
 if (($_POST['Valid-search'] and $_POST['Valid'] == '')){
 	 //	print_r($_SESSION['list_tables_request']);
-	//recupération de la liste des ID
+	//recupï¿½ration de la liste des ID
 	$list_id=$_SESSION['ID_REQ'];
-	//récupération des tables touchées par les requetes
+	//rï¿½cupï¿½ration des tables touchï¿½es par les requetes
 	$list_tables_request=$_SESSION['list_tables_request'][$table_tabname];
 	
 }
@@ -628,7 +630,7 @@ if ($list_id != "")	{
 						"Machine: ".$l->g(24)=>'h.USERID',
 						"Machine: ".$l->g(25)=>'h.OSNAME',
 						"Machine: ".$l->g(357)=>'h.USERAGENT',
-						"Réseau: ".$l->g(33)=>'h.WORKGROUP',						
+						"Rï¿½seau: ".$l->g(33)=>'h.WORKGROUP',						
 						"Machine: ".$l->g(26)=>'h.MEMORY',
 						"Machine: ".$l->g(569)=>'h.PROCESSORS',
 						"Machine: ".$l->g(34)=>'h.IPADDR',
@@ -670,17 +672,17 @@ if ($list_id != "")	{
 	$default_fields=array(TAG_LBL=>TAG_LBL,'Machine: '.$l->g(46)=>'Machine: '.$l->g(46),"Machine: ".$l->g(820)=>"Machine: ".$l->g(820),'NAME'=>'NAME',"Machine: ".$l->g(24)=>"Machine: ".$l->g(24),"Machine: ".$l->g(25)=>"Machine: ".$l->g(25),"Machine: ".$l->g(357)=>"Machine: ".$l->g(357),'SUP'=>'SUP','CHECK'=>'CHECK');
 
 	//print_r($list_fields);
-	//on modifie le type de champs en numéric de certain champs
+	//on modifie le type de champs en numï¿½ric de certain champs
 	//pour que le tri se fasse correctement
 	//$tab_options['TRI']['SIGNED']['a.TAG']="a.TAG";
 
-	//choix des fonctionnalitées pour les utilisateurs 
+	//choix des fonctionnalitï¿½es pour les utilisateurs 
 	$list_fonct["image/groups_search.png"]="Groupes";
 	$list_fonct["image/sup_search.png"]="Supprimer";
-	$list_fonct["image/cadena_ferme.png"]="Lock du résultat";
+	$list_fonct["image/cadena_ferme.png"]="Lock du rï¿½sultat";
 	if ($_SESSION["lvluser"] == SADMIN){
-		$list_fonct["image/config_search.png"]="Configuration personnalisée";
-		$list_fonct["image/tele_search.png"]="télédéployer";
+		$list_fonct["image/config_search.png"]="Configuration personnalisï¿½e";
+		$list_fonct["image/tele_search.png"]="tï¿½lï¿½dï¿½ployer";
 	}
 	//activation des LOGS	
 	$tab_options['LOGS']='SEARCH_RESULT';
@@ -704,7 +706,7 @@ if ($_SESSION["mesmachines"] != '')
 		$list_id_computor=computor_list_by_tag();
 //pour tous les tableaux:
 //TABLE-NOMCHAMP =>lbl du champ
-//option: TABLE-NOMCHAMP-LBL => commentaire à ajouter après le champ de saisi
+//option: TABLE-NOMCHAMP-LBL => commentaire ï¿½ ajouter aprï¿½s le champ de saisi
 
 //composotion du tableau
 // option: TABLE-NOMCHAMP-SELECT =>array des valeurs du champ select ou requete sql (affichage du select)
@@ -744,16 +746,16 @@ $optSelectField=array( "HARDWARE-IPADDR"=>$l->g(82).": ".$l->g(34),
 	//ajout des champs de accountinfo
 $optSelectField = array_merge($optaccountinfo,$optSelectField);
 //composotion du tableau
-// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut également être un tableau de données
-//à l'affichage on se retrouve avec le lbl du champ et un select
+// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut ï¿½galement ï¿½tre un tableau de donnï¿½es
+//ï¿½ l'affichage on se retrouve avec le lbl du champ et un select
 $optSelect=array("HARDWARE-OSNAME"=>$l->g(729).": ".$l->g(25),
 				 "HARDWARE-OSNAME-SQL1"=>"select 'ALL_LINUX' as ID, '".$l->g(965)."' as NAME union select 'ALL_WIN', '".$l->g(966)."' union select OSNAME,OSNAME from hardware_osname_cache where osname != '' ",
 				 "VIDEOS-RESOLUTION"=>$l->g(965).": ".$l->g(62),
 				 "VIDEOS-RESOLUTION-SQL1"=>"select DISTINCT RESOLUTION as 'ID', RESOLUTION as 'NAME' from videos ".(isset($list_id_computor)? " where hardware_id in ".$list_id_computor : '')." order by 1");
 //composotion du tableau
 //option : TABLE-NOMCHAMP-SELECT =>array des valeurs du champ select ou requete sql (1er select)
-// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut également être un tableau de données (2eme select)
-//à l'affichage on se retrouve avec  le lbl du champ, 2 select et un champ de saisi
+// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut ï¿½galement ï¿½tre un tableau de donnï¿½es (2eme select)
+//ï¿½ l'affichage on se retrouve avec  le lbl du champ, 2 select et un champ de saisi
 $opt2SelectField=array("REGISTRY-REGVALUE"=>$l->g(211).": ".$l->g(212),
 				"REGISTRY-REGVALUE-SQL1"=>"select NAME from registry_name_cache order by 1",
 				"REGISTRY-REGVALUE-LBL"=>"calendar",
@@ -768,8 +770,8 @@ $opt2SelectField=array("REGISTRY-REGVALUE"=>$l->g(211).": ".$l->g(212),
 
 //composotion du tableau
 //option : TABLE-NOMCHAMP-SELECT =>array des valeurs du champ select ou requete sql (1er select)
-// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut également être un tableau de données (2eme select)
-//à l'affichage on se retrouve avec le lbl du champ et 2 select
+// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut ï¿½galement ï¿½tre un tableau de donnï¿½es (2eme select)
+//ï¿½ l'affichage on se retrouve avec le lbl du champ et 2 select
 $opt2Select=array("HARDWARE-USERAGENT"=>"OCS: ".$l->g(966),
 				 "HARDWARE-USERAGENT-SQL1"=>"select distinct USERAGENT as 'NAME' from hardware where USERAGENT != '' ".(isset($list_id_computor)? " and id in ".$list_id_computor : '')." order by 1",
 				 "HARDWARE-USERAGENT-SELECT"=>array('exact'=>$l->g(410)
@@ -797,11 +799,11 @@ $opt2Select=array("HARDWARE-USERAGENT"=>"OCS: ".$l->g(966),
 				 									),
 
 				 );
-//à l'affichage on se retrouve avec  le lbl du champ, un select et deux champs de saisi
+//ï¿½ l'affichage on se retrouve avec  le lbl du champ, un select et deux champs de saisi
 //option : TABLE-NOMCHAMP-SELECT =>array des valeurs du champ select ( select)
-//ATTENTION: le deuxième champ de saisi est invisible. Pour le rendre visible, faire passer
+//ATTENTION: le deuxiï¿½me champ de saisi est invisible. Pour le rendre visible, faire passer
 //un javascript dans le lbl_default avec genre: onclick='document.getElementById(\"between-field_name\").style.display=\"block\";'
-//la valeur "field_name" est ensuite transformé par le vrai nom de champ
+//la valeur "field_name" est ensuite transformï¿½ par le vrai nom de champ
 $lbl_default= array('exact'=> $l->g(410),'ressemble'=>$l->g(129)
 					,'diff'=>$l->g(130)
 					,'small'=>$l->g(201),'tall'=>$l->g(202),'between'=>$l->g(203),
@@ -820,10 +822,10 @@ $optSelect2Field=array("HARDWARE-MEMORY"=>$l->g(25).": ".$l->g(26),
 					   "HARDWARE-PROCESSORS-SELECT"=>$lbl_default);
 //composotion du tableau
 //option : TABLE-NOMCHAMP-SELECT =>array des valeurs du champ select ou requete sql (1er select)
-// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut également être un tableau de données (2eme select)
-// TABLE-NOMCHAMP-SQL2 => requete avec les champs ID (option) et NAME. Peut également être un tableau de données (3eme select)
+// TABLE-NOMCHAMP-SQL1 => requete avec les champs ID (option) et NAME. Peut ï¿½galement ï¿½tre un tableau de donnï¿½es (2eme select)
+// TABLE-NOMCHAMP-SQL2 => requete avec les champs ID (option) et NAME. Peut ï¿½galement ï¿½tre un tableau de donnï¿½es (3eme select)
 
-//à l'affichage on se retrouve avec  le lbl du champ et 3 select
+//ï¿½ l'affichage on se retrouve avec  le lbl du champ et 3 select
 $opt3Select=array("DEVICES-DOWNLOAD"=>$l->g(512).": ".$l->g(970),
 				 "DEVICES-DOWNLOAD-SQL1"=>"select 'NULL' as 'ID', '***".$l->g(509)."***' as NAME "./*union select 'ALL' as ID,'***TOUS LES PAQUETS***' as NAME */"union select FILEID as ID,NAME from download_available order by 2",
 				 "DEVICES-DOWNLOAD-SQL2"=>"select '***".$l->g(509)."***' as 'NAME' union select '***".$l->g(548)."***' union select '***".$l->g(956)."***' union select '***".$l->g(957)."***' union select '".$l->g(482)."' union select distinct TVALUE from devices where name='DOWNLOAD' and tvalue!='' order by 1",
@@ -852,8 +854,8 @@ $aff_field_search.= "</select>
 <img src='image/delete_all.png' onclick='pag(\"ok\",\"reset\",\"".$form_name."\");' alt='".$l->g(41)."'>
 <input type=hidden name='reset' id='reset' value=''>";
 echo $aff_field_search;
-//echo "<br><br><i>Un problème de performance sur la base nous a obligé a supprimer les recherches avec 'DIFFERENT' ou 'N'AYANT PAS'";
-//echo "<br>Nous allons corriger cela le plus rapidement possible. Merci de votre compréhension.</i><br><br>";
+//echo "<br><br><i>Un problï¿½me de performance sur la base nous a obligï¿½ a supprimer les recherches avec 'DIFFERENT' ou 'N'AYANT PAS'";
+//echo "<br>Nous allons corriger cela le plus rapidement possible. Merci de votre comprï¿½hension.</i><br><br>";
 
 if (isset($_SESSION['multiSearch']) and $_SESSION['multiSearch'] != null){
 	echo "<table border=1 class= 'Fenetre' WIDTH = '75%' ALIGN = 'Center' CELLPADDING='5'>";
