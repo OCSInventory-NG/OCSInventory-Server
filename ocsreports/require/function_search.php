@@ -1,9 +1,9 @@
 <?php
 /*
- * Fichier de fonctions pour la recherche multicritère.
+ * Fichier de fonctions pour la recherche multicritï¿½re.
  */
 
-//définition du poids de chaque table pour optimiser la recherche d'abord sur les tables "peut couteuse"
+//dï¿½finition du poids de chaque table pour optimiser la recherche d'abord sur les tables "peut couteuse"
 $weight_table=array("HARDWARE"=>1, 
 					"DRIVES"=>5,
 					"GROUPS_CACHE"=>2,
@@ -25,14 +25,14 @@ if ($_SESSION["usecache"] == true){
 	//liste des champs correspondants ou la recherche doit se faire
 	$field_cache=array('SOFTWARES_NAME_CACHE'=>'NAME');
 }
-//liste des tables qui ne doivent pas faire des fusions de requête
-//cas pour les tables multivaluée
+//liste des tables qui ne doivent pas faire des fusions de requï¿½te
+//cas pour les tables multivaluï¿½e
 $tab_no_fusion=array("DEVICES","REGISTRY","DRIVES","SOFTWARES","DOWNLOAD_HISTORY");
 
 
 
 
-//définition des libellés des champs
+//dï¿½finition des libellï¿½s des champs
 $lbl_fields_calcul['DRIVES']=array($l->g(838)=>'drives.LETTER',
 								   $l->g(839)=>'drives.TYPE',
 								   $l->g(840)=>'drives.FILESYSTEM',
@@ -72,9 +72,10 @@ $lbl_fields_calcul['NETWORKS']=array($l->g(863) => 'networks.DESCRIPTION',
 $lbl_fields_calcul['REGISTRY']=array($l->g(874) => 'registry.NAME',
 									 $l->g(875) => 'registry.REGVALUE');
 
-//fonction qui exécute les requetes de la recherche 
+//fonction qui exï¿½cute les requetes de la recherche 
 //et qui retourne les ID des machines qui match.
 function execute_sql_returnID($list_id,$execute_sql,$no_cumul='',$table_name){
+	global $l;
 	//on parcourt le tableau de requetes
 	foreach ($execute_sql as $weight => $id){
 		$i=0;
@@ -82,7 +83,7 @@ function execute_sql_returnID($list_id,$execute_sql,$no_cumul='',$table_name){
 //		print_r_V2($id);
 //		echo "<br><br>";
 		
-		//on prends toutes les requetes qui ont le même poids
+		//on prends toutes les requetes qui ont le mï¿½me poids
 		while ($id[$i]){
 //			echo "<font color=green>";
 //			print_r($id[$i]);
@@ -102,7 +103,7 @@ function execute_sql_returnID($list_id,$execute_sql,$no_cumul='',$table_name){
  			$_SESSION['SQL_DATA_FIXE'][$table_name][]=ereg_replace("like", "not like", $id[$i]);
  			}
 			//si une liste d'id de machine existe,
-			//on va concat la requête avec les ID des machines
+			//on va concat la requï¿½te avec les ID des machines
 	 		if ($list_id != "" and $no_cumul == ''){	 		
 	 			if (is_array($list_id))
 	 			$list=implode(',',$list_id);
@@ -124,7 +125,7 @@ function execute_sql_returnID($list_id,$execute_sql,$no_cumul='',$table_name){
 			}
 	 		if ($_SESSION['DEBUG'] == 'ON')
 	 		echo "<br>".$l->g(5001).$id[$i].$l->g(5002).$weight;
-	 		//si aucun id trouvé => end
+	 		//si aucun id trouvï¿½ => end
 	 		if ($list_id == '')
 	 		return ;
 		$i++;	
@@ -142,7 +143,7 @@ function class_weight($list_sql){
  	foreach ($list_sql as $table_name=>$id){
  		$poids=$weight_table[$table_name];
  		foreach($id as $i=>$sql)
- 			$execute_sql[$poids][]=$sql.'))'; //ajout de la dernière parenthèse pour fermer la requête
+ 			$execute_sql[$poids][]=$sql.'))'; //ajout de la derniï¿½re parenthï¿½se pour fermer la requï¿½te
  	}
 // 	if ($sens == 'ASC')
  	ksort($execute_sql);
@@ -152,8 +153,8 @@ function class_weight($list_sql){
 }
 
 
-//fonction qui permet de prendre en compte les requêtes intermédiaires pour 
-//la création des groupes dynamiques
+//fonction qui permet de prendre en compte les requï¿½tes intermï¿½diaires pour 
+//la crï¿½ation des groupes dynamiques
 function traitement_cache($sql_temp,$field_modif,$field_value,$field_value_complement){
 	if ($sql_temp != ""){
 		if ($field_modif == "field_value")
@@ -165,10 +166,10 @@ function traitement_cache($sql_temp,$field_modif,$field_value,$field_value_compl
 }
 
 //fonction qui permet de passer en SESSION
-//les requetes pour la création des groupes dynamiques
+//les requetes pour la crï¿½ation des groupes dynamiques
 function sql_group_cache($cache_sql){
 	unset($_SESSION['SEARCH_SQL_GROUP']);
-	//requête de recherche "normale" (ressemble, exactement)
+	//requï¿½te de recherche "normale" (ressemble, exactement)
 	if ($cache_sql['NORMAL']){
 
 		foreach ($cache_sql['NORMAL'] as $poids=>$list){
@@ -180,7 +181,7 @@ function sql_group_cache($cache_sql){
 		
 		}
 	}
-	//requête de recherche "différent", "n'appartient pas"
+	//requï¿½te de recherche "diffï¿½rent", "n'appartient pas"
 	if ($cache_sql['DIFF']){
 		foreach ($cache_sql['DIFF'] as $poids=>$list){
 			$i=0;
@@ -198,18 +199,18 @@ function sql_group_cache($cache_sql){
 //fonction pour prendre en compte les jockers dans la saisie (* et ?)
 function jockers_trait($field_value){
 	$field_value_modif=$field_value;
-	//prise en compte du caractère * pour les champs
+	//prise en compte du caractï¿½re * pour les champs
  	$count_ast=substr_count($field_value,"*");
- 	//si au moins un * a été trouvé
+ 	//si au moins un * a ï¿½tï¿½ trouvï¿½
  	if ($count_ast>0)
  		$field_value_modif = str_replace("*", "%", $field_value); 	
  
-  	//prise en compte du caractère ? pour les champs
+  	//prise en compte du caractï¿½re ? pour les champs
  	$count_intero=substr_count($field_value_modif,"?");
- 	//si au moins un ? 	a été trouvé
+ 	//si au moins un ? 	a ï¿½tï¿½ trouvï¿½
  	if ($count_intero>0)
  			$field_value_modif = str_replace("?", "_", $field_value_modif);	 	
- 	//on retourne la valeur traitée
+ 	//on retourne la valeur traitï¿½e
  	//echo "<br>".$field_value_modif."<br>".$field_value."<br>";
  	if ($field_value_modif == $field_value)
  	return "'%".$field_value."%'";
@@ -235,7 +236,7 @@ function compair_with_date($field,$field_value){
 
 
 
-//fonction qui permet de créer le début des requêtes à exécuter
+//fonction qui permet de crï¿½er le dï¿½but des requï¿½tes ï¿½ exï¿½cuter
 function generate_sql($table_name)
 {
 	global $weight_table,$lbl_fields_calcul;
@@ -292,28 +293,28 @@ function show_ligne($value,$color,$id_field,$ajout,$form_name){
 		$and_or .= "</select>";
 		
 	}
-	//si le champ comporte une valeur du champ select par défaut
+	//si le champ comporte une valeur du champ select par dï¿½faut
 	if (array_key_exists($value.'-SELECT',$optArray))
 	//on prend les valeurs du champ
 	$champ_select=$optArray[$value.'-SELECT'];
-	else //si on garde les valeurs par défaut
+	else //si on garde les valeurs par dï¿½faut
 	$champ_select=array('exact'=> $l->g(410),'ressemble'=>$l->g(129)
 					,'diff'=>$l->g(130)
 					);
 
-	//on génère le premier champ select
+	//on gï¿½nï¿½re le premier champ select
 	$select="<select name='SelComp-".$nameField."' id='SelComp-".$nameField."'>";
 		foreach ($champ_select as $k=>$v){
-			//si un javascript a été passé en paramètre
+			//si un javascript a ï¿½tï¿½ passï¿½ en paramï¿½tre
 			if ($k!='javascript'){
-				//on remplace la chaine générique field_name du javascript par le vrai nom de champ
+				//on remplace la chaine gï¿½nï¿½rique field_name du javascript par le vrai nom de champ
 				$champ_select['javascript'][$k] =str_replace("field_name", $nameField, $champ_select['javascript'][$k]);
 				$select .= "<option value='".$k."' ".($_POST['SelComp-'.$nameField] == $k ? " selected":"")." ".$champ_select['javascript'][$k].">".$v."</option>";
 			}
 		}										
 	$select .= "</select>";
 	
-	//on affiche le début de ligne
+	//on affiche le dï¿½but de ligne
 	echo "<tr bgcolor=$color><td align=left><a href=\"javascript:;\"><img src='image/supp.png' onclick='pag(\"".$id_field."\",\"delfield\",\"".$form_name."\");'></a>
 		  </td><td>";
 	if ($ajout != '')
