@@ -14,8 +14,8 @@ our @EXPORT = qw //;
 sub delete_computers_by_id {
   my $computerIds = shift ;
 
-  for my $hardwareId (@$computerIds){
-    for my $section ( keys(%{$DATA_MAP} ){
+  for my $hardwareId (@{$computerIds}){
+    for my $section ( keys %DATA_MAP ){
       my $hardwareIdField = get_table_pk($section) ;
 
       # delOnReplace is used here even if the section is not "auto"
