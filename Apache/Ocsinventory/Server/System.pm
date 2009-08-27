@@ -194,7 +194,7 @@ sub _check_deviceid{
 
 sub _lock{
    my $device = shift;
-   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} || shift;
   
   if($dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NULL)', {} , $device, $$ )){
     $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 
@@ -222,7 +222,9 @@ sub _lock{
 
 sub _unlock{
   my $device = shift;
-  if(${Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'}}->do('DELETE FROM locks WHERE HARDWARE_ID=? AND ID=?', {}, $device, $$)){
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} || shift;
+
+  if($dbh->do('DELETE FROM locks WHERE HARDWARE_ID=? AND ID=?', {}, $device, $$)){
     $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 0 if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
     return(0);
   }else{

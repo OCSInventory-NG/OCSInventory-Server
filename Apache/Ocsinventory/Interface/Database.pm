@@ -18,6 +18,8 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw / 
   database_connect
   get_sth
+  get_dbh_write
+  get_dbh_read
   do_sql
   get_table_pk
   get_type_name
@@ -62,6 +64,15 @@ sub get_sth {
   my $request = $dbh->prepare( $sql );
   $request->execute( @values ) or die("==Bad request==\nSQL:$sql\nDATAS:".join "> <", @values, "\n");
   return $request;
+}
+
+# Return dbi handles for particular use
+sub get_dbh_write {
+  return database_connect('write') ; 
+}
+
+sub get_dbh_read {
+  return database_connect('read') ;
 }
 
 # Process the sql requests (do)
