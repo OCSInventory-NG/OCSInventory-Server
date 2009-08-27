@@ -17,6 +17,7 @@ require Apache::Ocsinventory::Interface::Inventory;
 require Apache::Ocsinventory::Interface::Config;
 require Apache::Ocsinventory::Interface::History;
 require Apache::Ocsinventory::Interface::Extensions;
+require Apache::Ocsinventory::Interface::Updates;
 
 use strict;
 
@@ -45,7 +46,7 @@ sub get_computers_V1{
 sub delete_computers_by_id_V1{
   my $class = shift ;
   my @ids = @_ ;
-  return Apache::Ocsinventory::Interface::delete_computers_by_id( \@ids );
+  return Apache::Ocsinventory::Interface::Updates::delete_computers_by_id( \@ids );
 }
 
 # ===== CONFIGURATION METHODS =====
