@@ -430,6 +430,50 @@ javainfo => {
       ACTION  => {},
       VISIBLE => {}
     }
+  },
+
+  devices => {
+    mask => 0,
+    multi => 1,
+    auto => 0,
+    delOnReplace => 1,
+    sortBy => 'NAME',
+    writeDiff => 0,
+    cache => 0,
+    fields =>  {
+      NAME => {}, 
+      IVALUE => {}, 
+      TVALUE  => {},
+      COMMENTS => {}
+    }
+  },
+
+  download_history => {
+    mask => 0,
+    multi => 1,
+    auto => 0,
+    delOnReplace => 1,
+    sortBy => 'PKD_ID',
+    writeDiff => 0,
+    cache => 0,
+    fields =>  {
+      PKG_ID => {},
+      PKG_NAME => {}
+    }
+  },
+
+  groups_cache => {
+    mask => 0,
+    multi => 1,
+    auto => 0,
+    delOnReplace => 1,
+    sortBy => 'GROUP_ID',
+    writeDiff => 0,
+    cache => 0,
+    fields =>  {
+      GROUP_ID => {},
+      STATIC => {}
+    } 
   }
 );
 1;
