@@ -1,15 +1,16 @@
 <?php
 /*
- * Page de fonction communes aux détails d'une machine 
+ * Page de fonction communes aux dï¿½tails d'une machine 
  * 
  */
  
-//fonction de traitement de l'ID envoyé
+//fonction de traitement de l'ID envoyï¿½
 function info($GET,$post_systemid){
+	global $l;
 	//traitement de l'envoi de l'id par post
 	if ($post_systemid != '')
 		$systemid = $_POST['systemid'];
-	//ajout de la possibilité de voir une machine par son deviceid
+	//ajout de la possibilitï¿½ de voir une machine par son deviceid
 	if (isset($GET['deviceid']) and !isset($systemid)){
 		$querydeviceid = "SELECT ID FROM hardware WHERE deviceid='".strtoupper ($GET['deviceid'])."'";
 		$resultdeviceid = mysql_query($querydeviceid, $_SESSION["readServer"]) or mysql_error($_SESSION["readServer"]);
@@ -22,7 +23,7 @@ function info($GET,$post_systemid){
 	//si le systemid de la machine existe
 	if (isset($GET['systemid']) and !isset($systemid))
 	$systemid = $GET['systemid'];
-	//problème sur l'id
+	//problï¿½me sur l'id
 	//echo $systemid;
 	if ($systemid == "" or !is_numeric($systemid))
 		return "Please Supply A System ID";
