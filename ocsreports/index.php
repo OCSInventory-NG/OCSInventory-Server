@@ -79,16 +79,16 @@ $pcparpage = $_SESSION["pcparpage"];
 
 if( !isset($_GET["popup"] )) {
 	//si la variable RESET existe
-	//c'est que l'on a cliqué sur un icône d'un menu 
+	//c'est que l'on a cliquï¿½ sur un icï¿½ne d'un menu 
 	if (isset($_POST['RESET'])){
 		if ($_SESSION['DEBUG'] == 'ON')
 			echo "<br><b><font color=red>".$l->g(5003)."</font></b><br>";
 		unset($_SESSION['DATA_CACHE']);	
 	}
-	//formulaire pour détecter le clic sur un bouton du menu
-	//permet de donner la fonctionnalité
+	//formulaire pour dï¿½tecter le clic sur un bouton du menu
+	//permet de donner la fonctionnalitï¿½
 	//de reset du cache des tableaux
-	//si on reclic sur le même icône
+	//si on reclic sur le mï¿½me icï¿½ne
 	echo "<form action='' name='ACTION_CLIC' id='ACTION_CLIC' method='POST'>";
 	echo "<input type='hidden' name='RESET' id='RESET' value=''>";
 	echo "</form>";
@@ -143,7 +143,8 @@ if( !isset($_GET["popup"] )) {
 		tab($l->g(175), 6);
 	
 	if($_SESSION["lvluser"]==SADMIN) {
-		tab($l->g(243), 45);
+		tab($l->g(263), 12);
+		tab($l->g(243), 45);		
  		tab($l->g(287), 13);
 	}	
 	tab($l->g(570), 28);
@@ -202,6 +203,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
  		case 6:	require ('doublons.php');	break;
  		case 8:	require ('uploadfile.php');	break;
  		case 9:	require ('donAdmini.php');	break;
+ 		case 12: require ('label.php');	break;
 		case 13:	require ('local.php');	break;
 		case 14: require ('dico.php');	break;
 		case 15: require ('composants.php'); break;
@@ -273,6 +275,7 @@ function tab( $label, $multi) {
  		case 6:	$img = "doublons";	break;
  		case 8:	$img = "agent";	break;
  		case 9:	$img = "administration"; break;
+ 		case 12: $img = "label";	break;
 		case 13: $img = "local";	break;
 		case 14: $img = "dictionnaire";	break;
 		case 36: $img = "ttlogiciels"; break;
@@ -291,8 +294,8 @@ function tab( $label, $multi) {
 		$img .= "_a";
 	}
 	
-	//si on clic sur l'icône, on charge le formulaire 
-	//pour obliger le cache des tableaux à se vider
+	//si on clic sur l'icï¿½ne, on charge le formulaire 
+	//pour obliger le cache des tableaux ï¿½ se vider
 	echo "<td onmouseover=\"javascript:montre();\"><a onclick='clic(\"".$llink."\");'><img title=\"".htmlspecialchars($label)."\" src='image/$img.png'></a></td>";	
 }
 
