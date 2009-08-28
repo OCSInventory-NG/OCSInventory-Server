@@ -92,37 +92,7 @@ if ( $item->CREATE_TIME == "")
 	$server_group=true;
 else
 	$server_group=false;
-
-echo "<html>\n";
-echo "<head>\n";
-echo "<TITLE>".$item->NAME."</TITLE>\n";
-echo "<LINK REL='StyleSheet' TYPE='text/css' HREF='css/ocsreports.css'>\n";
-
 incPicker();
-
-echo "<script language='javascript'>\n";
-echo "\tfunction Ajouter_donnees(systemid)\n";
-echo "\t{\n";
-echo "\t\twindow.open(\"./index.php?multi=29&popup=1&action=ajouter_donnees&systemid=\" + systemid, \"_self\");\n";
-echo "\t}\n\n";
-echo "\tfunction MAJ_donnees(systemid)\n";
-echo "\t{\n";
-echo "\t\twindow.open(\"./index.php?multi=29&popup=1&action=MAJ_donnees&systemid=\" + systemid, \"_self\");\n";
-echo "\t}\n";
-echo "</script>\n";
-echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html";
-if($l->g(0)) 
-	echo ";charset=".$l->g(0).";";
-else
-	echo ";charset=ISO-8859-1;";
-
-echo "\"></head>\n";
-echo "<body style='font: Tahoma' alink='#000000' vlink='#000000' link='#000000' bgcolor='#ffffff' text='#000000'>\n";
-/*
-printEnTete("Détails du groupe <b><font color='red'>".$item->NAME."</font></b>");
-if( ! empty($item->REQUEST) )
-	echo "<br><i>".$item->REQUEST."</i><br>";*/
-// COMPUTER SUMMARY
 $tdhdpb = "<td  align='left' width='20%'>";
 $tdhfpb = "</td>";
 $tdhd = "<td  align='left' width='20%'><b>";
@@ -160,7 +130,7 @@ echo $tdhd.$l->g(615).$tdhf."<td  align='left' width='20%' colspan='3'>";
 if( ! $pureStat  ){
 	echo textDecode($item->REQUEST);
 //	echo textDecode($item->XMLDEF);
-	//affichage des requetes qui ont formé ce groupe
+	//affichage des requetes qui ont formï¿½ ce groupe
 	if ($item->XMLDEF != ""){
 		$tab_list_sql=regeneration_sql($item->XMLDEF);
 		$i=1;
@@ -456,7 +426,7 @@ function print_perso($systemid) {
 					
 		echo "<table BORDER='0' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	
-	//echo "<tr><td>&nbsp;&nbsp;</td> $td1 "."Libellé"." </td> $td1 "."Valeur"." </td><td>&nbsp;</td></tr>";		
+	//echo "<tr><td>&nbsp;&nbsp;</td> $td1 "."Libellï¿½"." </td> $td1 "."Valeur"." </td><td>&nbsp;</td></tr>";		
 	while($item=mysql_fetch_array($resultDetails,MYSQL_ASSOC)) {
 		$optPerso[ $item["NAME"] ][ "IVALUE" ] = $item["IVALUE"];
 		$optPerso[ $item["NAME"] ][ "TVALUE" ] = $item["TVALUE"];
