@@ -9,7 +9,24 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on $Date: 2006/12/21 18:13:46 $$Author: plemmet $($Revision: 1.5 $)
-//pour le d�bug
+//pour le d�bug
+//if ($_SESSION['MODE_LANGUAGE']=="ON"){
+//	echo "<hr/>";
+//	$tab_typ_champ[0]['DEFAULT_VALUE']=$_SESSION['EDIT_LANGUAGE'];
+//	$tab_typ_champ[0]['INPUT_NAME']="WORD";
+//	$tab_typ_champ[0]['INPUT_TYPE']=2;
+//	$tab_name[0]="Mot à modifier :";
+//	$tab_typ_champ[1]['DEFAULT_VALUE']=$_POST['UPDATE'];
+//	$tab_typ_champ[1]['INPUT_NAME']="UPDATE";
+//	$tab_typ_champ[1]['INPUT_TYPE']=0;
+//	$tab_typ_champ[1]['CONFIG']['SIZE']=60;
+//	$tab_typ_champ[1]['CONFIG']['MAXLENGTH']=255;
+//	$tab_name[1]="Nouveau libellé :";
+//	tab_modif_values($tab_name,$tab_typ_champ,'',"EDITION",$comment="","EDITION");
+////	print_r($_SESSION['EDIT_LANGUAGE'])	
+//	
+//}
+
 if ($_SESSION['DEBUG'] == 'ON'){
 	echo "<hr/>";
 	echo "<div align=center>VAR POST</div>";

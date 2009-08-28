@@ -28,7 +28,7 @@ function xml_escape_string($array){
 }
 
 function xml_encode( $txt ) {
-		$cherche = array("&","<",">","\"","'","é","è","ô","Î","î","à","ç","ê","â");
+		$cherche = array("&","<",">","\"","'","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½");
 		$replace = array( "&amp;","&lt;","&gt;", "&quot;", "&apos;","&eacute;","&egrave;","&ocirc;","&Icirc;","&icirc;","&agrave;","&ccedil;","&ecirc;","&acirc;");
 		return str_replace($cherche, $replace, $txt);		
 	
@@ -36,9 +36,9 @@ function xml_encode( $txt ) {
 
 function xml_decode( $txt ) {
 		$cherche = array( "&acirc;","&ecirc;","&ccedil;","&agrave;","&lt;","&gt;", "&quot;", "&apos;","&eacute;","&egrave;","&ocirc;","&Icirc;","&icirc;","&amp;");
-		$replace = array( "â","ê","ç","à","<",">","\"","'","é","è","ô","Î","î", "&" );
+		$replace = array( "ï¿½","ï¿½","ï¿½","ï¿½","<",">","\"","'","ï¿½","ï¿½","ï¿½","ï¿½","ï¿½", "&" );
 	//	echo $txt;
-		//echo str_replace("&toto;","ç",$txt);
+		//echo str_replace("&toto;","ï¿½",$txt);
 		return str_replace($cherche, $replace, $txt);		
 	
 }
@@ -62,7 +62,7 @@ function tri($sql)
 	
 }
 
-//fonction qui permet d'afficher un tableau de données
+//fonction qui permet d'afficher un tableau de donnï¿½es
 /*
  * $entete_colonne = array ; => ex: $i=0;
 									while($colname = mysql_fetch_field($result))
@@ -172,17 +172,17 @@ function tri($sql)
 
 //variable pour la fonction champsform
 $num_lig=0;
-/* fonction liée à show_modif
- * qui permet de créer une ligne dans le tableau de modification/ajout
- * $title = titre à l'affichage du champ
- * $value_default = - pour un champ text ou input, la valeur par défaut du champ.
+/* fonction liï¿½e ï¿½ show_modif
+ * qui permet de crï¿½er une ligne dans le tableau de modification/ajout
+ * $title = titre ï¿½ l'affichage du champ
+ * $value_default = - pour un champ text ou input, la valeur par dï¿½faut du champ.
  * 					- pour un champ select, liste des valeurs du champ
- * $input_name = nom du champ que l'on va récupérer en $_POST
+ * $input_name = nom du champ que l'on va rï¿½cupï¿½rer en $_POST
  * $input_type = 0 : <input type='text'>
  * 				 1 : <textarea>
  * 				 2 : <select><option>
- * $donnees = tableau qui contient tous les champs à afficher à la suite
- * $nom_form = si un select doit effectuer un reload, on y met le nom du formulaire à reload
+ * $donnees = tableau qui contient tous les champs ï¿½ afficher ï¿½ la suite
+ * $nom_form = si un select doit effectuer un reload, on y met le nom du formulaire ï¿½ reload
 */
 function champsform($title,$value_default,$input_name,$input_type,&$donnees,$nom_form=''){
 	global $num_lig;
@@ -198,13 +198,13 @@ function champsform($title,$value_default,$input_name,$input_type,&$donnees,$nom
 }
 
 /*
- * fonction liée à tab_modif_values qui permet d'afficher le champ défini avec la fonction champsform
+ * fonction liï¿½e ï¿½ tab_modif_values qui permet d'afficher le champ dï¿½fini avec la fonction champsform
  * $name = nom du champ
- * $input_name = nom du champ récupéré dans le $_POST
+ * $input_name = nom du champ rï¿½cupï¿½rï¿½ dans le $_POST
  * $input_type = 0 : <input type='text'>
  * 				 1 : <textarea>
  * 				 2 : <select><option>
- * $input_reload = si un select doit effectuer un reload, on y met le nom du formulaire à reload
+ * $input_reload = si un select doit effectuer un reload, on y met le nom du formulaire ï¿½ reload
  * 
  */
 function show_modif($name,$input_name,$input_type,$input_reload = "",$configinput=array('MAXLENGTH'=>100,'SIZE'=>20,'JAVASCRIPT'=>""))
@@ -236,7 +236,7 @@ function show_modif($name,$input_name,$input_type,$input_reload = "",$configinpu
 	
 }
 
-function tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title="",$comment="")
+function tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title="",$comment="",$name_button="modif")
 {
 	global $l;
 	echo "<form name='CHANGE' action='' method='POST'>";
@@ -247,8 +247,8 @@ function tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title="",$commen
 		echo "<tr><td>".$values."</td><td>".$tab_typ_champ[$key]['COMMENT_BEFORE'].show_modif($tab_typ_champ[$key]['DEFAULT_VALUE'],$tab_typ_champ[$key]['INPUT_NAME'],$tab_typ_champ[$key]['INPUT_TYPE'],$tab_typ_champ[$key]['RELOAD'],$tab_typ_champ[$key]['CONFIG']).$tab_typ_champ[$key]['COMMENT_BEHING']."</td></tr>";
 	}
  echo "<tr ><td colspan=10 align='center'><i>".$comment."</i></td></tr>";
-	echo "<tr><td><input title='".$l->g(625)."' type='image'  src='image/modif_valid_v2.png' name='Valid_modif'>";
-	echo "<input title='".$l->g(626)."' type='image'  src='image/modif_anul_v2.png' name='Reset_modif'></td></tr>";
+	echo "<tr><td><input title='".$l->g(625)."' type='image'  src='image/modif_valid_v2.png' name='Valid_".$name_button."'>";
+	echo "<input title='".$l->g(626)."' type='image'  src='image/modif_anul_v2.png' name='Reset_".$name_button."'></td></tr>";
 
 
         echo "</table>";    
@@ -435,7 +435,7 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 		$def_onglets is array like :  	$def_onglets[$l->g(499)]=$l->g(499); //Serveur
 										$def_onglets[$l->g(728)]=$l->g(728); //Inventaire
 										$def_onglets[$l->g(312)]=$l->g(312); //IP Discover
-										$def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+										$def_onglets[$l->g(512)]=$l->g(512); //Tï¿½lï¿½dï¿½ploiement
 										$def_onglets[$l->g(628)]=$l->g(628); //Serveur de redistribution 
 		
 	behing this function put this lign:
@@ -493,7 +493,7 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 
 function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list_fields,$default_fields,$id_form='form'){
 	global $_POST,$l;
-	//récupération des colonnes du tableau dans le cookie
+	//rï¿½cupï¿½ration des colonnes du tableau dans le cookie
 	if (isset($_COOKIE[$tab_name]) and !isset($_SESSION['col_tab'][$tab_name])){
 		$col_tab=explode("///", $_COOKIE[$tab_name]);
 		foreach ($col_tab as $key=>$value){
@@ -513,7 +513,7 @@ function gestion_col($entete,$data,$list_col_cant_del,$form_name,$tab_name,$list
 	if (!isset($_SESSION['col_tab'][$tab_name]))
 	$_SESSION['col_tab'][$tab_name]=$default_fields;
 	
-	//vérification de l'existance des champs cant_delete dans la session
+	//vï¿½rification de l'existance des champs cant_delete dans la session
 	//print_r($list_col_cant_del);
 	foreach ($list_col_cant_del as $key=>$value){
 		if (!in_array($key,$_SESSION['col_tab'][$tab_name])){
@@ -623,7 +623,7 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 	$limit_result_cache=200;
 	//$tab_options['CACHE']='RESET';
 	//suppression de la limite de cache
-	//si on est sur la même page mais pas sur le même onglet
+	//si on est sur la mï¿½me page mais pas sur le mï¿½me onglet
 	if ($_SESSION['cvs'][$table_name] != $queryDetails ){
 		unset($_POST['page']);
 		$tab_options['CACHE']='RESET';
@@ -632,12 +632,12 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 //		echo "<br><font color=green>".$queryDetails."</font><br>";
 //		unset($_SESSION['NUM_ROW'][$table_name]);
 	}
-	//si la limite de fin est supérieure aux totals de résultat
-	//on force la limite END avec la dernière valeur du résultat
+	//si la limite de fin est supï¿½rieure aux totals de rï¿½sultat
+	//on force la limite END avec la derniï¿½re valeur du rï¿½sultat
 //	if ($limit["END"]>$_SESSION['NUM_ROW'][$table_name]-1 and isset($_SESSION['NUM_ROW'][$table_name]))
 //		$limit["END"]=$_SESSION['NUM_ROW'][$table_name];
 	
-	//Effacage du cache pour la regénération
+	//Effacage du cache pour la regï¿½nï¿½ration
 	if ($tab_options['CACHE']=='RESET' or (isset($_POST['SUP_PROF']) and $_POST['SUP_PROF'] != '') ){
 		if ($_SESSION['DEBUG'] == 'ON')
 	 		echo "<br><b><font color=red>".$l->g(5003)."</font></b><br>";
@@ -684,19 +684,19 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 	{
 		//echo $table_name;
 		//print_r($_SESSION['SQL_DATA_FIXE'][$table_name]);
-		//recherche des valeurs fixe avec la requete sql stockée
+		//recherche des valeurs fixe avec la requete sql stockï¿½e
 		if (isset($_SESSION['SQL_DATA_FIXE'][$table_name])){
 			foreach ($_SESSION['SQL_DATA_FIXE'][$table_name] as $key=>$sql){
 				if ($table_name == "TAB_MULTICRITERE"){
 				$sql.=" and hardware_id in (".implode(',',$_SESSION['ID_REQ']).")";
-				//ajout du group by pour régler le problème des résultats multiples sur une requete
-				//on affiche juste le premier critère qui match
+				//ajout du group by pour rï¿½gler le problï¿½me des rï¿½sultats multiples sur une requete
+				//on affiche juste le premier critï¿½re qui match
 				$sql.=" group by hardware_id ";
 				}
 				
 			
 				
-				//ajout du tri sur la requete de valeurs fixe si cela a été demandé
+				//ajout du tri sur la requete de valeurs fixe si cela a ï¿½tï¿½ demandï¿½
 				if ($_POST['tri_fixe']!='' and strstr($sql,$_POST['tri_fixe']))
 				$sql.=" order by ".$_POST['tri_fixe']." ".$_POST['sens'];
 			//	$sql.=" limit 200";
@@ -728,7 +728,7 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 		
 //	print_r($tab_options['VALUE']);
 	//	print_r($list_id_tri_fixe);
-		//on vide les valeurs précédentes
+		//on vide les valeurs prï¿½cï¿½dentes
 		//pour optimiser la place sur le serveur
 		unset($_SESSION['cvs'],$_SESSION['list_fields']);		
 		$_SESSION['cvs'][$table_name]=$queryDetails;
@@ -809,7 +809,7 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 				break;
 			}
 			
-					//on arrête le traitement si on est au dessus du nombre de ligne
+					//on arrï¿½te le traitement si on est au dessus du nombre de ligne
 			
 			
 			
@@ -849,10 +849,10 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 //			$_SESSION['NUM_ROW'][$table_name]=1;
 //		}
 		flush();
-			//traitement du tri des résultats sur une valeur fixe
+			//traitement du tri des rï¿½sultats sur une valeur fixe
 		if (isset($list_id_tri_fixe)){
 				$i=0;
-			//parcourt des id triés
+			//parcourt des id triï¿½s
 			while ($list_id_tri_fixe[$i]){
 				if ($limit["BEGIN"] <= $i and $i <$limit["BEGIN"]+$limit_result_cache)
 				$sql_data_tri_fixe[$i]=$sql_data[$list_id_tri_fixe[$i]];
@@ -919,7 +919,7 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 
 
 
-//fonction qui permet de gérer les données à afficher dans le tableau
+//fonction qui permet de gï¿½rer les donnï¿½es ï¿½ afficher dans le tableau
 function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default_fields,$list_col_cant_del,$queryDetails){
 	global $l,$_POST;
 	
@@ -985,7 +985,7 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 					$sens="ASC";
 					
 				$affich='OK';
-				//on n'affiche pas de lien sur les colonnes non présentes dans la requete
+				//on n'affiche pas de lien sur les colonnes non prï¿½sentes dans la requete
 				if (isset($tab_options['NO_TRI'][$key]))					
 				$lien='KO';	
 				else
@@ -1010,8 +1010,8 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 				}else
 				$entete[$num_col]=$tab_options['LBL'][$key];
 				
-				//si un lien doit être mis sur le champ
-				//l'option $tab_options['NO_LIEN_CHAMP'] empêche de mettre un lien sur certaines
+				//si un lien doit ï¿½tre mis sur le champ
+				//l'option $tab_options['NO_LIEN_CHAMP'] empï¿½che de mettre un lien sur certaines
 				//valeurs du champs
 				//exemple, si vous ne voulez pas mettre un lien si le champ est 0,
 				//$tab_options['NO_LIEN_CHAMP'][$key] = array(0);

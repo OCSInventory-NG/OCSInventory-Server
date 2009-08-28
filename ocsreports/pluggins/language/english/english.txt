@@ -904,6 +904,12 @@
 1007 The directory
 1008 Use on this redistribution package
 1009 Servers storage directory
+1010 NORMAL
+1011 DEBUG
+1012 LANGUAGE
+1013 MAINTENANCE
+1014 Switch to
+1015 User mode
 
 5000 [DEBUG]computers insertions request =>[DEBUG]
 5001 [DEBUG]REQUEST MADE => [DEBUG]

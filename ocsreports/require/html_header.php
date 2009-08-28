@@ -2,8 +2,6 @@
 /*******************************************************AFFICHAGE HTML DU HEADER*******************************************/
 //require("fichierConf.class.php");
 
-
-//global $l;
 ?>
 <html>
 <head>
@@ -16,8 +14,6 @@
 <script language='javascript' type='text/javascript' src='js/function.js'></script>
 <?php incPicker(); 
 echo "</head>"; 
-
-
 echo "<body bottommargin='0' leftmargin='0' topmargin='0' rightmargin='0' marginheight='0' marginwidth='0'>";
 //on affiche l'entete de la page
 if( !isset($_GET["popup"] )) {
@@ -26,7 +22,7 @@ if( !isset($_GET["popup"] )) {
 		 $_SESSION["mesmachines"]=$_SESSION["TRUE_mesmachines"];
 		unset($_SESSION["TRUE_mesmachines"]);
 	}
-//TODO: revoir ça!!! si la variable $ban_head est à 'no', on n'affiche pas l'entete... 
+//TODO: revoir ï¿½a!!! si la variable $ban_head est ï¿½ 'no', on n'affiche pas l'entete... 
 //echo "<font color=RED><B>ENVIRONNEMENT DE DEV</B></font>";
 
 echo "<table  border='0' class='headfoot' ";
@@ -37,7 +33,7 @@ echo "><tr><td width= 10%><table width= 50% align=center border='0'><tr>
 if (isset($_SESSION["loggeduser"])){
 	echo "<table width= 100% align=center border='0'><tr><Td align='center' bgcolor='#f2f2f2' BORDERCOLOR='#f2f2f2' width:80%>";
 	echo "<font color=red><b>ATTENTION: USE THIS VERSION ONLY FOR TEST.<BR> THIS VERSION IN DEVELOPMENTAL STAGE</b></font>";
-//si un fuser est en cours, on indique avec quel compte le super admin est connecté
+//si un fuser est en cours, on indique avec quel compte le super admin est connectï¿½
 	if( isset($_SESSION['TRUE_USER']) )
 		echo "<font color=red>".$_SESSION['TRUE_USER']." ".$l->g(889)." ".$_SESSION["loggeduser"]."</font>";
 	if (isset($_SESSION["TRUE_mesmachines"])){
@@ -47,20 +43,15 @@ if (isset($_SESSION["loggeduser"])){
 }
 echo "</td><td width= 10%><table width= 100% align=center border='0'><tr><Td align='center'>
 	<b>Ver. 1.03A &nbsp&nbsp&nbsp;</b>";
-//si on est en made débug, on affiche les requêtes jouées
-	if ($_POST['DEBUG_FOOTER'] == 'OFF')
-		unset($_SESSION['DEBUG']);
-	if ($_POST['DEBUG_FOOTER'] == 'ON')
-	$_SESSION['DEBUG']='ON';
-	if($_SESSION['DEBUG']=='ON'){
-		echo "<br><a onclick='return pag(\"OFF\",\"DEBUG_FOOTER\",\"debug_footer\")'><img src=image/red.png></a>";
-		echo "<br><font color='black'><b>CACHE:&nbsp;<font color='".($_SESSION["usecache"]?"green'><b>ON</b>":"red'><b>OFF</b>")."</font><div id='tps'>wait...</div>";
+//si on est en made dÃ©bug, on affiche les requÃªtes jouÃ©es
+	$javascript="OnClick='window.open(\"debug.php\",\"debug\",\"location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=550,height=350\")'";
+	if($_SESSION['DEBUG']=='ON' or $_SESSION['MODE_LANGUAGE']=="ON"){
+		echo "<br><a ".$javascript."><img src=image/red.png></a><br>";
+		if ($_SESSION['DEBUG']=='ON')
+		echo "<font color='black'><b>CACHE:&nbsp;<font color='".($_SESSION["usecache"]?"green'><b>ON</b>":"red'><b>OFF</b>")."</font><div id='tps'>wait...</div>";
 	}elseif (($_SESSION["lvluser"] == SADMIN or $_SESSION['TRUE_LVL'] == SADMIN) and !isset($_SESSION['DEBUG'])){
-		echo "<br><a onclick='return pag(\"ON\",\"DEBUG_FOOTER\",\"debug_footer\")'><img src=image/green.png></a><br>";
+		echo "<br><a ".$javascript."><img src=image/green.png></a><br>";
 	}
-	echo "<form name='debug_footer' id='debug_footer' action='' method='post'>";
-	echo "<input type='hidden' name='DEBUG_FOOTER' id='DEBUG_FOOTER' value=''>";
-	echo "</form>";
 }
 
 if(isset($_SESSION["loggeduser"])&&!isset($_GET["popup"] )) {
@@ -81,8 +72,7 @@ if(isset($_SESSION["loggeduser"])&&!isset($_GET["popup"] )) {
 		echo "<form name='log_out' id='log_out' action='' method='post'>";
 		echo "<input type='hidden' name='LOGOUT' id='LOGOUT' value=''>";
 		echo "<input type='hidden' name='LOCK' id='LOCK' value=''>";
-		echo "</form>";
-			
+		echo "</form>";			
 }
 
 echo "</Td></tr></table></td></tr>";

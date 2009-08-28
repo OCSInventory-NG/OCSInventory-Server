@@ -929,6 +929,13 @@
 1007 Le répertoire
 1008 Utilisation sur ce paquet de la redistribution
 1009 Répertoire de stockage sur les serveurs
+1010 NORMAL
+1011 DEBUG
+1012 LANGUE
+1013 MAINTENANCE
+1014 Passer en mode
+1015 Mode de fonctionnement
+
 
 5000 [DEBUG]requête d'insertion de machines =>[DEBUG]
 5001 [DEBUG]REQUETE JOUEE => [DEBUG]

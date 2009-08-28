@@ -1,5 +1,16 @@
 <?php
 @session_start();
+//print_r($_SESSION['LANGUAGE_FILE']);
+/*****************************************************Gestion des fichiers de langues  TEST*************************************/
+if (isset($_POST['Valid_EDITION_x'])){
+	if ($_POST['UPDATE']!='' and $_POST['WORD'] != ''){
+	//	$_SESSION['LANGUAGE_FILE']['tableauMots'][$_POST['UPDATE']]=$_POST['WORD'];
+		
+	}
+}
+unset($_SESSION['EDIT_LANGUAGE']);
+
+
 
 require_once('fichierConf.class.php');
 
@@ -31,11 +42,11 @@ $_GET=escape_string($_GET);
 @set_time_limit(0);
 //
 
-//pour ne pas tenir compte des erreurs renvoyés par l'identification
+//pour ne pas tenir compte des erreurs renvoyï¿½s par l'identification
 //pour le fuser, la variable $no_error est = 'YES'
 if (!isset($no_error))
 $no_error='NO';
-/**************************************mise en place des répertoires de pluggins et d'auhentification************************************/
+/**************************************mise en place des rï¿½pertoires de pluggins et d'auhentification************************************/
 if (!isset($_SESSION['plugin_rep']) or !isset($_SESSION['CONF_MYSQL'])){
 //	$rep=explode("/", $_SERVER["DOCUMENT_ROOT"].$_SERVER["PHP_SELF"]);
 //	array_pop($rep);
@@ -82,7 +93,7 @@ if (isset($_POST['LANG'])){
 	$_SESSION["LANGUAGE_FILE"]=new language($_SESSION['LANGUAGE']);
 }
 //unset($_SESSION['LANGUAGE']);
-//si la langue par défaut n'existe pas, on récupérer le cookie
+//si la langue par dï¿½faut n'existe pas, on rï¿½cupï¿½rer le cookie
 if (!isset($_SESSION['LANGUAGE']) or !isset($_SESSION["LANGUAGE_FILE"])){
 	if (isset($_COOKIE['LANG']))
 	$_SESSION['LANGUAGE']=$_COOKIE['LANG'];

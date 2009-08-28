@@ -34,9 +34,15 @@ class language
 		//If word doesn't exist for language, return default english word 
 		if ($this->tableauMots[$i] == NULL) {
 			$defword = new language(english);
-			return $defword->tableauMots[$i];
+			$word= $defword->tableauMots[$i];
+		}else
+			$word=$this->tableauMots[$i]; 
+		//language mode
+		if ($_SESSION['MODE_LANGUAGE']=="ON"){
+			$_SESSION['EDIT_LANGUAGE'][$i]=$word;
+			$word.="{<i><b>".$i."</b></i>}";		
 		}
-		return $this->tableauMots[$i]; 
+		return $word;
 	}
 
 }		
