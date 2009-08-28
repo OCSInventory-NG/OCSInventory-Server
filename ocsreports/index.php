@@ -35,13 +35,13 @@ require("fichierConf.class.php");
 //	fclose($fconf);
 ////
 	
-$showingReq = false;
-foreach( $_GET as $key=>$val) {
-	$_GET["key"] = urldecode($val);
-	if( $key == "lareq" ) {
-		$showingReq = true;
-	}
-}
+//$showingReq = false;
+//foreach( $_GET as $key=>$val) {
+//	$_GET["key"] = urldecode($val);
+//	if( $key == "lareq" ) {
+//		$showingReq = true;
+//	}
+//}
 
 //if( isset($_GET["pcparpage"]) ) {
 //	$_SESSION["pcparpage"] = $_GET["pcparpage"];
@@ -57,10 +57,18 @@ require ('header.php');
 				var d = document.getElementById(id);
 				for (var i = 1; i<=10; i++) {
 					if (document.getElementById('smenu'+i)) {document.getElementById('smenu'+i).style.display='none';}
+				}
+				if (d) {d.style.display='block';}
+			}			
+			function clic(id){
+
+				document.getElementById('ACTION_CLIC').action = id;
+				document.getElementById('RESET').value=1;
+				document.forms['ACTION_CLIC'].submit();
+
 			}
-			if (d) {d.style.display='block';}
-		}
 		</script>
+		
 	<?php
 
 
@@ -70,13 +78,26 @@ $pcparpage = $_SESSION["pcparpage"];
 
 
 if( !isset($_GET["popup"] )) {
-
-echo "<table width='100%' border=0><tr><td>
-	<table BORDER='0' ALIGN = 'left' CELLPADDING='0' BGCOLOR='#FFFFFF' BORDERCOLOR='#9894B5'><tr><td>";
-
-	echo "<a href=index.php?multi=43><img title=\"".htmlspecialchars($l->g(2))."\" src='image/".($_GET["multi"]==43?"ttmachines_a.png":"ttmachines.png")."'></a></td><td>";
-	echo "<a href=index.php?multi=44><img title=\"".htmlspecialchars($l->g(178))."\" src='image/".($_GET["multi"]==44?"repartition_a.png":"repartition.png")."'></a></td><td>";
+	//si la variable RESET existe
+	//c'est que l'on a cliqué sur un icône d'un menu 
+	if (isset($_POST['RESET'])){
+		if ($_SESSION['DEBUG'] == 'ON')
+			echo "<br><b><font color=red>".$l->g(5003)."</font></b><br>";
+		unset($_SESSION['DATA_CACHE']);	
+	}
+	//formulaire pour détecter le clic sur un bouton du menu
+	//permet de donner la fonctionnalité
+	//de reset du cache des tableaux
+	//si on reclic sur le même icône
+	echo "<form action='' name='ACTION_CLIC' id='ACTION_CLIC' method='POST'>";
+	echo "<input type='hidden' name='RESET' id='RESET' value=''>";
+	echo "</form>";
 	
+	
+	echo "<table width='100%' border=0><tr><td>
+	<table BORDER='0' ALIGN = 'left' CELLPADDING='0' BGCOLOR='#FFFFFF' BORDERCOLOR='#9894B5'><tr>";
+	tab($l->g(2), 43);	
+	tab($l->g(178), 44);	
 	$i=0;
 	$selectionne=0;
 	//groups
@@ -84,14 +105,9 @@ echo "<table width='100%' border=0><tr><td>
 	$res = mysql_query($sql_groups_4all, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$item = mysql_fetch_object($res);
 	if (isset($item->workgroup) or $_SESSION["lvluser"]==SADMIN or $_SESSION["lvluser"]==LADMIN)	
-	echo "<a href=index.php?multi=37><img title=\"".htmlspecialchars($l->g(583))."\" src='image/".($_GET["multi"]==37?"groups_a.png":"groups.png")."'></a></td><td>";
-	
-	//$countHl++;
-	//multicrit
-	echo "<a href=index.php?multi=36><img title=\"".htmlspecialchars($l->g(765))."\" src='image/".($_GET["multi"]==36?"ttlogiciels_a.png":"ttlogiciels.png")."'></a></td>";
-
-		echo "<td><a href=index.php?multi=41><img title=\"".htmlspecialchars($l->g(9))."\" src='image/".($_GET["multi"]==41?"recherche_a.png":"recherche.png")."'></a></td>";
-	
+	tab($l->g(583), 37);	
+	tab($l->g(765), 36);
+	tab($l->g(9), 41);		
 	echo "</tr></table></td><td>";	
 
 	echo "<table BORDER='0' ALIGN = 'right' CELLPADDING='0' BGCOLOR='#FFFFFF' BORDERCOLOR='#9894B5'>";
@@ -245,12 +261,8 @@ function menu_list($name_menu,$packAct,$nam_img,$title,$data_list)
 }
 
 
-function tab( $label, $multi, $lien=null ) {
-	global $l, $_GET, $showingReq;
-	if( isset($lien))
-		$llink = $lien;
-	else
-		$llink = "?multi=$multi";
+function tab( $label, $multi) {
+	$llink = "?multi=$multi";
 	
 	switch($multi) {
 
@@ -263,18 +275,25 @@ function tab( $label, $multi, $lien=null ) {
  		case 9:	$img = "administration"; break;
 		case 13: $img = "local";	break;
 		case 14: $img = "dictionnaire";	break;
+		case 36: $img = "ttlogiciels"; break;
+		case 37: $img = "groups"; break;
 		case 39: $img = "log";	break;
+		case 41: $img = "recherche";	break;
 		case 42: $img = "statistiques";	break;
+		case 43: $img = "ttmachines";break;
+		case 44: $img = "repartition";break;
 		case 45: $img = "utilisateurs";	break;
 		case 28: $img = "aide";		
-				$llink = "http://wiki.ocsinventory-ng.org' target='_BLANK";
+				$llink = "http://wiki.ocsinventory-ng.org";
 		        break;			
 	}
-	if( !$showingReq && ($_GET["multi"] == $multi && $multi != "") ) {
+	if($_GET["multi"] == $multi && $multi != "" ) {
 		$img .= "_a";
 	}
-				
-	echo "<td onmouseover=\"javascript:montre();\"><a href='$llink'><img title=\"".htmlspecialchars($label)."\" src='image/$img.png'></a></td>";	
+	
+	//si on clic sur l'icône, on charge le formulaire 
+	//pour obliger le cache des tableaux à se vider
+	echo "<td onmouseover=\"javascript:montre();\"><a onclick='clic(\"".$llink."\");'><img title=\"".htmlspecialchars($label)."\" src='image/$img.png'></a></td>";	
 }
 
 ?>
