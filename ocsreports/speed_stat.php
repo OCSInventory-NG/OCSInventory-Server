@@ -1,4 +1,6 @@
 <?php
+@session_start();
+	unset($_SESSION['LANGUAGE']);
 $header_html="NO";
 require_once("header.php");
 
@@ -70,7 +72,6 @@ while($item = mysql_fetch_object($result)){
 }
 
 ksort($nb_4_hour);
-//print_r($nb_4_hour);
 foreach ($nb_4_hour as $key=>$value){
 	$ancienne+=$value;
 	$legende[]=date ( "d/m/Y H:00" ,$key);
@@ -78,19 +79,18 @@ foreach ($nb_4_hour as $key=>$value){
 	
 }
 $img_width= count($data)*30;
-
-if (isset($data) or $data == ""){
+if (isset($data) and $data != ""){
 header ("Content-type: image/png");
 Histogramme($data,$img_width,600,$legende);
 }else
-echo $sql."<center><font color=red><b>".$l->g(989)."</b></font></center>";
+echo "<center><font color=red><b>".$l->g(989)."</b></font></center>";
 
 function ImageColorLight($im,$color,$mod)
 {
 	if ($color<0)
 	$color=2;
   $rvb=ImageColorsForIndex($im,$color);
-  // On teste les débordements
+  // On teste les dï¿½bordements
   if(($mod+$rvb['red'])>255) $rvb['red']=255-$mod;
   if(($mod+$rvb['green'])>255) $rvb['green']=255-$mod;
   if(($mod+$rvb['blue'])>255) $rvb['blue']=255-$mod;
@@ -98,7 +98,7 @@ function ImageColorLight($im,$color,$mod)
   if(($mod+$rvb['green'])<0) $rvb['green']=-$mod;
   if(($mod+$rvb['blue'])<0) $rvb['blue']=-$mod;
 
-  // On définit la nouvelle couleur
+  // On dï¿½finit la nouvelle couleur
   return ImageColorAllocate($im,$mod+$rvb['red'],$mod+$rvb['green'],$mod+$rvb['blue']);
 }
 
@@ -111,14 +111,14 @@ function drawPNG($im)
 function Histogramme($valeurs,$img_width,$img_height,$legende)
 {
   
-$n_val=count($valeurs);           // Nombre de valeurs à inclure dans le graph
+$n_val=count($valeurs);           // Nombre de valeurs ï¿½ inclure dans le graph
 $somme=array_sum($valeurs);       // Somme des valeurs
 
 $margin_x=10;
 $margin_y=10;
 
-$leg_larg=100;      // Largeur réservée à la largeur (à droite)
-$leg_top=10;        // Espace entre le haut de l'image et le début de la première "box
+$leg_larg=100;      // Largeur rï¿½servï¿½e ï¿½ la largeur (ï¿½ droite)
+$leg_top=10;        // Espace entre le haut de l'image et le dï¿½but de la premiï¿½re "box
 $leg_bottom=2;
 $box_height=8;      // Hauteur d'une box
 $box_width=8;       // Largeur d'une box
@@ -134,14 +134,14 @@ $black=ImageColorAllocate($im,0,0,0);
 $graph_width=$img_width-($leg_larg+2*$margin_x);
 $graph_height=$img_height-(2*$margin_y);
 
-// On calcule l'échelle
-$max=100;    // valeur max du graphique, on envoie des % la valeur est donc fixée à 100
+// On calcule l'ï¿½chelle
+$max=100;    // valeur max du graphique, on envoie des % la valeur est donc fixï¿½e ï¿½ 100
 $scale_y=$graph_height/$max;
 $scale_x=$graph_width/$n_val;
 $scale_x=12; // Largeur d'une barre
-$space_x=6;  // espace entre 2 barres, cette valeur doit être >= à $relief_x
+$space_x=6;  // espace entre 2 barres, cette valeur doit ï¿½tre >= ï¿½ $relief_x
 
-$relief_x=intval($scale_x/2);     // décalage sur l'axe X pour le relief
+$relief_x=intval($scale_x/2);     // dï¿½calage sur l'axe X pour le relief
 $relief_y=intval($scale_x/2);     // Pareil pour Y
 
 // ---------- On dessine la base du graphique en relief ----------
@@ -179,7 +179,7 @@ for($i=0;$i< $n_val;$i++)
        $start_y=$margin_y;
 
 
-       // Partie latérale du relief
+       // Partie latï¿½rale du relief
        $relief=array($start_x+$scale_x,$img_height-($start_y),
              $start_x+$scale_x+$relief_x,$img_height-($start_y+$relief_y),
              $start_x+$scale_x+$relief_x,$img_height-($start_y+$valeurs[$i]*$scale_y+$relief_y),
@@ -187,8 +187,8 @@ for($i=0;$i< $n_val;$i++)
              );
        ImageFilledPolygon($im, $relief, 4, $col);
 
-       // Partie supérieure du relief
-       $col=ImageColorLight($im,$col,16);      // On éclaircit la couleur
+       // Partie supï¿½rieure du relief
+       $col=ImageColorLight($im,$col,16);      // On ï¿½claircit la couleur
        $relief=array($start_x,$img_height-($start_y+$valeurs[$i]*$scale_y),
               $start_x+$scale_x,$img_height-($start_y+$valeurs[$i]*$scale_y),
               $start_x+$scale_x+$relief_x,$img_height-($start_y+$valeurs[$i]*$scale_y+$relief_y),
@@ -196,8 +196,8 @@ for($i=0;$i< $n_val;$i++)
              );
        ImageFilledPolygon($im, $relief, 4, $col);
 
-       // Partie plane qui correspond à l'histogramme en 2D
-       $col=ImageColorLight($im,$col,48);      // On éclaircit la couleur
+       // Partie plane qui correspond ï¿½ l'histogramme en 2D
+       $col=ImageColorLight($im,$col,48);      // On ï¿½claircit la couleur
        ImageFilledRectangle($im,$start_x,$img_height-$start_y,
 
        $start_x+$scale_x,$img_height-($start_y+$valeurs[$i]*$scale_y),$col);

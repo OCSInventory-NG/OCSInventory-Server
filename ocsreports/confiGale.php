@@ -9,7 +9,7 @@ if( $_SESSION["lvluser"] != SADMIN )
 $def_onglets[$l->g(728)]=$l->g(728); //Inventaire
 $def_onglets[$l->g(499)]=$l->g(499); //Serveur
 $def_onglets[$l->g(312)]=$l->g(312); //IP Discover
-$def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+$def_onglets[$l->g(512)]=$l->g(512); //Tï¿½lï¿½dï¿½ploiement
 $def_onglets[$l->g(628)]=$l->g(628); //Serveur de redistribution
 $def_onglets[$l->g(583)]=$l->g(583); //Groupes
 $def_onglets[$l->g(211)]=$l->g(211); //Registre
@@ -35,7 +35,7 @@ if ($_POST['Valid'] == $l->g(103)){
 }
 echo "<font color=green ><center><b>".$MAJ."</b></center></font>";
 $form_name='modif_onglet';
-echo "<form name='".$form_name."' id='".$form_name."' method='POST' action='index.php?multi=4'>";
+echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
 
 onglet($def_onglets,$form_name,'onglet',7);
 
