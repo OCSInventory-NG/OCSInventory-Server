@@ -87,7 +87,7 @@ function affectPackage( $computer, $packageId ) {
 
 ?>
 <br><br>
-<form id='mass' name='mass' action='index.php?multi=30' method='post' enctype='multipart/form-data'>
+<form id='mass' name='mass' method='post' enctype='multipart/form-data'>
 <table BGCOLOR='#C7D9F5' BORDER='0' WIDTH = '600px' ALIGN = 'Center' CELLPADDING='0' BORDERCOLOR='#9894B5'>
 	<tr height='30px' bgcolor='white'>
 		<td><span id='filetext'><?php echo $l->g(606); ?>:</td>

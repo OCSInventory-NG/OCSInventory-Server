@@ -142,7 +142,7 @@ if( $_SESSION["lvluser"] == SADMIN) {
 			if ($value != "" and $key != "Valid" and $key != 'onglet' and $key !='pcparpage'){
 					//Check correct value for LAST_DIFF
 				if ($key == 'LAST_DIFF' and $value < $item_frequency->ivalue)
-					echo "<script> alert('La valeur de LAST_DIFF doit être suppérieure à celle de FREQUENCY')</script>";
+					echo "<script> alert('La valeur de LAST_DIFF doit ï¿½tre suppï¿½rieure ï¿½ celle de FREQUENCY')</script>";
 				else{
 					$sql="delete from config where NAME='GUI_REPORT_".$key."'";
 					mysql_query( $sql, $_SESSION["writeServer"] );
@@ -243,7 +243,7 @@ $lbl_field=array("WORKGROUP"=>$l->g(778),
 			  ,"NB_LAST_INV"=>$l->g(914)
 			  );
 
-//définition des onglets
+//dï¿½finition des onglets
 $data_on['ACTIVITY']=$l->g(798);
 $data_on['SOFT']=strtoupper($l->g(20));
 $data_on['HARD']=$l->g(799);
@@ -376,7 +376,7 @@ if (isset($default)){
 			if (isset($totNinvReqLoc)){
 			$totNinvResLoc = mysql_query( $totNinvReqLoc, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 			$totNinvValLoc = mysql_fetch_array( $totNinvResLoc );
-			$data['NB_IPDISCOVER']['data']="<a href='index.php?multi=3' target='_blank'>".$totNinvValLoc['total']."</a>";
+			$data['NB_IPDISCOVER']['data']="<a href='index.php?".PAG_INDEX."=3' target='_blank'>".$totNinvValLoc['total']."</a>";
 		 	$data['NB_IPDISCOVER']['lbl']=$lbl_field['NB_IPDISCOVER'];
 			}
 		}

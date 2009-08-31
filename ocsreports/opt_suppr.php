@@ -59,7 +59,7 @@ if( empty( $tbd ) )
 PrintEnTete( $l->g(122)." <font class='warn'>($nbMach ".$l->g(478).")</font>");
 
 echo "<br><center><a href='#' OnClick='window.location=\"index.php?redo=1".$_SESSION["queryString"]."\";'><= ".$l->g(188)."</a></center>";
-echo "<br><br><form action='index.php?multi=27' method='post'><center><b>".$l->g(525)."</b></center>";
+echo "<br><br><form method='post'><center><b>".$l->g(525)."</b></center>";
 if( isset($_GET["systemid"]) ) {
 	//reposting computer for confirm
 	echo "<input type='hidden' value='".$_GET["systemid"]."' name='systemid'>";

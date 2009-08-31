@@ -38,14 +38,14 @@ if($_POST["nom"])
 				function confirme(did)
 				{
 					if(confirm("<?php echo $l->g(227)?> "+did+" ?"))
-						window.location="index.php?multi=<?php echo $_GET["multi"]?>&c=<?php echo ($_SESSION["c"]?$_GET["c"]:2)?>&a=<?php echo $_GET["a"]?>&page=<?php echo $_GET["page"]?>&suppAcc="+did;
+						window.location="index.php?<?php echo PAG_INDEX; ?>=<?php echo $_GET[PAG_INDEX]?>&c=<?php echo ($_SESSION["c"]?$_GET["c"]:2)?>&a=<?php echo $_GET["a"]?>&page=<?php echo $_GET["page"]?>&suppAcc="+did;
 				}
 			</script>
 <?php 
 printEnTete($l->g(56));
 echo "
 			<br>
-		 <form name='ajouter_reg' method='POST' action='index.php?multi=9'>
+		 <form name='ajouter_reg' method='POST' action='index.php?".PAG_INDEX."=9'>
 	<center>
 	<table width='60%'>
 	<tr>

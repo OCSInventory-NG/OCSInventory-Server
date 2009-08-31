@@ -1,5 +1,5 @@
 <?php
-//suppression des paquets qui restent en notifié et qui sont plus vieux de 3 mois
+//suppression des paquets qui restent en notifiï¿½ et qui sont plus vieux de 3 mois
 if (isset($_GET['reset_notified']) and is_numeric($_GET['reset_notified'])){
 	$sql=" delete from devices where name='DOWNLOAD' and tvalue = 'NOTIFIED' and IVALUE='".$_GET['reset_notified']."' and hardware_id=".$systemid; 
 	mysql_query($sql, $_SESSION["writeServer"]) or die(mysql_error($_SESSION["readServer"]));	
@@ -7,8 +7,8 @@ if (isset($_GET['reset_notified']) and is_numeric($_GET['reset_notified'])){
 
 
 
-//réaffectation de paquet
-//traitement de la réaffectation du paquet
+//rï¿½affectation de paquet
+//traitement de la rï¿½affectation du paquet
 if ($_POST['Valid_modif_x']){
 	if (trim($_POST['MOTIF'])){
 		if ($_POST["ACTION"] == "again"){
@@ -73,11 +73,11 @@ else
 	$_SESSION["justAdded"] = false;
 	//TODO: voir si on loggue les evenements de groupe
 if( isset( $_GET["actgrp"] )) {	
-		//vérification si la valeur correspond à un groupe
+		//vï¿½rification si la valeur correspond ï¿½ un groupe
 		$reqGroups = "SELECT h.id id
 					  FROM hardware h 
 					  WHERE h.deviceid='_SYSTEMGROUP_' ";
-		//pour les autres qu'SADMIN, ajout que pour les groupes déclarés visibles
+		//pour les autres qu'SADMIN, ajout que pour les groupes dï¿½clarï¿½s visibles
 		if ($_SESSION["lvluser"]!=SADMIN)
 			$reqGroups .= " and h.workgroup = 'GROUP_4_ALL'";
 		$resGroups = mysql_query( $reqGroups, $_SESSION["readServer"] );
@@ -103,7 +103,7 @@ $i=0;
 	$resultDetails = mysql_query($queryDetails, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	echo "<table BORDER='1' WIDTH = '95%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 	
-	//echo "<tr><td>&nbsp;&nbsp;</td> $td1 "."Libellé"." </td> $td1 "."Valeur"." </td><td>&nbsp;</td></tr>";		
+	//echo "<tr><td>&nbsp;&nbsp;</td> $td1 "."Libellï¿½"." </td> $td1 "."Valeur"." </td><td>&nbsp;</td></tr>";		
 	while($item=mysql_fetch_array($resultDetails,MYSQL_ASSOC)) {
 		$optPerso[ $item["NAME"] ][ "IVALUE" ] = $item["IVALUE"];
 		$optPerso[ $item["NAME"] ][ "TVALUE" ] = $item["TVALUE"];
@@ -134,12 +134,9 @@ $i=0;
 	else {
 		echo $td3.$l->g(493)."</td>";
 	}
-//	if( $_SESSION["lvluser"]==SADMIN )
-//		echo "$td3<a href='index.php?multi=23&systemid=$systemid'>".$l->g(115)."</a></td><td></td>";
-	//echo "</tr><tr><td>";
 	
 	if( $_SESSION["lvluser"]==SADMIN ){
-	echo "<form name='modif_param' id='modif_param' method='POST' action='index.php?multi=22'>";
+	echo "<form name='modif_param' id='modif_param' method='POST' action='index.php?".PAG_INDEX."=22'>";
 	echo "<td align=center rowspan=8><a OnClick='recharge(\"$systemid\",\"machine\")'><img src='image/modif_a.png' title='".$l->g(285)."'></a></td>";
 	echo "</tr>";
 	echo "<input type='hidden' id='systemid' name='systemid' value=''>";
@@ -157,9 +154,7 @@ $i=0;
 	}
 	else {
 		echo $td3.$l->g(497)."</td>";
-	}
-//	if( $_SESSION["lvluser"]==SADMIN )
-//		echo "$td3<a href='index.php?multi=22&systemid=$systemid&update=FREQUENCY'>".$l->g(115)."</a></td>";		
+	}	
 	echo "</tr>";
 	
 	//DOWNLOAD_SWITCH
@@ -174,9 +169,7 @@ $i=0;
 		echo $td3.$l->g(488)."(";
 		if ($optdefault["DOWNLOAD"] == 1) echo $l->g(205); else echo $l->g(733);
 		echo ")</td>";
-	}
-//	if( $_SESSION["lvluser"]==SADMIN )
-//		echo "$td3<a href='index.php?multi=22&systemid=$systemid&update=DOWNLOAD_SWITCH''>".$l->g(115)."</a></td>";		
+	}	
 	echo "</tr>";
 	
 	//DOWNLOAD_CYCLE_LATENCY
@@ -208,7 +201,7 @@ $i=0;
 			echo "<td bgcolor='white' align='center' valign='center'>&nbsp;</td>";
 			echo $td3.$l->g(607)." ";		
 			if( $_SESSION["lvluser"] == SADMIN || $_SESSION["lvluser"] == LADMIN || $valGroups["workgroup"]=="GROUP_4_ALL")
-				echo "<a href='index.php?multi=29&popup=1&systemid=".$valGroups["group_id"]."' target='_blank'>".$valGroups["name"]."</td>";
+				echo "<a href='index.php?".PAG_INDEX."=29&popup=1&systemid=".$valGroups["group_id"]."' target='_blank'>".$valGroups["name"]."</td>";
 			else
 				echo "<b>".$valGroups["name"]."</b></td>";			
 				
@@ -273,7 +266,7 @@ $i=0;
 					urlencode($systemid)."&option=cd_configuration'>".$l->g(113)."</a>";
 				if ($valDeploy["name"] != "PAQUET SUPPRIME")
 				echo $td3."<a href='machine.php?affect_again=".$valDeploy["ivalue"]."&systemid=".
-					urlencode($systemid)."&option=cd_configuration'>Ré-".$l->g(433)."</a></td>";				
+					urlencode($systemid)."&option=cd_configuration'>Rï¿½-".$l->g(433)."</a></td>";				
 			}elseif (strstr($valDeploy["tvalue"], 'NOTIFIED')){	
 					if (isset($valDeploy["comments"]) and strtotime ($valDeploy["comments"])<strtotime ("-12 week")){
 						$possible_desafect='YES';
@@ -289,7 +282,7 @@ $i=0;
 				
 //			if (strstr($valDeploy["tvalue"], 'ERR_')){
 //				echo "$td3<a href='machine.php?affect_again=".$valDeploy["ivalue"]."&systemid=".
-//					urlencode($systemid)."&option=cd_configuration'>Ré-".$l->g(433)."</a></td>";				
+//					urlencode($systemid)."&option=cd_configuration'>Rï¿½-".$l->g(433)."</a></td>";				
 			}
 			echo "</tr>";
 		}

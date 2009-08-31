@@ -61,7 +61,7 @@ if (isset($_GET['prov'])){
 //initialisation du tableau
 //$list_fields_calcul=array();
 //ouverture du formulaire
-echo "<form name='".$form_name."' id='".$form_name."' action='index.php?multi=".$_GET['multi']."' method='post'>";
+echo "<form name='".$form_name."' id='".$form_name."' method='post'>";
 
 //recherche des diff�rents champs de accountinfo
 $field_of_accountinfo=witch_field_more(array('ACCOUNTINFO'=>1));

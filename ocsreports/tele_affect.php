@@ -15,7 +15,7 @@ require_once('require/function_server.php');
 //TODO: A REPRENDRE COMPLETEMENT => NE MARCHE PLUS
 
 if (isset($_POST['RULE_AFFECT'])){
-	//recupération des id des machines a affecter le paquet
+	//recupï¿½ration des id des machines a affecter le paquet
 	
 	
 	$lareq = getPrelim( $_SESSION["saveRequest"] );
@@ -25,7 +25,7 @@ if (isset($_POST['RULE_AFFECT'])){
 			$ID_HARDWARE[$val_toute_machines['h.id']]=$val_toute_machines['h.id'];
 	}
 	
-	//recuperation des conditions de la règle
+	//recuperation des conditions de la rï¿½gle
 	$sql="select PRIORITY,CFIELD,OP,COMPTO,SERV_VALUE from download_affect_rules where rule=".$_POST['RULE_AFFECT']." order by PRIORITY";
 	$res_rules = mysql_query( $sql, $_SESSION["readServer"] ) or die(mysql_error($_SESSION["readServer"]));
 	
@@ -102,9 +102,9 @@ if( $_GET["retour"] == 1 || (isset($_GET["affpack"]) && $ok) ) {
 	unset( $_SESSION["saveRequest"] );
 	if( ! isset( $_SESSION["saveId"] ) )
 		echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
-		//TODO MARCHE PÄS
+		//TODO MARCHE Pï¿½S
 	else if( isset( $_SESSION["isgroup"] ) && $_SESSION["isgroup"]== "1" )
-		echo "<script language='javascript'>window.location='index.php?multi=29&popup=1&systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
+		echo "<script language='javascript'>window.location='index.php?".PAG_INDEX."=29&popup=1&systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
 	else
 		echo "<script language='javascript'>window.location='machine.php?systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
 	die();
@@ -136,7 +136,7 @@ else {
 	die($l->g(478));	
 }
 
-echo "<br><center><a href='#' OnClick=\"window.location='index.php?multi=24&retour=1'\"><= ".$l->g(188)."</a></center>";
+echo "<br><center><a href='#' OnClick=\"window.location='index.php?".PAG_INDEX."=24&retour=1'\"><= ".$l->g(188)."</a></center>";
 if (isset($_GET['systemid'])){
 	$visu='block';	
 }else

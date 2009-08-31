@@ -83,7 +83,7 @@ foreach($sql_doublon as $name=>$sql_value){
 	}
 }
 
-//recherche des id des machines en doublons sérial number
+//recherche des id des machines en doublons sï¿½rial number
 if (isset($doublon['ssn']))
 $sql_id_doublon['ssn']=" select distinct hardware_id id,SSN info1 from bios where SSN in ('".implode("','",$doublon['ssn'])."')";
 //recherche des id des machines en doublons macaddresses
@@ -135,7 +135,7 @@ foreach($sql_id_doublon as $name=>$sql_value){
 	$res = mysql_query( $sql_value, $_SESSION["readServer"] );	
 	$count_id[$name] = 0;
 	while( $val = mysql_fetch_object( $res ) ) {
-		//on ne compte que les machines appartenant au profil connecté
+		//on ne compte que les machines appartenant au profil connectï¿½
 		//si on est admin, on compte toutes les machines
 			if (in_array ($val->id,$tab_id_mes_machines)){
 				$list_id[$name][]=$val->id;
@@ -149,7 +149,7 @@ foreach($sql_id_doublon as $name=>$sql_value){
 }
 $form_name='doublon';
 $table_name='DOUBLON';
-echo "<form name='".$form_name."' id='".$form_name."' action='index.php?multi=".$_GET['multi']."' method='post'>";
+echo "<form name='".$form_name."' id='".$form_name."' method='post'>";
 echo "<br><table BORDER='0' WIDTH = '25%' ALIGN = 'Center' CELLPADDING='0' BGCOLOR='#C7D9F5' BORDERCOLOR='#9894B5'>";
 foreach ($count_id as $lbl=>$count_value){
 	echo "<tr><td align='center'>";
@@ -174,7 +174,7 @@ foreach ($count_id as $lbl=>$count_value){
 echo "</table><br>";
 echo "<input type=hidden name=detail id=detail value='".$_POST['detail']."'>";
 
-//affichage des détails
+//affichage des dï¿½tails
 if ($_POST['detail'] != ''){
 	//if ($_POST['tri2'] == "macaddr")
 	
@@ -209,7 +209,7 @@ if ($_POST['detail'] != ''){
 	$list_col_cant_del=array('NAME'=>'NAME','CHECK'=>'CHECK');
 	$default_fields=array($l->g(23).": ".$l->g(34)=>$l->g(23).": ".$l->g(34),TAG_LBL=>TAG_LBL,'NAME'=>'NAME',$l->g(23).": ".$l->g(25)=>$l->g(23).": ".$l->g(25),'CHECK'=>'CHECK');
 
-	//on modifie le type de champs en numéric de certain champs
+	//on modifie le type de champs en numï¿½ric de certain champs
 	//pour que le tri se fasse correctement
 	//$tab_options['TRI']['SIGNED']['a.TAG']="a.TAG";
 	$queryDetails = 'SELECT ';
@@ -229,7 +229,7 @@ if ($_POST['detail'] != ''){
 	if ($tab_id_mes_machines != ""){
 		$queryDetails .= "";
 	}
-	$tab_options['FILTRE']=array('NAME'=>'Nom','b.ssn'=>'Numéro de série','n.macaddr'=>'Adresse MAC');
+	$tab_options['FILTRE']=array('NAME'=>'Nom','b.ssn'=>'Numï¿½ro de sï¿½rie','n.macaddr'=>'Adresse MAC');
 
 	tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$queryDetails,$form_name,'95',$tab_options);
 	echo "<br><input type='submit' value='".$l->g(177)."' name='FUSION'>";

@@ -1,9 +1,12 @@
 <?php
+function getmicrotime(){
+    list($usec, $sec) = explode(" ",microtime());
+    return ((float)$usec + (float)$sec);
+}
+function create_icon( $label, $index) {
+        $llink = "?".PAG_INDEX."=$index";
 
-function create_icon( $label, $biere) {
-        $llink = "?biere=$biere";
-
-        switch($biere) {
+        switch($index) {
 
                 case 'ciney': $img = "codes"; break;
                 case 'kro': $img = "securite"; break;
@@ -25,7 +28,7 @@ function create_icon( $label, $biere) {
                 case 'chti': $img = "repartition"; break;
                 case 'corsendonk': $img = "utilisateurs"; break;
         }
-        if($_GET["biere"] == $biere && $biere != "" ) {
+        if($_GET[PAG_INDEX] == $index && $index != "" ) {
                 $img .= "_a";
         }
 
@@ -44,14 +47,14 @@ function menu_list($name_menu,$packAct,$nam_img,$title,$data_list)
                 <dt onmouseover=\"javascript:montre('".$name_menu."');\">
                 <a href='javascript:void(0);'>
         <img src='image/".$nam_img;
-        if( in_array($_GET["biere"],$packAct) )
+        if( in_array($_GET[PAG_INDEX],$packAct) )
                 echo "_a";
                 echo ".png'></a></dt>
                         <dd id=\"".$name_menu."\" onmouseover=\"javascript:montre('".$name_menu."');\" onmouseout=\"javascript:montre();\">
                                 <ul>
                                         <li><b>".$title."</b></li>";
                                         foreach ($data_list as $key=>$values){
-                                                echo "<li><a href=\"index.php?biere=".$key."\">".$values."</a></li>";
+                                                echo "<li><a href=\"index.php?".PAG_INDEX."=".$key."\">".$values."</a></li>";
                                         }
                 echo "</ul>
                         </dd>

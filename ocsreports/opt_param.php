@@ -20,7 +20,7 @@ $_POST['onglet'] = $l->g(499);
 
 $def_onglets[$l->g(499)]=$l->g(499); //Serveur
 $def_onglets[$l->g(728)]=$l->g(728); //Inventaire
-$def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+$def_onglets[$l->g(512)]=$l->g(512); //Tï¿½lï¿½dï¿½ploiement
 $def_onglets[$l->g(312)]=$l->g(312); //ipdiscover
 if (!isset($form_name))
 $form_name='admin_param';
@@ -86,7 +86,7 @@ if ($_POST['Valid']==$l->g(103)){
 if ($_POST['origine'] == "machine"){
 $direction=	"machine.php?option=cd_configuration&systemid=".$_POST["systemid"];	
 }elseif ($_POST['origine'] == "group")
-$direction=	"index.php?multi=29&popup=1&systemid=".$_POST["systemid"];
+$direction=	"index.php?".PAG_INDEX."=29&popup=1&systemid=".$_POST["systemid"];
 else
 $direction="index.php?redo=1".$_SESSION["queryString"];	
 

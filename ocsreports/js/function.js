@@ -1,4 +1,33 @@
+function convertToUpper(v_string){
+         v_string.value=v_string.value.toUpperCase();
+}
 
+function codeTouche(evenement) {
+        for (prop in evenement) {
+                if(prop == 'which') return(evenement.which);
+        }
+        return(evenement.keyCode);
+}
+		
+function pressePapierNS6(evenement,touche){
+        var rePressePapierNS = /[cvxz]/i;
+
+        for (prop in evenement) if (prop == 'ctrlKey') isModifiers = true;
+        if (isModifiers) return evenement.ctrlKey && rePressePapierNS.test(touche);
+        else return false;
+}
+			
+function scanTouche(evenement,exReguliere) {
+        var reCarSpeciaux = /[\x00\x08\x0D\x03\x16\x18\x1A]/;
+        var reCarValides = exReguliere;
+        var codeDecimal  = codeTouche(evenement);
+        var car = String.fromCharCode(codeDecimal);
+        var autorisation = reCarValides.test(car) || reCarSpeciaux.test(car) || pressePapierNS6(evenement,car);
+        var toto = autorisation;
+        return autorisation;
+}		
+
+		
 function scrollHeaders() {
 		var monSpan = document.getElementById("headers");
 		if( monSpan ) {
@@ -53,3 +82,16 @@ function verif_field(field_name_verif,field_submit,form_name) {
 	}
 }
 
+function montre(id) {	
+	var d = document.getElementById(id);
+	for (var i = 1; i<=10; i++) {
+		if (document.getElementById('smenu'+i)) { document.getElementById('smenu'+i).style.display='none'; }
+	}
+	if (d) { d.style.display='block'; }
+}
+			
+function clic(id) {
+	document.getElementById('ACTION_CLIC').action = id;
+	document.getElementById('RESET').value=1;
+	document.forms['ACTION_CLIC'].submit();
+}

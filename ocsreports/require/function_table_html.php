@@ -119,7 +119,7 @@ function tri($sql)
 	foreach($entete_colonne as $k=>$v)
 	{
 		if (in_array($v,$lien))
-			echo "<th class='ta' ><a href='index.php?multi=".$_GET['multi']."&sens=".$sens."&col=".$i."'>".$v."</a></th>";
+			echo "<th class='ta' ><a href='index.php?".PAG_INDEX."=".$_GET['multi']."&sens=".$sens."&col=".$i."'>".$v."</a></th>";
 		else
 			echo "<th class='ta'><font size=1 align=center>".$v."</font></th>";	
 		$i++;		
@@ -1048,7 +1048,7 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 						$entete[$num_col]=$truelabel;
 						$lien = 'KO';
 					}elseif ($key == "GROUP_NAME"){
-						$data[$i][$num_col]="<a href='index.php?multi=29&popup=1&systemid=".$donnees['ID']."' target='_blank'>".$value_of_field."</a>";
+						$data[$i][$num_col]="<a href='index.php?".PAG_INDEX."=29&popup=1&systemid=".$donnees['ID']."' target='_blank'>".$value_of_field."</a>";
 					}elseif ($key == "SUP"){
 						if (isset($tab_options['LBL_POPUP'][$key]))
 						$lbl_msg=$donnees[$tab_options['LBL_POPUP'][$key]];
@@ -1079,7 +1079,7 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 						$data[$i][$num_col]="<a href=# OnClick='window.open(\"tele_popup_active.php?active=".$value_of_field."\",\"active\",\"location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=550,height=350\")'><img src='image/activer.png' ></a>";
 						$lien = 'KO';
 					}elseif ($key == "SHOWACTIVE"){
-						$data[$i][$num_col]="<a href='index.php?multi=26&popup=1&timestamp=".$donnees['FILEID']."' target=_blank>".$value_of_field."</a>";
+						$data[$i][$num_col]="<a href='index.php?".PAG_INDEX."=26&popup=1&timestamp=".$donnees['FILEID']."' target=_blank>".$value_of_field."</a>";
 					}
 					elseif ($key == "CHECK"){
 						$data[$i][$num_col]="<input type='checkbox' name='check".$value_of_field."' id='check".$value_of_field."' ".$javascript." ".(isset($_POST['check'.$value_of_field])? " checked ": "").">";
@@ -1149,6 +1149,29 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 	}else
 	return "NO_DATA";
 }
-
-
+function del_selection($form_name){
+	global $l;
+echo "<script language=javascript>
+			function garde_check(image,id)
+			 {
+				var idchecked = '';
+				for(i=0; i<document.".$form_name.".elements.length; i++)
+				{
+					if(document.".$form_name.".elements[i].name.substring(0,5) == 'check'){
+				        if (document.".$form_name.".elements[i].checked)
+							idchecked = idchecked + document.".$form_name.".elements[i].name.substring(5) + ',';
+					}
+				}
+				idchecked = idchecked.substr(0,(idchecked.length -1));
+				confirme('',idchecked,\"".$form_name."\",\"del_check\",\"".$l->g(900)."\");
+			}
+		</script>";
+		echo "<table align='center' width='30%' border='0'>";
+		echo "<tr><td>";
+		//foreach ($img as $key=>$value){
+			echo "<td align=center><a href=# onclick=garde_check(\"image/sup_search.png\",\"\")><img src='image/sup_search.png' title='".$l->g(162)."' ></a></td>";
+		//}
+	 echo "</tr></tr></table>";
+	 echo "<input type='hidden' id='del_check' name='del_check' value=''>";
+}
 ?>

@@ -5,7 +5,7 @@ require_once('require/function_search.php');
 	die("FORBIDDEN");
 if ($_POST['onglet'] == "" or !isset($_POST['onglet']))
 $_POST['onglet']=3;
- //définition des onglets
+ //dï¿½finition des onglets
 $data_on[1]=$l->g(242);
 $data_on[2]=$l->g(243);
 $data_on[3]=$l->g(619);
@@ -165,28 +165,7 @@ if ($_POST['onglet'] == 4){
 	tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$queryDetails,$form_name,100,$tab_options);
 		//traitement par lot
 	$img['image/sup_search.png']=$l->g(162);
-	echo "<script language=javascript>
-			function garde_check(image,id)
-			 {
-				var idchecked = '';
-				for(i=0; i<document.".$form_name.".elements.length; i++)
-				{
-					if(document.".$form_name.".elements[i].name.substring(0,5) == 'check'){
-				        if (document.".$form_name.".elements[i].checked)
-							idchecked = idchecked + document.".$form_name.".elements[i].name.substring(5) + ',';
-					}
-				}
-				idchecked = idchecked.substr(0,(idchecked.length -1));
-				confirme('',idchecked,\"".$form_name."\",\"del_check\",\"".$l->g(900)."\");
-			}
-		</script>";
-		echo "<table align='center' width='30%' border='0'>";
-		echo "<tr><td>";
-		//foreach ($img as $key=>$value){
-			echo "<td align=center><a href=# onclick=garde_check(\"image/sup_search.png\",\"\")><img src='image/sup_search.png' title='".$l->g(162)."' ></a></td>";
-		//}
-	 echo "</tr></tr></table>";
-	 echo "<input type='hidden' id='del_check' name='del_check' value=''>";
+	del_selection($form_name);
 }
 
 echo "</td></tr></table>";

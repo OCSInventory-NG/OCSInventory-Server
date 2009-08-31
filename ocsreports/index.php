@@ -10,59 +10,16 @@
 //====================================================================================
 //Modified on $Date: 2007/02/08 16:05:52 $$Author: plemmet $($Revision: 1.13 $)
 
-
-
-if (isset($_GET['first']) or ($_GET == null))
-$_GET['biere']="console";
-$sleep=1;
-function getmicrotime(){
-    list($usec, $sec) = explode(" ",microtime());
-    return ((float)$usec + (float)$sec);
-}
-$debut = getmicrotime();
 error_reporting(E_ALL & ~E_NOTICE);
-
 require("fichierConf.class.php");
-//require('req.class.php');
-
 @session_start();
-
 require ('header.php');
-
-?>
-
-
-<script language='javascript'>
-	
-	function montre(id) {
-	
-		var d = document.getElementById(id);
-		for (var i = 1; i<=10; i++) {
-			if (document.getElementById('smenu'+i)) { document.getElementById('smenu'+i).style.display='none'; }
-		}
-		if (d) { d.style.display='block'; }
-	}
-			
-	function clic(id) {
-
-		document.getElementById('ACTION_CLIC').action = id;
-		document.getElementById('RESET').value=1;
-		document.forms['ACTION_CLIC'].submit();
-
-	}
-
-</script>
-
-		
-<?php
-
 require ('donnees.php');
 require_once('require/function_index.php');
-$pcparpage = $_SESSION["pcparpage"];
 
-
+$sleep=1;
+$debut = getmicrotime();
 //Initiating icons
-
 if( !isset($_GET["popup"] )) {
 	//si la variable RESET existe
 	//c'est que l'on a clique sur un icone d'un menu 
@@ -168,7 +125,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		loadMac();
 	}
 	
-	if( $_GET["biere"] != 3 )
+	if( $_GET[PAG_INDEX] != 3 )
 		unset( $_SESSION["forcedRequest"] );
 
 	//GROUP CREATION
@@ -201,7 +158,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		}		
 			
 		
-	switch($_GET["biere"]) {
+	switch($_GET[PAG_INDEX]) {
  		case 'kro': require ('ipdiscover_new.php');	break;
  		case 1664: require ('confiGale.php');	break;
  		case 'kwak': require ('registre.php');	break;
@@ -225,7 +182,6 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		case 'moinette': require ('admin_attrib.php'); break; 
 		case 'westmalle': require ('blacklist.php');break;
 		case 'leffe': require ('rules_redistrib.php');break;
-		//case 35: require ('admin_language.php');break;
 		case 'delirium': require ('all_soft.php');break;
 		case 'gueuze': require ('groups.php');break;
 		case 'vondel': require ('show_detail.php');break;

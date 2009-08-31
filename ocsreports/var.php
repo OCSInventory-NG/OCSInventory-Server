@@ -13,4 +13,5 @@ define("ADMIN", 3);						// do NOT change
 define("TAG_NAME", "TAG"); 				// do NOT change
 define("DEFAULT_LANGUAGE","french");
 define("TAG_LBL", "Tag");				// Name of the tag information
+define("PAG_INDEX","biere");            // define name in url (like multi=32)
 ?>

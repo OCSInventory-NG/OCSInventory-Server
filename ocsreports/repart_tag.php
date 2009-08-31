@@ -12,8 +12,8 @@ if ($_POST['SUP_PROF'] != ''){
 						   'Nbr_mach'=>'c');
 	$tab_options['FILTRE']['a.tag']=TAG_LBL;
 //	$tab_options['NO_TRI']['LBL_UNIT']='LBL_UNIT';
-//	$tab_options['LBL']['LBL_UNIT']="libellé unité";
-	$tab_options['LIEN_LBL']['Nbr_mach']="index.php?multi=43&filtre=a.tag&value=";
+//	$tab_options['LBL']['LBL_UNIT']="libellï¿½ unitï¿½";
+	$tab_options['LIEN_LBL']['Nbr_mach']="index.php?".PAG_INDEX."=43&filtre=a.tag&value=";
 	$tab_options['LIEN_CHAMP']['Nbr_mach']="ID";
 	$list_col_cant_del=array(TAG_LBL=>TAG_LBL);
 	$default_fields= $list_fields;

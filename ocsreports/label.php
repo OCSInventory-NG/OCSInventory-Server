@@ -38,7 +38,7 @@ else {
 $con[0] = stripslashes($con[0]);
 ?><br>
 <center><b><?php echo $l->g(262);?>:</b>
-<form name='lab' action='index.php?multi=12' method='post'>
+<form name='lab' method='post'>
 	<textarea name='newlabel'><?php echo $con[0]?></textarea>
 	<input name='sublabel' type='submit' value='envoyer'>
 </form>

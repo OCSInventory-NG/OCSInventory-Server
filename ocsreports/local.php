@@ -49,7 +49,7 @@ if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
 }
 ?>
 
-<FORM ENCTYPE="multipart/form-data" ACTION="?multi=13" METHOD="POST">
+<FORM ENCTYPE="multipart/form-data" METHOD="POST">
 <br>
 <table border=1 class= "Fenetre" WIDTH = '52%' ALIGN = 'Center' CELLPADDING='5'>
 <th height=30px class="Fenetre" colspan=2>

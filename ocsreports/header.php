@@ -112,9 +112,9 @@ if (!isset($_SESSION["lvluser"]))
 require_once('backend/identity/identity.php');
 
 /**********************************************************gestion des droits sur l'ipdiscover****************************************************/
-if (!isset($_SESSION["ipdiscover"]) and $_GET['multi'] == 3)
+if (!isset($_SESSION["ipdiscover"]) and $_GET[PAG_INDEX] == 3)
 require_once('backend/ipdiscover/ipdiscover.php');
-elseif($_GET['multi'] != 3)
+elseif($_GET[PAG_INDEX] != 3)
 unset($_SESSION['ipdiscover']);
 
 /*********************************************************gestion de la suppression automatique des machines trop vieilles*************************/

@@ -445,7 +445,7 @@ function print_perso($systemid) {
 		echo $td3.$l->g(493)."</td>";
 	}
 	if( $_SESSION["lvluser"]==SADMIN ){
-	echo "<form name='modif_param' id='modif_param' method='POST' action='index.php?multi=22'>";
+	echo "<form name='modif_param' id='modif_param' method='POST' action='index.php?".PAG_INDEX."=22'>";
 	echo "<td align=center rowspan=8><a OnClick='recharge(\"$systemid\",\"group\")'><img src='image/modif_a.png' title='".$l->g(285)."'></a></td>";
 	echo "</tr>";
 	echo "<input type='hidden' id='systemid' name='systemid' value=''>";
@@ -525,7 +525,7 @@ function print_perso($systemid) {
 			echo "(<small>".$valDeploy["fileid"]."</small>)";	
 			echo "</td>".$td3.$l->g(499).": ".$valDeploy["pack_loc"]."</td>";//$l->g(81)."cac: ".($valDeploy["tvalue"]!=""?$valDeploy["tvalue"]:$l->g(482))."</td>";
 			if( $_SESSION["lvluser"]==SADMIN )	
-				echo "$td3 <a href='index.php?multi=29&popup=1&suppack=".$valDeploy["ivalue"]."&systemid=".
+				echo "$td3 <a href='index.php?".PAG_INDEX."=29&popup=1&suppack=".$valDeploy["ivalue"]."&systemid=".
 				urlencode($systemid)."&option=".urlencode($l->g(500))."'>".$l->g(122)."</a></td>";
 			show_stat($valDeploy["fileid"]);
 			echo "</tr>";
@@ -538,7 +538,6 @@ function print_perso($systemid) {
 		<a href=# Onclick=window.open(\"multi_lot.php?img=image/tele_search.png&idchecked=".$systemid."&origine=group\",\"rollo\",\"location=0,status=0,scrollbars=1,menubar=0,resizable=0,width=800,height=500\");>".$l->g(501)."
 		</a>
 		</td></tr>";
-	//	echo "<tr><td colspan='10' align='right'><a href='index.php?multi=24&systemid=$systemid&isgroup=1'>".$l->g(501)."</a></td></tr>";	
 	}
 	echo "</table><br>";
 }
@@ -560,7 +559,7 @@ function img($i,$a,$avail,$opt) {
 	}
 	
 	if( $avail ) {
-		$href = "<a href='index.php?multi=29&popup=1&systemid=".urlencode($systemid)."&option=".urlencode($a)."'>";
+		$href = "<a href='index.php?".PAG_INDEX."=29&popup=1&systemid=".urlencode($systemid)."&option=".urlencode($a)."'>";
 		$fhref = "</a>";
 		$img = "<img title=\"".htmlspecialchars($a)."\" src='image/{$i}{$suff}.png' />";
 	}
