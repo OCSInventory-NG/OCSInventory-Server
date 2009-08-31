@@ -15,22 +15,41 @@ class language
 	var  	$tableauMots;    // tableau contenant tous les mots du fichier 			
 	function language($language) // constructeur
 	{
+		$sql="select json_value from language where name ='".$language."'";
+		$result = mysql_query($sql, $_SESSION["readServer"]) or mysql_error($_SESSION["readServer"]);
+		$item = mysql_fetch_object($result);
+		
 		if (!isset($_SESSION['plugin_rep']) or $_SESSION['plugin_rep'] == "")
 		$_SESSION['plugin_rep']="pluggins/";
-		$file=fopen($_SESSION['plugin_rep']."language/".$language."/".$language.".txt","r");
-		
-		if ($file) {	
-			while (!feof($file)) {
-				$val = fgets($file, 1024);
-				$tok1   =  rtrim(strtok($val," "));
-				$tok2   =  rtrim(strtok(""));
-				$this->tableauMots[$tok1] = $tok2;
-			}
-			fclose($file);	
-		} 
+		$language_file=$_SESSION['plugin_rep']."language/".$language."/".$language.".txt";
+		if (file_exists ( $language_file) 
+		and !isset($item->json_value)
+		){		
+			$file=fopen($language_file,"r");		
+			if ($file) {	
+				while (!feof($file)) {
+					$val = fgets($file, 1024);
+					$tok1   =  rtrim(strtok($val," "));
+					$tok2   =  rtrim(strtok(""));
+					$this->tableauMots[$tok1] = $tok2;
+				}
+				fclose($file);	
+				$toto=$this->tableauMots;
+				if (!isset($item->json_value)){
+					$sql="insert into language (name,json_value) values ('".$language."','".mysql_real_escape_string(json_encode($toto))."')"; 
+					if( ! @mysql_query( $sql, $_SESSION["writeServer"] ))
+						echo mysql_error($_SESSION["writeServer"]);
+				}
+			
+			} 
+		}
+		else{
+			$this->tableauMots=json_decode($item->json_value,true);
+		}
 	}		
 	function g($i)
 	{
+		//print_r($this);
 		//If word doesn't exist for language, return default english word 
 		if ($this->tableauMots[$i] == NULL) {
 			$defword = new language(english);
@@ -42,7 +61,7 @@ class language
 			$_SESSION['EDIT_LANGUAGE'][$i]=$word;
 			$word.="{<i><b>".$i."</b></i>}";		
 		}
-		return $word;
+		return stripslashes($word);
 	}
 
 }		

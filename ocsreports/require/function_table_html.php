@@ -218,7 +218,7 @@ function show_modif($name,$input_name,$input_type,$input_reload = "",$configinpu
 	return "<input type='text' name='".$input_name."' id='".$input_name."' SIZE='".$configinput['SIZE']."' MAXLENGTH='".$configinput['MAXLENGTH']."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\" ".$configinput['JAVASCRIPT'].">";
 	elseif($input_type ==2){
 		
-		$champs="<select name='".$input_name."' id='".$input_name."'";
+		$champs="<select name='".$input_name."' id='".$input_name."' ".$configinput['JAVASCRIPT'];
 		if ($input_reload != "") $champs.=" onChange='document.".$input_reload.".submit();'";
 		$champs.="><option value=''></option>";
 		foreach ($name as $key=>$value){
@@ -236,10 +236,10 @@ function show_modif($name,$input_name,$input_type,$input_reload = "",$configinpu
 	
 }
 
-function tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title="",$comment="",$name_button="modif")
+function tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title="",$comment="",$name_button="modif",$showbutton=true,$form_name='CHANGE')
 {
 	global $l;
-	echo "<form name='CHANGE' action='' method='POST'>";
+	echo "<form name='".$form_name."' id='".$form_name."' action='' method='POST'>";
 	echo "<table align='center' width='65%' border='0' cellspacing=20 bgcolor='#C7D9F5' style='border: solid thin; border-color:#A1B1F9'>";
 	echo "<tr><td colspan=10 align='center'><font color=red><b><i>".$title."</i></b></font></td></tr>";
         foreach ($tab_name as $key=>$values)
@@ -247,9 +247,10 @@ function tab_modif_values($tab_name,$tab_typ_champ,$tab_hidden,$title="",$commen
 		echo "<tr><td>".$values."</td><td>".$tab_typ_champ[$key]['COMMENT_BEFORE'].show_modif($tab_typ_champ[$key]['DEFAULT_VALUE'],$tab_typ_champ[$key]['INPUT_NAME'],$tab_typ_champ[$key]['INPUT_TYPE'],$tab_typ_champ[$key]['RELOAD'],$tab_typ_champ[$key]['CONFIG']).$tab_typ_champ[$key]['COMMENT_BEHING']."</td></tr>";
 	}
  echo "<tr ><td colspan=10 align='center'><i>".$comment."</i></td></tr>";
-	echo "<tr><td><input title='".$l->g(625)."' type='image'  src='image/modif_valid_v2.png' name='Valid_".$name_button."'>";
-	echo "<input title='".$l->g(626)."' type='image'  src='image/modif_anul_v2.png' name='Reset_".$name_button."'></td></tr>";
-
+ 	if ($showbutton){
+		echo "<tr><td><input title='".$l->g(625)."' type='image'  src='image/modif_valid_v2.png' name='Valid_".$name_button."'>";
+		echo "<input title='".$l->g(626)."' type='image'  src='image/modif_anul_v2.png' name='Reset_".$name_button."'></td></tr>";
+ 	}
 
         echo "</table>";    
     if ($tab_hidden != ""){                 

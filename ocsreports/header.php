@@ -1,17 +1,6 @@
 <?php
 @session_start();
 //print_r($_SESSION['LANGUAGE_FILE']);
-/*****************************************************Gestion des fichiers de langues  TEST*************************************/
-if (isset($_POST['Valid_EDITION_x'])){
-	if ($_POST['UPDATE']!='' and $_POST['WORD'] != ''){
-	//	$_SESSION['LANGUAGE_FILE']['tableauMots'][$_POST['UPDATE']]=$_POST['WORD'];
-		
-	}
-}
-unset($_SESSION['EDIT_LANGUAGE']);
-
-
-
 require_once('fichierConf.class.php');
 
 /***************************************************** First installation checking *********************************************************/
@@ -86,6 +75,23 @@ if (isset($_POST['restCol'.$_POST['TABLE_NAME']]) and $_POST['restCol'.$_POST['T
 }
 
 /********************************************************GESTION DE LA LANGUE PAR COOKIES**********************************************/
+/*****************************************************Gestion des fichiers de langues  TEST*************************************/
+if (isset($_POST['Valid_EDITION_x'])){
+	if ($_POST['ID_WORD'] != ''){
+		if ($_POST['ACTION'] == "DEL"){
+			unset($_SESSION['LANGUAGE_FILE']->tableauMots[$_POST['ID_WORD']]);
+		}else{
+			$_SESSION['LANGUAGE_FILE']->tableauMots[$_POST['ID_WORD']]=$_POST['UPDATE'];
+		}
+		$sql="update language set json_value = '".mysql_real_escape_string(json_encode($_SESSION['LANGUAGE_FILE']->tableauMots))."'
+				where name= '".$_SESSION['LANGUAGE']."'"; 
+		if( ! @mysql_query( $sql, $_SESSION["writeServer"] ))
+				echo mysql_error($_SESSION["writeServer"]);
+		}
+}
+unset($_SESSION['EDIT_LANGUAGE']);
+
+
 if (isset($_POST['LANG'])){
 	unset($_SESSION['LANGUAGE']);
 	cookies_add('LANG',$_POST['LANG']);	
