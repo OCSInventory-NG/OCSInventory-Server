@@ -4,7 +4,6 @@
  */
  if( $_SESSION["lvluser"] != SADMIN )
 	die("FORBIDDEN");
-require_once('require/function_blacklist.php');
 $form_name="blacklist";
 printEnTete($l->g(703));
 if ($_POST['onglet'] == "" or !isset($_POST['onglet']))
