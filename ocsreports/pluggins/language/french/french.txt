@@ -48,10 +48,10 @@
 83 Capacité
 84 Interface
 85 Lettre
-86 Système de fichier
+86 Système de fichiers
 87 Total
 88 Libre
-90 résultat(s)
+90 Résultat(s)
 91 Périphérique(s) d'entrée
 92 Disque(s)
 93 Contrôleur(s)
@@ -67,7 +67,7 @@
 114 Enregistrer
 115 Modifier
 116 Ajouter
-117 Reg
+117 Registre
 119 Voulez-vous vraiment supprimer la machine 
 122 Supprimer
 129 RESSEMBLE
@@ -106,17 +106,17 @@
 167 Voir les détails
 168 Ce format de fichier n'est pas utilisable (il doit être zip, pl ou binaire unix)
 169 inséré dans la base
-170 Un fichier correspondant existe déjà !
+170 Il existe déjà un tel fichier!
 171 Fichier supprimé
 172 Une erreur est survenue, le fichier
 173 n'a pas été inséré dans la base
-174 Securité
-175 Doubles
+174 Sécurité
+175 Doublons
 176 IPs
 177 Fusionner les lignes redondantes
 178 Répartition code/machines
 180 Utilisateur ou mot de passe incorrect
-182 Machines ayant un tag donné
+182 Machines ayant une étiquette donné
 183 Télécharger
 184 Ce fichier ne contient pas "use constant version"
 185 La version doit être supérieure ou égale à 1
@@ -127,12 +127,12 @@
 190 Accountinfo:
 191 supprimées
 192 Résumé redondance
-193 Hostname + Serial number
-194 Hostname + Mac address
-195 Mac address + Serial number
-196 Hostname seul
-197 Serial seul
-198 Mac address seule
+193 Nom d'hôte + Numéro de série
+194 Nom d'hôte + Adresse Mac
+195 Adresse Mac + Numéro de série
+196 Nom d'hôte uniquement
+197 Numéro de série uniquement
+198 Adresse Mac uniquement
 199 Redondances
 200 Relai correspondant diminué
 201 PLUS PETIT
@@ -155,7 +155,7 @@
 218 Versions des agents
 219 interfaces réseau non inventoriées
 220 supprimé
-221 Machines renvoyant des IPs
+221 Machines collectant des IPs
 222 Attention ! Toutes les machines cochées seront fusionnées en une seule machine ! Etes-vous sûr ?
 223 Information
 224 Valeur
@@ -169,7 +169,7 @@
 232 Date
 233 Données actuelles
 234 a bien été enregistré dans la table
-235 Users
+235 Utilisateurs
 236 Changer mot de passe
 237 Nouveau mot de passe
 238 Confirmation
@@ -193,7 +193,7 @@
 256 Sélectionnez la requête registre à modifier
 257 Clé de registre
 258 Valeur clé de registre
-259 Erreur, la donnée n'a pas pu être créée (merci de ne pas mettre de caractères spéciaux)
+259 Erreur, la donnée n'a pas pu être créée (merci de ne pas utiliser de caractères spéciaux)
 260 Fichier label modifié
 261 Fichier label détruit
 262 Entrez un label
@@ -212,7 +212,7 @@
 275 Version du système
 276 Chipset
 277 Version
-278 Driver
+278 Pilote
 279 Port
 280 Type MIB
 281 IP DHCP
@@ -278,7 +278,7 @@
 341 ne peut être lancé, vous devez mettre les droits d'exécution
 342 Vous devez mettre les droits d'écriture sur le répertoire racine pour pouvoir utiliser
 344 Erreur
-345 L'ANALYSE EST DEJA EN COURS, MERCI DE RESSAYER PLUS TARD
+345 L'ANALYSE EST DEJA EN COURS, MERCI DE REESSAYER PLUS TARD
 346 AVANT
 347 APRES
 348 Utilisateur Windows
@@ -308,7 +308,7 @@
 373 Utilisateur enregistré
 374 Société enregistrée
 375 Version Agent OCS NG
-376 Ordinateur verrouillé. Réessayer dans quelques instants...
+376 Ordinateur verrouillé. Merci de réessayer plus tard
 377 Vitesse CPU (Mhz)
 380 Dictionnaire
 381 Nombre
@@ -346,7 +346,7 @@
 424 Validité d'un paquet à compter de sa prise en compte par l'agent.
 425 Nombre d'ordinateurs remontant les machines de leurs réseaux.
 426 Validité d'un inventaire.<br>(ALWAYS: toujours inventorié, NEVER:inventaires désactivés)
-427 Défini les critères devant être identiques pour qu'une fusion automatique ait lieu.
+427 Définit les critères devant être identiques pour qu'une fusion automatique ait lieu.
 428 Télédéployer
 429 Fréquence
 430 Traitement par lots
@@ -409,23 +409,23 @@
 487 Personnalisé
 488 Défaut
 489 Comportement IpDiscover
-490 Forcé jamais IpDiscover
-491 Forcé toujours IpDiscover du réseau
-492 Elue IpDiscover du réseau
-493 Standard (peut être élue)
+490 Forcé JAMAIS IpDiscover du réseau
+491 Forcé TOUJOURS IpDiscover du réseau
+492 ELUE IpDiscover du réseau
+493 Standard (éligible)
 494 Fréquence d'inventaire personnalisée
 495 Inventorier tous les 
 496 jours
-497 Standard, utilise le paramètre 'FREQUENCY' des options générales.
+497 Par défaut, utilise le paramètre 'FREQUENCY' des options générales.
 498 Paquet
 499 serveur
 500 Traitements personnalisés
-501 ajouter paquet
-502 élu
-503 élu forcé
-504 non élu
-505 éligible
-506 non éligible
+501 Ajouter paquet
+502 Elu
+503 Elu forcé
+504 Non élu
+505 Eligible
+506 Non éligible
 507 AYANT
 508 N'AYANT PAS
 509 INDIFFERENT
@@ -438,26 +438,26 @@
 516 Ko
 517 Cette option ne peut être affectée que pour une machine à la fois
 518 Forcer IpDiscover
-519 Machine déja ELUE ipdiscover pour le réseau
-520 Machine déja FORCEE ipdiscover pour le réseau
-521 Machine forcée inéligible ipdiscover
+519 Machine déjà ELUE ipdiscover pour le réseau
+520 Machine déjà FORCEE ipdiscover pour le réseau
+521 Machine déjà FORCEE inéligible ipdiscover
 522 Machine standard
 523 Remettre dans l'état par défaut
 524 Ne PLUS JAMAIS affecter
 525 ETES-VOUS SUR ?
 526 PAS DE MACHINE AFFECTEE
 527 Janvier
-528 Fevrier
+528 Février
 529 Mars
 530 Avril
 531 Mai
 532 Juin
 533 Juillet
-534 Aout
+534 Août
 535 Septembre
 536 Octobre
 537 Novembre
-538 Decembre
+538 Décembre
 539 Dimanche
 540 Lundi
 541 Mardi
@@ -468,15 +468,15 @@
 546 dans l'état
 547 tous
 548 Tout sauf SUCCESS
-549 Fichier (déployé sur les ordinateurs client)
-550 Fichier (facultatif, peut être utiliser par "exécuter")
+549 Fichier (déployé sur les ordinateurs clients)
+550 Fichier (facultatif, peut être utilisé par "exécuter")
 551 Ce nom de paquet est déja utilisé
 552 <i>Vous devez faire une recherche multicritères puis cliquer sur 'Télédéployer' pour affecter un de ces paquets activés à des machines<br>Vous pouvez aussi affecter un paquet à une machine unique en utilisant l'onglet 'Traitements personnalisés' dans les détails d'une machine</i>.
 553 Clé Windows
 554 Ecran: numéro de série
 555 Ecran: fabricant
 556 Ecran: description
-557 Userdomain
+557 Domaine de l'utilisateur
 558 Paquets affectés
 559 Ce fichier n'est pas un .ocs
 560 Vers serveur
@@ -526,7 +526,7 @@
 606 Fichier des machines à affecter
 607 Groupe
 608 créé
-609 ecrasé
+609 écrasé
 610 INCLU STATIQUEMENT
 611 PAS CACHE
 612 STATIQUE
@@ -537,7 +537,7 @@
 617 Nouveau
 618 Périmètre
 619 Utilisateur restreint
-620 <br>Vous n'avez aucune machine affectée, merci de faire une demande d'affectation droits<br><br> en spécifiant sur quels tags vous devez avoir la visibilité.</center>
+620 <br>Vous n'avez aucune machine affectée, merci de faire une demande d'affectation de droits<br><br> en spécifiant sur quels tags vous devez avoir la visibilité.</center>
 621 Ce groupe n'a pas été créé. Ce nom existe déjà.
 622 En cache
 623 L'information que vous essayez de voir n'existe pas.
@@ -547,10 +547,10 @@
 627 Au moins un des champs est vide... Mise à jour non effectuée.
 628 Serveurs de redistribution
 629 Nouveau groupe de serveurs de redistribution
-630 un groupe de serveurs existants
+630 Un groupe de serveurs existants
 631 Ajouter à
 632 Ecraser
-633 Gestion des groupes serveurs
+633 Gestion des groupes de serveurs
 634 Action désirée
 635 Nouveau nom
 636 Description
@@ -653,29 +653,28 @@
 733 Inactif
 734 Fichiers inventaire
 735 Filtres
-736 Permet la fonction de groupes
-737 Nombre aléatoire calculé dans la gamme définie. Conçu pour éviter de calculer tous les groupes en même temps
-738 Spécifie la validité d'un groupe (par défaut : calculé une fois par jour - voir offset)
-739 Amélioration futur de la sécurité
+736 Active la fonctionnalité de groupes de machines
+737 Nombre aléatoire compris entre 0 et la valeur définie (évite le calcul simultané de tous les groupes)
+738 Spécifie la validité d'un groupe (par défaut : calculé une fois par jour - voir la valeur précédente)739 Amélioration futur de la sécurité
 740 Validité du lock d'un ordinateur
 741 Configuration du moteur pour mettre à jour les sections d'inventaire en fonction du CHECKSUM (pour baisser la charge de DB backend )
 742 Faire que le moteur considère un inventaire comme une transaction (accès concurrentiel plus bas, meilleure utilisation du disque)
-743 Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load
+743 Configuration du moteur pour une mise à jour différentielle des sections d'inventaire (au niveau des rangées). Diminue la charge du backend DB, augmente la charge du frontend
 744 N'accepter un inventaire que si une session est active (refus du /FORCE)
-745 Specify when the engine will clean the inventory cache structures
-746 Specify the minimal difference to replace an ipdiscover agent
-747 Disable the time before a first election (not recommended)
-748 Enable groups for ipdiscover (for example, you might want to prevent some groups to be ipdiscover agents)
-749 Use with ocsinventory-injector, enable the multi entities feature
-750 Generate either compressed file or clear XML text
-751 Specify if you want to keep trace of all inventory between to synchronisation with the higher level server
-752 Path to ocs files directory (must be writeable)
-753 Enable prolog filter stack
-754 Enable core filter system to modify some things "on the fly"
-755 Enable inventory flooding filter. A dedicated ipaddress ia allowed to send a new computer only once in this period
+745 Indique quand le moteur nettoiera les structures en cache de l'inventaire
+746 Spécifie la différence minimale pour remplacer un agent ipdiscover
+747 Désactive la durée avant une première élection (non recommandé)
+748 Active les groupes pour ipdiscover (par exemple, vous souhaitez empêcher certains groupes d'être des agents ipdiscover)
+749 Utiliser avec ocsinventory-injector, active la fonctionnalité multi entités
+750 Génère ou bien un fichier compressé, ou bien un fichier texte XML en clair
+751 Spécifie si vous souhaitez garder une trace de tous les inventaires entre une synchronisation avec un serveur de plus haut niveau
+752 Chemin vers le répertoire des fichiers ocs (les droits d'écriture doivent être activés)
+753 Active la pile du filtre du prolog
+754 Autorise le système de filtre à modifier des choses "à la volée"
+755 Active le filtre anti-flooding d'inventaire. Une même adresse IP ne peut envoyer un nouvel ordinateur qu'une seule fois dans la période
 756 Définition de la période pour INVENTORY_FILTER_FLOOD_IP
-757 Permettre la pile de filtre d'inventaire
-758 Specify if you want to track packages affected to a group on computer's level
+757 Active la pile de filtre d'inventaire
+758 Spécifie si vous souhaitez suivre les paquets affectés à un groupe de niveau ordinateur
 759 Doit être supérieur ou égal à  
 760 Webservice
 761 Activer/désactiver le webservice
@@ -762,8 +761,8 @@
 842 Disque: Espace libre
 843 Disque: Nom du volume
 844 Groupe: Id
-845 Groupe: Static?
-846 Logiciels: compagnie
+845 Groupe: Statique?
+846 Logiciels: Société
 847 Logiciels: Nom
 848 Logiciels: Version
 849 Logiciels: Répertoire install
@@ -808,7 +807,7 @@
 888 Suppression
 889 connecté en tant que
 890 L'interface est actuellement verrouillée sur une recherche multicritère
-891 Supprimer le LOCK de l'interface
+891 DEVERROUILLER l'interface
 892 se connecter avec un autre compte
 893 PAS DE TAG AFFECTE A VOTRE PROFIL
 894 PAS DE NIVEAU DE DROITS DEFINI POUR VOTRE PROFIL
@@ -879,7 +878,7 @@
 959 TROP DE LOGICIELS REMONTES. SOYEZ PLUS PRECIS DANS LA RECHERCHE
 960 AUCUN LOGICIEL CORRESPONDANT A LA RECHERCHE
 961 LISTE DE
-962 (une , entre chaque)
+962 (une ',' entre chaque)
 963 DIFFERENT LISTE DE
 964 Nom de la partition
 965 Linux (TOUS)
