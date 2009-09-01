@@ -65,7 +65,7 @@ if( !isset($_GET["popup"] )) {
 
 			//Special code for teledploy
  			$name_menu="smenu1";
-			$packAct = array(22,23,24,27,20,21,26);
+			$packAct = array($pages_refs['tele_package'],$pages_refs['tele_activate'],$pages_refs['rules_redistrib']);
 			$nam_img="pack";
 			$title=$l->g(512);
 			$data_list_deploy[$pages_refs['tele_package']]=$l->g(513);
@@ -78,7 +78,7 @@ if( !isset($_GET["popup"] )) {
 
 			//Special code for config 
 			$name_menu="smenu2";
-			$packAct = array(4,32,35);
+			$packAct = array($pages_refs['configuration'],$pages_refs['blacklist']);
 			$nam_img="configuration";
 			$title=$l->g(107);
 			$data_list_config[$pages_refs['configuration']]=$l->g(107);
@@ -168,7 +168,6 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
  		case $pages_refs['label']: require ('label.php');	break;
 		case $pages_refs['local']: require ('local.php');	break;
 		case $pages_refs['dict']: require ('dico.php');	break;
-		case $pages_refs['console']: require ('composants.php'); break;
 		case $pages_refs['tele_package']: require ('tele_package.php'); break; 
 		case $pages_refs['tele_activate']: require ('tele_activate.php'); break; 
 		case $pages_refs['opt_param']: require ('opt_param.php'); break; 
