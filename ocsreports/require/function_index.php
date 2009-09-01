@@ -1,34 +1,101 @@
 <?php
-function getmicrotime(){
+
+
+//Creating array for page references (this is not really a function, juste for code reading)
+{
+        $pages_refs['all_computers']='hoegaarden';
+        $pages_refs['configuration']='1664';
+        $pages_refs['repart_tag']='chti';
+        $pages_refs['groups']='gueuze';
+        $pages_refs['all_soft']='delirium';
+        $pages_refs['multi_search']='gauloise';
+        $pages_refs['dict']='livinus';
+        $pages_refs['upload_file']='cuvee_troll';
+        $pages_refs['regconfig']='kwak';
+        $pages_refs['logs']='duchesse_ane';
+        $pages_refs['admininfo']='calsberg';
+        $pages_refs['ipdiscover']='kro';
+        $pages_refs['doubles']='tripel';
+        $pages_refs['label']='guinness';
+        $pages_refs['users']='corsendonk';
+        $pages_refs['local']='gouden';
+        $pages_refs['help']='duvel';
+        $pages_refs['stats']='julius';
+        $pages_refs['codes']='ciney';
+        $pages_refs['blacklist']='westmalle';
+        $pages_refs['console']='malheur';
+        $pages_refs['components']='stella';
+        $pages_refs['tele_package']='mere_noel';
+        $pages_refs['tele_activate']='grimbergen';
+        $pages_refs['tele_affect']='grottenbier';
+        $pages_refs['tele_stats']='foster';
+        $pages_refs['tele_actives']='petasse';
+        $pages_refs['tele_massaffect']='bourgogne_des_flandres';
+        $pages_refs['rules_redistrib']='leffe';
+        $pages_refs['opt_param']='brigand';
+        $pages_refs['opt_ipdiscover']='becasse';
+        $pages_refs['opt_opt_suppr']='bonnet_rouge';
+        $pages_refs['admin_attrib']='moinette';
+        $pages_refs['group_show']='chapeau_faro';
+        $pages_refs['show_detail']='vondel';
+}
+
+//Creating array for icons (this is not really a function, juste for code reading)
+
+{
+        $icons_list['all_computers']=create_icon($l->g(2), $pages_refs['all_computers']);
+        $icons_list['repart_tag']=create_icon($l->g(178), $pages_refs['repart_tag']);
+        $icons_list['groups']=create_icon($l->g(583), $pages_refs['groups']);
+        $icons_list['all_soft']=create_icon($l->g(765), $pages_refs['all_soft']);
+        $icons_list['multi_search']=create_icon($l->g(9), $pages_refs['multi_search']);
+        $icons_list['dict']=create_icon($l->g(380), $pages_refs['dict']);
+        $icons_list['upload_file']=create_icon($l->g(17) , $pages_refs['upload_file']);
+        $icons_list['regconfig']=create_icon($l->g(211), $pages_refs['regconfig']);
+        $icons_list['logs']=create_icon($l->g(928), $pages_refs['logs']);
+        $icons_list['admininfo']=create_icon($l->g(225), $pages_refs['admininfo']);
+        $icons_list['ipdiscover']=create_icon($l->g(174), $pages_refs['ipdiscover']);
+        $icons_list['doubles']=create_icon($l->g(175), $pages_refs['doubles']);
+        $icons_list['label']=create_icon($l->g(263), $pages_refs['label']);
+        $icons_list['users']=create_icon($l->g(243), $pages_refs['users']);
+        $icons_list['local']=create_icon($l->g(287), $pages_refs['local']);
+        $icons_list['help']=create_icon($l->g(570), $pages_refs['help']);
+}
+
+
+function getmicrotime() {
     list($usec, $sec) = explode(" ",microtime());
     return ((float)$usec + (float)$sec);
 }
-function create_icon( $label, $index) {
-        $llink = "?".PAG_INDEX."=$index";
 
-        switch($index) {
 
-                case 'ciney': $img = "codes"; break;
-                case 'kro': $img = "securite"; break;
-                case 1664: $img = "configuration"; break;
-                case 'kwak': $img = "regconfig"; break;
-                case 'tripel': $img = "doublons"; break;
-                case 'cuvee_troll': $img = "agent"; break;
-                case 'calsberg': $img = "administration"; break;
-                case 'guinness': $img = "label"; break;
-                case 'gouden': $img = "local"; break;
-                case 'livinus': $img = "dictionnaire"; break;
-                case 'duvel': $img = "aide";$llink = "http://wiki.ocsinventory-ng.org"; break;
-                case 'delirium': $img = "ttlogiciels"; break;
-                case 'gueuze': $img = "groups"; break;
-                case 'duchesse_ane': $img = "log"; break;
-                case 'gauloise': $img = "recherche"; break;
-                case 'julius': $img = "statistiques"; break;
-                case 'hoegaarden': $img = "ttmachines"; break;
-                case 'chti': $img = "repartition"; break;
-                case 'corsendonk': $img = "utilisateurs"; break;
+function create_icon( $label, $biere ) {
+	
+	global $pages_refs;
+        $llink = "?".PAG_INDEX."=$biere";
+
+        switch($biere) {
+
+                case $pages_refs['codes']: $img = "codes"; break;
+                case $pages_refs['ipdiscover']: $img = "securite"; break;
+                case $pages_refs['configuration']: $img = "configuration"; break;
+                case $pages_refs['regconfig']: $img = "regconfig"; break;
+                case $pages_refs['doubles']: $img = "doublons"; break;
+                case $pages_refs['upload_file']: $img = "agent"; break;
+                case $pages_refs['admininfo']: $img = "administration"; break;
+                case $pages_refs['label']: $img = "label"; break;
+                case $pages_refs['local']: $img = "local"; break;
+                case $pages_refs['dict']: $img = "dictionnaire"; break;
+                case $pages_refs['help']: $img = "aide";$llink = "http://wiki.ocsinventory-ng.org"; break;
+                case $pages_refs['all_soft']: $img = "ttlogiciels"; break;
+                case $pages_refs['groups']: $img = "groups"; break;
+                case $pages_refs['logs']: $img = "log"; break;
+                case $pages_refs['multi_search']: $img = "recherche"; break;
+                case $pages_refs['stats']: $img = "statistiques"; break;
+                case $pages_refs['all_computers']: $img = "ttmachines"; break;
+                case $pages_refs['repart_tag']: $img = "repartition"; break;
+                case $pages_refs['users']: $img = "utilisateurs"; break;
         }
-        if($_GET[PAG_INDEX] == $index && $index != "" ) {
+        if($_GET[PAG_INDEX] == $biere && $biere != "" ) {
                 $img .= "_a";
         }
 
@@ -62,30 +129,5 @@ function menu_list($name_menu,$packAct,$nam_img,$title,$data_list)
         </td> ";
 
 }
-
-
-//Creating array for icons (this is not really a function, juste for code reading)
-
-{
-	$icons_list['all_computers']=create_icon($l->g(2), 'hoegaarden');
-	$icons_list['repart_tag']=create_icon($l->g(178), 'chti');	
-	$icons_list['groups']=create_icon($l->g(583), 'gueuze');	
-	$icons_list['all_soft']=create_icon($l->g(765), 'delirium');	
-	$icons_list['multi_search']=create_icon($l->g(9), 'gauloise');	
-	$icons_list['dict']=create_icon($l->g(380), 'livinus');	
-	$icons_list['upload_file']=create_icon($l->g(17) , 'cuvee_troll');	
-	$icons_list['regconfig']=create_icon($l->g(211), 'kwak');	
-	$icons_list['logs']=create_icon($l->g(928), 'duchesse_ane');	
-	$icons_list['admininfo']=create_icon($l->g(225), 'calsberg');	
-	$icons_list['ipdiscover']=create_icon($l->g(174), 'kro');	
-	$icons_list['doubles']=create_icon($l->g(175), 'tripel');	
-	$icons_list['label']=create_icon($l->g(263), 'guinness');	
-	$icons_list['users']=create_icon($l->g(243), 'corsendonk');	
-	$icons_list['local']=create_icon($l->g(287), 'gouden');	
-	$icons_list['help']=create_icon($l->g(570), 'duvel');	
-}
-
-
-
 
 ?>

@@ -15,7 +15,7 @@ require("fichierConf.class.php");
 @session_start();
 require ('header.php');
 require ('donnees.php');
-require_once('require/function_index.php');
+require_once ('require/function_index.php');
 
 $sleep=1;
 $debut = getmicrotime();
@@ -40,7 +40,7 @@ if( !isset($_GET["popup"] )) {
 	echo "<table width='100%' border=0><tr><td>
 	<table BORDER='0' ALIGN = 'left' CELLPADDING='0' BGCOLOR='#FFFFFF' BORDERCOLOR='#9894B5'><tr>";
 	
-	echo$icons_list['all_computers'];
+	echo $icons_list['all_computers'];
 	echo $icons_list['repart_tag'];
 	
 	//groups
@@ -68,9 +68,9 @@ if( !isset($_GET["popup"] )) {
 			$packAct = array(22,23,24,27,20,21,26);
 			$nam_img="pack";
 			$title=$l->g(512);
-			$data_list_deploy['mere_noel']=$l->g(513);
-			$data_list_deploy['grimbergen']=$l->g(514);
-			$data_list_deploy['leffe']=$l->g(662);
+			$data_list_deploy[$pages_refs['tele_package']]=$l->g(513);
+			$data_list_deploy[$pages_refs['tele_activate']]=$l->g(514);
+			$data_list_deploy[$pages_refs['rules_redistrib']]=$l->g(662);
 			menu_list($name_menu,$packAct,$nam_img,$title,$data_list_deploy);
 
 			echo $icons_list['dict'];
@@ -81,8 +81,8 @@ if( !isset($_GET["popup"] )) {
 			$packAct = array(4,32,35);
 			$nam_img="configuration";
 			$title=$l->g(107);
-			$data_list_config[1664]=$l->g(107);
-			$data_list_config['westmalle']=$l->g(703);
+			$data_list_config[$pages_refs['configuration']]=$l->g(107);
+			$data_list_config[$pages_refs['blacklist']]=$l->g(703);
 			//$data_list_config[35]=$l->g(712);
 			menu_list($name_menu,$packAct,$nam_img,$title,$data_list_config);	
 			
@@ -155,42 +155,42 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 			$mess=addComputersToGroup( $_POST["asg"], $_POST );
 			echo "<div align=center><font color=green><big><B>".$mess." ".$l->g(819)."</B></big></font></div>";
 			unset( $_POST );
-		}		
-			
 		
+	}
+
 	switch($_GET[PAG_INDEX]) {
- 		case 'kro': require ('ipdiscover_new.php');	break;
- 		case 1664: require ('confiGale.php');	break;
- 		case 'kwak': require ('registre.php');	break;
- 		case 'tripel':	require ('doublons.php');	break;
- 		case 'cuvee_troll': require ('uploadfile.php');	break;
- 		case 'calsberg': require ('donAdmini.php');	break;
- 		case 'guinness': require ('label.php');	break;
-		case 'gouden': require ('local.php');	break;
-		case 'livinus': require ('dico.php');	break;
-		case 'stella': require ('composants.php'); break;
-		case 'mere_noel': require ('tele_package.php'); break; 
-		case 'grimbergen': require ('tele_activate.php'); break; 
-		case 'brigand': require ('opt_param.php'); break; 
-		case 'becasse': require ('opt_ipdiscover.php'); break; 
-		case 'grottenbier': require ('tele_affect.php'); break; 
-		case 'foster': require ('tele_stats.php'); break;
-		case 'petasse': require ('tele_actives.php'); break;
-		case 'bonnet_rouge': require ('opt_suppr.php'); break; 
-		case 'chapeau_faro': require ('group_show.php'); break;
-		case 'bourgogne_des_flandres': require ('tele_massaffect.php'); break; 
-		case 'moinette': require ('admin_attrib.php'); break; 
-		case 'westmalle': require ('blacklist.php');break;
-		case 'leffe': require ('rules_redistrib.php');break;
-		case 'delirium': require ('all_soft.php');break;
-		case 'gueuze': require ('groups.php');break;
-		case 'vondel': require ('show_detail.php');break;
-		case 'duchesse_ane': require ('logs.php');break;
-		case 'gauloise': require ('multi.php');break;
-		case 'hoegaarden': require ('list_computors.php');break;
-		case 'chti': require ('repart_tag.php');break;
-		case 'corsendonk':require ('admins.php');break;
-		case 'malheur' : require ('console.php');break;	
+ 		case $pages_refs['ipdiscover']: require ('ipdiscover_new.php');	break;
+ 		case $pages_refs['configuration']: require ('confiGale.php');	break;
+ 		case $pages_refs['regconfig']: require ('registre.php');	break;
+ 		case $pages_refs['doubles']: require ('doublons.php');	break;
+ 		case $pages_refs['upload_file']: require ('uploadfile.php');	break;
+ 		case $pages_refs['admininfo']: require ('donAdmini.php');	break;
+ 		case $pages_refs['label']: require ('label.php');	break;
+		case $pages_refs['local']: require ('local.php');	break;
+		case $pages_refs['dict']: require ('dico.php');	break;
+		case $pages_refs['console']: require ('composants.php'); break;
+		case $pages_refs['tele_package']: require ('tele_package.php'); break; 
+		case $pages_refs['tele_activate']: require ('tele_activate.php'); break; 
+		case $pages_refs['opt_param']: require ('opt_param.php'); break; 
+		case $pages_refs['opt_ipdiscover']: require ('opt_ipdiscover.php'); break; 
+		case $pages_refs['tele_affect']: require ('tele_affect.php'); break; 
+		case $pages_refs['tele_stats']: require ('tele_stats.php'); break;
+		case $pages_refs['tele_actives']: require ('tele_actives.php'); break;
+		case $pages_refs['opt_opt_suppr']: require ('opt_suppr.php'); break; 
+		case $pages_refs['group_show']: require ('group_show.php'); break;
+		case $pages_refs['tele_massaffect']: require ('tele_massaffect.php'); break; 
+		case $pages_refs['admin_attrib']: require ('admin_attrib.php'); break; 
+		case $pages_refs['blacklist']: require ('blacklist.php');break;
+		case $pages_refs['rules_redistrib']: require ('rules_redistrib.php');break;
+		case $pages_refs['all_soft']: require ('all_soft.php');break;
+		case $pages_refs['groups']: require ('groups.php');break;
+		case $pages_refs['show_detail']: require ('show_detail.php');break;
+		case $pages_refs['logs']: require ('logs.php');break;
+		case $pages_refs['multi_search']: require ('multi.php');break;
+		case $pages_refs['all_computers']: require ('list_computors.php');break;
+		case $pages_refs['repart_tag']: require ('repart_tag.php');break;
+		case $pages_refs['users']: require ('admins.php');break;
+		case $pages_refs['console']: require ('console.php');break;	
  		default: require ('console.php');		
  	}
 
