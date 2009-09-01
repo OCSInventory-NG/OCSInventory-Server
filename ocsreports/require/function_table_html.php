@@ -446,13 +446,6 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	$post_name is the name of var will be post
 	$ligne is if u want have onglet on more ligne*/
 	if ($def_onglets != ""){
-	echo "<script language='javascript'>
-
-  		function recharge2(onglet,form_name,post_name){
-			document.getElementById(post_name).value=onglet;
-			document.getElementById(form_name).submit();	
-		}
-		</script>";
 	echo "<LINK REL='StyleSheet' TYPE='text/css' HREF='css/onglets.css'>\n";
 	echo "<table cellspacing='5' BORDER='0' ALIGN = 'Center' CELLPADDING='0'><tr><td><div id='header'>";
 	echo "<ul>";
@@ -478,7 +471,8 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	 			 $current=1;
 			}
 		}
-	  	echo "><a OnClick='recharge2(\"".mysql_escape_string($key)."\",\"".$form_name."\",\"".$post_name."\")'>".xml_decode($value)."</a></li>";
+	
+	  	echo "><a OnClick='pag(\"".mysql_escape_string($key)."\",\"onglet\",\"".$form_name."\")'>".xml_decode($value)."</a></li>";
 	  $i++;	
 	  }	
 	echo "</ul>
@@ -486,8 +480,6 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 	echo "<input type='hidden' id='".$post_name."' name='".$post_name."' value='".$_POST[$post_name]."'>";
 	echo "<input type='hidden' id='old_".$post_name."' name='old_".$post_name."' value='".$_POST[$post_name]."'>";
 	}
-	echo "<br><font color=red>";
-	echo "</font>";
 	
 }
 
