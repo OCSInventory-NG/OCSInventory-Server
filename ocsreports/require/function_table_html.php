@@ -40,6 +40,13 @@ echo "	<script language='javascript'>
 			}
 		}
 </script>";
+//function for escape_string before use database
+function escape_string($array){
+	foreach ($array as $key=>$value){
+		$trait_array[$key]=mysql_real_escape_string($value);
+	}
+	return ($trait_array);
+}
 
 function xml_encode( $txt ) {
 		$cherche = array(	"&"  , "<"  , ">"  , "\""    , "'");
@@ -74,7 +81,7 @@ function tri($sql)
 	
 }
 
-//fonction qui permet d'afficher un tableau de données
+//fonction qui permet d'afficher un tableau de donnï¿½es
 /*
  * $entete_colonne = array ; => ex: $i=0;
 									while($colname = mysql_fetch_field($result))
@@ -173,17 +180,17 @@ function tri($sql)
 
 //variable pour la fonction champsform
 $num_lig=0;
-/* fonction liée à show_modif
- * qui permet de créer une ligne dans le tableau de modification/ajout
- * $title = titre à l'affichage du champ
- * $value_default = - pour un champ text ou input, la valeur par défaut du champ.
+/* fonction liï¿½e ï¿½ show_modif
+ * qui permet de crï¿½er une ligne dans le tableau de modification/ajout
+ * $title = titre ï¿½ l'affichage du champ
+ * $value_default = - pour un champ text ou input, la valeur par dï¿½faut du champ.
  * 					- pour un champ select, liste des valeurs du champ
- * $input_name = nom du champ que l'on va récupérer en $_POST
+ * $input_name = nom du champ que l'on va rï¿½cupï¿½rer en $_POST
  * $input_type = 0 : <input type='text'>
  * 				 1 : <textarea>
  * 				 2 : <select><option>
- * $donnees = tableau qui contient tous les champs à afficher à la suite
- * $nom_form = si un select doit effectuer un reload, on y met le nom du formulaire à reload
+ * $donnees = tableau qui contient tous les champs ï¿½ afficher ï¿½ la suite
+ * $nom_form = si un select doit effectuer un reload, on y met le nom du formulaire ï¿½ reload
 */
 function champsform($title,$value_default,$input_name,$input_type,&$donnees,$nom_form=''){
 	global $num_lig;
@@ -199,13 +206,13 @@ function champsform($title,$value_default,$input_name,$input_type,&$donnees,$nom
 }
 
 /*
- * fonction liée à tab_modif_values qui permet d'afficher le champ défini avec la fonction champsform
+ * fonction liï¿½e ï¿½ tab_modif_values qui permet d'afficher le champ dï¿½fini avec la fonction champsform
  * $name = nom du champ
- * $input_name = nom du champ récupéré dans le $_POST
+ * $input_name = nom du champ rï¿½cupï¿½rï¿½ dans le $_POST
  * $input_type = 0 : <input type='text'>
  * 				 1 : <textarea>
  * 				 2 : <select><option>
- * $input_reload = si un select doit effectuer un reload, on y met le nom du formulaire à reload
+ * $input_reload = si un select doit effectuer un reload, on y met le nom du formulaire ï¿½ reload
  * 
  */
 function show_modif($name,$input_name,$input_type,$input_reload = "")
@@ -365,7 +372,7 @@ function onglet($def_onglets,$form_name,$post_name,$ligne)
 		$def_onglets is array like :  	$def_onglets[$l->g(499)]=$l->g(499); //Serveur
 										$def_onglets[$l->g(728)]=$l->g(728); //Inventaire
 										$def_onglets[$l->g(312)]=$l->g(312); //IP Discover
-										$def_onglets[$l->g(512)]=$l->g(512); //Télédéploiement
+										$def_onglets[$l->g(512)]=$l->g(512); //Tï¿½lï¿½dï¿½ploiement
 										$def_onglets[$l->g(628)]=$l->g(628); //Serveur de redistribution 
 		
 	behing this function put this lign:

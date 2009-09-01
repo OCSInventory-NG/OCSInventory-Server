@@ -5,6 +5,7 @@
  */
 require_once('require/function_table_html.php');
 require_once('require/function_dico.php');
+$_POST=escape_string($_POST);
 //use or not cache
 if ($_SESSION['usecache'])
 	$table="softwares_name_cache";
@@ -17,9 +18,9 @@ echo "<form name='".$form_name."' id='".$form_name."' method='POST' action=''>";
 //definition of onglet
 $def_onglets['CAT']='CATEGORIES'; //Categories
 $def_onglets['NEW']='NEW'; //nouveau logiciels
-$def_onglets['IGNORED']='IGNORED'; //ignoré
+$def_onglets['IGNORED']='IGNORED'; //ignorï¿½
 $def_onglets['UNCHANGED']='UNCHANGED'; //unchanged
-//défault => first onglet
+//dï¿½fault => first onglet
 if ($_POST['onglet'] == "")
 $_POST['onglet']="CAT";
 //reset search
@@ -118,7 +119,7 @@ if ($_POST['onglet'] == 'NEW'){
 	$result_search_dico_soft = mysql_query( $search_dico_soft, $_SESSION["readServer"]);
 	$list_dico_soft="'";
 	while($item_search_dico_soft = mysql_fetch_object($result_search_dico_soft)){
-		$list_dico_soft.=$item_search_dico_soft -> name."','";
+		$list_dico_soft.=mysql_real_escape_string($item_search_dico_soft -> name)."','";
 	}
 	$list_dico_soft=substr($list_dico_soft,0,-2);
 	
@@ -129,7 +130,7 @@ if ($_POST['onglet'] == 'NEW'){
 	$result_search_ignored_soft = mysql_query( $search_ignored_soft, $_SESSION["readServer"]);
 	$list_ignored_soft="'";
 	while($item_search_ignored_soft = mysql_fetch_object($result_search_ignored_soft)){
-		$list_ignored_soft.=addslashes($item_search_ignored_soft -> name)."','";
+		$list_ignored_soft.=mysql_real_escape_string($item_search_ignored_soft -> name)."','";
 	}
 	$list_ignored_soft=substr($list_ignored_soft,0,-2);
 	
@@ -147,9 +148,9 @@ if ($_POST['onglet'] == 'NEW'){
 		$i=1;
 		 while($item_list_alpha = mysql_fetch_object($result_list_alpha)){
 		 	if (strtoupper($item_list_alpha -> alpha) != "" 
-				and strtoupper($item_list_alpha -> alpha) != Ã
-				and strtoupper($item_list_alpha -> alpha) != Â
-				and strtoupper($item_list_alpha -> alpha) != Ä){
+				and strtoupper($item_list_alpha -> alpha) != ï¿½
+				and strtoupper($item_list_alpha -> alpha) != ï¿½
+				and strtoupper($item_list_alpha -> alpha) != ï¿½){
 					if ($first == ''){
 						$first=$i;
 					}
@@ -246,13 +247,13 @@ $result_exist=tab_req($table_name,$list_fields,$default_fields,$list_col_cant_de
 echo "</td></tr>";
 $search=show_modif(stripslashes($_POST['search']),"search",'0');
 $trans= "<input name='all_item' id='all_item' type='checkbox' ".(isset($_POST['all_item'])? " checked ": "").">".$l->g(384);
-//récupération de toutes les catégories
-$sql_list_categories="select distinct(formatted) name from dico_soft where formatted!=extracted";
+//rï¿½cupï¿½ration de toutes les catï¿½gories
+$sql_list_categories="select distinct(formatted) name from dico_soft where formatted!=extracted order by formatted";
 $result_list_categories = mysql_query( $sql_list_categories, $_SESSION["readServer"]);
 while($item_list_categories = mysql_fetch_object($result_list_categories)){
 	$list_categories[$item_list_categories ->name]=$item_list_categories ->name;	
 }
-//définition de toutes les options possible
+//dï¿½finition de toutes les options possible
 $choix_affect['NEW_CAT']=$l->g(385);
 $choix_affect['EXIST_CAT']=$l->g(387);
 $list_categories['IGNORED']="IGNORED";
