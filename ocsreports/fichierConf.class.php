@@ -15,10 +15,22 @@ class language
 	var  	$tableauMots;    // tableau contenant tous les mots du fichier 			
 	function language($language) // constructeur
 	{
-		$sql="select json_value from language where name ='".$language."'";
-		$result = mysql_query($sql, $_SESSION["readServer"]) or mysql_error($_SESSION["readServer"]);
-		$item = mysql_fetch_object($result);
-		
+		//looking for if languages table exist
+		$table_exist=false;
+		$sql="SHOW TABLES";
+		$result = @mysql_query($sql, $_SESSION["readServer"]);
+		while ($table = @mysql_fetch_object($result)){
+			foreach ($table as $value){
+				if ($value == "languages")
+				$table_exist=true;
+			}
+			
+		}
+		if ($table_exist){
+			$sql="select json_value from languages where name ='".$language."'";
+			$result = @mysql_query($sql, $_SESSION["readServer"]);
+			$item = @mysql_fetch_object($result);
+		}
 		if (!isset($_SESSION['plugin_rep']) or $_SESSION['plugin_rep'] == "")
 		$_SESSION['plugin_rep']="pluggins/";
 		$language_file=$_SESSION['plugin_rep']."language/".$language."/".$language.".txt";
@@ -35,10 +47,9 @@ class language
 				}
 				fclose($file);	
 				$toto=$this->tableauMots;
-				if (!isset($item->json_value)){
-					$sql="insert into language (name,json_value) values ('".$language."','".mysql_real_escape_string(json_encode($toto))."')"; 
-					if( ! @mysql_query( $sql, $_SESSION["writeServer"] ))
-						echo mysql_error($_SESSION["writeServer"]);
+				if (!isset($item->json_value) and $table_exist){
+					$sql="insert into languages (name,json_value) values ('".$language."','".mysql_real_escape_string(json_encode($toto))."')"; 
+					@mysql_query( $sql, $_SESSION["writeServer"] );
 				}
 			
 			} 

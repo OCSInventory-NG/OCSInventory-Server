@@ -785,7 +785,7 @@ INSERT INTO operators VALUES ('admin','admin','admin','admin',1, 'Default admini
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs IDENTIFIED BY 'ocs';
 GRANT ALL PRIVILEGES ON ocsweb.* TO ocs@localhost IDENTIFIED BY 'ocs';
 
-INSERT INTO config VALUES ('GUI_VERSION', 0, '5008', 'Version of the installed GUI and database');
+INSERT INTO config VALUES ('GUI_VERSION', 0, '5009', 'Version of the installed GUI and database');
 
 CREATE TABLE download_servers (
   HARDWARE_ID int(11) NOT NULL,
@@ -867,9 +867,9 @@ CREATE TABLE itmgmt_comments (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
-UPDATE operators SET passwd=md5('admin') where ID='admin'
+UPDATE operators SET passwd=md5('admin') where ID='admin';
 
-CREATE TABLE language (
+CREATE TABLE languages (
   NAME varchar(60) COLLATE latin1_general_ci NOT NULL,
   IMG blob,
   JSON_VALUE longtext CHARACTER SET latin1,
