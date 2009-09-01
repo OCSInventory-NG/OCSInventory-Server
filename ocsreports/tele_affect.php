@@ -104,7 +104,7 @@ if( $_GET["retour"] == 1 || (isset($_GET["affpack"]) && $ok) ) {
 		echo "<script language='javascript'>window.location='index.php?redo=1".$_SESSION["queryString"]."';</script>";
 		//TODO MARCHE P�S
 	else if( isset( $_SESSION["isgroup"] ) && $_SESSION["isgroup"]== "1" )
-		echo "<script language='javascript'>window.location='index.php?".PAG_INDEX."=29&popup=1&systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
+		echo "<script language='javascript'>window.location='index.php?".PAG_INDEX."=".$pages_refs['group_show']."&popup=1&systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
 	else
 		echo "<script language='javascript'>window.location='machine.php?systemid=".$_SESSION["saveId"]."&option=".$l->g(500)."';</script>";
 	die();
@@ -136,7 +136,7 @@ else {
 	die($l->g(478));	
 }
 
-echo "<br><center><a href='#' OnClick=\"window.location='index.php?".PAG_INDEX."=24&retour=1'\"><= ".$l->g(188)."</a></center>";
+echo "<br><center><a href='#' OnClick=\"window.location='index.php?".PAG_INDEX."=".$pages_refs['tele_affect']."&retour=1'\"><= ".$l->g(188)."</a></center>";
 if (isset($_GET['systemid'])){
 	$visu='block';	
 }else

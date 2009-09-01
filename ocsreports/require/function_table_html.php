@@ -119,7 +119,7 @@ function tri($sql)
 	foreach($entete_colonne as $k=>$v)
 	{
 		if (in_array($v,$lien))
-			echo "<th class='ta' ><a href='index.php?".PAG_INDEX."=".$_GET['multi']."&sens=".$sens."&col=".$i."'>".$v."</a></th>";
+			echo "<th class='ta' >".$v."</th>";
 		else
 			echo "<th class='ta'><font size=1 align=center>".$v."</font></th>";	
 		$i++;		
@@ -914,7 +914,7 @@ function tab_req($table_name,$list_fields,$default_fields,$list_col_cant_del,$qu
 
 //fonction qui permet de g�rer les donn�es � afficher dans le tableau
 function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default_fields,$list_col_cant_del,$queryDetails){
-	global $l,$_POST;
+	global $l,$_POST,$pages_refs;
 	
 	$_SESSION['list_fields']=$list_fields;
 	//requete de condition d'affichage
@@ -1041,7 +1041,7 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 						$entete[$num_col]=$truelabel;
 						$lien = 'KO';
 					}elseif ($key == "GROUP_NAME"){
-						$data[$i][$num_col]="<a href='index.php?".PAG_INDEX."=29&popup=1&systemid=".$donnees['ID']."' target='_blank'>".$value_of_field."</a>";
+						$data[$i][$num_col]="<a href='index.php?".PAG_INDEX."=".$pages_refs['group_show']."&popup=1&systemid=".$donnees['ID']."' target='_blank'>".$value_of_field."</a>";
 					}elseif ($key == "SUP"){
 						if (isset($tab_options['LBL_POPUP'][$key]))
 						$lbl_msg=$donnees[$tab_options['LBL_POPUP'][$key]];
@@ -1072,7 +1072,7 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 						$data[$i][$num_col]="<a href=# OnClick='window.open(\"tele_popup_active.php?active=".$value_of_field."\",\"active\",\"location=0,status=0,scrollbars=0,menubar=0,resizable=0,width=550,height=350\")'><img src='image/activer.png' ></a>";
 						$lien = 'KO';
 					}elseif ($key == "SHOWACTIVE"){
-						$data[$i][$num_col]="<a href='index.php?".PAG_INDEX."=26&popup=1&timestamp=".$donnees['FILEID']."' target=_blank>".$value_of_field."</a>";
+						$data[$i][$num_col]="<a href='index.php?".PAG_INDEX."=".$pages_refs['tele_actives']."&popup=1&timestamp=".$donnees['FILEID']."' target=_blank>".$value_of_field."</a>";
 					}
 					elseif ($key == "CHECK"){
 						$data[$i][$num_col]="<input type='checkbox' name='check".$value_of_field."' id='check".$value_of_field."' ".$javascript." ".(isset($_POST['check'.$value_of_field])? " checked ": "").">";

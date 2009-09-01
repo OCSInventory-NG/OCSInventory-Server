@@ -18,6 +18,7 @@ require_once('require/function_ipdiscover.php');
 		unset($_SESSION['DATA_CACHE']['IPDISCOVER']);
  		
  	}
+ 
  	if (isset($_SESSION["ipdiscover"])){
 		ksort($_SESSION["ipdiscover"]);
 		$dpt=array_keys($_SESSION["ipdiscover"]);

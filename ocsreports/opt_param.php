@@ -86,7 +86,7 @@ if ($_POST['Valid']==$l->g(103)){
 if ($_POST['origine'] == "machine"){
 $direction=	"machine.php?option=cd_configuration&systemid=".$_POST["systemid"];	
 }elseif ($_POST['origine'] == "group")
-$direction=	"index.php?".PAG_INDEX."=29&popup=1&systemid=".$_POST["systemid"];
+$direction=	"index.php?".PAG_INDEX."=".$pages_refs['group_show']."&popup=1&systemid=".$_POST["systemid"];
 else
 $direction="index.php?redo=1".$_SESSION["queryString"];	
 

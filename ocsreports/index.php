@@ -125,7 +125,7 @@ echo "<br><center><span id='wait' class='warn'><font color=red>".$l->g(332)."</f
 		loadMac();
 	}
 	
-	if( $_GET[PAG_INDEX] != 3 )
+	if( $_GET[PAG_INDEX] != $pages_refs['ipdiscover'] )
 		unset( $_SESSION["forcedRequest"] );
 
 	//GROUP CREATION

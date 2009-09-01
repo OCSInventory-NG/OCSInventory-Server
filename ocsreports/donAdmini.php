@@ -45,7 +45,7 @@ if($_POST["nom"])
 printEnTete($l->g(56));
 echo "
 			<br>
-		 <form name='ajouter_reg' method='POST' action='index.php?".PAG_INDEX."=9'>
+		 <form name='ajouter_reg' method='POST'>
 	<center>
 	<table width='60%'>
 	<tr>

@@ -153,7 +153,7 @@ else {
 	<tr BGCOLOR='#C7D9F5'><td width='30px'>&nbsp;</td><td align='center'><b>".$l->g(81)."</b></td><td align='center'><b>".$l->g(55)."</b></td></tr>";
 	foreach( $legende as $leg ) {
 		echo "<tr><td bgcolor='#".$leg["color"]."'>&nbsp;</td><td>".$leg["name"]."</td><td>
-				<a href='index.php?".PAG_INDEX."=41&prov=stat&id_pack=".$_GET["stat"]."&stat=".urlencode($leg["name"])."'>".$leg["count"]."</a>";
+				<a href='index.php?".PAG_INDEX."=".$pages_refs['multi_search']."&prov=stat&id_pack=".$_GET["stat"]."&stat=".urlencode($leg["name"])."'>".$leg["count"]."</a>";
 				
 		echo "<a href='speed_stat.php?ta=".$leg["name"]."&stat=".$_GET["stat"]."'>&nbsp;stat</a>
 			</td></tr>";

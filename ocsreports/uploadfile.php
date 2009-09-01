@@ -124,11 +124,11 @@ if($_GET["o"]&&$_GET["n"]&&$_GET["v"]&&$_GET["supp"]==1)
 				function confirme(v,o,n)
 				{
 					if(confirm("<?php echo $l->g(135);?>"))
-						window.location="index.php?<?php echo PAG_INDEX ; ?>=8&supp=1&v="+v+"&o="+o+"&n="+n;
+						window.location="index.php?<?php echo PAG_INDEX ; ?>=<?php echo $pages_refs['upload_file']; ?>&supp=1&v="+v+"&o="+o+"&n="+n;
 				}
 </script>
 <br>
-<FORM ENCTYPE="multipart/form-data" ACTION="index.php?<?php echo PAG_INDEX ; ?>=8" METHOD="POST">
+<FORM ENCTYPE="multipart/form-data"  METHOD="POST">
 <br>
 <table border=1 class= "Fenetre" WIDTH = '52%' ALIGN = 'Center' CELLPADDING='5'>
 <th height=30px class="Fenetre" colspan=2>
