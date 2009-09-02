@@ -12,7 +12,7 @@
 					   'COMMENT'=>'COMMENT');
 	$list_col_cant_del=array($l->g(475)=>$l->g(475),$l->g(49)=>$l->g(49));
 	$default_fields= $list_col_cant_del;
-	$pack_sup="<b><font color=red>".textDecode($l->g(561))."</font></b>";
+	$pack_sup="<b><font color=red>".$l->g(561)."</font></b>";
 	$queryDetails  = "SELECT PKG_ID,NAME,PRIORITY,FRAGMENTS,round(SIZE/1024,2) as SIZE,OSNAME,COMMENT
 						FROM download_history h LEFT JOIN download_available a ON h.pkg_id=a.fileid where hardware_id=$systemid and name is not null
 						union

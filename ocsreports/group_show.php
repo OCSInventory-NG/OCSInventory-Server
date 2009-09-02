@@ -113,8 +113,8 @@ if($_POST['MODIF_x']){
 }
 else{ //only show the botton for modify
 	$img_modif="<input title='".$l->g(115)."' type='image' src='image/modif.png' name='MODIF'>";
-	$name=textDecode($item->NAME);
-	$description=textDecode($item->DESCRIPTION);
+	$name=$item->NAME;
+	$description=$item->DESCRIPTION;
 	$button_valid="";
 	$button_reset="";
 }
@@ -122,14 +122,14 @@ else{ //only show the botton for modify
 echo "<form name='CHANGE' action='' method='POST'>";
 echo "<br><br><table align='center' width='65%' border='0' cellspacing=20 bgcolor='#C7D9F5' style='border: solid thin; border-color:#A1B1F9'>";
 echo "<tr>".$tdhd.$l->g(577).$tdhf.$tdhdpb.$name.$tdhfpb;
-echo $tdhd.$l->g(593).$tdhf.$tdhdpb.dateTimeFromMysql(textDecode($item->LASTDATE)).$tdhfpb;
+echo $tdhd.$l->g(593).$tdhf.$tdhdpb.dateTimeFromMysql($item->LASTDATE).$tdhfpb;
 if( ! $pureStat  )
 	echo "</tr><tr>".$tdhd.$l->g(594).$tdhf.$tdhdpb.date("F j, Y, g:i a",$item->CREATE_TIME ).$tdhfpb;
 echo "</tr><tr><td>&nbsp;</td></tr>";
 echo $tdhd.$l->g(615).$tdhf."<td  align='left' width='20%' colspan='3'>";
 if( ! $pureStat  ){
-	echo textDecode($item->REQUEST);
-//	echo textDecode($item->XMLDEF);
+	echo $item->REQUEST;
+
 	//affichage des requetes qui ont form� ce groupe
 	if ($item->XMLDEF != ""){
 		$tab_list_sql=regeneration_sql($item->XMLDEF);

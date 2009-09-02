@@ -934,8 +934,9 @@
 1013 MAINTENANCE
 1014 Passer en mode
 1015 Mode de fonctionnement
-
-
+1016 Identifiant ROOT
+1017 Mot de passe ROOT
+1018 (Laisser à vide pour une connexion anonyme)
 5000 [DEBUG]requête d'insertion de machines =>[DEBUG]
 5001 [DEBUG]REQUETE JOUEE => [DEBUG]
 5002 [DEBUG] => poids: [DEBUG]

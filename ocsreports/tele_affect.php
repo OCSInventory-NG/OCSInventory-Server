@@ -152,7 +152,6 @@ echo "<table align='center'><tr><td>".$l->g(696)." <select id='action_affect' na
               <option value='2' onclick='document.getElementById(\"groups\").style.display=\"none\";document.getElementById(\"server\").style.display=\"block\";'>".$l->g(698)."</option>
      </select></td></tr></table>";
 }
-//echo "<table><tr><td>choix:</td><td><input type='text' name='".$input_name."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\">";
 if( isset($_GET["systemid"]))
 	$canAc = 3; //preferences.php must set systemid in query string
 $lbl = "pack";

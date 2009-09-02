@@ -407,7 +407,7 @@ function printNavigation( $lesGets, $numPages) {
 		echo "<p align='center'>";
 		if( $numPages > 1 ) {			
 			if( $_SESSION["pageCur"] == 1) {				
-				echo "&nbsp;&nbsp;";//voir grisé
+				echo "&nbsp;&nbsp;";//voir grisï¿½
 				echo "&nbsp;&nbsp;1&nbsp;..";							
 			} else {
 				echo "&nbsp;&nbsp;{$prefG}-1><img src='image/prec24.png'></a>";
@@ -420,7 +420,7 @@ function printNavigation( $lesGets, $numPages) {
 			
 			if( $_SESSION["pageCur"] >= $numPages) {
 				echo "..&nbsp;&nbsp;$numPages&nbsp;";
-				//echo "<img src='image/proch24.png'>&nbsp;&nbsp;"; voir grisé
+				//echo "<img src='image/proch24.png'>&nbsp;&nbsp;"; voir grisï¿½
 			} else {
 				echo "..&nbsp;{$prefG}$numPages>$numPages</a>&nbsp;";
 				echo "{$prefG}-2><img src='image/proch24.png'></a>&nbsp;&nbsp;";
@@ -584,12 +584,7 @@ function getConstructor( $mac ) {
   * @param txt Text to be decoded
   * @return Text decoded from UTF8 according to UTF8_DEGREE
   */
-function textDecode( $txt ) {
-	for( $i=0; $i<UTF8_DEGREE; $i++ ) {
-		$txt = utf8_decode( $txt );
-	}
-	return $txt;
-}
+
 
 
 function getGluedIds( $reqSid ) {

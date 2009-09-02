@@ -9,11 +9,11 @@
 	echo "<tr>";
 	echo $td1."JAVANAME </td> ".$td1." JAVAPATHLEVEL </td> ".$td1."JAVACOUNTRY</td>".$td1."JAVACLASSPATH</td>".$td1."JAVAHOME</td></tr>";
 	echo "<tr>";
-	echo "$td2".textDecode($item->JAVANAME)."</td>
-	      $td2".textDecode($item->JAVAPATHLEVEL)."</td>
-	      $td2".textDecode($item->JAVACOUNTRY)."</td>
-	      $td2".textDecode($item->JAVACLASSPATH)."</td>
-	      $td2".textDecode($item->JAVAHOME)."</td>";
+	echo "$td2".$item->JAVANAME."</td>
+	      $td2".$item->JAVAPATHLEVEL."</td>
+	      $td2".$item->JAVACOUNTRY."</td>
+	      $td2".$item->JAVACLASSPATH."</td>
+	      $td2".$item->JAVAHOME."</td>";
 	echo "</tr>";
 	echo "</table><br>";
 	if (!isset($_POST['SHOW']))

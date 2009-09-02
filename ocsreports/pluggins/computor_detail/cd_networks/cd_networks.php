@@ -30,7 +30,7 @@
 		$sql="select MACADDR from networks WHERE (hardware_id=$systemid)";
 		$resultDetails = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 		while($item = mysql_fetch_object($resultDetails)){
-			$sql="select ID from blacklist_macaddresses where macaddress='".textDecode($item->MACADDR)."'";		
+			$sql="select ID from blacklist_macaddresses where macaddress='".$item->MACADDR."'";		
 			$result = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 			if (mysql_num_rows($result) == 1){
 				$tab_options['OTHER'][$l->g(95)][$item->MACADDR]=$item->MACADDR;

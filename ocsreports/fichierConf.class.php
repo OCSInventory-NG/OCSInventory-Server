@@ -9,7 +9,7 @@
 // Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 //====================================================================================
 //Modified on $Date: 2006/12/21 18:13:46 $$Author: plemmet $($Revision: 1.4 $)
-
+$tab_dont_see=array(527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545);
 class language
 {		
 	var  	$tableauMots;    // tableau contenant tous les mots du fichier 			
@@ -60,7 +60,7 @@ class language
 	}		
 	function g($i)
 	{
-		//print_r($this);
+		global $tab_dont_see;
 		//If word doesn't exist for language, return default english word 
 		if ($this->tableauMots[$i] == NULL) {
 			$defword = new language(english);
@@ -69,6 +69,7 @@ class language
 			$word=$this->tableauMots[$i]; 
 		//language mode
 		if ($_SESSION['MODE_LANGUAGE']=="ON"){
+			if (!in_array($i, $tab_dont_see))
 			$_SESSION['EDIT_LANGUAGE'][$i]=$word;
 			$word.="{<i><b>".$i."</b></i>}";		
 		}

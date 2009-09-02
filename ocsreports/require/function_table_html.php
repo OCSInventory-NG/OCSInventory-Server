@@ -212,10 +212,10 @@ function show_modif($name,$input_name,$input_type,$input_reload = "",$configinpu
 	//echo $configinput['JAVASCRIPT'];
 	//global $_POST;
 	if ($input_type == 1){
-		return "<textarea name='".$input_name."' id='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".textDecode($name)."</textarea>";
+		return "<textarea name='".$input_name."' id='".$input_name."' cols='30' rows='5' onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\"\>".$name."</textarea>";
 	
 	}elseif ($input_type ==0)
-	return "<input type='text' name='".$input_name."' id='".$input_name."' SIZE='".$configinput['SIZE']."' MAXLENGTH='".$configinput['MAXLENGTH']."' value=\"".textDecode($name)."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\" ".$configinput['JAVASCRIPT'].">";
+	return "<input type='text' name='".$input_name."' id='".$input_name."' SIZE='".$configinput['SIZE']."' MAXLENGTH='".$configinput['MAXLENGTH']."' value=\"".$name."\" onFocus=\"this.style.backgroundColor='white'\" onBlur=\"this.style.backgroundColor='#C7D9F5'\" ".$configinput['JAVASCRIPT'].">";
 	elseif($input_type ==2){
 		
 		$champs="<select name='".$input_name."' id='".$input_name."' ".$configinput['JAVASCRIPT'];
@@ -964,12 +964,6 @@ function gestion_donnees($sql_data,$list_fields,$tab_options,$form_name,$default
 					$value_of_field=stripslashes($donnees[$no_alias_value]);
 					}else
 					$value_of_field=$donnees[$no_alias_value];
-//					//passage en mode xml
-//					$value_of_field=xml_encode( $donnees[$no_alias_value] );
-//					//passage en UTF-8
-//					$value_of_field = textDecode($value_of_field);
-//					//passage en mode normal
-//					$value_of_field = xml_decode($value_of_field);
 				}
 				$col[$i]=$key;
 				if ($_POST['sens'] == "ASC")

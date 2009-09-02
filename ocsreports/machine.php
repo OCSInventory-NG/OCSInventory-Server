@@ -49,7 +49,7 @@ foreach ($lbl_affich as $key=>$lbl){
 			$memory = $item->$key;
 		$data[$key]=$memory;
 	}elseif ($key == "LASTDATE" or $key == "LASTCOME"){
-		$data[$key]=dateTimeFromMysql(textDecode($item->$key));
+		$data[$key]=dateTimeFromMysql($item->$key);
 	}
 	elseif ($key == "NAME_RZ"){
 		$data[$key]="";
@@ -69,7 +69,7 @@ foreach ($lbl_affich as $key=>$lbl){
 
 $bandeau=bandeau($data,$lbl_affich);
 
-//récupération des pluggins existants
+//rï¿½cupï¿½ration des pluggins existants
 $Directory=$_SESSION['plugin_rep']."computor_detail/";
 if (file_exists($Directory."config.txt")){
 		$fd = fopen ($Directory."config.txt", "r");
@@ -98,7 +98,7 @@ if (file_exists($Directory."config.txt")){
 	//print_r($list_pluggins);
 	}
 
-//par défaut, on affiche les données admininfo
+//par dï¿½faut, on affiche les donnï¿½es admininfo
 if (!isset($_GET['option'])){
 	$_GET['option']="cd_admininfo";
 }
@@ -111,7 +111,7 @@ $index_tab=0;
 $show_all=array();
 while ($list_pluggins[$i]){
 	unset($valavail);
-	//vérification de l'existance des données
+	//vï¿½rification de l'existance des donnï¿½es
 	if (isset($list_avail[$list_pluggins[$i]])){
 		$sql_avail="select count(*) from ".$list_avail[$list_pluggins[$i]]." where hardware_id=".$systemid;
 		$resavail = mysql_query( $sql_avail, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));

@@ -20,14 +20,14 @@
 	$resultDetails = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	$item = mysql_fetch_object($resultDetails);	
 	$result = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
-	$sql="select ID from blacklist_serials where SERIAL='".textDecode($item->SSN)."'";		
+	$sql="select ID from blacklist_serials where SERIAL='".$item->SSN."'";		
 	$result = mysql_query($sql, $_SESSION["readServer"]) or die(mysql_error($_SESSION["readServer"]));
 	if ($_SESSION["lvluser"]==SADMIN){
 		if ( mysql_num_rows($result) == 1 ){	
-			$tab_options['OTHER'][$l->g(36)][textDecode($item->SSN)]=textDecode($item->SSN);
+			$tab_options['OTHER'][$l->g(36)][$item->SSN]=$item->SSN;
 			$tab_options['OTHER']['IMG']='image/red.png';	   
 		}else{
-			$tab_options['OTHER_BIS'][$l->g(36)][textDecode($item->SSN)]=textDecode($item->SSN);
+			$tab_options['OTHER_BIS'][$l->g(36)][$item->SSN]=$item->SSN;
 			$tab_options['OTHER_BIS']['IMG']='image/green.png';
 		}
 	}
