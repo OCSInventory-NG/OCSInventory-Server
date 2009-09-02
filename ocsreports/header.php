@@ -120,7 +120,7 @@ require_once('backend/identity/identity.php');
 /**********************************************************gestion des droits sur l'ipdiscover****************************************************/
 if (!isset($_SESSION["ipdiscover"]) and $_GET[PAG_INDEX] == $pages_refs['ipdiscover'])
 require_once('backend/ipdiscover/ipdiscover.php');
-elseif($_GET[PAG_INDEX] != 3)
+elseif($_GET[PAG_INDEX] != $pages_refs['ipdiscover'])
 unset($_SESSION['ipdiscover']);
 
 /*********************************************************gestion de la suppression automatique des machines trop vieilles*************************/
