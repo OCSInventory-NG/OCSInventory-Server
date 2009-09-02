@@ -156,13 +156,15 @@ function class_weight($list_sql){
 //fonction qui permet de prendre en compte les requ�tes interm�diaires pour 
 //la cr�ation des groupes dynamiques
 function traitement_cache($sql_temp,$field_modif,$field_value,$field_value_complement){
+
 	if ($sql_temp != ""){
 		if ($field_modif == "field_value")
 			$field_value= " (".$sql_temp.") ";
 		else
 			$field_value_complement= " IN (".$sql_temp.") ";
 	}			
-	return array('field_value'=>$field_value,'field_value_complement'=>$field_value_complement);
+	$toto= array('field_value'=>$field_value,'field_value_complement'=>$field_value_complement);
+	return $toto;
 }
 
 //fonction qui permet de passer en SESSION
@@ -175,7 +177,12 @@ function sql_group_cache($cache_sql){
 		foreach ($cache_sql['NORMAL'] as $poids=>$list){
 			$i=0;
 			while ($list[$i]){
-			$_SESSION['SEARCH_SQL_GROUP'][]=$list[$i];
+				$fin_sql="";
+				if (substr_count($list[$i],"from hardware"))
+ 					$fin_sql=" and deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' ";
+ 				else
+ 					$fin_sql="";
+			$_SESSION['SEARCH_SQL_GROUP'][]=$list[$i].$fin_sql;
 			$i++;
 			}
 		
@@ -186,7 +193,12 @@ function sql_group_cache($cache_sql){
 		foreach ($cache_sql['DIFF'] as $poids=>$list){
 			$i=0;
 			while ($list[$i]){
-			$_SESSION['SEARCH_SQL_GROUP'][]="select distinct id as HARDWARE_ID from hardware where id not in (".$list[$i].")";
+				$fin_sql="";
+				if (substr_count($list[$i],"from hardware"))
+ 					$fin_sql=" and deviceid<>'_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_' ";
+ 				else
+ 					$fin_sql="";
+				$_SESSION['SEARCH_SQL_GROUP'][]="select distinct id as HARDWARE_ID from hardware where id not in (".$list[$i].")".$fin_sql;
 			$i++;
 			}
 		
