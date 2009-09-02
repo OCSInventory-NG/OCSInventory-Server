@@ -5,7 +5,7 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
-
+require ('fichierConf.class.php');
 $header_html="NO";
 require_once("header.php");
 $link=$_SESSION["readServer"];	
@@ -93,7 +93,7 @@ elseif (!$_SESSION['DATA_CACHE'][$_GET['tablename']][199]){
 		
 	}
 	//print_r($data_fixe);
-	//gestion de la requete de résultat
+	//gestion de la requete de rï¿½sultat
 	$result=mysql_query($_SESSION['cvs'][$_GET['tablename']], $link) or die(mysql_error($link));
 	$i=0;
 	while( $cont = mysql_fetch_array($result,MYSQL_ASSOC) ) {
