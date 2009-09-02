@@ -83,7 +83,7 @@ if (isset($_POST['Valid_EDITION_x'])){
 		}else{
 			$_SESSION['LANGUAGE_FILE']->tableauMots[$_POST['ID_WORD']]=$_POST['UPDATE'];
 		}
-		$sql="update language set json_value = '".mysql_real_escape_string(json_encode($_SESSION['LANGUAGE_FILE']->tableauMots))."'
+		$sql="update languages set json_value = '".mysql_real_escape_string(json_encode($_SESSION['LANGUAGE_FILE']->tableauMots))."'
 				where name= '".$_SESSION['LANGUAGE']."'"; 
 		if( ! @mysql_query( $sql, $_SESSION["writeServer"] ))
 				echo mysql_error($_SESSION["writeServer"]);
