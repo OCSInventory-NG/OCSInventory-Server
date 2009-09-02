@@ -27,7 +27,7 @@ require_once('require/function_ipdiscover.php');
 		foreach ($dpt as $key=>$value){
 			$list_index[$key]=$value;
 		}
-		 echo show_modif($list_index,'DPT_CHOISE',2,$form_name);
+		 echo $l->g(562).show_modif($list_index,'DPT_CHOISE',2,$form_name);
  	}
 	 if (isset($_POST['DPT_CHOISE']) and $_POST['DPT_CHOISE'] != ''){
 	 	
