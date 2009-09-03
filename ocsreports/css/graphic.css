@@ -1,6 +1,0 @@
-/* Percent bar */
-div.percent_bar { height:14px; width:102px; text-align:left; border:1px solid #808080; -moz-border-radius:3px; }
-div.percent_status { height:12px; position:absolute; z-index:1; background-color:#C3D9FF;font-size:1px; border:1px solid #FFFFFF; -moz-border-radius:3px; }
-div.percent_text { height:12px; position:absolute; z-index:2; width:100px; font-size:11px;
-text-align:center; font-family:arial; color:#000000;
-font-weight:bold; }
