@@ -289,7 +289,7 @@ our %DATA_MAP= (
        TYPE => {},
        TYPEMIB => {},
        SPEED => {},
-       MACADDR => {},
+       MACADDR => { fallback => '00:00:00:00:00:00' },
        STATUS => {},
        IPGATEWAY => {},
        IPDHCP => {}
