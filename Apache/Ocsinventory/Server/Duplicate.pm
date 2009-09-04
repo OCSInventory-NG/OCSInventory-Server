@@ -97,6 +97,8 @@ sub _duplicate_evaluate{
   $exist->{$key}->{'MASK'}|=DUP_SERIAL_FL if $exist->{$key}->{'SSN'};
   $exist->{$key}->{'MASK'}|=DUP_MACADDR_FL if $exist->{$key}->{'MACADDRESS'};
   $exist->{$key}->{'MASK'}|=DUP_SMODEL_FL if $exist->{$key}->{'SMODEL'};
+  $exist->{$key}->{'MASK'}|=DUP_UUID_FL if $exist->{$key}->{'UUID'};
+  $exist->{$key}->{'MASK'}|=DUP_ASSETTAG_FL if $exist->{$key}->{'ASSETTAG'};
   
   if((($ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'} & $exist->{$key}->{'MASK'})) == $ENV{'OCS_OPT_AUTO_DUPLICATE_LVL'}){
     return(1);
@@ -128,7 +130,7 @@ sub _duplicate_detect{
   $request->execute();
   push @bad_serial, $row->{SERIAL} while($row = $request->fetchrow_hashref());
   
-  # Have we already got the hostname
+  # Do we already have the hostname
   $request = $dbh->prepare('SELECT ID, NAME FROM hardware WHERE NAME=? AND ID<>? ORDER BY ID');
   $request->execute($result->{CONTENT}->{HARDWARE}->{NAME}, $DeviceID);
   while($row = $request->fetchrow_hashref()){
@@ -137,6 +139,23 @@ sub _duplicate_detect{
     }
   }
   
+  # Do we already have the assettag ?
+  $request = $dbh->prepare('SELECT ID, ASSETTAG FROM hardware WHERE ASSETTAG=? AND ID<>? ORDER BY ID');
+  $request->execute($result->{CONTENT}->{HARDWARE}->{ASSETTAG}, $DeviceID);
+  while($row = $request->fetchrow_hashref()){
+    if(!($row->{'ASSETTAG'} eq '')){
+      $exist->{$row->{'ID'}}->{'ASSETTAG'}=1;
+    }
+  }
+  # Do we already have the uuid ?
+  $request = $dbh->prepare('SELECT ID, UUID FROM hardware WHERE UUID=? AND ID<>? ORDER BY ID');
+  $request->execute($result->{CONTENT}->{HARDWARE}->{UUID}, $DeviceID);
+  while($row = $request->fetchrow_hashref()){
+    if(!($row->{'UUID'} eq '')){
+      $exist->{$row->{'ID'}}->{'UUID'}=1;
+    }
+  }
+
   # ...and one MAC of this machine
   for(@{$result->{CONTENT}->{NETWORKS}}){
     $request = $dbh->prepare('SELECT HARDWARE_ID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=? AND HARDWARE_ID<>?');
