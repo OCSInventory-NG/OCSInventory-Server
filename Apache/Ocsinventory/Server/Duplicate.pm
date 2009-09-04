@@ -219,8 +219,9 @@ sub _duplicate_replace{
   $dbh->do('DELETE FROM devices WHERE HARDWARE_ID=?', {}, $DeviceID) ;
   $dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
   $dbh->do('UPDATE itmgmt_comments SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
-
-  # The computer may not correspond to the previous group, as its inventory could potentially change
+  # We keep the static inclusions/exclusions (STATIC=1|2)
+  $dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=? WHERE STATIC=1 or STATIC=2', {}, $DeviceID, $device) ;
+  # The computer may not correspond to the previous dynamic groups, as its inventory could potentially change
   $dbh->do('DELETE FROM groups_cache WHERE HARDWARE_ID=?', {}, $device) ;
   
   # Drop old computer from "auto" tables in Map
