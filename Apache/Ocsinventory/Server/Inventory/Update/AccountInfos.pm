@@ -15,12 +15,9 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / 
-  _get_account_fields 
-  _accountinfo 
-/;
+our @EXPORT = qw/_get_account_fields  _accountinfo/;
 
-use Apache::Ocsinventory::Server::System qw / :server /;
+use Apache::Ocsinventory::Server::System qw/ :server /;
 
 sub _get_account_fields{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
@@ -43,8 +40,16 @@ sub _accountinfo{
   # We have to look for the field's names because this table has a dynamic structure
   my ($row, $request, $accountkey, @accountFields);
   @accountFields = _get_account_fields();
-	
-  if(!$Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'} or $lost){
+
+  # The default behavior of the server is to ignore TAG changes from the
+  # agent
+  if(
+  $ENV{OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT}
+  ||
+  !$Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'}
+  ||
+  $lost
+  ){
   # writing (if new id, but duplicate, it will be erased at the end of the execution)
     $dbh->do('INSERT INTO accountinfo(HARDWARE_ID) VALUES(?)', {}, $hardwareId);
 # Now, we know what are the account info name fields
