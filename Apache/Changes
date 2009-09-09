@@ -1,4 +1,5 @@
 Revision history for Apache::Ocsinventory
+	* Added description field to printers section
 	* Use of hardware.UUID and hardware.ASSETTAG in duplicates detection
  	* Duplicates mgmt: Now removing current device from dynamic groups and keep the static groups membership
 	* The SOAP service is now able to share data with engine in +w mode by the use of ::System::_lock()
