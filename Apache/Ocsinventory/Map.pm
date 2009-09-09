@@ -307,7 +307,8 @@ our %DATA_MAP= (
    fields =>  {
        NAME => {},
        DRIVER => {},
-       PORT => {}
+       PORT => {},
+       DESCRIPTION => {}
    }
   },
 
