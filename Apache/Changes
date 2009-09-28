@@ -1,4 +1,5 @@
 Revision history for Apache::Ocsinventory
+	* Added virtual device detection for a network iface
 	* Added description field to printers section
 	* Use of hardware.UUID and hardware.ASSETTAG in duplicates detection
  	* Duplicates mgmt: Now removing current device from dynamic groups and keep the static groups membership
