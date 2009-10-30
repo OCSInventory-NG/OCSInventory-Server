@@ -88,17 +88,23 @@ sub _build_group_cache{
   my $dbh_sl = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_SL_HANDLE'};
   my $offset = int rand($ENV{OCS_OPT_GROUPS_CACHE_OFFSET});
   
+  my (@ids,@quoted_ids);
+  my ($id_field, $error);
+
+  # Build cache request
+  my $build_cache = $dbh->prepare('INSERT INTO groups_cache(GROUP_ID, HARDWARE_ID, STATIC) VALUES(?,?,0)');
+  my $delete_cache = 'DELETE FROM groups_cache WHERE GROUP_ID=? AND STATIC=0';
+
   # Retrieving the group request. It must be a SELECT statement on ID(hardware)
-  my $get_request = $dbh->prepare('SELECT REQUEST FROM groups WHERE HARDWARE_ID=?');
+  my $get_request = $dbh->prepare('SELECT REQUEST,XMLDEF FROM groups WHERE HARDWARE_ID=?');
   $get_request->execute( $group_id );
   my $row = $get_request->fetchrow_hashref();
-  if($row->{'REQUEST'} ne ''){
+  # legacy: one request per group
+  if($row->{'REQUEST'} ne '' and $row->{'REQUEST'} ne 'NULL' ){
     my $group_request = $dbh_sl->prepare( $row->{'REQUEST'} );
     if($group_request->execute()){
-            # Build cache request
-        my $build_cache = $dbh->prepare('INSERT INTO groups_cache(GROUP_ID, HARDWARE_ID, STATIC) VALUES(?,?,0)');
       # Deleting the current cache
-      $dbh->do('DELETE FROM groups_cache WHERE GROUP_ID=? AND STATIC=0', {}, $group_id);
+      $dbh->do($delete_cache, {}, $group_id);
       # Build the cache
       while( my @cache = $group_request->fetchrow_array() ){
         $build_cache->execute($group_id, $cache[0]);
@@ -108,9 +114,61 @@ sub _build_group_cache{
       &_log(520,'groups','bad_request('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
+  # New behaviour : multiple requests for one group xml encoded
+  elsif( $row->{'XMLDEF'} ne '' and $row->{'XMLDEF'} ne 'NULL' ){
+    my $xml = XML::Simple::XMLin($row->{'XMLDEF'}, ForceArray => ['REQUEST'] );
+
+    for my $request (@{$xml->{REQUEST}}){
+      if(@ids){
+        for(@ids){
+	  push @quoted_ids, $dbh_sl->quote($_);
+	}
+
+	# When request is from hardware, the id is called "ID", if not "HARDWARE_ID"
+	if( $request =~ /^select\s+(distinct\s+)?ID/i ){
+	  $id_field = 'ID';
+	}
+	else{
+	  $id_field = 'HARDWARE_ID';
+	}
+
+        my $string = join ",", @quoted_ids;
+        $request = $request." AND $id_field IN ($string)";
+	@ids=@quoted_ids=();
+      }
+
+      my $group_request = $dbh_sl->prepare( $request );
+      unless($group_request->execute){
+        &_log(520,'groups','bad_request('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
+	last;
+      }
+      # If no results for one request, we stop the computing (always AND statements)
+      if(!$group_request->rows){
+         &_log(307,'groups','empty') if $ENV{'OCS_OPT_LOGLEVEL'};
+         @ids=@quoted_ids=();
+	 $error = 1;
+      }
+      while( my @cache = $group_request->fetchrow_array() ){
+        push @ids, $cache[0];
+      }
+    }
+    # Deleting the current cache
+    $dbh->do($delete_cache, {}, $group_id);
+
+    unless($error){
+      # Build the cache
+      for( @ids ){
+        $build_cache->execute($group_id, $_);
+      }
+    }
+    else{
+      &_log(520,'groups','will not build('.$row->{'HARDWARE_ID'}.')') if $ENV{'OCS_OPT_LOGLEVEL'};
+    }
+  }
+
 # Updating cache time
   $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(), REVALIDATE_FROM=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
-  &_log(307,'groups', "revalidate_cache($group_id)") if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(307,'groups', "revalidate_cache($group_id(".scalar @ids."))") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 1;
 
