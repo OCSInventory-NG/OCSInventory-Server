@@ -108,6 +108,7 @@ sub _build_group_cache{
       # Build the cache
       while( my @cache = $group_request->fetchrow_array() ){
         $build_cache->execute($group_id, $cache[0]);
+        push @ids, $cache[0] ;
       }
     }
     else{
