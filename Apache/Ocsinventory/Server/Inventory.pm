@@ -147,7 +147,13 @@ sub _post_inventory{
         }
       }
       # If there is something new in the table
-      $up = 1 if(@accountFields != @{$result->{CONTENT}->{ACCOUNTINFO}});
+      if(
+          !exists($result->{CONTENT}->{ACCOUNTINFO})
+          ||
+          @accountFields != @{$result->{CONTENT}->{ACCOUNTINFO}}
+      ) {
+          $up = 1 
+      }
       
       if($up){
         # we write the xml data
