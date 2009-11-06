@@ -297,7 +297,13 @@ echo
 echo "Checking for Apache user account" >> $SETUP_LOG
 if [ -z "$APACHE_USER" ]
 then
-    APACHE_USER_FOUND=`cat $APACHE_CONFIG_FILE | grep "User " | tail -1 | cut -d' ' -f2`
+    # Debian
+    if [ -f /etc/apache2/envvars ]; then
+        . /etc/apache2/envvars
+        APACHE_USER_FOUND=$APACHE_RUN_USER
+    else
+        APACHE_USER_FOUND=`cat $APACHE_CONFIG_FILE | grep "User " | tail -1 | cut -d' ' -f2`
+    fi
 fi
 echo "Found Apache user account $APACHE_USER_FOUND" >> $SETUP_LOG
 # Ask user's confirmation 
@@ -333,7 +339,14 @@ echo
 echo "Checking for Apache group" >> $SETUP_LOG
 if [ -z "$APACHE_GROUP" ]
 then
-    APACHE_GROUP_FOUND=`cat $APACHE_CONFIG_FILE | grep "Group" | tail -1 | cut -d' ' -f2`
+    # Debian
+    if [ -f /etc/apache2/envvars ]; then
+        . /etc/apache2/envvars
+        APACHE_GROUP_FOUND=$APACHE_RUN_GROUP
+    else
+        APACHE_GROUP_FOUND=`cat $APACHE_CONFIG_FILE | grep "Group" | tail -1 | cut -d' ' -f2`
+    fi
+
     if [ -z "$APACHE_GROUP_FOUND" ]
     then
         # No group found, assume group name is the same as account
