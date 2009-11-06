@@ -58,7 +58,6 @@ our %DATA_MAP= (
        FIDELITY => {},
        SSTATE => { noXml => 1 },
        USERAGENT => { noXml => 1 },
-       ASSETTAG => {},
        IPSRC => {}
      },
   },
@@ -91,7 +90,8 @@ our %DATA_MAP= (
        BMANUFACTURER => {},
        BVERSION => {},
        BDATE => {},
-       TYPE => {}
+       TYPE => {},
+       ASSETTAG => {},
    }
   },
      
@@ -292,7 +292,8 @@ our %DATA_MAP= (
        MACADDR => { fallback => '00:00:00:00:00:00' },
        STATUS => {},
        IPGATEWAY => {},
-       IPDHCP => {}
+       IPDHCP => {},
+       VIRTUALDEV => {}
    }
   },
   
