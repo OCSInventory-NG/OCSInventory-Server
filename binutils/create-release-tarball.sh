@@ -14,5 +14,7 @@ rm -rf OCSNG_UNIX_SERVER-$RELEASE/.bzr
 cd OCSNG_UNIX_SERVER-$RELEASE
 bzr branch https://code.launchpad.net/ocsinventory-ocsreports/stable ocsreports
 rm -rf ocsreports/.bzr
+# Reset the default settings so install.php will be correctly loaded
+rm ocsreports/dbconfig.inc.php
 cd ..
 tar cfz OCSNG_UNIX_SERVER-$RELEASE.tar.gz OCSNG_UNIX_SERVER-$RELEASE
