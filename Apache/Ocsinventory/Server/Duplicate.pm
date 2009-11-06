@@ -140,7 +140,7 @@ sub _duplicate_detect{
   }
   
   # Do we already have the assettag ?
-  $request = $dbh->prepare('SELECT HARDWARE_ID, ASSETTAG FROM bios WHERE ASSETTAG=? AND ID<>? ORDER BY ID');
+  $request = $dbh->prepare('SELECT HARDWARE_ID, ASSETTAG FROM bios WHERE ASSETTAG=? AND HARDWARE_ID<>? ORDER BY HARDWARE_ID');
   $request->execute($result->{CONTENT}->{BIOS}->{ASSETTAG}, $DeviceID);
   while($row = $request->fetchrow_hashref()){
     if(!($row->{'ASSETTAG'} eq '')){

@@ -297,7 +297,13 @@ echo
 echo "Checking for Apache user account" >> $SETUP_LOG
 if [ -z "$APACHE_USER" ]
 then
-    APACHE_USER_FOUND=`cat $APACHE_CONFIG_FILE | grep "User " | tail -1 | cut -d' ' -f2`
+    # Debian
+    if [ -f /etc/apache2/envvars ]; then
+        . /etc/apache2/envvars
+        APACHE_USER_FOUND=$APACHE_RUN_USER
+    else
+        APACHE_USER_FOUND=`cat $APACHE_CONFIG_FILE | grep "User " | tail -1 | cut -d' ' -f2`
+    fi
 fi
 echo "Found Apache user account $APACHE_USER_FOUND" >> $SETUP_LOG
 # Ask user's confirmation 
@@ -333,7 +339,14 @@ echo
 echo "Checking for Apache group" >> $SETUP_LOG
 if [ -z "$APACHE_GROUP" ]
 then
-    APACHE_GROUP_FOUND=`cat $APACHE_CONFIG_FILE | grep "Group" | tail -1 | cut -d' ' -f2`
+    # Debian
+    if [ -f /etc/apache2/envvars ]; then
+        . /etc/apache2/envvars
+        APACHE_GROUP_FOUND=$APACHE_RUN_GROUP
+    else
+        APACHE_GROUP_FOUND=`cat $APACHE_CONFIG_FILE | grep "Group" | tail -1 | cut -d' ' -f2`
+    fi
+
     if [ -z "$APACHE_GROUP_FOUND" ]
     then
         # No group found, assume group name is the same as account
@@ -600,7 +613,6 @@ then
     
     # jump to communication server directory
     echo "Entering Apache sub directory" >> $SETUP_LOG
-    cd "Apache"
     
     # Check for required Perl Modules (if missing, please install before)
     #    - DBI 1.40 or higher
@@ -748,6 +760,7 @@ then
     echo "+----------------------------------------------------------+"
     echo
     echo "Configuring Communication server (perl Makefile.PL)" >> $SETUP_LOG
+    cd "Apache"
     $PERL_BIN Makefile.PL
     if [ $? -ne 0 ]
     then
@@ -795,6 +808,7 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    cd ".."
 
     echo
     echo "+----------------------------------------------------------+"
@@ -842,6 +856,7 @@ then
     fi
     echo "Configuring logrotate for Communication server."
     echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> $SETUP_LOG
+pwd
     cp etc/logrotate.d/$COM_SERVER_LOGROTATE_CONF_FILE logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
     echo "******** Begin updated logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
@@ -927,7 +942,6 @@ then
     echo "+----------------------------------------------------------+"
     echo
     echo "Leaving Apache directory" >> $SETUP_LOG
-    cd ".."
     echo "Communication server installation successfull" >> $SETUP_LOG
 fi
 
@@ -1210,7 +1224,7 @@ then
     
     echo "Configuring IPDISCOVER-UTIL Perl script."
     echo "Configuring IPDISCOVER-UTIL Perl script (ed ipdiscover-util.pl)" >> $SETUP_LOG
-    cp Apache/binutils//ipdiscover-util.pl ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
+    cp binutils/ipdiscover-util.pl ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
     $PERL_BIN -pi -e "s#localhost#$DB_SERVER_HOST#g" ipdiscover-util.pl.local
     $PERL_BIN -pi -e "s#3306#$DB_SERVER_PORT#g" ipdiscover-util.pl.local
 #    echo "******** Begin updated ipdiscover-util.pl.local script ***********" >> $SETUP_LOG
@@ -1246,7 +1260,7 @@ then
     fi
     
     echo "Configuring Apache web server (file $ADM_SERVER_APACHE_CONF_FILE)" >> $SETUP_LOG
-    cp Apache/etc/ocsinventory/$ADM_SERVER_APACHE_CONF_FILE $ADM_SERVER_APACHE_CONF_FILE.local
+    cp etc/ocsinventory/$ADM_SERVER_APACHE_CONF_FILE $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#OCSREPORTS_ALIAS#$ADM_SERVER_REPORTS_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PATH_TO_OCSREPORTS_DIR#$ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#IPD_ALIAS#$ADM_SERVER_IPD_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
