@@ -239,7 +239,8 @@ sub _duplicate_replace{
   $dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
   $dbh->do('UPDATE itmgmt_comments SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
   # We keep the static inclusions/exclusions (STATIC=1|2)
-  $dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=? WHERE STATIC=1 or STATIC=2', {}, $DeviceID, $device) ;
+  $dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND
+      (STATIC=1 OR STATIC=2)', {}, $DeviceID, $device) ;
   # The computer may not correspond to the previous dynamic groups, as its inventory could potentially change
   $dbh->do('DELETE FROM groups_cache WHERE HARDWARE_ID=?', {}, $device) ;
   
