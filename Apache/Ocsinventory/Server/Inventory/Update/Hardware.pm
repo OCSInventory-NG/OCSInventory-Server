@@ -52,7 +52,7 @@ sub _hardware{
 	DEFAULTGATEWAY=".$dbh->quote($base->{DEFAULTGATEWAY}).",
 	ETIME=NULL,
 	$userid
-	TYPE=".(defined($base->{TYPE})?$base->{TYPE}:0).",
+	TYPE=".(defined($base->{TYPE})?$dbh->quote($base->{TYPE}):0).",
 	DESCRIPTION=".$dbh->quote($base->{DESCRIPTION}).",
 	WINCOMPANY=".$dbh->quote($base->{WINCOMPANY}).",
 	WINOWNER=".$dbh->quote($base->{WINOWNER}).",
