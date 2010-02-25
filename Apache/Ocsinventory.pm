@@ -27,7 +27,7 @@ BEGIN{
   }
 }
 
-$Apache::Ocsinventory::VERSION = '1.02';
+$Apache::Ocsinventory::VERSION = '1.3';
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;
