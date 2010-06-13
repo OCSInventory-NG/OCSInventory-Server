@@ -35,6 +35,7 @@ our @EXPORT = qw/
 	PROLOG_CONTINUE
 	INVENTORY_STOP
 	INVENTORY_CONTINUE
+   	BAD_USERAGENT
 /;
 
 use constant PROLOG_RESP_BREAK => 0;
@@ -56,6 +57,7 @@ use constant DUP_UUID_FL     => 16 ;
 use constant DUP_ASSETTAG_FL => 32 ;
 
 use constant PROLOG_STOP => 1;
+use constant BAD_USERAGENT => 2;
 use constant PROLOG_CONTINUE => 0;
 use constant INVENTORY_STOP => 1;
 use constant INVENTORY_CONTINUE => 0;
