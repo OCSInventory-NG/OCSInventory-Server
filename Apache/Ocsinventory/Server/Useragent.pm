@@ -47,6 +47,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 my %ocsagents = ( 		
    'OCS-NG_unified_unix_agent' => undef,
    'OCS-NG_windows_client' => [4032,4061],
+   'OCS-NG_WINDOWS_AGENT' => undef,
 );
 
 sub useragent_prolog_read{
