@@ -57,8 +57,6 @@ sub useragent_prolog_read{
   my $useragent = $current_context->{'USER_AGENT'};
   my $srvver = $Apache::Ocsinventory::VERSION;
 
-    &_log(200,'useragent',"USERAGNET=$useragent");
-
   $useragent =~ m/(.*)_v(.*)$/;
   my ($agentname, $agentver) = ($1, $2);
 
@@ -76,7 +74,7 @@ sub useragent_prolog_read{
 
   #Does we have to stop PROLOG ?
   if ($stop) {
-    &_log(400,'useragent','Bad agent or agent version too recent for server !!');
+    &_log(400,'useragent','Bad agent or agent version too recent for server !!') if $ENV{'OCS_OPT_LOGLEVEL'};
     return BAD_USERAGENT;
   }
   else {
