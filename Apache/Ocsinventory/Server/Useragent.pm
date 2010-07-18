@@ -46,15 +46,18 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 #Special hash to define allowed agents to conent to OCS server
 my %ocsagents = ( 		
    'OCS-NG_unified_unix_agent' => undef,
-   'OCS-NG_windows_client' => [4032,4061],
+   'OCS-NG_windows_client' => [4032,4062],
    'OCS-NG_WINDOWS_AGENT' => undef,
 );
 
 sub useragent_prolog_read{
 
+  my $current_context=shift;
   my $stop = 1;  #We stop PROLOG by default
-  my $useragent = $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'};
+  my $useragent = $current_context->{'USER_AGENT'};
   my $srvver = $Apache::Ocsinventory::VERSION;
+
+    &_log(200,'useragent',"USERAGNET=$useragent");
 
   $useragent =~ m/(.*)_v(.*)$/;
   my ($agentname, $agentver) = ($1, $2);
