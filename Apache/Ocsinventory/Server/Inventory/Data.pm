@@ -120,7 +120,7 @@ sub _get_bind_values{
       $bind_value = _get_type_id($sectionMeta->{name}, $field, $bind_value);
     }
 
-    if($ENV{'OCS_UNICODE_SUPPORT'}) {
+    if($ENV{'OCS_OPT_UNICODE_SUPPORT'}) {
       my $utf8 = $bind_value;
       utf8::decode($utf8);
       push @$arrayToFeed, $utf8;
