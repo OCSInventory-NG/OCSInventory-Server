@@ -67,7 +67,7 @@ sub update_ip{
   my $hardwareId = $current_context->{'DATABASE_ID'};
   
   my $select_h_sql = 'SELECT IPADDR,MACADDR FROM hardware h,networks n WHERE IPADDR=IPADDRESS AND h.ID=?';
-  my $updateIp_sql = 'UPDATE networks SET IPADDRESS=?,IPMASK=? WHERE MACADDR=? AND HARDWARE_ID=?';
+  my $updateIp_sql = 'UPDATE networks SET IPGATEWAY=?, IPSUBNET=?, IPADDRESS=?,IPMASK=? WHERE MACADDR=? AND HARDWARE_ID=?';
   my $updateMainIp_sql = 'UPDATE hardware SET IPADDR=? WHERE ID=?';
   
   # Get default IP
@@ -81,7 +81,7 @@ sub update_ip{
   if( exists $result->{IFACE} ){
     for my $newIface ( @{$result->{IFACE}} ){
       next if !$newIface->{IP} or !$newIface->{MASK} or !$newIface->{MAC};
-      my $err = $dbh->do( $updateIp_sql, {},  $newIface->{IP}, $newIface->{MASK}, $newIface->{MAC}, $hardwareId );
+      my $err = $dbh->do( $updateIp_sql, {}, $newIface->{GW}, $newIface->{SUBNET}, $newIface->{IP}, $newIface->{MASK}, $newIface->{MAC}, $hardwareId );
       if( !$err ){
         &_log(530, 'notify', 'error');
       }
