@@ -406,7 +406,15 @@ our %CONFIG = (
     description => 'Configure engine to try other compress algorythm than raw zlib',
     level => CANSKIP,
     filter => qr '^(1|0)$'
-  }
+  },
+  SNMP => {
+    type => 'IVALUE',
+    default => 1,
+    unit => 'NA',
+    description => 'Activate SNMP scans feature',
+    level => IMPORTANT,
+    filter => qr '^(1|0)$'
+  },
 );
 
 sub get_settings{
