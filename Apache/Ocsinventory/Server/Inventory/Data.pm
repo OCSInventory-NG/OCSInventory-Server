@@ -41,6 +41,8 @@ sub _init_map{
     $sectionsMeta->{$section}->{field_filtered} = [];
     $sectionsMeta->{$section}->{field_cached} = {};
     ##############################################
+    #Don't process the sections that are use for capacities special inventory
+    next if $DATA_MAP{$section}->{capacities};
     # Don't process the non-auto-generated sections
     next if !$DATA_MAP{$section}->{auto};
     $sectionsMeta->{$section}->{multi} = 1 if $DATA_MAP{$section}->{multi};
