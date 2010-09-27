@@ -55,8 +55,10 @@ sub snmp_prolog_resp{
 
   my $current_context = shift;
   my $resp = shift;
-  my $select_req;
+  my $select_ip_req;
+  my $select_community_req;
   my @IpAddresses;
+  my @SnmpCommunities;
 
   #Verify if SNMP is enable for this computer or in config
   my $snmpSwitch = &_get_snmp_switch($current_context);
@@ -77,10 +79,10 @@ sub snmp_prolog_resp{
   if ($behaviour == 1 || $behaviour == 2) {
 
     #Getting non inventoried network devices for the agent subnet 
-    $select_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?) AND mac NOT IN (SELECT DISTINCT(macaddr) FROM network_devices)');
-    $select_req->execute($lanToDiscover,$lanToDiscover);
+    $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?) AND mac NOT IN (SELECT DISTINCT(macaddr) FROM network_devices)');
+    $select_ip_req->execute($lanToDiscover,$lanToDiscover);
 
-    while(my $row = $select_req->fetchrow_arrayref){
+    while(my $row = $select_ip_req->fetchrow_arrayref){
       push @IpAddresses,$$row[0];
     }
 
@@ -91,23 +93,30 @@ sub snmp_prolog_resp{
         'TYPE'     => 'DEVICE',
       };
     }
-    push @snmp,{
-      'NAME'       => 'public',
-      'VERSION'	 => 'snmpv2c',
-      'TYPE'       => 'COMMUNITY',
-    };
 
-    #push @snmp,{
-    #  'NAME'       => 'public',
-    #  'VERSION'	 => '3',
-    #  'USERNAME' => 'johnsmith',
-    #  'AUTHKEY' => 'authkey',
-    #  'AUTHPASSWD' => 'xxx',
-    #  'TYPE'       => 'COMMUNITY',
-    #};
+    #Getting snmp communities for scans
+    $select_community_req=$dbh->prepare('SELECT NAME,VERSION,USERNAME,AUTHKEY,AUTHPASSW FROM snmp_communities');
+    $select_community_req->execute();
 
+    while(my $row = $select_community_req->fetchrow_hashref){
+      push @SnmpCommunities,$row;
+    }
+
+    #Adding Snmp communities in XML
+    foreach my $community (@SnmpCommunities) {
+      push @snmp,{
+        'NAME' => $community->{NAME},
+        'VERSION' => $community->{VERSION},
+        'USERNAME' => $community->{USERNAME},
+        'AUTHKEY' => $community->{AUTHKEY},
+        'AUTHPASSW' => $community->{AUTHPASSW},
+        'TYPE' => 'COMMUNITY',
+      };
+    }
+
+    #Final XML
     push @{ $resp->{'OPTION'} },{
-      'NAME'   => ['SNMP'],
+      'NAME' => ['SNMP'],
       'PARAM' => \@snmp,
     };
   }
