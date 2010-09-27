@@ -102,14 +102,23 @@ sub snmp_prolog_resp{
       push @SnmpCommunities,$row;
     }
 
-    #Adding Snmp communities in XML
-    foreach my $community (@SnmpCommunities) {
+    if (@SnmpCommunities) {
+      #Adding Snmp communities in XML
+      foreach my $community (@SnmpCommunities) {
+        push @snmp,{
+          'NAME' => $community->{NAME},
+          'VERSION' => $community->{VERSION},
+          'USERNAME' => $community->{USERNAME},
+          'AUTHKEY' => $community->{AUTHKEY},
+          'AUTHPASSW' => $community->{AUTHPASSW},
+          'TYPE' => 'COMMUNITY',
+        };
+      }
+    } else {
+      #We add standard snmp v2 informations by default
       push @snmp,{
-        'NAME' => $community->{NAME},
-        'VERSION' => $community->{VERSION},
-        'USERNAME' => $community->{USERNAME},
-        'AUTHKEY' => $community->{AUTHKEY},
-        'AUTHPASSW' => $community->{AUTHPASSW},
+        'NAME' => 'public',
+        'VERSION' => 'snmpv2c',
         'TYPE' => 'COMMUNITY',
       };
     }
