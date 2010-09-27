@@ -52,12 +52,15 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 };
 
 sub snmp_prolog_resp{
-  return unless $ENV{'OCS_OPT_SNMP'};
 
   my $current_context = shift;
   my $resp = shift;
   my $select_req;
   my @IpAddresses;
+
+  #Verify if SNMP is enable for this computer or in config
+  my $snmpSwitch = &_get_snmp_switch($current_context);
+  return unless $snmpSwitch;
 
   #########
   #SNMP
@@ -111,9 +114,12 @@ sub snmp_prolog_resp{
 }
 
 sub snmp_handler{
-  return unless  $ENV{'OCS_OPT_SNMP'};
 
   my $current_context = shift;
+
+  #Verify if SNMP is enable for this computer or in config
+  my $snmpSwitch = &_get_snmp_switch($current_context);
+  return unless $snmpSwitch;
 
   my $dbh    = $current_context->{'DBI_HANDLE'};
   my $result  = $current_context->{'XML_ENTRY'};
@@ -135,7 +141,7 @@ sub snmp_handler{
   #return APACHE_SERVER_ERROR if &_update_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
 
   # That's all
-  &_log(101,'inventory','transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(101,'snmp','transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
 
   #Sending Response to the agent
   &_set_http_header('content-length', 0, $r);
@@ -148,5 +154,31 @@ sub snmp_duplicate{
 # Useful to manage duplicate with your own tables/structures when a computer is evaluated as a duplicate and replaced
   return 1;
 }
+
+sub _get_snmp_switch {
+  my $current_context = shift ;
+  my $groupsParams = $current_context->{'PARAMS_G'};
+  my $snmpSwitch ;
+
+  if($ENV{'OCS_OPT_SNMP'}){
+    $snmpSwitch = 1;
+    # Groups custom parameter
+    for(keys(%$groupsParams)){
+      $snmpSwitch = $$groupsParams{$_}->{'SNMP_SWITCH'}->{'IVALUE'}
+        if exists( $$groupsParams{$_}->{'SNMP_SWITCH'}->{'IVALUE'} )
+        and $$groupsParams{$_}->{'SNMP_SWITCH'}->{'IVALUE'} < $snmpSwitch;
+    }
+  }
+  else{
+    $snmpSwitch = 0;
+  }
+
+  #Computer custom parameter
+  $snmpSwitch = $current_context->{'PARAMS'}{'SNMP_SWITCH'}->{'IVALUE'}
+    if defined($current_context->{'PARAMS'}{'SNMP_SWITCH'}->{'IVALUE'}) and $snmpSwitch;
+
+  return ($snmpSwitch);
+}
+
 1;
 
