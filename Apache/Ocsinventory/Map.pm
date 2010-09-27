@@ -497,6 +497,7 @@ javainfo => {
        LOCATION => {},
        UPTIME => {},
        DOMAIN => {},
+       LASTDATE => {},
    }
   },
 

@@ -138,6 +138,7 @@ sub _snmp_common{
 
  #Store the COMMON data from XML
  $dbh->do("UPDATE snmp SET IPADDR=".$dbh->quote($base->{IPADDR}).", 
+  LASTDATE=NOW(),
   MACADDR=".$dbh->quote($base->{MACADDR}).",
   SNMPDEVICEID=".$dbh->quote($base->{SNMPDEVICEID}).",
   NAME=".$dbh->quote($base->{NAME}).",
