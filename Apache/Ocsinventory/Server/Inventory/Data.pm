@@ -32,7 +32,7 @@ sub _init_map{
   my $field;
   my $fields_string;
   my $field_index;
-  
+
   # Parse every section
   for $section (keys(%DATA_MAP)){
     $field_index = 0;
@@ -136,8 +136,10 @@ sub _get_bind_values{
 sub _get_parser_ForceArray{
   my $arrayRef = shift;
   for my $section (keys(%DATA_MAP)){
-    # Feed the multilines section array in order to parse xml correctly
-    push @{ $arrayRef }, uc $section if $DATA_MAP{$section}->{multi};
+    unless ($DATA_MAP{$section}->{capacities}) {
+     # Feed the multilines section array in order to parse xml correctly
+     push @{ $arrayRef }, uc $section if $DATA_MAP{$section}->{multi};
+    }
   }
 }
 

@@ -18,7 +18,7 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw / 
   _init_snmp_map 
   _get_snmp_bind_values 
-  _get_parser_ForceArray 
+  _get_snmp_parser_ForceArray 
 /;
 
 use Apache::Ocsinventory::Map;
@@ -132,11 +132,18 @@ sub _get_snmp_bind_values{
   }
 }
 
-sub _get_parser_ForceArray{
-  my $arrayRef = shift;
+sub _get_snmp_parser_ForceArray{
+  my $arrayRef = shift ;
+
   for my $section (keys(%DATA_MAP)){
+    if ($DATA_MAP{$section}->{capacities} =~ /^snmp$/ ) {
     # Feed the multilines section array in order to parse xml correctly
-    push @{ $arrayRef }, uc $section if $DATA_MAP{$section}->{multi};
+      if ($DATA_MAP{$section}->{multi}) {
+        #We delete the snmp_ pattern to be in concordance with XML
+        $section =~ s/snmp_//g;    
+        push @$arrayRef, uc $section;
+      }
+    }
   }
 }
 

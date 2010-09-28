@@ -12,7 +12,7 @@
 # All modules using modperl api functions must use the wrappers defined in MODPERL1 or 2 .pm 
 # or create a new one in these 2 files if you need to use something that is not wrapped yet
 
-package Apache::Ocsinventory::Server::Option::Snmp;
+package Apache::Ocsinventory::Server::Capacities::Snmp;
 use XML::Simple;
 use strict;
 
@@ -35,6 +35,10 @@ use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Data;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Inventory;
 
+#Getting sections for the 'ForceArray' option
+my @forceArray = ('DEVICE'); 
+&_get_snmp_parser_ForceArray(\@forceArray);
+
 # Initialize option
 push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   'NAME' => 'SNMP',
@@ -47,7 +51,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   'HANDLER_DUPLICATE' => \&snmp_duplicate, #or undef # Called when a computer is handle as a duplicate
   'TYPE' => OPTION_TYPE_SYNC, # or OPTION_TYPE_ASYNC ASYNC=>with pr without inventory, SYNC=>only when inventory is required
   'XML_PARSER_OPT' => {
-      'ForceArray' => ['DEVICE','TRAYS','CARTRIDGES']
+      'ForceArray' => [@forceArray] 
   }
 };
 
@@ -59,6 +63,9 @@ sub snmp_prolog_resp{
   my $select_community_req;
   my @IpAddresses;
   my @SnmpCommunities;
+
+
+
 
   #Verify if SNMP is enable for this computer or in config
   my $snmpSwitch = &_get_snmp_switch($current_context);
