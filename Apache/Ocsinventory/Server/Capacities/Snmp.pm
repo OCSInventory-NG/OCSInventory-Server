@@ -83,7 +83,7 @@ sub snmp_prolog_resp{
   if ($behaviour == 1 || $behaviour == 2) {
 
     #Getting non inventoried network devices for the agent subnet 
-    $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?) AND mac NOT IN (SELECT DISTINCT(macaddr) FROM network_devices)');
+    $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?)');
     $select_ip_req->execute($lanToDiscover,$lanToDiscover);
 
     while(my $row = $select_ip_req->fetchrow_hashref){
