@@ -514,6 +514,8 @@ javainfo => {
        NAME => {},
        SERIALNUMBER => {},
        COUNTER => {},
+       STATUS => {},
+       ERRORSTATE => {},
    }
   },
 
@@ -712,7 +714,7 @@ javainfo => {
   snmp_networksconnected => {
    mask => 0,
    multi => 1,
-   auto => 1,
+   auto => 0,
    delOnReplace => 1,
    sortBy => '',
    writeDiff => 1,
@@ -731,7 +733,7 @@ javainfo => {
   snmp_switchstacks => {
    mask => 0,
    multi => 1,
-   auto => 1,
+   auto => 0,
    delOnReplace => 1,
    sortBy => '',
    writeDiff => 1,
