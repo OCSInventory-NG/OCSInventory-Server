@@ -780,5 +780,18 @@ javainfo => {
    }
   },
 
+  snmp_accountinfo =>  {
+   mask => 0,
+   multi => 1,
+   auto => 0,
+   delOnReplace => 1,
+   sortBy => 'TAG',
+   writeDiff => 0,
+   cache => 0,
+   fields => {
+       TAG => {}
+   }
+  },
+
 );
 1;

@@ -39,7 +39,9 @@ sub _snmp_context {
     $snmpContext->{DATABASE_ID} = $row->{'ID'};
     $snmpContext->{EXIST_FL} = 1;
   } else {
+    #We had the new device in snmp table
     $dbh->do('INSERT INTO snmp(SNMPDEVICEID) VALUES(?)', {}, $snmpDeviceId);
+
     $request = $dbh->prepare('SELECT ID FROM snmp WHERE SNMPDEVICEID=?');
     unless($request->execute($snmpDeviceId)){
       &_log(518,'snmp','id_error') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -47,6 +49,9 @@ sub _snmp_context {
     }
     my $row = $request->fetchrow_hashref;
     $snmpContext->{DATABASE_ID} = $row->{'ID'};
+    
+    #We had the device in snmp_accountinfo table;
+    $dbh->do('INSERT INTO snmp_accountinfo(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
   }
   
   return($snmpContext);
@@ -54,7 +59,7 @@ sub _snmp_context {
 
 
 sub _snmp_inventory{
-  my ( $sectionsMeta, $sectionsList ) = @_;
+  my ( $sectionsMeta, $sectionsList, $agentDatabaseId ) = @_;
   my $section;
   
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}; 
@@ -69,7 +74,7 @@ sub _snmp_inventory{
     my $snmpDatabaseId =  $snmpContext->{DATABASE_ID};
 
     #Call COMMON section update
-    if(&_snmp_common($snmpDeviceXml->{COMMON},$snmpDatabaseId)) {
+    if(&_snmp_common($snmpDeviceXml->{COMMON},$snmpDatabaseId,$agentDatabaseId)) {
       return 1;
     }
 
@@ -134,6 +139,7 @@ sub _update_snmp_inventory_section{
 sub _snmp_common{
   my $base= shift;
   my $snmpDatabaseId = shift;
+  my $agentDatabaseId = shift;
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
  #Store the COMMON data from XML
@@ -152,6 +158,22 @@ sub _snmp_common{
   or return(1);
  
   $dbh->commit;
+
+ #We get and store the TAG of the computer doing SNMP inventory
+ my $request = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
+
+ unless($request->execute($agentDatabaseId)){
+      &_log(519,'snmp','computer tag error') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return(1);
+ }
+
+ my $row = $request->fetchrow_hashref;
+ 
+ if (defined $row->{'TAG'}) {
+   $dbh->do("UPDATE snmp_accountinfo SET TAG=".$dbh->quote($row->{'TAG'})." WHERE SNMP_ID=$snmpDatabaseId"); 
+   $dbh->commit;
+ }
+
   0;
 }
 

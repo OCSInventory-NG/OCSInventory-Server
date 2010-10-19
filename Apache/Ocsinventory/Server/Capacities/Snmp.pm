@@ -163,7 +163,7 @@ sub snmp_handler{
   &_log(100,'snmp inventory','incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
   
   # Putting the SNMP inventory in the database
-  &_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
+  &_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS, $current_context->{'DATABASE_ID'} );
   #return APACHE_SERVER_ERROR if &_update_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
 
   # That's all
