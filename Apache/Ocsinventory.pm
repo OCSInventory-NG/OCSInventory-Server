@@ -28,6 +28,7 @@ BEGIN{
 }
 
 $Apache::Ocsinventory::VERSION = '1.02';
+$XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 
 # Ocs modules
 use Apache::Ocsinventory::Server::Constants;

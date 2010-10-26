@@ -23,6 +23,7 @@ BEGIN{
 			require SOAP::Transport::HTTP2;
 			our $server = SOAP::Transport::HTTP2::Apache->dispatch_to('Apache::Ocsinventory::Interface');
 		}
+		$XML::Simple::PREFERRED_PARSER = 'XML::Parser';	
 		require Apache::Ocsinventory::Interface;
 	};
 	if($@){
