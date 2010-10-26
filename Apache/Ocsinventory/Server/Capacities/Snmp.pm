@@ -60,7 +60,7 @@ sub snmp_prolog_resp{
   my $current_context = shift;
   my $resp = shift;
   my $select_ip_req;
-  my $select_community_req;
+  my $select_snmpcom_uri;
   my @DevicesToScan;
   my @SnmpCommunities;
 
@@ -101,32 +101,15 @@ sub snmp_prolog_resp{
         };
       }
 
-      #Getting snmp communities for scans
-      $select_community_req=$dbh->prepare('SELECT NAME,VERSION,USERNAME,AUTHKEY,AUTHPASSW FROM snmp_communities');
-      $select_community_req->execute();
+      #Getting snmp_com.txt URI
+      $select_snmpcom_uri=$dbh->prepare('SELECT TVALUE FROM config WHERE NAME="SNMP_URI"');
+      $select_snmpcom_uri->execute();
 
-      while(my $row = $select_community_req->fetchrow_hashref){
-        push @SnmpCommunities,$row;
-      }
-
-      if (@SnmpCommunities) {
-        #Adding Snmp communities in XML
-        foreach my $community (@SnmpCommunities) {
-          push @snmp,{
-            'NAME' => $community->{NAME},
-            'VERSION' => $community->{VERSION},
-            'USERNAME' => $community->{USERNAME},
-            'AUTHKEY' => $community->{AUTHKEY},
-            'AUTHPASSW' => $community->{AUTHPASSW},
-            'TYPE' => 'COMMUNITY',
-          };
-        }
-      } else {
-        #We add standard snmp v2 informations by default
+      if (my $row = $select_snmpcom_uri->fetchrow_hashref) {
+        #Adding snmp_com.txt URI in XML
         push @snmp,{
-          'NAME' => 'public',
-          'VERSION' => '2c',
           'TYPE' => 'COMMUNITY',
+          'SNMPCOM_LOC'  => $row->{'TVALUE'},
         };
       }
 
