@@ -143,7 +143,7 @@ sub snmp_handler{
   &_init_snmp_map( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
 
   #Inventory incoming
-  &_log(100,'snmp inventory','incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(100,'snmp','inventory incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
   
   # Putting the SNMP inventory in the database
   &_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS, $current_context->{'DATABASE_ID'} );

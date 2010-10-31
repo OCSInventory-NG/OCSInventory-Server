@@ -19,8 +19,10 @@ our @EXPORT = qw /
   _init_snmp_map 
   _get_snmp_bind_values 
   _get_snmp_parser_ForceArray 
+  _snmp_has_changed
 /;
 
+use Digest::MD5 qw(md5_base64);
 use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Server::System qw / :server /;
 
@@ -130,6 +132,25 @@ sub _get_snmp_bind_values{
       push @$arrayToFeed, $bind_value;
     }
   }
+}
+
+sub _snmp_has_changed{
+  my ($refXml,$XmlSection,$snmpDatabaseId) = @_;
+
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+  my $md5_hash = md5_base64(XML::Simple::XMLout($refXml));
+
+  # Check laststate for this section from previous snmp inventory
+  my $request = $dbh->prepare("SELECT $XmlSection FROM snmp_laststate WHERE SNMP_ID=?");
+
+  return 0 unless $request->execute($snmpDatabaseId);
+
+  if (my $row = $request->fetchrow_hashref) {
+      unless ( $row->{$XmlSection} =~ /^$md5_hash$/ ) {
+        return(1);  #section has changed
+      }
+  }
+  return 0;
 }
 
 sub _get_snmp_parser_ForceArray{

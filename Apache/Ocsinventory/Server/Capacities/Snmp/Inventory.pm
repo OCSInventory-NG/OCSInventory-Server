@@ -17,6 +17,8 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / _snmp_inventory /;
 
+use Digest::MD5 qw(md5_base64);
+
 use Apache::Ocsinventory::Server::System qw / :server /;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Data;
 
@@ -50,8 +52,9 @@ sub _snmp_context {
     my $row = $request->fetchrow_hashref;
     $snmpContext->{DATABASE_ID} = $row->{'ID'};
     
-    #We had the device in snmp_accountinfo table;
+    #We had the device in snmp_accountinfo ans snmp_laststate tables;
     $dbh->do('INSERT INTO snmp_accountinfo(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
+    $dbh->do('INSERT INTO snmp_laststate(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
   }
   
   return($snmpContext);
@@ -92,25 +95,40 @@ sub _update_snmp_inventory_section{
 
   my $snmpDatabaseId = $snmpContext->{DATABASE_ID};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
-
   my @bind_values;
 
-  #TODO: enhance this part to prevent from deleting data everytime before rewrtting it and to prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
+  #We delete the snmp_ pattern to be in concordance with XML
+  my $XmlSection = $section;
+  $XmlSection =~ s/snmp_//g;
+  $XmlSection = uc $XmlSection;
+
+  my $refXml = $snmpDeviceXml->{$XmlSection};
+
+  # We continue only if data for this section
+  return 0 unless ($refXml);
+
+  #TODO: prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
   #We delete related data for this device if already exists	
   if ($snmpContext->{EXIST_FL})  {
-    if(!$dbh->do("DELETE FROM $section WHERE SNMP_ID=?", {}, $snmpDatabaseId)){
+    if( _snmp_has_changed($refXml,$XmlSection,$snmpDatabaseId) ){
+      &_log( 113, 'snmp', "u:$XmlSection") if $ENV{'OCS_OPT_LOGLEVEL'};
+      $sectionMeta->{hasChanged} = 1;
+    }
+    else {
+      #We don't update this section
+      return 0;
+    }
+
+    if( $sectionMeta->{delOnReplace}) {
+      if(!$dbh->do("DELETE FROM $section WHERE SNMP_ID=?", {}, $snmpDatabaseId)){
         return(1);
+      }
     }
   }
 
   # Processing values	
   my $sth = $dbh->prepare( $sectionMeta->{sql_insert_string} );
 
-  #We delete the snmp_ pattern to be in concordance with XML
-  my $XmlSection = $section;
-  $XmlSection =~ s/snmp_//g;
-
-  my $refXml = $snmpDeviceXml->{uc $XmlSection};
   
   # Multi lines (forceArray)
   if($sectionMeta->{multi}){
@@ -120,6 +138,10 @@ sub _update_snmp_inventory_section{
       if(!$sth->execute($snmpDatabaseId, @bind_values)){
         return(1);
       }
+
+      #Modify the snmp_laststate table for this section 
+      &_snmp_update_laststate($refXml,$XmlSection,$snmpDatabaseId);
+
       @bind_values = ();
     }
   }
@@ -129,6 +151,9 @@ sub _update_snmp_inventory_section{
     if( !$sth->execute($snmpDatabaseId, @bind_values) ){
       return(1);
     }
+
+    #Modify the snmp_laststate table for this section 
+    &_snmp_update_laststate($refXml,$XmlSection,$snmpDatabaseId);
   }
 
   $dbh->commit;
@@ -175,6 +200,17 @@ sub _snmp_common{
  }
 
   0;
+}
+
+sub _snmp_update_laststate {
+  my ($refXml,$XmlSection,$snmpDatabaseId) = @_ ;
+
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+  my $md5_hash = md5_base64(XML::Simple::XMLout($refXml)); 
+
+  $dbh->do("UPDATE snmp_laststate SET $XmlSection=".$dbh->quote($md5_hash)." WHERE SNMP_ID = $snmpDatabaseId");
+  $dbh->commit;
+
 }
 
 1;

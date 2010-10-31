@@ -793,5 +793,34 @@ javainfo => {
    }
   },
 
+  snmp_laststate => {
+   mask => 0,
+   multi => 0,
+   auto => 0,
+   delOnReplace => 0,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       COMMON => {},
+       PRINTERS => {},
+       TRAYS => {},
+       CARTRIDGES => {},
+       NETWORKS => {},
+       SWITCHS => {},
+       BLADES => {},
+       STORAGES => {},
+       DRIVES => {},
+       POWERSUPPLIES => {},
+       FANS => {},
+       NETWORKSCONNECTED => {},
+       SWITCHSTACKS => {},
+       LOADBALANCERS => {},
+       CARDS => {},
+       FIREWALLS => {},
+   }
+  },
+
 );
 1;
