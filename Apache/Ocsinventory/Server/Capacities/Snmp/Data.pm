@@ -136,7 +136,10 @@ sub _get_snmp_bind_values{
 }
 
 sub _snmp_has_changed{
-  my ($refXml,$XmlSection,$snmpDatabaseId) = @_;
+  my ($refXml,$XmlSection,$section,$snmpDatabaseId) = @_;
+
+  # Don't use inventory diff if section mask is
+  return 1 if $DATA_MAP{$section}->{mask}==0;
 
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $md5_hash = md5_base64(XML::Simple::XMLout($refXml));

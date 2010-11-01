@@ -114,13 +114,17 @@ sub _update_snmp_inventory_section{
   #TODO: enhance this part to prevent from deleting data everytime before rewrtting it and to prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
   #We delete related data for this device if already exists	
   if ($snmpContext->{EXIST_FL})  {
-    if( _snmp_has_changed($refXml,$XmlSection,$snmpDatabaseId) ){
-      &_log( 113, 'snmp', "u:$XmlSection") if $ENV{'OCS_OPT_LOGLEVEL'};
-      $sectionMeta->{hasChanged} = 1;
-    }
-    else {
-      #We don't update this section
-      return 0;
+    if($ENV{'OCS_OPT_SNMP_INVENTORY_DIFF'}){
+      if( _snmp_has_changed($refXml,$XmlSection,$section,$snmpDatabaseId) ){
+        &_log( 113, 'snmp', "u:$XmlSection") if $ENV{'OCS_OPT_LOGLEVEL'};
+        $sectionMeta->{hasChanged} = 1;
+      }
+      else {
+         return 0; #We don't update this section
+      }
+
+    } else {
+      $sectionMeta->{hasChanged} = 1; 
     }
 
     if( $sectionMeta->{delOnReplace}) {
