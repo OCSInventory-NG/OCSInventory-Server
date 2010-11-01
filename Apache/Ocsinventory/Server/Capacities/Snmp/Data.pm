@@ -47,6 +47,7 @@ sub _init_snmp_map{
     # Don't process the non-auto-generated sections
     next if !$DATA_MAP{$section}->{auto};
     $sectionsMeta->{$section}->{multi} = 1 if $DATA_MAP{$section}->{multi};
+    $sectionsMeta->{$section}->{mask} = $DATA_MAP{$section}->{mask};
     $sectionsMeta->{$section}->{delOnReplace} = 1 if $DATA_MAP{$section}->{delOnReplace};
     $sectionsMeta->{$section}->{writeDiff} = 1 if $DATA_MAP{$section}->{writeDiff};
     $sectionsMeta->{$section}->{cache} = 1 if $DATA_MAP{$section}->{cache};
@@ -146,7 +147,7 @@ sub _snmp_has_changed{
   return 0 unless $request->execute($snmpDatabaseId);
 
   if (my $row = $request->fetchrow_hashref) {
-      unless ( $row->{$XmlSection} =~ /^$md5_hash$/ ) {
+      if ( $row->{$XmlSection} ne $md5_hash ) {
         return(1);  #section has changed
       }
   }

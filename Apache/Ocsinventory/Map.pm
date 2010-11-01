@@ -479,7 +479,7 @@ javainfo => {
   },
 
   snmp => {
-   mask => 0,
+   mask => 1,
    multi => 0,
    auto => 0,
    delOnReplace => 1,
@@ -498,11 +498,12 @@ javainfo => {
        UPTIME => {},
        DOMAIN => {},
        LASTDATE => {},
+       CHECKSUM => {},
    }
   },
 
   snmp_printers => {
-   mask => 0,
+   mask => 2,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -519,8 +520,71 @@ javainfo => {
    }
   },
 
+  snmp_switchs => {
+   mask => 4,
+   multi => 0,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       MANUFACTURER => {},
+       REFERENCE => {},
+       TYPE => {},
+       SOFTVERSION => {},
+       FIRMVERSION => {},
+       SERIALNUMBER => {},
+       DESCRIPTION => {},
+       REVISION => {},
+   }
+  },
+
+  snmp_firewalls => {
+   mask => 8,
+   multi => 0,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       SERIALNUMBER => {},
+   }
+  },
+
+  snmp_blades => {
+   mask => 16,
+   multi => 0,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       SERIALNUMBER => {},
+   }
+  },
+
+  snmp_loadbalancers => {
+   mask => 32,
+   multi => 0,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       SERIALNUMBER => {},
+   }
+  },
+
   snmp_trays => {
-   mask => 0,
+   mask => 64,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -537,7 +601,7 @@ javainfo => {
   },
 
   snmp_cartridges => {
-   mask => 0,
+   mask => 128,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -555,7 +619,7 @@ javainfo => {
   },
 
   snmp_networks => {
-   mask => 0,
+   mask => 256,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -581,43 +645,8 @@ javainfo => {
    }
   },
 
-  snmp_switchs => {
-   mask => 0,
-   multi => 0,
-   auto => 1,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       MANUFACTURER => {},
-       REFERENCE => {},
-       TYPE => {},
-       SOFTVERSION => {},
-       FIRMVERSION => {},
-       SERIALNUMBER => {},
-       DESCRIPTION => {},
-       REVISION => {},
-   }
-  },
-
-  snmp_blades => {
-   mask => 0,
-   multi => 0,
-   auto => 1,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       SERIALNUMBER => {},
-   }
-  },
-
   snmp_storages => {
-   mask => 0,
+   mask => 512,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -639,7 +668,7 @@ javainfo => {
 
 
   snmp_drives => {
-   mask => 0,
+   mask => 1024,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -659,7 +688,7 @@ javainfo => {
   },
 
   snmp_powersupplies => {
-   mask => 0,
+   mask => 2048,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -678,7 +707,7 @@ javainfo => {
   },
 
   snmp_fans => {
-   mask => 0,
+   mask => 4096,
    multi => 1,
    auto => 1,
    delOnReplace => 1,
@@ -696,9 +725,10 @@ javainfo => {
    }
   },
 
-  snmp_firewalls => {
-   mask => 0,
-   multi => 0,
+
+  snmp_cards => {
+   mask => 8192,
+   multi => 1,
    auto => 1,
    delOnReplace => 1,
    sortBy => '',
@@ -706,10 +736,15 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
+       MANUFACTURER => {},
+       TYPE => {},
        SERIALNUMBER => {},
+       DESCRIPTION => {},
+       REVISION => {},
+       FIRMWARE => {},
+       SOFTWARE => {},
    }
   },
-
 
   snmp_networksconnected => {
    mask => 0,
@@ -741,42 +776,6 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        NAME => {},
-   }
-  },
-
-
-  snmp_loadbalancers => {
-   mask => 0,
-   multi => 0,
-   auto => 1,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       SERIALNUMBER => {},
-   }
-  },
-
-
-  snmp_cards => {
-   mask => 0,
-   multi => 1,
-   auto => 1,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       MANUFACTURER => {},
-       TYPE => {},
-       SERIALNUMBER => {},
-       DESCRIPTION => {},
-       REVISION => {},
-       FIRMWARE => {},
-       SOFTWARE => {},
    }
   },
 

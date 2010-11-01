@@ -31,7 +31,7 @@ sub _snmp_context {
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
   # Retrieve Device if exists
-  $request = $dbh->prepare('SELECT ID,ID FROM snmp WHERE SNMPDEVICEID=?' );
+  $request = $dbh->prepare('SELECT ID FROM snmp WHERE SNMPDEVICEID=?' );
 
   #TODO:retrieve the unless here like standard Inventory.pm
   $request->execute($snmpDeviceId);
@@ -41,7 +41,7 @@ sub _snmp_context {
     $snmpContext->{DATABASE_ID} = $row->{'ID'};
     $snmpContext->{EXIST_FL} = 1;
   } else {
-    #We had the new device in snmp table
+    #We add the new device in snmp table
     $dbh->do('INSERT INTO snmp(SNMPDEVICEID) VALUES(?)', {}, $snmpDeviceId);
 
     $request = $dbh->prepare('SELECT ID FROM snmp WHERE SNMPDEVICEID=?');
@@ -52,7 +52,7 @@ sub _snmp_context {
     my $row = $request->fetchrow_hashref;
     $snmpContext->{DATABASE_ID} = $row->{'ID'};
     
-    #We had the device in snmp_accountinfo ans snmp_laststate tables;
+    #We add the device in snmp_accountinfo ans snmp_laststate tables;
     $dbh->do('INSERT INTO snmp_accountinfo(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
     $dbh->do('INSERT INTO snmp_laststate(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
   }
@@ -76,10 +76,8 @@ sub _snmp_inventory{
     my $snmpContext = &_snmp_context($snmpDeviceXml->{COMMON}->{SNMPDEVICEID});
     my $snmpDatabaseId =  $snmpContext->{DATABASE_ID};
 
-    #Call COMMON section update
-    if(&_snmp_common($snmpDeviceXml->{COMMON},$snmpDatabaseId,$agentDatabaseId)) {
-      return 1;
-    }
+    #We create an empty checksum for this device
+    $snmpDeviceXml->{COMMON}->{CHECKSUM} = 0;
 
     # Call the _update_snmp_inventory_section for each section
     for $section (@{$sectionsList}){
@@ -87,6 +85,12 @@ sub _snmp_inventory{
         return 1;
       }
     }
+
+    #Call COMMON section update
+    if(&_snmp_common($snmpDeviceXml->{COMMON},$snmpDatabaseId,$agentDatabaseId)) {
+      return 1;
+    }
+
   }
 }
 
@@ -107,7 +111,7 @@ sub _update_snmp_inventory_section{
   # We continue only if data for this section
   return 0 unless ($refXml);
 
-  #TODO: prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
+  #TODO: enhance this part to prevent from deleting data everytime before rewrtting it and to prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
   #We delete related data for this device if already exists	
   if ($snmpContext->{EXIST_FL})  {
     if( _snmp_has_changed($refXml,$XmlSection,$snmpDatabaseId) ){
@@ -156,6 +160,9 @@ sub _update_snmp_inventory_section{
     &_snmp_update_laststate($refXml,$XmlSection,$snmpDatabaseId);
   }
 
+  #We compute checksum for this section
+  $snmpDeviceXml->{'COMMON'}->{'CHECKSUM'} |= $sectionMeta->{mask};
+
   $dbh->commit;
   0;
 }
@@ -170,6 +177,7 @@ sub _snmp_common{
  #Store the COMMON data from XML
  $dbh->do("UPDATE snmp SET IPADDR=".$dbh->quote($base->{IPADDR}).", 
   LASTDATE=NOW(),
+  CHECKSUM=(".$base->{CHECKSUM}."|CHECKSUM|1),
   MACADDR=".$dbh->quote($base->{MACADDR}).",
   SNMPDEVICEID=".$dbh->quote($base->{SNMPDEVICEID}).",
   NAME=".$dbh->quote($base->{NAME}).",
