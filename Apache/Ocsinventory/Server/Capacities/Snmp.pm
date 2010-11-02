@@ -146,11 +146,11 @@ sub snmp_handler{
   &_log(100,'snmp','inventory incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
   
   # Putting the SNMP inventory in the database
-  &_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS, $current_context->{'DATABASE_ID'} );
-  #return APACHE_SERVER_ERROR if &_update_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
-
-  # That's all
-  &_log(101,'snmp','transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
+  if (&_snmp_inventory( \%SNMP_SECTIONS, \@SNMP_SECTIONS, $current_context->{'DATABASE_ID'})) {
+    &_log(101,'snmp','inventory error !!') if $ENV{'OCS_OPT_LOGLEVEL'};
+  } else { 
+    &_log(102,'snmp','inventory transmitted') if $ENV{'OCS_OPT_LOGLEVEL'};
+  }
 
   #Sending Response to the agent
   &_set_http_header('content-length', 0, $r);

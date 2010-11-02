@@ -136,23 +136,18 @@ sub _get_snmp_bind_values{
 }
 
 sub _snmp_has_changed{
-  my ($refXml,$XmlSection,$section,$snmpDatabaseId) = @_;
+  my ($refXml,$XmlSection,$section,$snmpContext) = @_;
 
   # Don't use inventory diff if section mask is
   return 1 if $DATA_MAP{$section}->{mask}==0;
 
-  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $md5_hash = md5_base64(XML::Simple::XMLout($refXml));
 
   # Check laststate for this section from previous snmp inventory
-  my $request = $dbh->prepare("SELECT $XmlSection FROM snmp_laststate WHERE SNMP_ID=?");
+  my $laststate = $snmpContext->{'LASTSTATE'}->{$XmlSection};
 
-  return 0 unless $request->execute($snmpDatabaseId);
-
-  if (my $row = $request->fetchrow_hashref) {
-      if ( $row->{$XmlSection} ne $md5_hash ) {
+  if ( $laststate ne $md5_hash ) {
         return(1);  #section has changed
-      }
   }
   return 0;
 }

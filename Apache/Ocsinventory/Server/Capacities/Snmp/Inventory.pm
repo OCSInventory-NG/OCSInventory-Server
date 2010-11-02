@@ -30,7 +30,7 @@ sub _snmp_context {
 
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
-  # Retrieve Device if exists
+  # Retrieve Device ID if exists
   $request = $dbh->prepare('SELECT ID FROM snmp WHERE SNMPDEVICEID=?' );
 
   #TODO:retrieve the unless here like standard Inventory.pm
@@ -55,8 +55,26 @@ sub _snmp_context {
     #We add the device in snmp_accountinfo ans snmp_laststate tables;
     $dbh->do('INSERT INTO snmp_accountinfo(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
     $dbh->do('INSERT INTO snmp_laststate(SNMP_ID) VALUES(?)', {}, $row->{'ID'});
+    $dbh->commit;
+
   }
-  
+
+  if($ENV{'OCS_OPT_SNMP_INVENTORY_DIFF'}){ 
+
+    #Getting laststate data for this device
+    $request = $dbh->prepare('SELECT * FROM snmp_laststate WHERE SNMP_ID=?' );
+
+    unless ($request->execute($snmpContext->{DATABASE_ID})) {
+      &_log(519,'snmp','laststate_error') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return(1);
+    }
+
+    if($request->rows) {
+       my $row = $request->fetchrow_hashref;
+       $snmpContext->{LASTSTATE}=$row;
+    }
+  }
+
   return($snmpContext);
 }
 
@@ -64,8 +82,10 @@ sub _snmp_context {
 sub _snmp_inventory{
   my ( $sectionsMeta, $sectionsList, $agentDatabaseId ) = @_;
   my $section;
-  
+
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}; 
+
   my $snmp_devices = $result->{CONTENT}->{DEVICE};
   
   #Getting data for the several snmp devices that we have in the xml
@@ -74,6 +94,12 @@ sub _snmp_inventory{
 
     #Getting context and ID in the snmp table for this device
     my $snmpContext = &_snmp_context($snmpDeviceXml->{COMMON}->{SNMPDEVICEID});
+    
+    if ($snmpContext == 1) {
+      &_log(520,'snmp','context_error') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return(1);
+    } 
+
     my $snmpDatabaseId =  $snmpContext->{DATABASE_ID};
 
     #We create an empty checksum for this device
@@ -91,6 +117,12 @@ sub _snmp_inventory{
       return 1;
     }
 
+    #Update the snmp_laststate table for this device if needed
+    if ( $snmpContext->{'LASTSTATE_UPDATE_VALUES'} ) { 
+      my $update_values = join(',', @{$snmpContext->{'LASTSTATE_UPDATE_VALUES'}});    
+      $dbh->do("UPDATE snmp_laststate SET $update_values WHERE SNMP_ID = $snmpDatabaseId");
+      $dbh->commit;
+    }
   }
 }
 
@@ -111,11 +143,11 @@ sub _update_snmp_inventory_section{
   # We continue only if data for this section
   return 0 unless ($refXml);
 
-  #TODO: enhance this part to prevent from deleting data everytime before rewrtting it and to prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
+  #TODO: prevent a bug if one (or more) of the snmp tables has no SNMP_ID field)
   #We delete related data for this device if already exists	
   if ($snmpContext->{EXIST_FL})  {
     if($ENV{'OCS_OPT_SNMP_INVENTORY_DIFF'}){
-      if( _snmp_has_changed($refXml,$XmlSection,$section,$snmpDatabaseId) ){
+      if( _snmp_has_changed($refXml,$XmlSection,$section,$snmpContext) ){
         &_log( 113, 'snmp', "u:$XmlSection") if $ENV{'OCS_OPT_LOGLEVEL'};
         $sectionMeta->{hasChanged} = 1;
       }
@@ -147,9 +179,6 @@ sub _update_snmp_inventory_section{
         return(1);
       }
 
-      #Modify the snmp_laststate table for this section 
-      &_snmp_update_laststate($refXml,$XmlSection,$snmpDatabaseId);
-
       @bind_values = ();
     }
   }
@@ -159,10 +188,11 @@ sub _update_snmp_inventory_section{
     if( !$sth->execute($snmpDatabaseId, @bind_values) ){
       return(1);
     }
-
-    #Modify the snmp_laststate table for this section 
-    &_snmp_update_laststate($refXml,$XmlSection,$snmpDatabaseId);
   }
+
+  #Getting laststate for this section
+  my $md5_hash = md5_base64(XML::Simple::XMLout($refXml));
+  push @{$snmpContext->{'LASTSTATE_UPDATE_VALUES'}} , "$XmlSection='$md5_hash'";
 
   #We compute checksum for this section
   $snmpDeviceXml->{'COMMON'}->{'CHECKSUM'} |= $sectionMeta->{mask};
@@ -196,33 +226,22 @@ sub _snmp_common{
  
   $dbh->commit;
 
- #We get and store the TAG of the computer doing SNMP inventory
- my $request = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
+  #We get and store the TAG of the computer doing SNMP inventory
+  my $request = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
 
- unless($request->execute($agentDatabaseId)){
+  unless($request->execute($agentDatabaseId)){
       &_log(519,'snmp','computer tag error') if $ENV{'OCS_OPT_LOGLEVEL'};
       return(1);
- }
+  }
 
- my $row = $request->fetchrow_hashref;
+  my $row = $request->fetchrow_hashref;
  
- if (defined $row->{'TAG'}) {
-   $dbh->do("UPDATE snmp_accountinfo SET TAG=".$dbh->quote($row->{'TAG'})." WHERE SNMP_ID=$snmpDatabaseId"); 
-   $dbh->commit;
- }
+  if (defined $row->{'TAG'}) {
+    $dbh->do("UPDATE snmp_accountinfo SET TAG=".$dbh->quote($row->{'TAG'})." WHERE SNMP_ID=$snmpDatabaseId"); 
+    $dbh->commit;
+  }
 
   0;
-}
-
-sub _snmp_update_laststate {
-  my ($refXml,$XmlSection,$snmpDatabaseId) = @_ ;
-
-  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
-  my $md5_hash = md5_base64(XML::Simple::XMLout($refXml)); 
-
-  $dbh->do("UPDATE snmp_laststate SET $XmlSection=".$dbh->quote($md5_hash)." WHERE SNMP_ID = $snmpDatabaseId");
-  $dbh->commit;
-
 }
 
 1;
