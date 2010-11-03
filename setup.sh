@@ -58,6 +58,9 @@ ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-reports"
 # Administration default packages directory and Apache alias
 ADM_SERVER_VAR_PACKAGES_DIR="download"
 ADM_SERVER_PACKAGES_ALIAS="/download"
+# Administration default snmp directory and Apache alias
+ADM_SERVER_VAR_SNMP_DIR="snmp"
+ADM_SERVER_SNMP_ALIAS="/snmp"
 # Administration console default ipdsicover-util.pl cache dir
 ADM_SERVER_VAR_IPD_DIR="ipd"
 
@@ -1203,8 +1206,8 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    # Set package area writable by root only
-    chmod -R go-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
+    # Set package area writable by root and Apache group only
+    chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
@@ -1212,16 +1215,38 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    # Set package area writable by Apache group
-    chmod g+w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
+    #Create directory for the snmp communities reference file 
+    echo "Creating packages directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR."
+    echo "Creating packages directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
     then
-        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+        echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1
     fi
-    
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR" >> $SETUP_LOG
+    # Set snmp area owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set snmp area writable by root and Apache group only
+    chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+
     echo "Configuring IPDISCOVER-UTIL Perl script."
     echo "Configuring IPDISCOVER-UTIL Perl script (ed ipdiscover-util.pl)" >> $SETUP_LOG
     cp binutils/ipdiscover-util.pl ipdiscover-util.pl.local >> $SETUP_LOG 2>&1
@@ -1267,6 +1292,8 @@ then
     $PERL_BIN -pi -e "s#PATH_TO_IPD_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PACKAGES_ALIAS#$ADM_SERVER_PACKAGES_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PATH_TO_PACKAGES_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#SNMP_ALIAS#$ADM_SERVER_SNMP_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_SNMP_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
     echo "******** Begin updated $ADM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
     cat $ADM_SERVER_APACHE_CONF_FILE.local >> $SETUP_LOG
     echo "******** End updated $ADM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
