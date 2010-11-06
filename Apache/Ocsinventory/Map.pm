@@ -490,13 +490,15 @@ javainfo => {
    fields =>  {
        ID => { noXml => 1 },
        IPADDR => {},
+       MACADDR => {},
+       SNMPDEVICEID => {},
        NAME => {},
        DESCRIPTION => {},
-       TYPE => {},
        CONTACT => {},
        LOCATION => {},
        UPTIME => {},
        DOMAIN => {},
+       TYPE => {},
        LASTDATE => {},
        CHECKSUM => {},
    }
@@ -536,8 +538,8 @@ javainfo => {
        SOFTVERSION => {},
        FIRMVERSION => {},
        SERIALNUMBER => {},
-       DESCRIPTION => {},
        REVISION => {},
+       DESCRIPTION => {},
    }
   },
 
@@ -610,11 +612,11 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
+       DESCRIPTION => {},
        TYPE => {},
        LEVEL => {},
        MAXCAPACITY => {},
        COLOR => {},
-       DESCRIPTION => {},
    }
   },
 
@@ -629,19 +631,22 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        DESCRIPTION => {},
-       TYPE => {},
-       TYPEMIB => {},
-       SPEED => {},
-       IPADDRESS => {},
        MACADDR => {},
+       DEVICEMACADDR => {},
+       SLOT => {},
        STATUS => {},
+       SPEED => {},
+       TYPE => {},
+       DEVICEADDRESS => {},
+       DEVICENAME => {},
+       TYPEMIB => {},
+       IPADDR => {},
        IPMASK => {},
        IPGATEWAY => {},
        IPSUBNET => {},
        IPDHCP => {},
        DRIVER => {},
        VIRTUALDEV => {},
-       DEVICEID => {},
    }
   },
 
@@ -655,12 +660,12 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
+       DESCRIPTION => {},
        MANUFACTURER => {},
        NAME => {},
        MODEL => {},
-       DESCRIPTION => {},
-       TYPE => {},
        DISKSIZE => {},
+       TYPE => {},
        SERIALNUMBER => {},
        FIRMWARE => {},
    }
@@ -716,12 +721,12 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       MANUFACTURER => {},
-       REFERENCE => {},
-       TYPE => {},
-       SERIALNUMBER => {},
        DESCRIPTION => {},
+       REFERENCE => {},
        REVISION => {},
+       SERIALNUMBER => {},
+       MANUFACTURER => {},
+       TYPE => {},
    }
   },
 
@@ -736,13 +741,14 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       MANUFACTURER => {},
-       TYPE => {},
-       SERIALNUMBER => {},
        DESCRIPTION => {},
-       REVISION => {},
+       REFERENCE => {},
        FIRMWARE => {},
        SOFTWARE => {},
+       REVISION => {},
+       SERIALNUMBER => {},
+       MANUFACTURER => {},
+       TYPE => {},
    }
   },
 
