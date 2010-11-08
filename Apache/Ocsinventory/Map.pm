@@ -524,7 +524,7 @@ javainfo => {
 
   snmp_switchs => {
    mask => 4,
-   multi => 0,
+   multi => 1,
    auto => 1,
    delOnReplace => 1,
    sortBy => '',
@@ -752,6 +752,20 @@ javainfo => {
    }
   },
 
+  snmp_switchinfos => {
+   mask => 16384,
+   multi => 0,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       TYPE => {},
+   }
+  },
+
   snmp_networksconnected => {
    mask => 0,
    multi => 1,
@@ -767,21 +781,6 @@ javainfo => {
        IPADDRESS => {},
        PORT => {},
        COMMENT => {},
-   }
-  },
-
-
-  snmp_switchstacks => {
-   mask => 0,
-   multi => 1,
-   auto => 0,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       NAME => {},
    }
   },
 
@@ -820,10 +819,10 @@ javainfo => {
        POWERSUPPLIES => {},
        FANS => {},
        NETWORKSCONNECTED => {},
-       SWITCHSTACKS => {},
        LOADBALANCERS => {},
        CARDS => {},
        FIREWALLS => {},
+       SWITCHINFOS => {},
    }
   },
 
