@@ -689,6 +689,8 @@ javainfo => {
        FREE => {},
        NUMFILES => {},
        VOLUMN => {},
+       LABEL => {},
+       SERIAL => {},
    }
   },
 
@@ -757,11 +759,171 @@ javainfo => {
    multi => 0,
    auto => 1,
    delOnReplace => 1,
+   sortBy => 'TYPE',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       TYPE => {},
+   }
+  },
+
+  snmp_computers => {
+   mask => 32768,
+   multi => 0,
+   auto => 1,
+   delOnReplace => 1,
    sortBy => '',
    writeDiff => 1,
    cache => 0,
    capacities => 'snmp',
    fields =>  {
+       SYSTEM => {},
+   }
+  },
+
+  snmp_softwares => {
+   mask => 65536,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       NAME => {},
+       INSTALLDATE => {},
+   }
+  },
+
+  snmp_memories => {
+   mask => 131072,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       CAPACITY => {},
+   }
+  },
+
+  snmp_cpus => {
+   mask => 262144,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       SPEED => {},
+       TYPE => {},
+       MANUFACTURER => {},
+   }
+  },
+
+  snmp_inputs => {
+   mask => 524288,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       DESCRIPTION => {},
+       TYPE => {},
+   }
+  },
+
+  snmp_ports => {
+   mask => 1048576,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       NAME => {},
+       TYPE => {},
+   }
+  },
+
+  snmp_sounds => {
+   mask => 2097152,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       NAME => {},
+   }
+  },
+
+  snmp_videos => {
+   mask => 4194304,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       NAME => {},
+   }
+  },
+
+  snmp_modems => {
+   mask => 8388608,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       NAME => {},
+   }
+  },
+
+  snmp_localprinters => {
+   mask => 16777216,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       NAME => {},
+   }
+  },
+
+  snmp_inputs => {
+   mask => 33554432,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       DESCRIPTION => {},
        TYPE => {},
    }
   },
@@ -823,6 +985,17 @@ javainfo => {
        CARDS => {},
        FIREWALLS => {},
        SWITCHINFOS => {},
+       COMPUTERS => {},
+       SOFTWARES => {},
+       MEMORIES => {},
+       CPUS => {},
+       INPUTS => {},
+       PORTS => {},
+       SOUNDS => {},
+       VIDEOS => {},
+       MODEMS => {},
+       LOCALPRINTERS => {},
+       INPUTS => {},
    }
   },
 
