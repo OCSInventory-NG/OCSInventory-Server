@@ -554,6 +554,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        SERIALNUMBER => {},
+       SYSTEM => {},
    }
   },
 
@@ -568,6 +569,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        SERIALNUMBER => {},
+       SYSTEM => {},
    }
   },
 
@@ -582,6 +584,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        SERIALNUMBER => {},
+       SYSTEM => {},
    }
   },
 
@@ -913,21 +916,6 @@ javainfo => {
    }
   },
 
-  snmp_inputs => {
-   mask => 33554432,
-   multi => 1,
-   auto => 1,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       DESCRIPTION => {},
-       TYPE => {},
-   }
-  },
-
   snmp_networksconnected => {
    mask => 0,
    multi => 1,
@@ -995,7 +983,6 @@ javainfo => {
        VIDEOS => {},
        MODEMS => {},
        LOCALPRINTERS => {},
-       INPUTS => {},
    }
   },
 
