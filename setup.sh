@@ -64,6 +64,8 @@ ADM_SERVER_SNMP_ALIAS="/snmp"
 ADM_SERVER_SNMPCOM_FILE="snmp_com.txt"
 # Administration console default ipdsicover-util.pl cache dir
 ADM_SERVER_VAR_IPD_DIR="ipd"
+# OS or linux distribution from automatic detection
+UNIX_DISTRIBUTION=""
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -73,6 +75,24 @@ echo "+----------------------------------------------------------+"
 echo "|                                                          |"
 echo "| Welcome to OCS Inventory NG Management server setup !    |"
 echo "|                                                          |"
+echo "+----------------------------------------------------------+"
+echo
+# Check for OS or linux distribution
+echo "Trying to determine whitch OS or Linux distribution you use"
+
+if [ -f /etc/redhat-release ]
+then
+    UNIX_DISTRIBUTION="redhat"
+else
+    if [ -f /etc/debian_version ]
+    then
+	UNIX_DISTRIBUTION="debian"
+    fi
+fi
+
+# Check for Apache web server binaries
+echo "+----------------------------------------------------------+"
+echo "| Checking for Apache web server binaries !                |"
 echo "+----------------------------------------------------------+"
 echo
 echo "CAUTION: If upgrading Communication server from OCS Inventory NG 1.0 RC2 and"
@@ -632,6 +652,12 @@ then
     echo "+----------------------------------------------------------+"
     echo
     REQUIRED_PERL_MODULE_MISSING=0
+    DBI=0
+    APACHE_DBI=0
+    DBD_MYSQL=0
+    COMPRESS_ZLIB=0
+    XML_SIMPLE=0
+    NET_IP=0
     echo "Checking for DBI PERL module..."
     echo "Checking for DBI PERL module" >> $SETUP_LOG
     $PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> $SETUP_LOG 2>&1
@@ -639,6 +665,7 @@ then
     then
         echo "*** ERROR: PERL module DBI is not installed !"
         REQUIRED_PERL_MODULE_MISSING=1
+        DBI=1
     else
         echo "Found that PERL module DBI is available."
     fi
@@ -649,6 +676,7 @@ then
     then
         echo "*** ERROR: PERL module Apache::DBI is not installed !"
         REQUIRED_PERL_MODULE_MISSING=1
+        APACHE_DBI=1
     else
         echo "Found that PERL module Apache::DBI is available."
     fi
@@ -659,6 +687,7 @@ then
     then
         echo "*** ERROR: PERL module DBD::mysql is not installed !"
         REQUIRED_PERL_MODULE_MISSING=1
+        DBD_MYSQL=1
     else
         echo "Found that PERL module DBD::mysql is available."
     fi
@@ -669,6 +698,7 @@ then
     then
         echo "*** ERROR: PERL module Compress::Zlib is not installed !"
         REQUIRED_PERL_MODULE_MISSING=1
+        COMPRESS_ZLIB=1
     else
         echo "Found that PERL module Compress::Zlib is available."
     fi
@@ -679,6 +709,7 @@ then
     then
         echo "*** ERROR: PERL module XML::Simple is not installed !"
         REQUIRED_PERL_MODULE_MISSING=1
+        XML_SIMPLE=1
     else
         echo "Found that PERL module XML::Simple is available."
     fi
@@ -689,6 +720,7 @@ then
     then
         echo "*** ERROR: PERL module Net::IP is not installed !"
         REQUIRED_PERL_MODULE_MISSING=1
+        NET_IP=1
     else
         echo "Found that PERL module Net::IP is available."
     fi
@@ -696,10 +728,116 @@ then
     then
         echo "*** ERROR: There is one or more required PERL modules missing on your computer !"
         echo "Please, install missing PERL modules first."
-        echo "Installation aborted !"
-        echo "One or more required PERL modules missing !" >> $SETUP_LOG
-        echo "Installation aborted" >> $SETUP_LOG
-        exit 1
+        echo " "
+	echo "OCS setup.sh can install perl module from packages for you"
+	echo "The script will use the native package from your operating system like apt or rpm"
+	echo -n "Do you wish to continue (y/[n])?"
+	read ligne
+	if [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
+	then
+            case $UNIX_DISTRIBUTION in
+                 "redhat")
+                     echo "RedHat based automatic installation"
+                     if [ $DBI=1 ]
+                     then
+                         PACKAGE="$PACKAGE 'perl(DBI)'"
+                     fi
+                     if [ $APACHE_DBI=1 ]
+                     then
+                         PACKAGE="$PACKAGE 'perl(Apache-DBI)'"
+                     fi
+                     if [ $DBD_MYSQL=1 ]
+                     then
+                         PACKAGE="$PACKAGE 'perl(DBD-MySQL)'"
+                     fi
+                     if [ $COMPRESS_ZLIB=1 ]
+                     then
+                         PACKAGE="$PACKAGE 'perl(Compress-Zlib)'"
+                     fi
+                     if [ $XML_SIMPLE=1 ]
+                     then
+                         PACKAGE="$PACKAGE 'perl(XML-Simple)'"
+                     fi
+                     if [ $NET_IP=1 ]
+                     then
+                         PACKAGE="$PACKAGE 'perl(Net-IP)'"
+                     fi
+                     yum update
+                     yum install $PACKAGE
+                     if [ $? != 0 ]
+                     then
+                         echo "Installation aborted !"
+			 echo "Installation script encounter problems to install packages !"
+                         echo "One or more required PERL modules missing !" >> $SETUP_LOG
+                         echo "Installation aborted" >> $SETUP_LOG
+                         exit 1
+		     fi
+                     echo "All packages have been installed on this computer"
+                     ;;
+
+	         "debian") 
+		     if [ -f /usr/bin/apt-get ]
+    	             then
+	 	         echo "Debian based automatic installation"
+		         if [ $DBI=1 ]
+		         then
+ 			     PACKAGE="$PACKAGE libdbi-perl"
+		         fi
+		         if [ $APACHE_DBI=1 ]
+		         then
+			     PACKAGE="$PACKAGE libapache-dbi-perl"
+		         fi
+		         if [ $DBD_MYSQL=1 ]
+		         then
+			     PACKAGE="$PACKAGE libdbd-mysql-perl"
+		         fi
+		         if [ $COMPRESS_ZLIB=1 ]
+		         then
+                	     PACKAGE="$PACKAGE libcompress-zlib-perl"
+		         fi
+		         if [ $XML_SIMPLE=1 ]
+		         then
+                	     PACKAGE="$PACKAGE libxml-simple-perl"
+		         fi
+                         if [ $NET_IP=1 ]
+                         then
+                	     PACKAGE="$PACKAGE libnet-ip-perl"
+		         fi
+		         apt-get update
+		         apt-get install $PACKAGE
+		         if [ $? != 0 ]
+		         then
+			     echo "Installation aborted !"
+			     echo "Installation script encounter problems to install packages !"
+			     echo "One or more required PERL modules missing !" >> $SETUP_LOG
+            		     echo "Installation aborted" >> $SETUP_LOG
+            		     exit 1
+		        fi
+                        echo "All packages have been installed on this computer"
+                     else
+			 echo "Installation aborted !"
+			 echo "Installation script cannot run apt-get utility !"
+			 echo "One or more required PERL modules missing !" >> $SETUP_LOG
+            		 echo "Installation aborted" >> $SETUP_LOG
+            		 exit 1
+                     fi
+                 ;;
+
+                 *) 
+                     echo "Installation aborted !"
+                     echo "Installation script cannot find missing packages for your distribution"
+                     echo "One or more required PERL modules missing !" >> $SETUP_LOG
+                     echo "Installation aborted" >> $SETUP_LOG
+            	     exit 1
+                 ;; 
+            esac 
+        else
+            echo "Installation aborted !"
+            echo "Please, install missing PERL modules first."
+            echo "One or more required PERL modules missing !" >> $SETUP_LOG
+            echo "Installation aborted" >> $SETUP_LOG
+            exit 1
+        fi
     fi
 
     # Check for optional Perl Modules
