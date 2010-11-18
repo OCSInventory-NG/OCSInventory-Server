@@ -918,24 +918,6 @@ javainfo => {
    }
   },
 
-  snmp_networksconnected => {
-   mask => 0,
-   multi => 1,
-   auto => 0,
-   delOnReplace => 1,
-   sortBy => '',
-   writeDiff => 1,
-   cache => 0,
-   capacities => 'snmp',
-   fields =>  {
-       NAME => {},
-       MACADDR => {},
-       IPADDRESS => {},
-       PORT => {},
-       COMMENT => {},
-   }
-  },
-
   snmp_accountinfo =>  {
    mask => 0,
    multi => 1,
@@ -970,7 +952,6 @@ javainfo => {
        DRIVES => {},
        POWERSUPPLIES => {},
        FANS => {},
-       NETWORKSCONNECTED => {},
        LOADBALANCERS => {},
        CARDS => {},
        FIREWALLS => {},
