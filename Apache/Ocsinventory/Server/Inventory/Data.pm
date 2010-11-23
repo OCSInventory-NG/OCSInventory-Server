@@ -72,10 +72,11 @@ sub _init_map{
       if(defined $DATA_MAP{$section}->{fields}->{$field}->{fallback}){
         $sectionsMeta->{$section}->{fields}->{$field}->{fallback} = $DATA_MAP{$section}->{fields}->{$field}->{fallback};
       }
-      
+
       if(defined $DATA_MAP{$section}->{fields}->{$field}->{type}){
         $sectionsMeta->{$section}->{fields}->{$field}->{type} = $DATA_MAP{$section}->{fields}->{$field}->{type};
-      }
+      }     
+ 
       $field_index++;      
     }
     # Build the "DBI->prepare" sql insert string 
@@ -100,10 +101,10 @@ sub _init_map{
 sub _get_bind_values{
   my ($refXml, $sectionMeta, $arrayToFeed) = @_;
   
-  my $bind_value;
+  my ($bind_value, $xmlvalue, $xmlfield);
 
   for my $field ( @{ $sectionMeta->{field_arrayref} } ) {
-    if(defined($refXml->{$field}) && $refXml->{$field} ne '' && $refXml->{$field} ne '??' && $refXml->{$field}!~/^N\/?A$/){
+    if(defined($refXml->{$field}) && !defined($sectionMeta->{fields}->{$field}->{type}) && $refXml->{$field} ne '' && $refXml->{$field} ne '??' && $refXml->{$field}!~/^N\/?A$/) {
       $bind_value = $refXml->{$field}
     }
     else{
@@ -116,10 +117,21 @@ sub _get_bind_values{
          $bind_value = '';
        }
     }
+
     # We have to substitute the value with the ID matching "type_section_field.name" if the field is tagged "type".
     # It allows to support different DB structures
-    if( defined $sectionMeta->{fields}->{$field}->{type} ){
-      $bind_value = _get_type_id($sectionMeta->{name}, $field, $bind_value);
+    if(defined $sectionMeta->{fields}->{$field}->{type}) {
+      $xmlfield = $field;
+      $xmlfield =~ s/_ID//g;    #We delete the _ID pattern to be in concordance with XML 
+
+      if(defined $sectionMeta->{fields}->{$field}->{fallback}) {
+        $bind_value = _get_type_id($sectionMeta->{name}, $xmlfield, $sectionMeta->{fields}->{$field}->{fallback} );
+        &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+
+       } else {  #No fallback for this field
+        $xmlvalue = $refXml->{$xmlfield};
+        $bind_value = _get_type_id($sectionMeta->{name}, $xmlfield, $xmlvalue);
+      }
     }
 
     if($ENV{'OCS_OPT_UNICODE_SUPPORT'}) {
@@ -166,22 +178,28 @@ sub _get_type_id {
 # CREATE TABLE type_${section}_$field (
 #   ID INTEGER NOT NULL auto_increment,
 #   NAME VARCHAR(255))
-# ENGINE=MyIsam, DEFAULT CHARSET=UTF8 ;
+# ENGINE=INNODB, DEFAULT CHARSET=UTF8 ;
 # For migration, add the following line :
-# ALTER TABLE $section CHANGE COLUMN $field $field ID INTEGER NOT NULL ;
+# ALTER TABLE $section CHANGE COLUMN $field $field_ID INTEGER NOT NULL ;
 
   my ($section, $field, $value) = @_ ;
   
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} ;
   
-  my $id ;
+  my ($id, $existsReq, $createSql);
 
   my $table_name = 'type_'.lc $section.'_'.lc $field ;
 
-  my $existsReq = $dbh->prepare("SELECT ID FROM $table_name WHERE NAME=?") ;
-  my $createSql = "INSERT INTO $table_name(ID,NAME) VALUES(NULL,?)" ;
-  
-  $existsReq->execute($value) ;
+  if ($value eq '') {  #Value from XML is empty 
+    $existsReq = $dbh->prepare("SELECT ID FROM $table_name WHERE NAME IS NULL") ;
+    $createSql = "INSERT INTO $table_name(NAME) VALUES(NULL)" ;
+    $existsReq->execute() ;
+  } else {
+    $existsReq = $dbh->prepare("SELECT ID FROM $table_name WHERE NAME=?") ;
+    $createSql = "INSERT INTO $table_name(NAME) VALUES(?)" ;
+    $existsReq->execute($value) ;
+  }
+
   # It exists
   if($existsReq->rows){
     my $row = $existsReq->fetchrow_hashref() ;
@@ -189,10 +207,17 @@ sub _get_type_id {
   }
   # It does not exist
   else{
-    $dbh->do($createSql, {}, $value) && $existsReq->execute($value) ;
+
+    if ($value eq '') {
+      $dbh->do($createSql) && $existsReq->execute();
+    } else { 
+      $dbh->do($createSql, {}, $value) && $existsReq->execute($value);
+    }
+
     my $row = $existsReq->fetchrow_hashref() ;
     $id = $row->{ID} ;
   }
+
   return $id ;
 }
 1;
