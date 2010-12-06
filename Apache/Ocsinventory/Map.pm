@@ -360,7 +360,11 @@ our %DATA_MAP= (
        COMMENTS => {},
        FILENAME => {},
        FILESIZE => { fallback=>0 },
-       SOURCE => { fallback=>0 }
+       SOURCE => { fallback=>0 },
+       GUID => {},
+       LANGUAGE => {},
+       INSTALLDATE => {},
+       BITSWIDTH => {},
    }
   },
   
