@@ -803,6 +803,8 @@ javainfo => {
    fields =>  {
        NAME => {},
        INSTALLDATE => {},
+       COMMENTS => {},
+       VERSION => {},
    }
   },
 
