@@ -26,6 +26,7 @@ use Apache::Ocsinventory::Server::Inventory::Data;
 
 sub _update_inventory{
   my ( $sectionsMeta, $sectionsList ) = @_;
+  my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
   
   my $section;
   
@@ -35,11 +36,14 @@ sub _update_inventory{
   if(&_hardware() or &_accountinfo()){
     return 1;
   }
-  
+
   # Call the _update_inventory_section for each section
   for $section (@{$sectionsList}){
-    if(_update_inventory_section($section, $sectionsMeta->{$section})){
-      return 1;
+    #Only if section exists in XML
+    if ($result->{CONTENT}->{uc $section}) { 
+      if(_update_inventory_section($section, $sectionsMeta->{$section})){
+        return 1;
+      }
     }
   }
 }
