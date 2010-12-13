@@ -39,8 +39,8 @@ sub _update_inventory{
 
   # Call the _update_inventory_section for each section
   for $section (@{$sectionsList}){
-    #Only if section exists in XML
-    if ($result->{CONTENT}->{uc $section}) { 
+    #Only if section exists in XML or if table is mandatory
+    if ($result->{CONTENT}->{uc $section} || $sectionsMeta->{$section}->{mandatory}) { 
       if(_update_inventory_section($section, $sectionsMeta->{$section})){
         return 1;
       }

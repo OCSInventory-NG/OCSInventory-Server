@@ -81,7 +81,7 @@ sub _snmp_context {
 
 sub _snmp_inventory{
   my ( $sectionsMeta, $sectionsList, $agentDatabaseId ) = @_;
-  my $section;
+  my ($section,$XmlSection);
 
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}; 
@@ -107,8 +107,15 @@ sub _snmp_inventory{
 
     # Call the _update_snmp_inventory_section for each section
     for $section (@{$sectionsList}){
-      if(_update_snmp_inventory_section($snmpDeviceXml, $snmpContext, $section, $sectionsMeta->{$section})){
-        return 1;
+      #We delete the snmp_ pattern to be in concordance with XML
+      $XmlSection = uc $section;
+      $XmlSection =~ s/SNMP_//g;
+
+      #Only if section exists in XML or if table is mandatory
+      if ($snmpDeviceXml->{$XmlSection} || $sectionsMeta->{$section}->{mandatory}) {
+        if(_update_snmp_inventory_section($snmpDeviceXml, $snmpContext, $section, $XmlSection, $sectionsMeta->{$section})){
+          return 1;
+        }
       }
     }
 
@@ -127,16 +134,11 @@ sub _snmp_inventory{
 }
 
 sub _update_snmp_inventory_section{
-  my ($snmpDeviceXml, $snmpContext, $section, $sectionMeta) = @_;
+  my ($snmpDeviceXml, $snmpContext, $section, $XmlSection, $sectionMeta) = @_;
 
   my $snmpDatabaseId = $snmpContext->{DATABASE_ID};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my @bind_values;
-
-  #We delete the snmp_ pattern to be in concordance with XML
-  my $XmlSection = $section;
-  $XmlSection =~ s/snmp_//g;
-  $XmlSection = uc $XmlSection;
 
   my $refXml = $snmpDeviceXml->{$XmlSection};
 

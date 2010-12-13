@@ -51,6 +51,7 @@ sub _init_snmp_map{
     $sectionsMeta->{$section}->{delOnReplace} = 1 if $DATA_MAP{$section}->{delOnReplace};
     $sectionsMeta->{$section}->{writeDiff} = 1 if $DATA_MAP{$section}->{writeDiff};
     $sectionsMeta->{$section}->{cache} = 1 if $DATA_MAP{$section}->{cache};
+    $sectionsMeta->{$section}->{mandatory} = 1 if $DATA_MAP{$section}->{mandatory};
     $sectionsMeta->{$section}->{name} = $section;
     # $sectionsMeta->{$section}->{hasChanged} is set while inventory update
      
