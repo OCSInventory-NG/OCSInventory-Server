@@ -1,8 +1,77 @@
 Revision history for Apache::Ocsinventory
+
+
+2.0 rc1
+        * New OCS server module : Snmp.pm . It is use for SNMP integration in OCS Inventory NG. This module comes with Snmp/Data.pm and Snmp/Inventory.pm
+        * Add Useragent.pm to control agents and their versions to solve versions incompatibilty problems between OCS agents and OCS server
+        * Add a new parameter for tables in Map.pm: mandatory. This parameter force database feeding even if inventory section is not in XML
+        * Control if inventory section is in XML before writing it in database to avoid bugs.
+        * Add COMMENTS and VERSION fields in snmp_softwares table
+        * Add new fields in softwares table: GUID, LANGUAGE, LASTDATE and BITSWIDTH
+        * Debug and enhance Data.pm to use the availability to explode database structure using type tables
+        * Add new module Datafiler.pm. This module add availibity to filter data from HARDWARE section (data filtered won't be stored in database)
+        * setup.sh can now install missing perl modules for you using yum or apt-get (Philippe Beaumont)
+        * Add new fileds "DEVICEPORT" and "DEVICETYPE" in snmp_networks table in Map.pm
+        * Add a new field "SYSTEM" for snmp_blades, snmp_firewalls and snmp_loadbalancer tables in Map.pm
+        * Add new tables for SNMP computers data in Map.pm
+        * Add a new table "snmp_switchinfos" in Map.pm
+        * snmp_switchs table is "multi" now in Map.pm
+        * Add the copy of the snmp_com.txt file in setup.sh to set default SNMP "public" community if this file does not exists
+        * Fix various mistakes and missing fields for snmp tables in Map.pm
+        * Add the new Apache configuration for SNMP communities reference file (snmp_com.txt) in setup.sh and ocsinventory-reports.conf
+        * Enhance DB backend by reducing the SQL request number as possible in SNMP inventory
+        * Enhance errors management for SNMP inventory
+        * New OCS_OPT_SNMP_INVENTORY_DIFF config option to enable or disable the SNMP inventory sections update regarding to snmp_laststate table
+        * Add a CHECKSUM for SNMP devices. It is compute using mask values from SNMP inventory sections from Map.pm .
+        * New snmp_laststate table to store md5 hashes for SNMP inventory sections (this table is used for SNMP inventory sections update in database)
+        * SNMP inventory sections are updated in database only if changed since last inventory
+        * Snmp.pm send the snmp_com.txt file URI to the agent
+        * New table snmp_accountinfo
+        * Feel the SNMP_ID filed in snmp_accountinfo when a new SNMP device coming
+        * Feel the TAG field in the snmp_accountinfo while inventory for SNMP devices
+        * Add STATUS and ERRORSTATE fields for snmp_printers table
+        * Map.pm: snmp_networksconnected and snmp_switchs are now auto => 0 due to the special treatments associated to this tables
+        * Don't take care of identified network devices for SNMP scans in Snmp.pm. This devices will be scanned using SNMP too
+        * Add the MAC address in the PROLOG response in Snmp.pm
+        * Use of _get_snmp_parser_ForceArray subroutine to get sections for the 'ForceArray' in Snmp.pm
+        * Add LASTDATE field in the snmp table to store the last inventory date for a SNMP device
+        * Enhance SNMP implementation by getting SNMP communities informations directly from the snmp_communities table
+        * Enable the SNMP activation/deactivation using custom parameters on computer on groups
+        * Map.pm: new table parameter -> capacities  
+        * Map.pm: add new tables for SNMP
+        * Data.pm : use the new "capacities" Map.pm parameter to don't take care of tables that have this parameter when feeding %SECTIONS and @SECTIONS
+        * Config.pm : add a new configuration option for activate/desactivate SNMP feature
+        * ocsinventory-server.conf : add Snmp.pm in Capacities list and add a new configuration option for activate/desactivate SNMP feature
+        * Correct Bug #563791 about GW and SUBNET update in NOTIFY
+        * Correct Bug #563791 about GW and SUBNET update in NOTIFY
+        * Correct a misprint about the use of 'OCS_OPT_UNICODE_SUPPORT' in Data.pm (from sisfb_tech)
+        * Useragent.pm: allow the future 4062 Windows agent and some code cleaning by using a hash reference for %CURRENT_CONTEXT
+        * Add the Windows rearch agent to allow in Useragent.pm
+        * ASSETTAG is in BIOS, not HARDWARE 
+
+	
+1.3.3
+        * Force XML::Simple to use XML::Parser instead of XML::SAX to fix disastrous performance issues in Redhat distribution due to the perl-XML-SAX package problems.
+        * Correct bug about automatic IPDISCOVER election
+
+1.3 	
+        * Unix right: add the exec flag
+        * Quote HARDWARE/TYPE
+        * Save SOFTWARE/FROM (Stéphane Urbanovski)
+        * SQL quote for all the hardware fields
+        * SQL syntax fix. Duplicate 'WHERE' (axil_76)
+        * Decrease OCS_OPT_GROUPS_CACHE_* from one day to 10 minutes
+        * Fix: Computer with ASSETTAG are not inventoried 
+        * Save HARDWARE/UUID
+        * Avoid err 500 if ACCOUNTINFO is not found for a given inventory
+        * Added printers.DESCRIPTION
+        * Added OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT from trunk 
+        * DTD updates 
+
 1.3 beta2
-    * fix setup.sh for Debian
-    * minor fixes
-    * add binutils/create-release-tarball.sh
+        * fix setup.sh for Debian
+        * minor fixes
+        * add binutils/create-release-tarball.sh
 
 1.3 beta1
 	* Added virtual device detection for a network iface
