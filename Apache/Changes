@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix Bug #694760 about utf8 strings broken
 
 2.0 rc1
         * New OCS server module : Snmp.pm . It is use for SNMP integration in OCS Inventory NG. This module comes with Snmp/Data.pm and Snmp/Inventory.pm

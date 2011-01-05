@@ -134,15 +134,7 @@ sub _get_bind_values{
         $bind_value = _get_type_id($sectionMeta->{name}, $xmlfield, $xmlvalue);
       }
     }
-
-    if($ENV{'OCS_OPT_UNICODE_SUPPORT'}) {
-      my $utf8 = $bind_value;
-      utf8::decode($utf8);
-      push @$arrayToFeed, $utf8;
-    }
-    else {
-      push @$arrayToFeed, $bind_value;
-    }
+    push @$arrayToFeed, $bind_value;
   }
 }
 
