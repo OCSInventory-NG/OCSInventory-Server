@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+	* Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
         * Fix Bug #694760 about utf8 strings broken
 
 2.0 rc1
