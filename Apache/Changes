@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+	* Fix SQL syntax error and add a capacities tables exclusion in Duplicate.pm
 2.0 rc2
 	* Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
         * Fix Bug #694760 about utf8 stings broken

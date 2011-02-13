@@ -239,14 +239,14 @@ sub _duplicate_replace{
   $dbh->do('UPDATE devices SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
   $dbh->do('UPDATE itmgmt_comments SET HARDWARE_ID=? WHERE HARDWARE_ID=?', {}, $DeviceID, $device) ;
   # We keep the static inclusions/exclusions (STATIC=1|2)
-  $dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=? WHERE STATIC=1 or STATIC=2', {}, $DeviceID, $device) ;
+  $dbh->do('UPDATE groups_cache SET HARDWARE_ID=? WHERE HARDWARE_ID=? AND (STATIC=1 OR STATIC=2)', {}, $DeviceID, $device) ;
   # The computer may not correspond to the previous dynamic groups, as its inventory could potentially change
   $dbh->do('DELETE FROM groups_cache WHERE HARDWARE_ID=?', {}, $device) ;
   
   # Drop old computer from "auto" tables in Map
   # TODO: is it possible to manage the not auto section => not auto for import but auto for deletion ?
   for (keys(%DATA_MAP)){
-    next if !$DATA_MAP{$_}->{delOnReplace} || !$DATA_MAP{$_}->{auto};
+    next if !$DATA_MAP{$_}->{delOnReplace} || !$DATA_MAP{$_}->{auto} || $DATA_MAP{$_}->{capacities};
     unless($dbh->do("DELETE FROM $_ WHERE HARDWARE_ID=?", {}, $device)){
       &_unlock($device);
       return(1);
