@@ -193,7 +193,7 @@ sub download_prolog_resp{
     }
   
     $pack_sql =  q {
-      SELECT FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE, SERVER_ID
+      SELECT ID, FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE, SERVER_ID
       FROM devices,download_enable 
       WHERE HARDWARE_ID=? 
       AND devices.IVALUE=download_enable.ID 
@@ -207,11 +207,12 @@ sub download_prolog_resp{
     
     while($pack_row = $pack_req->fetchrow_hashref()){
       my $fileid = $pack_row->{'FILEID'};
+      my $enable_id = $pack_row->{'ID'};
       my $pack_loc = $pack_row->{'PACK_LOC'};
       # If the package is in history, the device will not be notified
       # We have to show this behaviour to user. We use the package events.
       if( grep /^$fileid$/, @history ){
-       $dbh->do(q{ UPDATE devices SET TVALUE='ERR_ALREADY_IN_HISTORY', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND IVALUE=? }, {},  scalar localtime(), $current_context->{'DATABASE_ID'}, $fileid ) ;
+       $dbh->do(q{ UPDATE devices SET TVALUE='ERR_ALREADY_IN_HISTORY', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND IVALUE=? }, {},  scalar localtime(), $current_context->{'DATABASE_ID'}, $enable_id ) ;
         next ;
       }
       if( grep /^$fileid$/, @dont_repeat){
