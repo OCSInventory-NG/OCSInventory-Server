@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix a bug in Download.pm: ERR_ALREADY_IN_HISTORY message was never added in devices table
 	* Fix SQL syntax error and add a capacities tables exclusion in Duplicate.pm
 2.0 rc2
 	* Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
