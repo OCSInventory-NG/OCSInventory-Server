@@ -1,9 +1,10 @@
 Revision history for Apache::Ocsinventory
 
-	* Fix Bug #726522 about OCS_OPT_DBI_MYSQL_SOCKET option in ocsinventory-server.conf
-	* Don't process the sections that are use for capacities special inventory in SOAP engine (but thats the way its meant to be)
+        * Disable MySQL strict mode by default
+        * Fix Bug #726522 about OCS_OPT_DBI_MYSQL_SOCKET option in ocsinventory-server.conf
+        * Don't process the sections that are use for capacities special inventory in SOAP engine (but thats the way its meant to be)
         * Fix a bug in Download.pm: ERR_ALREADY_IN_HISTORY message was never added in devices table
-	* Fix SQL syntax error and add a capacities tables exclusion in Duplicate.pm
+        * Fix SQL syntax error and add a capacities tables exclusion in Duplicate.pm
 2.0 rc2
         * Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
         * Fix Bug #694760 about utf8 stings broken
