@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+	* Disable MySQL strict mode by default
 	* Fix Bug #726522 about OCS_OPT_DBI_MYSQL_SOCKET option in ocsinventory-server.conf	
 	* Don't process the sections that are use for capacities special inventory in SOAP engine (but thats the way its meant to be) 
         * Fix a bug in Download.pm: ERR_ALREADY_IN_HISTORY message was never added in devices table
