@@ -77,6 +77,9 @@ sub build_xml_inventory {
   $checksum = CHECKSUM_MAX_VALUE unless $checksum=~/\d+/;
 # Build each section using ...standard_section
   for( keys(%DATA_MAP) ){
+    #Don't process the sections that are use for capacities special inventory
+    next if $DATA_MAP{$_}->{capacities};
+
     if( ($checksum & $DATA_MAP{$_}->{mask} ) ){
       &build_xml_standard_section($computer, \%xml, $_) or die;
     }
