@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Verify that HARDWARE_ID are not groups when computing groups caches
         * Disable MySQL strict mode by default
         * Fix Bug #726522 about OCS_OPT_DBI_MYSQL_SOCKET option in ocsinventory-server.conf
         * Don't process the sections that are use for capacities special inventory in SOAP engine (but thats the way its meant to be)
