@@ -105,10 +105,16 @@ sub _build_group_cache{
     if($group_request->execute()){
       # Deleting the current cache
       $dbh->do($delete_cache, {}, $group_id);
-      # Build the cache
+
       while( my @cache = $group_request->fetchrow_array() ){
-        $build_cache->execute($group_id, $cache[0]);
         push @ids, $cache[0] ;
+      }
+      #We verify that HARDWARE_IDs are not groups 
+      &verify_ids($row->{'REQUEST'},\@ids);
+
+      # Build the cache
+      for( @ids ){
+        $build_cache->execute($group_id, $_);
       }
     }
     else{
@@ -149,9 +155,13 @@ sub _build_group_cache{
          @ids=@quoted_ids=();
 	 $error = 1;
       }
+
       while( my @cache = $group_request->fetchrow_array() ){
         push @ids, $cache[0];
       }
+     
+      #We verify that HARDWARE_IDs are not groups 
+      $error = &verify_ids($request,\@ids);
     }
     # Deleting the current cache
     $dbh->do($delete_cache, {}, $group_id);
@@ -175,7 +185,32 @@ sub _build_group_cache{
 
 
 
+sub verify_ids {
+  my ($request,$ids) = @_;
+  my $error;
+  my $dbh_sl = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_SL_HANDLE'};
 
+  unless ($request =~ m/and\s+deviceid(\s+)?<>(\s+)?'_SYSTEMGROUP_'\s+and\s+deviceid(\s+)?<>(\s+)?'_DOWNLOADGROUP_'/i) {
+     #We will have to verify that HARDWARE_IDs are not groups
+     my $ids_list= join(',',@$ids);
+     @$ids=();
+
+     my $verify_request = $dbh_sl->prepare("SELECT distinct ID from hardware where ID in ($ids_list) and deviceid <> '_SYSTEMGROUP_' AND deviceid <> '_DOWNLOADGROUP_'");
+     $verify_request->execute();
+
+     if(!$verify_request->rows){
+       &_log(307,'groups','empty') if $ENV{'OCS_OPT_LOGLEVEL'};
+       @$ids=();
+       $error = 1;
+     }
+
+     while( my @cache = $verify_request->fetchrow_array() ){
+       push @$ids, $cache[0];
+     }
+  } 
+
+  return $error;
+}
 
 
 
