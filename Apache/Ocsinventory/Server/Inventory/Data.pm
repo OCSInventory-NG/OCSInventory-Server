@@ -233,9 +233,7 @@ sub _get_hardware_fields {
       $sectionMeta->{field_cached}->{$field}=$field_index;
       $field_index++;
     }
-
   }
-
   return $sectionMeta;
 }
 

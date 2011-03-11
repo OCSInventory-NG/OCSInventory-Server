@@ -17,7 +17,6 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw / _hardware /; 
 
-#use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Server::Inventory::Cache;
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw / :server /;
@@ -80,7 +79,6 @@ sub _hardware{
   $dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
   0;
 }
-
 
 sub _get_default_iface{
   return undef if !defined $Apache::Ocsinventory::CURRENT_CONTEXT{XML_ENTRY}->{CONTENT}->{NETWORKS};
