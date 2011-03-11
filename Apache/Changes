@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix Bug #721278 about hardware_osname cache table. This table is now feeded by engine
         * Verify that HARDWARE_ID are not groups when computing groups caches
         * Disable MySQL strict mode by default
         * Fix Bug #726522 about OCS_OPT_DBI_MYSQL_SOCKET option in ocsinventory-server.conf
