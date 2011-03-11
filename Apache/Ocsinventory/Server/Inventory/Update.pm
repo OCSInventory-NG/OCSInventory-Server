@@ -27,20 +27,20 @@ use Apache::Ocsinventory::Server::Inventory::Data;
 sub _update_inventory{
   my ( $sectionsMeta, $sectionsList ) = @_;
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
-  
+
   my $section;
-  
+ 
   &_reset_inventory_cache( $sectionsMeta, $sectionsList ) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
    
   # Call special sections update
-  if(&_hardware() or &_accountinfo()){
+  if(&_hardware($sectionsMeta->{'hardware'}) or &_accountinfo()){
     return 1;
   }
 
   # Call the _update_inventory_section for each section
   for $section (@{$sectionsList}){
     #Only if section exists in XML or if table is mandatory
-    if ($result->{CONTENT}->{uc $section} || $sectionsMeta->{$section}->{mandatory}) { 
+    if (($result->{CONTENT}->{uc $section} || $sectionsMeta->{$section}->{mandatory}) && $sectionsMeta->{$section}->{auto}) { 
       if(_update_inventory_section($section, $sectionsMeta->{$section})){
         return 1;
       }

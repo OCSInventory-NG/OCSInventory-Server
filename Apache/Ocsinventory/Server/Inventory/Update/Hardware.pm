@@ -15,12 +15,15 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / _hardware /;
+our @EXPORT = qw / _hardware /; 
 
+#use Apache::Ocsinventory::Map;
+use Apache::Ocsinventory::Server::Inventory::Cache;
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Server::System qw / :server /;
 
 sub _hardware{
+  my $sectionMeta = shift;
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
   my $base = $result->{CONTENT}->{HARDWARE};
   my $ua = $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'};
@@ -62,10 +65,22 @@ sub _hardware{
 	UUID=".$dbh->quote($base->{UUID})."
 	 WHERE ID=".$deviceId)
   or return(1);
-	
+
+  #We feed cache tables associated to hardware fields
+  if ($ENV{OCS_OPT_INVENTORY_CACHE_ENABLED}) {
+    my $cache_values =[];
+
+    for (keys %{ $sectionMeta->{field_cached}} ) {
+      #Feeding array for cache values
+      $cache_values->[ $sectionMeta->{field_cached}->{$_} ] = $base->{$_};
+    }
+    &_cache( 'add', 'hardware', $sectionMeta, $cache_values );
+  }
+
   $dbh->commit unless $ENV{'OCS_OPT_INVENTORY_TRANSACTION'};
   0;
 }
+
 
 sub _get_default_iface{
   return undef if !defined $Apache::Ocsinventory::CURRENT_CONTEXT{XML_ENTRY}->{CONTENT}->{NETWORKS};

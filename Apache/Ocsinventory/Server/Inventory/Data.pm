@@ -51,6 +51,7 @@ sub _init_map{
     $sectionsMeta->{$section}->{writeDiff} = 1 if $DATA_MAP{$section}->{writeDiff};
     $sectionsMeta->{$section}->{cache} = 1 if $DATA_MAP{$section}->{cache};
     $sectionsMeta->{$section}->{mandatory} = 1 if $DATA_MAP{$section}->{mandatory};
+    $sectionsMeta->{$section}->{auto} = 1 if $DATA_MAP{$section}->{auto};
     $sectionsMeta->{$section}->{name} = $section;
     # $sectionsMeta->{$section}->{hasChanged} is set while inventory update
      
@@ -97,6 +98,11 @@ sub _init_map{
     # to avoid many "keys"
     push @$sectionsList, $section;
   }
+
+  #Special treatment for hardware section
+  $sectionsMeta->{'hardware'} = &_get_hardware_fields; 
+  push @$sectionsList, 'hardware';
+
 }
 
 sub _get_bind_values{
@@ -213,6 +219,26 @@ sub _get_type_id {
 
   return $id ;
 }
+
+sub _get_hardware_fields {
+  my $sectionMeta = {};
+  my $field;
+  my $field_index=0;  #Variable for feeding in _cache function
+
+  #We only get cache fields 
+  for $field ( keys(%{$DATA_MAP{'hardware'}->{fields}} ) ){
+
+    if($DATA_MAP{'hardware'}->{fields}->{$field}->{cache}){
+      next unless $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
+      $sectionMeta->{field_cached}->{$field}=$field_index;
+      $field_index++;
+    }
+
+  }
+
+  return $sectionMeta;
+}
+
 1;
 
 
