@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Ipdiscover now uses useragent instead of OSNAME for automatic election
         * Fix Bug #721278 about hardware_osname cache table. This table is now feeded by engine
         * Verify that HARDWARE_ID are not groups when computing groups caches 
         * Disable MySQL strict mode by default

@@ -8,7 +8,7 @@
 ## Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
 ################################################################################
 
-package Apache::Ocsinventory::Server::Option::Useragent;
+package Apache::Ocsinventory::Server::Useragent;
 use strict;
 
 # This block specify which wrapper will be used ( your module will be compliant with all mod_perl versions )
@@ -21,6 +21,11 @@ BEGIN{
     Apache::Ocsinventory::Server::Modperl2->import();
   }
 }
+
+require Exporter;
+
+our @ISA = qw /Exporter/;
+our @EXPORT = qw / _get_useragent /;
 
 # These are the core modules you must include in addition
 use Apache::Ocsinventory::Server::System;
@@ -43,7 +48,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   }
 };
 
-#Special hash to define allowed agents to conent to OCS server
+#Special hash to define allowed agents to content to OCS server
 my %ocsagents = ( 		
    'OCS-NG_unified_unix_agent' => undef,
    'OCS-NG_windows_client' => [4032,4062],
@@ -54,20 +59,18 @@ sub useragent_prolog_read{
 
   my $current_context=shift;
   my $stop = 1;  #We stop PROLOG by default
-  my $useragent = $current_context->{'USER_AGENT'};
   my $srvver = $Apache::Ocsinventory::VERSION;
 
-  $useragent =~ m/(.*)_v(.*)$/;
-  my ($agentname, $agentver) = ($1, $2);
+  my $useragent= &_get_useragent; 
 
-  if (grep /^($agentname)$/, keys %ocsagents) {
-     $agentver=~s/(\d)\.(\d)(.*)/$1\.$2/g;
+  if (grep /^($useragent->{'NAME'})$/, keys %ocsagents) {
+     $useragent->{'VERSION'} =~ s/(\d)\.(\d)(.*)/$1\.$2/g;
 
-     unless ($ocsagents{$agentname}) { #If no version specifed in hash
-       if ($agentver <= $srvver) {
+     unless ($ocsagents{$useragent->{NAME}}) { #If no version specifed in hash
+       if ($useragent->{'VERSION'} <= $srvver) {
          $stop=0;
        }
-     } elsif ($agentver >= $ocsagents{$agentname}[0] && $agentver <= $ocsagents{$agentname}[1]) { #For old windows agent versions compatibility
+     } elsif ($useragent->{'VERSION'} >= $ocsagents{$useragent->{'NAME'}}[0] && $useragent->{'VERSION'} <= $ocsagents{$useragent->{'NAME'}}[1]) { #For old windows agent versions compatibility
        $stop= 0;
      }
   }
@@ -81,5 +84,16 @@ sub useragent_prolog_read{
     return PROLOG_CONTINUE;
   }
 }
+
+sub _get_useragent {
+  my $useragent = {};
+
+  $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/(.*)_v(.*)$/;
+  $useragent->{'NAME'} = $1;
+  $useragent->{'VERSION'} = $2;
+
+  return $useragent;
+}
+
 
 1;
