@@ -34,6 +34,7 @@ sub database_connect{
   my $dbPort;
   my $dbUser;
   my $dbPwd;
+  my %params;
 
   my $mode = shift;
   
@@ -52,8 +53,11 @@ sub database_connect{
     $dbPwd  = $Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD');
   }
 
+  # Optionnaly a mysql socket different than the client's built in
+  $params{'mysql_socket'} = $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'} if $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'};
+
   # Connection...
-  my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd );
+  my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd, \%params);
   $dbh->do("SET NAMES 'utf8'") if($dbh && $ENV{'OCS_OPT_UNICODE_SUPPORT'});
   $dbh->do("SET sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
   return $dbh;  
