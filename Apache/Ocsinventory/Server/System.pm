@@ -132,7 +132,7 @@ sub _inflate{
 sub _database_connect{
   my $mode = shift;
   my %params;
-  my ($host, $database, $port, $user, $password, $params);
+  my ($host, $database, $port, $user, $password);
   
   if($mode eq 'write'){
     ($host, $database, $port, $user, $password) = ( $ENV{'OCS_DB_HOST'}, $ENV{'OCS_DB_NAME'}, $ENV{'OCS_DB_PORT'}, 
