@@ -53,6 +53,7 @@ my %ocsagents = (
    'OCS-NG_unified_unix_agent' => undef,
    'OCS-NG_windows_client' => [4032,4062],
    'OCS-NG_WINDOWS_AGENT' => undef,
+   'OCS-NG_windows_mobile_agent' => undef,
 );
 
 sub useragent_prolog_read{
