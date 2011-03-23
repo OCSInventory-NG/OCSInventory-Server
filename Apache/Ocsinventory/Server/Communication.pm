@@ -155,7 +155,7 @@ sub _send_response{
 
   # Generate the response
   # Generation of xml message
-  $message = XML::Simple::XMLout( $response, RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='ISO-8859-1'?>",
+  $message = XML::Simple::XMLout( $response, RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='UTF-8'?>",
                    NoSort => 1, SuppressEmpty => undef);
   # send
   unless($inflated = &{$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'}}( $message )){
