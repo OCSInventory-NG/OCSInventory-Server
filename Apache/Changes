@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+2.0 rc3
         * Use OCS_OPT_DBI_MYSQL_SOCKET in SOAP engine if needed
         * Ipdiscover now uses useragent instead of OSNAME for automatic election
         * Fix Bug #721278 about hardware_osname cache table. This table is now feeded by engine
@@ -9,6 +10,7 @@ Revision history for Apache::Ocsinventory
         * Don't process the sections that are use for capacities special inventory in SOAP engine (but thats the way its meant to be) 
         * Fix a bug in Download.pm: ERR_ALREADY_IN_HISTORY message was never added in devices table
         * Fix SQL syntax error and add a capacities tables exclusion in Duplicate.pm
+
 2.0 rc2
         * Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
         * Fix Bug #694760 about utf8 stings broken
