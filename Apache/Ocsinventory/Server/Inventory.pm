@@ -142,6 +142,7 @@ sub _post_inventory{
       for $accountkey (@accountFields){
         for(@{$result->{CONTENT}->{ACCOUNTINFO}}){
           if($_->{KEYNAME} eq $accountkey){
+            utf8::encode($_->{KEYVALUE});    #We encode string to be able to make comparison if string is UTF8
             $up=1,last if($_->{KEYVALUE} ne $row->{$accountkey});
           }
         }
