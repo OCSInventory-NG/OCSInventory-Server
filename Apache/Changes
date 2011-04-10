@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
-
-	* Fix UTF8 problem while comparing accountinfo strings after inventory step
+       
+        * Add availability to specify mysql socket in ipdiscover-util.pl
+        * Fix UTF8 problem while comparing accountinfo strings after inventory step
 2.0 rc3
         * Use OCS_OPT_DBI_MYSQL_SOCKET in SOAP engine if needed
         * Ipdiscover now uses useragent instead of OSNAME for automatic election
@@ -14,7 +15,7 @@ Revision history for Apache::Ocsinventory
 
 2.0 rc2
         * Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
-        * Fix Bug #694760 about utf8 stings broken
+        * Fix Bug #694760 about utf8 strings broken
 
 2.0 rc1
         * New OCS server module : Snmp.pm . It is use for SNMP integration in OCS Inventory NG. This module comes with Snmp/Data.pm and Snmp/Inventory.pm
