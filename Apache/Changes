@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
-       
+
+        * Add a warning in setup.sh about what has to be done if the OS has newsyslog installed (BSD systems)               
+        * Fix Bug #744022 about logrotate configuration in setup.sh even if the OS has not logrotate installed
         * Add availability to specify mysql socket in ipdiscover-util.pl
         * Fix UTF8 problem while comparing accountinfo strings after inventory step
 2.0 rc3

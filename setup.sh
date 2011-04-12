@@ -41,6 +41,8 @@ PERL_BIN=`which perl 2>/dev/null`
 MAKE=`which make 2>/dev/null`
 # Where is located logrotate configuration directory
 LOGROTATE_CONF_DIR="/etc/logrotate.d"
+# Where is located newsyslog.conf 
+NEWSYSLOG_CONF_FILE="/etc/newsyslog.conf"
 # Where to store setup logs
 SETUP_LOG=`pwd`/ocs_server_setup.log
 # Communication Server Apache configuration file
@@ -996,26 +998,35 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    echo "Configuring logrotate for Communication server."
-    echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> $SETUP_LOG
-pwd
-    cp etc/logrotate.d/$COM_SERVER_LOGROTATE_CONF_FILE logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
-    $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
-    echo "******** Begin updated logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
-    cat logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local >> $SETUP_LOG
-    echo "******** End updated logrotate.COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
-    echo "Removing old communication server logrotate file $LOGROTATE_CONF_DIR/ocsinventory-NG"
-    echo "Removing old communication server logrotate file $LOGROTATE_CONF_DIR/ocsinventory-NG" >> $SETUP_LOG
-    rm -f "$LOGROTATE_CONF_DIR/ocsinventory-NG"
-    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE"
-    echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE" >> $SETUP_LOG
-    cp -f logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
+    # Log rotation, BSD style
+    if [ -f $NEWSYSLOG_CONF_FILE ]
     then
-        echo "*** ERROR: Unable to configure log rotation, please look at error in $SETUP_LOG and fix !"
-        echo
-        echo "Installation aborted !"
-        exit 1
+        echo "*** WARNING Please configure log rotation for files in $OCS_COM_SRV_LOG"
+    fi
+
+    # Log rotation, Linux flavor
+    if [ -d $LOGROTATE_CONF_DIR ]
+    then
+        echo "Configuring logrotate for Communication server."
+        echo "Configuring logrotate (ed logrotate.ocsinventory-NG)" >> $SETUP_LOG
+        cp etc/logrotate.d/$COM_SERVER_LOGROTATE_CONF_FILE logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
+        $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local
+        echo "******** Begin updated logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
+        cat logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local >> $SETUP_LOG
+        echo "******** End updated logrotate.COM_SERVER_LOGROTATE_CONF_FILE.local ***********" >> $SETUP_LOG
+        echo "Removing old communication server logrotate file $LOGROTATE_CONF_DIR/ocsinventory-NG"
+        echo "Removing old communication server logrotate file $LOGROTATE_CONF_DIR/ocsinventory-NG" >> $SETUP_LOG
+        rm -f "$LOGROTATE_CONF_DIR/ocsinventory-NG"
+        echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE"
+        echo "Writing communication server logrotate to file $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE" >> $SETUP_LOG
+        cp -f logrotate.$COM_SERVER_LOGROTATE_CONF_FILE.local $LOGROTATE_CONF_DIR/$COM_SERVER_LOGROTATE_CONF_FILE >> $SETUP_LOG 2>&1
+        if [ $? -ne 0 ]
+        then
+            echo "*** ERROR: Unable to configure log rotation, please look at error in $SETUP_LOG and fix !"
+            echo
+            echo "Installation aborted !"
+            exit 1
+        fi
     fi
     echo
     
