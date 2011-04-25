@@ -283,7 +283,6 @@ our %DATA_MAP= (
    fields =>  {
        IPADDRESS => {},
        IPMASK => {},
-       IPADDRESS => {},
        IPSUBNET => {},
        DESCRIPTION => {},
        TYPE => {},
