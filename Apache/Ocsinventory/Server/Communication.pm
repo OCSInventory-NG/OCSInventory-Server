@@ -155,7 +155,7 @@ sub _send_response{
 
   # Generate the response
   # Generation of xml message
-  $message = XML::Simple::XMLout( $response, RootName => 'REPLY', XMLDecl => '<?xml version="1.0" encoding="UTF-8"?>',
+  $message = XML::Simple::XMLout( $response, RootName => 'REPLY', XMLDecl => "<?xml version='1.0' encoding='UTF-8'?>",
                    NoSort => 1, SuppressEmpty => undef);
   # send
   unless($inflated = &{$Apache::Ocsinventory::CURRENT_CONTEXT{'DEFLATE_SUB'}}( $message )){
@@ -225,6 +225,10 @@ sub _prolog_build_resp{
     last if $_ == 0;
     &$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $resp);
   }
+
+  #We sent the OCS support log message to the agent
+  $resp->{'SUPPORT_LOG'} = [ $Apache::Ocsinventory::OCS_SUPPORT_LOG ] if $Apache::Ocsinventory::OCS_SUPPORT_LOG;  
+
   return 0;
 }
 
