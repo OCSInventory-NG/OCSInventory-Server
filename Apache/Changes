@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add a new module to manage OCS support: Support.pm
         * Add the <DHCP> XML tag in NOTIFY request to update IPDHCP field in database
 2.0 rc4
         * Add a warning in setup.sh about what has to be done if the OS has newsyslog installed (BSD systems)

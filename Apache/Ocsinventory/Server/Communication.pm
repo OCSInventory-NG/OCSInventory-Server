@@ -225,6 +225,10 @@ sub _prolog_build_resp{
     last if $_ == 0;
     &$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $resp);
   }
+
+  #We sent the OCS support log message to the agent
+  $resp->{'SUPPORT_LOG'} = [ $Apache::Ocsinventory::OCS_SUPPORT_LOG ] if $Apache::Ocsinventory::OCS_SUPPORT_LOG;  
+
   return 0;
 }
 
