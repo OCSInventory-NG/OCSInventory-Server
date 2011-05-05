@@ -1,7 +1,9 @@
 Revision history for Apache::Ocsinventory
 
+        * New OCS_OPT_SUPPORT configuration option for OCS Inventory support activation
+        * Add a new <SUPPORT_LOG> XML tag in PROLOG
         * Add a new module to manage OCS support: Support.pm
-        * Add the <DHCP> XML tag in NOTIFY request to update IPDHCP field in database
+        * Add a <DHCP> XML tag in NOTIFY request to update IPDHCP field in database
 2.0 rc4
         * Add a warning in setup.sh about what has to be done if the OS has newsyslog installed (BSD systems)
         * Fix Bug #744022 about logrotate configuration in setup.sh even if the OS has not logrotate installed

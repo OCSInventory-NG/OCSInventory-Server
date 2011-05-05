@@ -11,85 +11,51 @@ package Apache::Ocsinventory::Server::Support;
 
 use strict;
 
-our $s;
-
-#We get the main server's object (useful to get OCS configuration settings)
 BEGIN{
   if($ENV{'OCS_MODPERL_VERSION'} == 1){
     require Apache::Ocsinventory::Server::Modperl1;
     Apache::Ocsinventory::Server::Modperl1->import();
-    $s = Apache->server;
   }elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
     require Apache::Ocsinventory::Server::Modperl2;
     Apache::Ocsinventory::Server::Modperl2->import();
-    $s = Apache2::ServerUtil->server;
   }
 }
 
-use Apache::Ocsinventory::Server::System qw /:server/;
-use Apache::Ocsinventory;
+require Exporter;
 
-use Crypt::OpenSSL::X509;
+our @ISA = qw /Exporter/;
 
-$Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'} = $s;
-
-
-my ($dbh,$dbh_sl,$request,$row,$db_cert,$subject,$issuer,$email,$notafter,$cert_verified);
-
-#Database connection;
-if(!($dbh = &_database_connect( 'write' ))){
-    &_writelog(505,'support','Database connection');
-}
-
-#if(!($dbh_sl = &_database_connect( 'read' ))){
-#    &_writelog(505,'support','Database Slave connection');
-    #return &_end(APACHE_SERVER_ERROR);
-#}
+our @EXPORT = qw /_verify_certificate /;
 
 
-#Getting certificate from database
-my $select_cert=$dbh->prepare("SELECT FILE FROM ssl_store where DESCRIPTION='cert'");
-$select_cert->execute();
-if ( my $row = $select_cert->fetchrow_hashref) {
-  $db_cert=  $row->{'FILE'};
+sub _verify_certificate {
 
-  #Reading certificate
-  my $cert = Crypt::OpenSSL::X509->new_from_string($db_cert);
-  $subject = $cert->subject();
-  $issuer= $cert->issuer();
-  $email = $cert->email();
-  $notafter = $cert->notAfter(); 
+  my ($uid,$cert_verified,$support_log);
 
-  #Verifiying if certificate has not expired
-  $cert_verified = 1;
-}
+  if($ENV{'OCS_OPT_SUPPORT'}) {
 
-$select_cert->finish();
-$dbh->disconnect;
+    my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
 
-#If ceritificate if verified, we write a special log and will send it in PROLOG 
-if ($cert_verified) {
-  &_writelog("You have subscribed OCS support :). You can submit a case at http://ocsinventory-ng.com/mantis. You will have to provide your customer ID and your email address $email"); 
-  $Apache::Ocsinventory::OCS_SUPPORT_LOG = "You have subscribed OCS support :). You can submit a case at http://ocsinventory-ng.com/mantis. You will have to provide your customer ID and your email address $email"; 
-} else {  #Special log if no support
-  &_writelog("You don't  have subscribed support for Ocs inventory NG. You can do it connecting to http://ocsinventory-ng.com"); 
-  $Apache::Ocsinventory::OCS_SUPPORT_LOG = "You don't  have subscribed support for Ocs inventory NG. You can do it by connecting to http://ocsinventory-ng.com"; 
-} 
+    #Getting certificate from database
+    my $select_uid=$dbh->prepare("SELECT TVALUE FROM config WHERE NAME='SUPPORT_UID'");
+    $select_uid->execute;
+    if (my $row = $select_uid->fetchrow_hashref) {
+      $uid=  $row->{'TVALUE'};
 
-sub _writelog {
-  our $LOG;
-  my $message= shift;
+      #Setting support certificate as valid 
+      #TODO: verify if certificate has expired using SUPPORT_TIMESTAMP field 
+      $cert_verified = 1;
+    }
 
-  if(!$LOG){
-    open LOG, '>>'.$ENV{'OCS_OPT_LOGPATH'}.'/activity.log' or die "Failed to open log file : $! ($ENV{'OCS_OPT_LOGPATH'})\n";
-    # We don't want buffer, so we allways flush the handles
-    select(LOG);
-    $|=1;
-    $LOG = \*LOG;
+    #If ceritificate if verified, we write a special log and it will sent it in PROLOG 
+    if ($cert_verified) {
+      $support_log = "OCS Inventory NG support is registered for you installation :). You can submit a case at https://support.ocsinventory-ng.com.";
+      $support_log = $support_log." This is your OCS Inventory NG support customer ID : $uid" if $uid; 
+    } else {  #Special log if no support
+      $support_log = "No support registered for your installation. Check OCS Inventory NG support packages at http://www.ocsinventory-ng.com";
+    } 
   }
-
-  print LOG localtime().";$message\n";
+  return $support_log;
 }
-
 1;
