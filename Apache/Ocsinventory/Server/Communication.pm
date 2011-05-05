@@ -36,6 +36,7 @@ use Apache::Ocsinventory::Server::System(qw/
 /);
 
 use Apache::Ocsinventory::Server::Communication::Session;
+use Apache::Ocsinventory::Server::Support qw/_verify_certificate /;
 
 # Subroutine wich answer to client prolog
 sub _prolog{
@@ -226,8 +227,11 @@ sub _prolog_build_resp{
     &$_(\%Apache::Ocsinventory::CURRENT_CONTEXT, $resp);
   }
 
-  #We sent the OCS support log message to the agent
-  $resp->{'SUPPORT_LOG'} = [ $Apache::Ocsinventory::OCS_SUPPORT_LOG ] if $Apache::Ocsinventory::OCS_SUPPORT_LOG;  
+  if ($ENV{'OCS_OPT_SUPPORT'}) {
+    #We sent the OCS support log message to the agen
+    my $support_log = &_verify_certificate;
+    $resp->{'SUPPORT_LOG'} = [ $support_log ] if $support_log;  
+  }
 
   return 0;
 }
