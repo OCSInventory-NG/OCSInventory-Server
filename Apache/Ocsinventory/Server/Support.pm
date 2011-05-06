@@ -49,9 +49,8 @@ sub _verify_certificate {
     }
 
     #If ceritificate if verified, we write a special log and it will sent it in PROLOG 
-    if ($cert_verified) {
-      $support_log = "OCS Inventory NG support is registered for you installation :). You can submit a case at https://support.ocsinventory-ng.com.";
-      $support_log = $support_log." This is your OCS Inventory NG support customer ID : $uid" if $uid; 
+    if ($cert_verified && $uid) {
+      $support_log = "OCS Inventory NG support registration key is $uid . You can submit a case at https://support.ocsinventory-ng.com.";
     } else {  #Special log if no support
       $support_log = "No support registered for your installation. Check OCS Inventory NG support packages at http://www.ocsinventory-ng.com";
     } 
