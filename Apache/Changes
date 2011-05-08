@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+2.0
         * New OCS_OPT_SUPPORT configuration option for OCS Inventory support activation
         * Add a new <SUPPORT_LOG> XML tag in PROLOG
         * Add a new module to manage OCS support: Support.pm
