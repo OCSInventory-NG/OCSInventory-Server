@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+        * Add new useragents for iOS and Android OCS agents in Useragent.pm
+
 2.0
         * New OCS_OPT_SUPPORT configuration option for OCS Inventory support activation
         * Add a new <SUPPORT_LOG> XML tag in PROLOG
