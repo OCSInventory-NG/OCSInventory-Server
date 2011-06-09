@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Change php_value to php_flag for magic_quotes_gpc setting in ocsinventory-reports.conf
         * Add new useragents for iOS and Android OCS agents in Useragent.pm
 
 2.0
