@@ -67,8 +67,8 @@ sub update_ip{
   my $hardwareId = $current_context->{'DATABASE_ID'};
   
   my $select_h_sql = 'SELECT IPADDR,MACADDR FROM hardware h,networks n WHERE IPADDR=IPADDRESS AND h.ID=?';
-  my $updateIp_sql = 'UPDATE networks SET IPGATEWAY=?, IPDHCP=?, IPSUBNET=?, IPADDRESS=?, IPMASK=? WHERE MACADDR=? AND HARDWARE_ID=?';
   my $updateMainIp_sql = 'UPDATE hardware SET IPADDR=? WHERE ID=?';
+
   
   # Get default IP
   my $sth = $dbh->prepare( $select_h_sql );
@@ -81,7 +81,21 @@ sub update_ip{
   if( exists $result->{IFACE} ){
     for my $newIface ( @{$result->{IFACE}} ){
       next if !$newIface->{IP} or !$newIface->{MASK} or !$newIface->{MAC};
-      my $err = $dbh->do( $updateIp_sql, {}, $newIface->{GW}, $newIface->{DHCP}, $newIface->{SUBNET}, $newIface->{IP}, $newIface->{MASK}, $newIface->{MAC}, $hardwareId );
+
+      my (@update_fields, @update_values);
+
+      #We create update request using existing values only
+      if ($newIface->{GW}) { push @update_fields,'IPGATEWAY=?'; push @update_values,$newIface->{GW}; }
+      if ($newIface->{DHCP}) { push @update_fields,'IPDHCP=?'; push @update_values,$newIface->{DHCP}; }
+      if ($newIface->{SUBNET}) { push @update_fields,'IPSUBNET=?'; push @update_values,$newIface->{SUBNET}; }
+      if ($newIface->{IP}) { push @update_fields,'IPADDRESS=?'; push @update_values,$newIface->{IP}; }
+      if ($newIface->{MASK}) { push @update_fields,'IPMASK=?'; push @update_values,$newIface->{MASK}; }
+      push @update_values,$newIface->{MAC};
+      push @update_values,$hardwareId;
+
+      my $updateIp_sql= 'UPDATE networks SET '.(join ',', @update_fields).' WHERE MACADDR=? AND HARDWARE_ID=?';
+
+      my $err = $dbh->do( $updateIp_sql, {}, @update_values );
       if( !$err ){
         &_log(530, 'notify', 'error');
       }
