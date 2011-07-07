@@ -742,27 +742,27 @@ then
                      echo "RedHat based automatic installation"
                      if [ $DBI=1 ]
                      then
-                         PACKAGE="$PACKAGE 'perl(DBI)'"
+                         PACKAGE="$PACKAGE perl-DBI"
                      fi
                      if [ $APACHE_DBI=1 ]
                      then
-                         PACKAGE="$PACKAGE 'perl(Apache-DBI)'"
+                         PACKAGE="$PACKAGE perl-Apache-DBI"
                      fi
                      if [ $DBD_MYSQL=1 ]
                      then
-                         PACKAGE="$PACKAGE 'perl(DBD-MySQL)'"
+                         PACKAGE="$PACKAGE perl-DBD-MySQL"
                      fi
                      if [ $COMPRESS_ZLIB=1 ]
                      then
-                         PACKAGE="$PACKAGE 'perl(Compress-Zlib)'"
+                         PACKAGE="$PACKAGE perl-Compress-Zlib"
                      fi
                      if [ $XML_SIMPLE=1 ]
                      then
-                         PACKAGE="$PACKAGE 'perl(XML-Simple)'"
+                         PACKAGE="$PACKAGE perl-XML-Simple"
                      fi
                      if [ $NET_IP=1 ]
                      then
-                         PACKAGE="$PACKAGE 'perl(Net-IP)'"
+                         PACKAGE="$PACKAGE perl-Net-IP"
                      fi
                      yum update
                      yum install $PACKAGE
