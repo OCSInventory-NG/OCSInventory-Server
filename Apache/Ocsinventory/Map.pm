@@ -588,6 +588,8 @@ javainfo => {
    fields =>  {
        SERIALNUMBER => {},
        SYSTEM => {},
+       TYPE => {},
+       MANUFACTURER => {},
    }
   },
 

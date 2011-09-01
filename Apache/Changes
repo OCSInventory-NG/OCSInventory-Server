@@ -1,5 +1,8 @@
 Revision history for Apache::Ocsinventory
 
+	* Add new fields for snmp_loadbalancer table in Map.pm
+
+2.0.1
         * Fix RPM packages names in setup.sh
         * Fix Bug #800418 about subnet, gateway and IP DHCP informations disappearance from database
         * Increase php_value post_max_size and php_value upload_max_filesize values to 101 Mo and 100 Mo in ocsinventory-reports.conf
