@@ -1,6 +1,7 @@
 Revision history for Apache::Ocsinventory
-
-	* Add new fields for snmp_loadbalancer table in Map.pm
+	
+        * Add a new field in hardware section to get the computer architecture	
+        * Add new fields for snmp_loadbalancer table in Map.pm
 
 2.0.1
         * Remove 'Satisfy any' Apache directive in ocsinventory-server.conf
