@@ -387,6 +387,22 @@ our %DATA_MAP= (
     }
   },
 
+  cpus => {
+    mask => 262144,
+    multi => 1,
+    auto => 1,
+    delOnReplace => 1,
+    sortBy => 'SERIALNUMBER',
+    writeDiff => 1,
+    cache => 0,
+    fields =>  {
+      MANUFACTURER => {},
+      TYPE => {},
+      SERIALNUMBER => {},
+      SPEED => {},
+    }
+  },
+
 javainfo => {
     mask => 0,
     multi => 0,
