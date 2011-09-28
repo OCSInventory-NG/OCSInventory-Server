@@ -4,6 +4,9 @@ Revision history for Apache::Ocsinventory
         * Add a new field in hardware section to get the computer architecture	
         * Add new fields for snmp_loadbalancer table in Map.pm
 
+2.0.x
+        * Add availibilty to allow external useragents using a text file
+
 2.0.1
         * Remove 'Satisfy any' Apache directive in ocsinventory-server.conf
         * Fix RPM packages names in setup.sh

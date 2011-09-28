@@ -78,6 +78,15 @@ sub useragent_prolog_read{
      }
   }
 
+  #If external references file exists
+  if ($ENV{'OCS_OPT_EXT_USERAGENTS_FILE_PATH'} && -f $ENV{'OCS_OPT_EXT_USERAGENTS_FILE_PATH'}) {
+    open(FILE, $ENV{'OCS_OPT_EXT_USERAGENTS_FILE_PATH'}) or die "Cannot open $ENV{'OCS_OPT_EXT_USERAGENTS_FILE_PATH'} file !!"; 
+    my @ext_useragents = <FILE>; chomp @ext_useragents;
+    close FILE;
+
+    $stop = 0 if (grep(/^$Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'}$/, @ext_useragents)); 
+  }
+
   #Does we have to stop PROLOG ?
   if ($stop) {
     &_log(400,'useragent','Bad agent or agent version too recent for server !!') if $ENV{'OCS_OPT_LOGLEVEL'};
