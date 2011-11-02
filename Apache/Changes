@@ -5,6 +5,7 @@ Revision history for Apache::Ocsinventory
         * Add new fields for snmp_loadbalancer table in Map.pm
 
 2.0.x
+        * Do not take care of comment lines when getting external useragents file content
         * Fix various bugs in NOTIFY mode
 
 2.0.2
