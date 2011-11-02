@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Do not take care of comment lines when getting external useragents file content
         * Fix various bugs in NOTIFY mode        
 
 2.0.2

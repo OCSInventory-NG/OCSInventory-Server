@@ -84,6 +84,9 @@ sub useragent_prolog_read{
     my @ext_useragents = <FILE>; chomp @ext_useragents;
     close FILE;
 
+    #Removing comments lines   
+    @ext_useragents = grep {  !/^\#/ } @ext_useragents;
+
     $stop = 0 if (grep(/^$Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'}$/, @ext_useragents)); 
   }
 
