@@ -60,9 +60,10 @@ sub snmp_prolog_resp{
   my $current_context = shift;
   my $resp = shift;
   my $select_ip_req;
-  my $select_snmpcom_uri;
-  my @DevicesToScan;
-  my @SnmpCommunities;
+  my $select_communities_req;
+  my $select_deviceid_req;
+  my @devicesToScan;
+  my @communities;
 
   #Verify if SNMP is enable for this computer or in config
   my $snmpSwitch = &_get_snmp_switch($current_context);
@@ -78,52 +79,71 @@ sub snmp_prolog_resp{
   my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
   my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
   my $groupsParams  = $current_context->{'PARAMS_G'};
+
+  #Only if communication is https 
+  if ($current_context->{'APACHE_OBJECT'}->subprocess_env('https')) {
+     
+    $select_deviceid_req=$dbh->prepare('SELECT DEVICEID FROM hardware WHERE DEVICEID=?');
+    $select_deviceid_req->execute($current_context->{'DEVICEID'});
+
+    #Only if agent deviceid already exists in database
+    if ($select_deviceid_req->fetchrow_hashref) {
  
-  #If the computer is Ipdicover elected 
-  if ($behaviour == 1 || $behaviour == 2) {
+      #If the computer is Ipdicover elected 
+      if ($behaviour == 1 || $behaviour == 2) {
 
-    #Getting non inventoried network devices for the agent subnet 
-    $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?)');
-    $select_ip_req->execute($lanToDiscover,$lanToDiscover);
+        #Getting non inventoried network devices for the agent subnet 
+        $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?)');
+        $select_ip_req->execute($lanToDiscover,$lanToDiscover);
 
-    while(my $row = $select_ip_req->fetchrow_hashref){
-      push @DevicesToScan,$row;
-    }
+        while(my $row = $select_ip_req->fetchrow_hashref){
+          push @devicesToScan,$row;
+        }
 
-    if (@DevicesToScan) {
+        if (@devicesToScan) {
 
-      #Adding devices informations in the XML
-      foreach my $device (@DevicesToScan) {
-        push @snmp,{
-          'IPADDR'       => $device->{IP},
-          'MACADDR'       => $device->{MAC},
-          'TYPE'     => 'DEVICE',
-        };
+          #Adding devices informations in the XML
+          foreach my $device (@devicesToScan) {
+            push @snmp,{
+              'IPADDR'       => $device->{IP},
+              'MACADDR'       => $device->{MAC},
+              'TYPE'     => 'DEVICE',
+            };
+          }
+
+          #Getting snmp communities
+          $select_communities_req = $dbh->prepare('SELECT VERSION,NAME,USERNAME,AUTHKEY,AUTHPASSWD FROM snmp_communities');
+          $select_communities_req->execute();
+
+          while(my $row = $select_communities_req->fetchrow_hashref){
+            push @communities,$row;
+          }
+
+          if (@communities) {
+            foreach my $community (@communities) {
+              push @snmp,{
+                'VERSION'       => $community->{'VERSION'}?$community->{'VERSION'}:'',
+                'NAME'       => $community->{'NAME'}?$community->{'NAME'}:'',
+                'USERNAME'     => $community->{'USERNAME'}?$community->{'USERNAME'}:'',
+                'AUTHKEY'   => $community->{'AUTHKEY'}?$community->{'AUTHKEY'}:'',
+                'AUTHPASSWD'   => $community->{'AUTHPASSWD'}?$community->{'AUTHPASSWD'}:'',
+                'TYPE'   => 'COMMUNITY',
+              };
+            }
+          }
+
+          #Final XML
+          push @{ $resp->{'OPTION'} },{
+            'NAME' => ['SNMP'],
+            'PARAM' => \@snmp,
+          };
+        }
       }
-
-      #Getting snmp_com.txt URI
-      $select_snmpcom_uri=$dbh->prepare('SELECT TVALUE FROM config WHERE NAME="SNMP_URI"');
-      $select_snmpcom_uri->execute();
-
-      if (my $row = $select_snmpcom_uri->fetchrow_hashref) {
-        #Adding snmp_com.txt URI in XML
-        push @snmp,{
-          'TYPE' => 'COMMUNITY',
-          'SNMPCOM_LOC'  => $row->{'TVALUE'},
-        };
-      }
-
-      #Final XML
-      push @{ $resp->{'OPTION'} },{
-        'NAME' => ['SNMP'],
-        'PARAM' => \@snmp,
-      };
-    }
-  }
+    } else { &_log(104,'snmp',"error: agent must have a deviceid in database !!"); }
+  } else { &_log(103,'snmp',"error: agent must communicate using https to be able to get SNMP communities !!"); } 
 }
 
 sub snmp_handler{
-
   my $current_context = shift;
 
   #Verify if SNMP is enable for this computer or in config
