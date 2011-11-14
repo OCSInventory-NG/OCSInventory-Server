@@ -80,34 +80,35 @@ sub snmp_prolog_resp{
   my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
   my $groupsParams  = $current_context->{'PARAMS_G'};
 
-  #Only if communication is https 
-  if ($current_context->{'APACHE_OBJECT'}->subprocess_env('https')) {
-     
-    $select_deviceid_req=$dbh->prepare('SELECT DEVICEID FROM hardware WHERE DEVICEID=?');
-    $select_deviceid_req->execute($current_context->{'DEVICEID'});
+  #If the computer is Ipdicover elected 
+  if ($behaviour == 1 || $behaviour == 2) {
 
-    #Only if agent deviceid already exists in database
-    if ($select_deviceid_req->fetchrow_hashref) {
- 
-      #If the computer is Ipdicover elected 
-      if ($behaviour == 1 || $behaviour == 2) {
 
-        #Getting non inventoried network devices for the agent subnet 
-        $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?)');
-        $select_ip_req->execute($lanToDiscover,$lanToDiscover);
+    #Getting non inventoried network devices for the agent subnet 
+    $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?)');
+    $select_ip_req->execute($lanToDiscover,$lanToDiscover);
 
-        while(my $row = $select_ip_req->fetchrow_hashref){
-          push @devicesToScan,$row;
-        }
+    while(my $row = $select_ip_req->fetchrow_hashref){
+      push @devicesToScan,$row;
+    }
 
-        if (@devicesToScan) {
+    if (@devicesToScan) {
+
+      #Only if communication is https 
+      if ($current_context->{'APACHE_OBJECT'}->subprocess_env('https')) {
+    
+        $select_deviceid_req=$dbh->prepare('SELECT DEVICEID FROM hardware WHERE DEVICEID=?');
+        $select_deviceid_req->execute($current_context->{'DEVICEID'});
+
+        #Only if agent deviceid already exists in database
+        if ($select_deviceid_req->fetchrow_hashref) {
 
           #Adding devices informations in the XML
           foreach my $device (@devicesToScan) {
             push @snmp,{
               'IPADDR'       => $device->{IP},
               'MACADDR'       => $device->{MAC},
-              'TYPE'     => 'DEVICE',
+               'TYPE'     => 'DEVICE',
             };
           }
 
@@ -137,10 +138,10 @@ sub snmp_prolog_resp{
             'NAME' => ['SNMP'],
             'PARAM' => \@snmp,
           };
-        }
-      }
-    } else { &_log(104,'snmp',"error: agent must have a deviceid in database !!"); }
-  } else { &_log(103,'snmp',"error: agent must communicate using https to be able to get SNMP communities !!"); } 
+        } else { &_log(104,'snmp',"error: agent must have a deviceid in database !!"); }
+      } else { &_log(103,'snmp',"error: agent must communicate using https to be able to get SNMP communities (only affects OCS unix agent) !!"); } 
+    }
+  }
 }
 
 sub snmp_handler{
