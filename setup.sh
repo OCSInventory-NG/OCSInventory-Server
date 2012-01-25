@@ -81,11 +81,12 @@ echo "Trying to determine whitch OS or Linux distribution you use"
 if [ -f /etc/redhat-release ]
 then
     UNIX_DISTRIBUTION="redhat"
-else
-    if [ -f /etc/debian_version ]
-    then
-	UNIX_DISTRIBUTION="debian"
-    fi
+elif [ -f /etc/debian_version ]
+then
+    UNIX_DISTRIBUTION="debian"
+elif [ -f /etc/SuSE-release ]
+then
+    UNIX_DISTRIBUTION="suse"
 fi
 
 # Check for Apache web server binaries
@@ -223,7 +224,11 @@ then
         if [ -z "$APACHE_BIN_FOUND" ]
         then
             APACHE_BIN_FOUND=`which apache2 2>/dev/null`
-        fi
+            if [ -z "$APACHE_BIN_FOUND" ]
+            then
+		APACHE_BIN_FOUND=`which httpd2 2>/dev/null`
+            fi
+	fi
     fi
 fi
 echo "Found Apache daemon $APACHE_BIN_FOUND" >> $SETUP_LOG
@@ -319,13 +324,23 @@ echo
 echo "Checking for Apache user account" >> $SETUP_LOG
 if [ -z "$APACHE_USER" ]
 then
-    # Debian
-    if [ -f /etc/apache2/envvars ]; then
-        . /etc/apache2/envvars
-        APACHE_USER_FOUND=$APACHE_RUN_USER
-    else
-        APACHE_USER_FOUND=`cat $APACHE_CONFIG_FILE | grep "User " | tail -1 | cut -d' ' -f2`
-    fi
+    case $UNIX_DISTRIBUTION in
+	"debian")
+    		if [ -f /etc/apache2/envvars ]; then
+        	. /etc/apache2/envvars
+		fi
+        	APACHE_USER_FOUND=$APACHE_RUN_USER
+		;;
+	"suse")
+		if [ -f /etc/apache2/uid.conf ]
+		then
+			APACHE_USER_FOUND=`cat /etc/apache2/uid.conf | grep "User" | tail -1 | cut -d' ' -f2`
+		fi
+		;;
+	"redhat")
+        	APACHE_USER_FOUND=`cat $APACHE_CONFIG_FILE | grep "User " | tail -1 | cut -d' ' -f2`
+		;;
+    esac
 fi
 echo "Found Apache user account $APACHE_USER_FOUND" >> $SETUP_LOG
 # Ask user's confirmation 
@@ -361,13 +376,23 @@ echo
 echo "Checking for Apache group" >> $SETUP_LOG
 if [ -z "$APACHE_GROUP" ]
 then
-    # Debian
-    if [ -f /etc/apache2/envvars ]; then
-        . /etc/apache2/envvars
-        APACHE_GROUP_FOUND=$APACHE_RUN_GROUP
-    else
-        APACHE_GROUP_FOUND=`cat $APACHE_CONFIG_FILE | grep "Group" | tail -1 | cut -d' ' -f2`
-    fi
+    case $UNIX_DISTRIBUTION in
+	"debian")
+    		if [ -f /etc/apache2/envvars ]; then
+        	. /etc/apache2/envvars
+		fi
+        	APACHE_GROUP_FOUND=$APACHE_RUN_USER
+		;;
+	"suse")
+		if [ -f /etc/apache2/uid.conf ]
+		then
+			APACHE_GROUP_FOUND=`cat /etc/apache2/uid.conf | grep "Group" | tail -1 | cut -d' ' -f2`
+		fi
+		;;
+	"redhat")
+        	APACHE_GROUP_FOUND=`cat $APACHE_CONFIG_FILE | grep "Group " | tail -1 | cut -d' ' -f2`
+		;;
+    esac
 
     if [ -z "$APACHE_GROUP_FOUND" ]
     then
@@ -411,29 +436,40 @@ echo
 echo "Checking for Apache Include configuration directory" >> $SETUP_LOG
 if [ -z "$APACHE_CONFIG_DIRECTORY" ]
 then
-    # Works on RH/Fedora/CentOS
-    CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'*' -f1`
-    if [ -n "$CONFIG_DIRECTORY_FOUND" ]
-    then
-        APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
-        echo "Redhat compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-    else
-        APACHE_CONFIG_DIRECTORY_FOUND=""
-        echo "Not found Redhat compliant Apache Include configuration directory" >> $SETUP_LOG
-    fi
-    if ! [ -d $APACHE_CONFIG_DIRECTORY_FOUND ]
-    then
+    case $UNIX_DISTRIBUTION in
+    "redhat")
+    	# Works on RH/Fedora/CentOS
+    	CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'*' -f1`
+    	if [ -n "$CONFIG_DIRECTORY_FOUND" ]
+    	then
+        	APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
+        	echo "Redhat compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
+        fi
+	;;
+    "debian")
         # Works on Debian/Ubuntu
         CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'[' -f1`
         if [ -n "$CONFIG_DIRECTORY_FOUND" ]
         then
             APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
             echo "Debian compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-        else
-            APACHE_CONFIG_DIRECTORY_FOUND=""
-            echo "Not found Debian compliant Apache Include configuration directory" >> $SETUP_LOG
         fi
-    fi
+    	;;
+    "suse")
+	 # Works on SuSE/OpenSuSE
+        CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep conf.d | tail -1 | cut -d' ' -f4 | cut -d'/' -f1`
+        if [ -n "$CONFIG_DIRECTORY_FOUND" ]
+        then
+                APACHE_CONFIG_DIRECTORY_FOUND="`dirname $APACHE_CONFIG_FILE`/$CONFIG_DIRECTORY_FOUND"
+                echo "SuSE compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
+        fi
+	;;
+    *)
+	# No compliant include configuration
+	APACHE_CONFIG_DIRECTORY_FOUND=""
+	echo "No compliant Apache Include configuration directory found" >> $SETUP_LOG
+	;;
+    esac
 fi
 echo "Found Apache Include configuration directory $APACHE_CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
 # Ask user's confirmation 
@@ -867,6 +903,28 @@ then
         fi
     else
         echo "Found that PERL module SOAP::Lite is available."
+    fi
+    echo
+    echo "Checking for Apache2::SOAP PERL module..."
+    echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
+    $PERL_BIN -mApache2::SOAP -e 'print "PERL module Apache2::SOAP is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** Warning: PERL module Apache2::SOAP is not installed !"
+        echo "This module is only required by OCS Inventory NG SOAP Web Service."
+        echo -n "Do you wish to continue ([y]/n] ?"
+        read ligne
+        if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+        then
+            echo "User choose to continue setup without PERL module SOAP::Apache2" >> $SETUP_LOG
+        else
+            echo
+            echo "Installation aborted !"
+            echo "User choose to abort installation !" >> $SETUP_LOG
+            exit 1
+        fi
+    else
+        echo "Found that PERL module SOAP::Apache2 is available."
     fi
     echo "Checking for XML::Entities PERL module..."
     echo "Checking for XML::Entities PERL module" >> $SETUP_LOG

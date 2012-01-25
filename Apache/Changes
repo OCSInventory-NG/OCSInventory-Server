@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
-      
+
+        * setup.sh script can now detect Suse/OpenSuse distributions      
         * Add new 'cpus' inventory section to get various CPU data	
         * Add a new field in hardware section to get the computer architecture	
         * Add new fields for snmp_loadbalancer table in Map.pm
