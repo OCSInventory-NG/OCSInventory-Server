@@ -5,6 +5,8 @@ Revision history for Apache::Ocsinventory
         * Add a new field in hardware section to get the computer architecture	
         * Add new fields for snmp_loadbalancer table in Map.pm
 
+2.0.4
+
 2.0.3
         * Fix Bug #881406 about security issue due to snmp_com.txt file which is no longer used
         * Do not take care of comment lines when getting external useragents file content
