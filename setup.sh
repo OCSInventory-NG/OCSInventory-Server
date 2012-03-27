@@ -60,6 +60,10 @@ ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-reports"
 # Administration default packages directory and Apache alias
 ADM_SERVER_VAR_PACKAGES_DIR="download"
 ADM_SERVER_PACKAGES_ALIAS="/download"
+# Administration console log files dir
+ADM_SERVER_VAR_LOGS_DIR="logs"
+# Administration console scripts log files dir
+ADM_SERVER_VAR_SCRIPTS_LOGS_DIR="scripts"
 # Administration console default ipdsicover-util.pl cache dir
 ADM_SERVER_VAR_IPD_DIR="ipd"
 # OS or linux distribution from automatic detection
@@ -1146,9 +1150,9 @@ then
     fi
     echo "OK, using directory $ADM_SERVER_STATIC_DIR to install static files ;-)"
     echo "Using directory $ADM_SERVER_STATIC_DIR for static files" >> $SETUP_LOG
-
+    echo
     echo "Where to create writable/cache directories for deployement packages,"
-    echo -n "IPDiscover [$ADM_SERVER_VAR_DIR] ?"
+    echo -n "administration console logs, IPDiscover [$ADM_SERVER_VAR_DIR] ?"
     read ligne
     if test -z $ligne
     then
@@ -1357,6 +1361,66 @@ then
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Creating Administration server log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR."
+    echo "Creating Administration server log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR" >> $SETUP_LOG
+    # Set log files area owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set log files area writable by root and Apache group only
+    chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Creating Administration server scripts log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR."
+    echo "Creating Administration server scripts log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR" >> $SETUP_LOG
+    # Set scripts log files area owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set scripts log files area writable by root and Apache group only
+    chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
         echo
         echo "Installation aborted !"
         exit 1

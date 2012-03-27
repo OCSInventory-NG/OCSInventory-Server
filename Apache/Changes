@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+        * Create "logs" and "scripts" directories for administration console in setup.sh
+
 2.0.4
 
 2.0.3
