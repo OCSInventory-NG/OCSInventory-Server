@@ -1453,8 +1453,8 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    echo "Creating Administration server scripts directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR."
-    echo "Creating Administration server scripts directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR" >> $SETUP_LOG
+    echo "Creating Administration server scripts log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR."
+    echo "Creating Administration server scripts log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR" >> $SETUP_LOG
     mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
     if [ $? != 0 ]
     then
@@ -1465,7 +1465,7 @@ then
     fi
     echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR."
     echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR" >> $SETUP_LOG
-    # Set scripts area owned by root, group Apache
+    # Set scripts log files area owned by root, group Apache
     chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
@@ -1474,7 +1474,7 @@ then
         echo "Installation aborted !"
         exit 1
     fi
-    # Set scripts area writable by root and Apache group only
+    # Set scripts log files area writable by root and Apache group only
     chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
     if [ $? -ne 0 ]
     then
