@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * New OCS_OPT_DOWNLOAD_EXECUTION_TIMEOUT configuration option to prevent package commands to run indefinitely 
         * setup.sh script can now detect Suse/OpenSuse distributions      
         * Add new 'cpus' inventory section to get various CPU data	
         * Add a new field in hardware section to get the computer architecture	
