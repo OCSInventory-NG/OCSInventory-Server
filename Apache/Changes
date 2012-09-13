@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+	* Prevent bugs in NOTIFY mode with older XML behaviour
+
 2.0.5
         * Create "logs" and "scripts" directories for administration console in setup.sh
 
