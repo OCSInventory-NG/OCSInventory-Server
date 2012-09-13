@@ -6,6 +6,9 @@ Revision history for Apache::Ocsinventory
         * Add a new field in hardware section to get the computer architecture	
         * Add new fields for snmp_loadbalancer table in Map.pm
 
+2.0.x
+	* Prevent bugs in NOTIFY mode with older XML behaviour
+
 2.0.5
         * Create "logs" and "scripts" directories for administration console in setup.sh
 
