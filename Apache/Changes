@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add availability to specify a custom network adress for SNMP scans
         * New OCS_OPT_DOWNLOAD_EXECUTION_TIMEOUT configuration option to prevent package commands to run indefinitely 
         * setup.sh script can now detect Suse/OpenSuse distributions      
         * Add new 'cpus' inventory section to get various CPU data	
