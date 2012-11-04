@@ -335,6 +335,14 @@ our %CONFIG = (
     level => IMPORTANT,
     filter => qr '^([1-9]\d*)$'
   },
+  DOWNLOAD_EXECUTION_TIMEOUT => {
+    type => 'IVALUE',
+    default => 120,
+    unit => 'minute',
+    description => 'Agents will send an error event and clean the package if package command does not respond during this setting',
+    level => IMPORTANT,
+    filter => qr '^([1-9]\d*)$'
+  },
   DOWNLOAD_GROUPS_TRACE_EVENTS => {
     type => 'IVALUE',
     default => 1,

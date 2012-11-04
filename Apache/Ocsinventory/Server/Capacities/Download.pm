@@ -52,7 +52,7 @@ sub download_prolog_resp{
   my $hardware_id = $current_context->{'DATABASE_ID'};
   
   my $groupsParams = $current_context->{'PARAMS_G'};
-  my ( $downloadSwitch, $cycleLatency, $fragLatency, $periodLatency, $periodLength, $timeout);
+  my ( $downloadSwitch, $cycleLatency, $fragLatency, $periodLatency, $periodLength, $timeout,$execTimeout);
   
 
   my($pack_sql, $hist_sql);
@@ -65,6 +65,10 @@ sub download_prolog_resp{
     $downloadSwitch = 1;
     # Group's parameters
     for(keys(%$groupsParams)){
+
+      $downloadSwitch = $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'}
+        if exists( $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'} ) 
+        and $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'} < $downloadSwitch;
       
       $cycleLatency = $$groupsParams{$_}->{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'} 
         if ( (exists($$groupsParams{$_}->{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'}) 
@@ -80,20 +84,21 @@ sub download_prolog_resp{
         if ( (exists($$groupsParams{$_}->{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'}) 
         and $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'} > $periodLatency)
         or !$periodLatency);
-      
-      $timeout = $$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'} 
-        if ( (exists($$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'}) 
-        and $$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'} < $timeout) 
-        or !$timeout);
-      
+
       $periodLength = $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'}
         if ( (exists($$groupsParams{$_}->{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'}) 
         and $$groupsParams{$_}->{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'} < $periodLength) 
         or !$periodLength); 
       
-      $downloadSwitch = $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'}
-        if exists( $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'} ) 
-        and $$groupsParams{$_}->{'DOWNLOAD_SWITCH'}->{'IVALUE'} < $downloadSwitch;
+      $timeout = $$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'} 
+        if ( (exists($$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'}) 
+        and $$groupsParams{$_}->{'DOWNLOAD_TIMEOUT'}->{'IVALUE'} < $timeout) 
+        or !$timeout);
+
+      $execTimeout = $$groupsParams{$_}->{'DOWNLOAD_EXECUTION_TIMEOUT'}->{'IVALUE'} 
+        if ( (exists($$groupsParams{$_}->{'DOWNLOAD_EXECUTION_TIMEOUT'}->{'IVALUE'}) 
+        and $$groupsParams{$_}->{'DOWNLOAD_EXECUTION_TIMEOUT'}->{'IVALUE'} < $execTimeout) 
+        or !$execTimeout);
     }  
   }
   else{
@@ -108,20 +113,23 @@ sub download_prolog_resp{
   $periodLatency   = $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LATENCY'} unless $periodLatency;
   $periodLength   = $ENV{'OCS_OPT_DOWNLOAD_PERIOD_LENGTH'} unless $periodLength;
   $timeout  = $ENV{'OCS_OPT_DOWNLOAD_TIMEOUT'} unless $timeout;
+  $execTimeout  = $ENV{'OCS_OPT_DOWNLOAD_EXECUTION_TIMEOUT'} unless $execTimeout;
   
   push @packages,{
     'TYPE'       => 'CONF',
     'ON'       => $downloadSwitch,
-    'TIMEOUT'     => $current_context->{'PARAMS'}{'DOWNLOAD_TIMEOUT'}->{'IVALUE'}
-            || $timeout,
-    'PERIOD_LENGTH'   => $current_context->{'PARAMS'}{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'}   
-            || $periodLength,
-    'PERIOD_LATENCY'   => $current_context->{'PARAMS'}{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'} 
-            || $periodLatency,
+    'CYCLE_LATENCY'   => $current_context->{'PARAMS'}{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'}   
+            || $cycleLatency,
     'FRAG_LATENCY'     => $current_context->{'PARAMS'}{'DOWNLOAD_FRAG_LATENCY'}->{'IVALUE'}   
             || $fragLatency,
-    'CYCLE_LATENCY'   => $current_context->{'PARAMS'}{'DOWNLOAD_CYCLE_LATENCY'}->{'IVALUE'}   
-            || $cycleLatency
+    'PERIOD_LATENCY'   => $current_context->{'PARAMS'}{'DOWNLOAD_PERIOD_LATENCY'}->{'IVALUE'} 
+            || $periodLatency,
+    'PERIOD_LENGTH'   => $current_context->{'PARAMS'}{'DOWNLOAD_PERIOD_LENGTH'}->{'IVALUE'}   
+            || $periodLength,
+    'TIMEOUT'     => $current_context->{'PARAMS'}{'DOWNLOAD_TIMEOUT'}->{'IVALUE'}
+            || $timeout,
+    'EXECUTION_TIMEOUT'     => $current_context->{'PARAMS'}{'DOWNLOAD_EXECUTION_TIMEOUT'}->{'IVALUE'}
+            || $execTimeout
   };
   
   if($downloadSwitch){
