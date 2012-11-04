@@ -104,10 +104,8 @@ sub update_ip{
       }
       else{
         &_log(323, 'notify', "$newIface->{MAC}<$newIface->{IP}>");
-          if (exists $result->{HARDWARE}) {   #New behaviour with additional <HARDWARE> tag 
-           $dbh->do( $updateMainIp_sql, {}, $result->{HARDWARE}->{IPADDR}, $hardwareId);
-        } else {
-            $dbh->do( $updateMainIp_sql, {}, $newIface->{IP}, $hardwareId);
+        if (exists $result->{HARDWARE}) {   #New behaviour with additional <HARDWARE> tag 
+          $dbh->do( $updateMainIp_sql, {}, $result->{HARDWARE}->{IPADDR}, $hardwareId);
         }
       }  
     }
