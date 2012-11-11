@@ -60,6 +60,9 @@ ADM_SERVER_VAR_DIR="/var/lib/ocsinventory-reports"
 # Administration default packages directory and Apache alias
 ADM_SERVER_VAR_PACKAGES_DIR="download"
 ADM_SERVER_PACKAGES_ALIAS="/download"
+# Administration default snmp directory and Apache alias
+ADM_SERVER_VAR_SNMP_DIR="snmp"
+ADM_SERVER_SNMP_ALIAS="/snmp"
 # Administration console log files dir
 ADM_SERVER_VAR_LOGS_DIR="logs"
 # Administration console scripts log files dir
@@ -1210,7 +1213,7 @@ then
     echo "Using directory $ADM_SERVER_STATIC_DIR for static files" >> $SETUP_LOG
     echo
     echo "Where to create writable/cache directories for deployement packages,"
-    echo -n "administration console logs, IPDiscover [$ADM_SERVER_VAR_DIR] ?"
+    echo -n "administration console logs, IPDiscover and SNMP [$ADM_SERVER_VAR_DIR] ?"
     read ligne
     if test -z $ligne
     then
@@ -1393,6 +1396,7 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    #Create packages directory
     echo "Creating packages directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR."
     echo "Creating packages directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR" >> $SETUP_LOG
     mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
@@ -1423,6 +1427,38 @@ then
         echo "Installation aborted !"
         exit 1
     fi
+    # Create snmp custom mibs directory
+    echo "Creating snmp mibs directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR."
+    echo "Creating snmp mibs directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR" >> $SETUP_LOG
+    mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
+    if [ $? != 0 ]
+    then
+        echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR."
+    echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR" >> $SETUP_LOG
+    # Set snmp area owned by root, group Apache
+    chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Set snmp area writable by root and Apache group only
+    chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    # Create logs directory
     echo "Creating Administration server log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR."
     echo "Creating Administration server log files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR" >> $SETUP_LOG
     mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR >> $SETUP_LOG 2>&1
@@ -1528,6 +1564,8 @@ then
     $PERL_BIN -pi -e "s#PATH_TO_IPD_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_IPD_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PACKAGES_ALIAS#$ADM_SERVER_PACKAGES_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PATH_TO_PACKAGES_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#SNMP_ALIAS#$ADM_SERVER_SNMP_ALIAS#g" $ADM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_SNMP_DIR#$ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR#g" $ADM_SERVER_APACHE_CONF_FILE.local
     echo "******** Begin updated $ADM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
     cat $ADM_SERVER_APACHE_CONF_FILE.local >> $SETUP_LOG
     echo "******** End updated $ADM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG

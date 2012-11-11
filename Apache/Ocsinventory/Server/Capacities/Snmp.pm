@@ -63,9 +63,11 @@ sub snmp_prolog_resp{
   my $select_communities_req;
   my $select_deviceid_req;
   my $select_network_req;
+  my $select_mibs_req;
   my @devicesToScan;
   my @networksToScan;
   my @communities;
+  my @mibs;
 
   #Verify if SNMP is enable for this computer or in config
   my $snmpSwitch = &_get_snmp_switch($current_context);
@@ -96,15 +98,22 @@ sub snmp_prolog_resp{
       $select_network_req=$dbh->prepare("SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND NAME='SNMP_NETWORK'");
       $select_network_req->execute($current_context->{'DATABASE_ID'});
 
-      while(my $row = $select_network_req->fetchrow_hashref){
-         push @networksToScan,$row;
-      }
+      #Getting networks separated by commas (will be removed when GUI will be OK to add several networks cleanly) 
+      my $row = $select_network_req->fetchrow_hashref; #Only one line per HARDWARE_ID
+      @networksToScan= split(',',$row->{TVALUE});
+      
+
+      #TODO: use this lines instead of previous ones when GUI will be OK to add several networks cleanly
+      #while(my $row = $select_network_req->fetchrow_hashref){
+      #   push @networksToScan,$row;
+      #}
 
       if (@networksToScan) {
         #Adding devices informations in the XML
         foreach my $network (@networksToScan) {
           push @snmp,{
-            'SUBNET' => $network->{TVALUE},
+            #'SUBNET' => $network->{TVALUE},   #TODO: uncomment this line when GUI will be OK to add several networks cleanly 
+            'SUBNET' => $network,
             'TYPE' => 'NETWORK',
           };
         }
@@ -151,6 +160,27 @@ sub snmp_prolog_resp{
               'AUTHKEY' => $community->{'AUTHKEY'}?$community->{'AUTHKEY'}:'',
               'AUTHPASSWD' => $community->{'AUTHPASSWD'}?$community->{'AUTHPASSWD'}:'',
               'TYPE' => 'COMMUNITY',
+            };
+          }
+        }
+
+        #Getting custom mibs informations 
+        $select_mibs_req = $dbh->prepare('SELECT VENDOR,URL,CHECKSUM,VERSION,PARSER FROM snmp_mibs');
+        $select_mibs_req->execute();
+
+        while(my $row = $select_mibs_req->fetchrow_hashref){
+          push @mibs,$row;
+        }
+
+        if (@mibs) {
+          foreach my $mib (@mibs) {
+            push @snmp,{
+              'VENDOR' => $mib->{'VENDOR'}?$mib->{'VENDOR'}:'',
+              'URL'=> $mib->{'URL'}?$mib->{'URL'}:'',
+              'CHECKSUM' => $mib->{'CHECKSUM'}?$mib->{'CHECKSUM'}:'',
+              'VERSION' => $mib->{'VERSION'}?$mib->{'VERSION'}:'',
+              'PARSER' => $mib->{'PARSER'}?$mib->{'PARSER'}:'',
+              'TYPE' => 'MIB',
             };
           }
         }
