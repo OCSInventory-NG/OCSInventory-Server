@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add availibility to reforce a package deployment
         * Add availability to specify custom MIBS for SNMP scans
         * Add availability to specify a custom network adress for SNMP scans 
         * New OCS_OPT_DOWNLOAD_EXECUTION_TIMEOUT configuration option to prevent package commands to run indefinitely

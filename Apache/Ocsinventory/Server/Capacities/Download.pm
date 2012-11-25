@@ -55,11 +55,12 @@ sub download_prolog_resp{
   my ( $downloadSwitch, $cycleLatency, $fragLatency, $periodLatency, $periodLength, $timeout,$execTimeout);
   
 
-  my($pack_sql, $hist_sql);
-  my($pack_req, $hist_req);
-  my($hist_row, $pack_row);
-  my(@packages, @history, @dont_repeat);
+  my($pack_sql, $hist_sql, $forced_sql);
+  my($pack_req, $hist_req, $forced_req);
+  my($hist_row, $pack_row, $forced_row);
+  my(@packages, @history, @forced_packages, @dont_repeat);
   my $blacklist;
+  my $forced;
   
   if($ENV{'OCS_OPT_DOWNLOAD'}){
     $downloadSwitch = 1;
@@ -134,9 +135,9 @@ sub download_prolog_resp{
   
   if($downloadSwitch){
   
-# If this option is set, we send only the needed package to the agent
-# Can be a performance issue
-# Agents prior to 4.0.3.0 do not send history data
+    # If this option is set, we send only the needed package to the agent
+    # Can be a performance issue
+    # Agents prior to 4.0.3.0 do not send history data
     $hist_sql = q {
       SELECT PKG_ID
       FROM download_history
@@ -147,6 +148,15 @@ sub download_prolog_resp{
     
     while( $hist_row = $hist_req->fetchrow_hashref ){
       push @history, $hist_row->{'PKG_ID'};
+    }
+
+    #We get packages marked as forced
+    $forced_sql = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=1 AND NAME="DOWNLOAD_FORCE"';
+    $forced_req = $dbh->prepare( $forced_sql );
+    $forced_req->execute( $hardware_id );
+    
+    while( $forced_row = $forced_req->fetchrow_hashref ){
+      push @forced_packages, $forced_row->{'TVALUE'};
     }
     
     if( $current_context->{'EXIST_FL'} && $ENV{'OCS_OPT_ENABLE_GROUPS'} && @$groups ){
@@ -160,6 +170,7 @@ sub download_prolog_resp{
       
       my $verif_affected = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=? AND NAME="DOWNLOAD"';
       my $trace_event = 'INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES(?,"DOWNLOAD",?,NULL)';
+
       $pack_req = $dbh->prepare( $pack_sql );
             
       for( @$groups ){
@@ -188,10 +199,10 @@ sub download_prolog_resp{
           }
           
           push @packages,{
-            'TYPE'    => 'PACK',
-            'ID'    => $pack_row->{'FILEID'},
-            'INFO_LOC'  => $pack_row->{'INFO_LOC'},
-            'PACK_LOC'  => $pack_row->{'PACK_LOC'},
+            'TYPE'       => 'PACK',
+            'ID'         => $pack_row->{'FILEID'},
+            'INFO_LOC'   => $pack_row->{'INFO_LOC'},
+            'PACK_LOC'   => $pack_row->{'PACK_LOC'},
             'CERT_PATH'  => $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
             'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
           };
@@ -217,12 +228,23 @@ sub download_prolog_resp{
       my $fileid = $pack_row->{'FILEID'};
       my $enable_id = $pack_row->{'ID'};
       my $pack_loc = $pack_row->{'PACK_LOC'};
+
+      #We check if package is marcked as forced
+      if ( grep /^$fileid$/, @forced_packages ) {
+         $forced = 1; 
+      } else {
+         $forced = undef;
+      }
+
       # If the package is in history, the device will not be notified
       # We have to show this behaviour to user. We use the package events.
-      if( grep /^$fileid$/, @history ){
-       $dbh->do(q{ UPDATE devices SET TVALUE='ERR_ALREADY_IN_HISTORY', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND IVALUE=? }, {},  scalar localtime(), $current_context->{'DATABASE_ID'}, $enable_id ) ;
-        next ;
+      unless ($forced){
+        if( grep /^$fileid$/, @history ){
+          $dbh->do(q{ UPDATE devices SET TVALUE='ERR_ALREADY_IN_HISTORY', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND IVALUE=? }, {},  scalar localtime(), $current_context->{'DATABASE_ID'}, $enable_id ) ;
+          next ;
+        }
       }
+
       if( grep /^$fileid$/, @dont_repeat){
         next;
       }
@@ -257,13 +279,15 @@ sub download_prolog_resp{
       next if $pack_loc eq '';
 
       push @packages,{
-        'TYPE'    => 'PACK',
-        'ID'    => $pack_row->{'FILEID'},
-        'INFO_LOC'  => $pack_row->{'INFO_LOC'},
-        'PACK_LOC'  => $pack_loc,
+        'TYPE'       => 'PACK',
+        'ID'         => $pack_row->{'FILEID'},
+        'INFO_LOC'   => $pack_row->{'INFO_LOC'},
+        'PACK_LOC'   => $pack_loc,
         'CERT_PATH'  => $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
-        'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
+        'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH',
+        'FORCE'      => $forced
       };
+
       push @dont_repeat, $fileid;
     }
     $dbh->do(q{ UPDATE devices SET TVALUE='NOTIFIED', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND TVALUE IS NULL }
