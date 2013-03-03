@@ -150,14 +150,6 @@ sub download_prolog_resp{
       push @history, $hist_row->{'PKG_ID'};
     }
 
-    #We get packages marked as forced
-    $forced_sql = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=1 AND NAME="DOWNLOAD_FORCE"';
-    $forced_req = $dbh->prepare( $forced_sql );
-    $forced_req->execute( $hardware_id );
-    
-    while( $forced_row = $forced_req->fetchrow_hashref ){
-      push @forced_packages, $forced_row->{'TVALUE'};
-    }
     
     if( $current_context->{'EXIST_FL'} && $ENV{'OCS_OPT_ENABLE_GROUPS'} && @$groups ){
       $pack_sql =  q {
@@ -210,7 +202,27 @@ sub download_prolog_resp{
         }
       }
     }
-  
+
+    #We get packages marked as forced
+    #$forced_sql = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=1 AND NAME="DOWNLOAD_FORCE"'; 
+    $forced_sql =  q {
+      SELECT FILEID 
+      FROM devices,download_enable 
+      WHERE HARDWARE_ID=? 
+      AND devices.IVALUE=download_enable.ID 
+      AND devices.NAME='DOWNLOAD_FORCE'
+      AND TVALUE=1
+    };
+
+    $forced_req = $dbh->prepare( $forced_sql );
+    $forced_req->execute( $hardware_id );
+    
+    while( $forced_row = $forced_req->fetchrow_hashref ){
+      push @forced_packages, $forced_row->{'FILEID'};
+    }
+
+    
+    #We get packages for this computer 
     $pack_sql =  q {
       SELECT ID, FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE, SERVER_ID
       FROM devices,download_enable 
@@ -219,6 +231,7 @@ sub download_prolog_resp{
       AND devices.NAME='DOWNLOAD'
       AND (TVALUE IS NULL OR TVALUE='NOTIFIED')
     };
+
       
     $pack_req = $dbh->prepare( $pack_sql );
     # Retrieving packages associated to the current device
@@ -233,12 +246,12 @@ sub download_prolog_resp{
       if ( grep /^$fileid$/, @forced_packages ) {
          $forced = 1; 
       } else {
-         $forced = undef;
+         $forced = 0;
       }
 
       # If the package is in history, the device will not be notified
       # We have to show this behaviour to user. We use the package events.
-      unless ($forced){
+      if ($forced == 0){
         if( grep /^$fileid$/, @history ){
           $dbh->do(q{ UPDATE devices SET TVALUE='ERR_ALREADY_IN_HISTORY', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND IVALUE=? }, {},  scalar localtime(), $current_context->{'DATABASE_ID'}, $enable_id ) ;
           next ;
