@@ -11,6 +11,7 @@ Revision history for Apache::Ocsinventory
         * Add new fields for snmp_loadbalancer table in Map.pm
 
 2.0.x
+        * Fix Bug #1085020 about ERR_ALREADY_IN_HISTORY message that should be success 
         * Prevent bugs in NOTIFY mode with older XML behaviour
 
 2.0.5

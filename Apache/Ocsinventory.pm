@@ -28,7 +28,7 @@ BEGIN{
 }
 
 $Apache::Ocsinventory::VERSION = '2.0';
-$Apache::Ocsinventory::BUILD_VERSION = '702';
+$Apache::Ocsinventory::BUILD_VERSION = '703';
 $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 
 # Ocs modules
