@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix Bug #1085020 about ERR_ALREADY_IN_HISTORY message that should be success
 	* Prevent bugs in NOTIFY mode with older XML behaviour
 
 2.0.5
