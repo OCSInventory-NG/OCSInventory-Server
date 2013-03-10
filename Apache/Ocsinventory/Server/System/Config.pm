@@ -431,14 +431,6 @@ our %CONFIG = (
     level => IMPORTANT,
     filter => qr '^(1|0)$'
   },
-  SUPPORT => { 
-    type => 'IVALUE',
-    default => 1,
-    unit => 'NA',
-    description => 'Support activation',
-    level => CANSKIP,
-    filter => qr '^(1|0)$'
-  },
 );
 
 sub get_settings{

@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Remove OCS_OPT_SUPPORT configuration option and <SUPPORT_LOG> XML tag in PROLOG 
         * Add availibility to reforce a package deployment
         * Add availability to specify custom MIBS for SNMP scans
         * Add availability to specify a custom network adress for SNMP scans 
