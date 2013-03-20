@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add availibility to schedule a package deployment
         * Remove OCS_OPT_SUPPORT configuration option and <SUPPORT_LOG> XML tag in PROLOG 
         * Add availibility to reforce a package deployment
         * Add availability to specify custom MIBS for SNMP scans

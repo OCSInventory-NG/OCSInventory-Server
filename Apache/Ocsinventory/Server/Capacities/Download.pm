@@ -55,12 +55,11 @@ sub download_prolog_resp{
   my ( $downloadSwitch, $cycleLatency, $fragLatency, $periodLatency, $periodLength, $timeout,$execTimeout);
   
 
-  my($pack_sql, $hist_sql, $forced_sql);
-  my($pack_req, $hist_req, $forced_req);
-  my($hist_row, $pack_row, $forced_row);
-  my(@packages, @history, @forced_packages, @dont_repeat);
+  my($pack_sql, $hist_sql);
+  my($pack_req, $hist_req);
+  my($hist_row, $pack_row);
+  my(@packages, @history, @forced_packages, @scheduled_packages, @dont_repeat);
   my $blacklist;
-  my $forced;
   
   if($ENV{'OCS_OPT_DOWNLOAD'}){
     $downloadSwitch = 1;
@@ -150,7 +149,13 @@ sub download_prolog_resp{
       push @history, $hist_row->{'PKG_ID'};
     }
 
-    
+    #We get scheduled packages affected to the computer 
+    &get_scheduled_packages($dbh, $hardware_id, \@scheduled_packages);
+
+    #We get packages marked as forced affeted to the computer
+    &get_forced_packages($dbh, $hardware_id, \@forced_packages);
+
+    #We get packages for groups that computer is member of 
     if( $current_context->{'EXIST_FL'} && $ENV{'OCS_OPT_ENABLE_GROUPS'} && @$groups ){
       $pack_sql =  q {
         SELECT IVALUE,FILEID,INFO_LOC,PACK_LOC,CERT_PATH,CERT_FILE
@@ -159,7 +164,7 @@ sub download_prolog_resp{
         AND devices.NAME='DOWNLOAD'
         AND download_enable.ID=devices.IVALUE
       };
-      
+
       my $verif_affected = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=? AND NAME="DOWNLOAD"';
       my $trace_event = 'INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES(?,"DOWNLOAD",?,NULL)';
 
@@ -167,8 +172,14 @@ sub download_prolog_resp{
             
       for( @$groups ){
         $pack_req->execute( $_ );
+
+        #We get scheduled packages affected to the group
+        &get_scheduled_packages($dbh, $_, \@scheduled_packages);
+
         while( $pack_row = $pack_req->fetchrow_hashref ){
           my $fileid = $pack_row->{'FILEID'};
+          my ($schedule, $scheduled_package);
+
           if( (grep /^$fileid$/, @history) or (grep /^$fileid$/, @dont_repeat)){
             next;
           }
@@ -189,6 +200,14 @@ sub download_prolog_resp{
               $dbh->do($trace_event, {}, $hardware_id, $pack_row->{'IVALUE'})
             }
           }
+
+          #We check if package is scheduled 
+          for $scheduled_package (@scheduled_packages) {
+            if ( $scheduled_package->{'FILEID'} =~ /^$fileid$/ ) {
+	      $schedule = $scheduled_package->{'SCHEDULE'};
+	      last;
+            }
+          }
           
           push @packages,{
             'TYPE'       => 'PACK',
@@ -196,32 +215,16 @@ sub download_prolog_resp{
             'INFO_LOC'   => $pack_row->{'INFO_LOC'},
             'PACK_LOC'   => $pack_row->{'PACK_LOC'},
             'CERT_PATH'  => $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
-            'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH'
+            'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH',
+            'SCHEDULE'   => $schedule?$schedule:'',
+            'FORCE'      => 0 
           };
+
           push @dont_repeat, $fileid;
         }
       }
     }
 
-    #We get packages marked as forced
-    #$forced_sql = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=1 AND NAME="DOWNLOAD_FORCE"'; 
-    $forced_sql =  q {
-      SELECT FILEID 
-      FROM devices,download_enable 
-      WHERE HARDWARE_ID=? 
-      AND devices.IVALUE=download_enable.ID 
-      AND devices.NAME='DOWNLOAD_FORCE'
-      AND TVALUE=1
-    };
-
-    $forced_req = $dbh->prepare( $forced_sql );
-    $forced_req->execute( $hardware_id );
-    
-    while( $forced_row = $forced_req->fetchrow_hashref ){
-      push @forced_packages, $forced_row->{'FILEID'};
-    }
-
-    
     #We get packages for this computer 
     $pack_sql =  q {
       SELECT ID, FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE, SERVER_ID
@@ -241,6 +244,15 @@ sub download_prolog_resp{
       my $fileid = $pack_row->{'FILEID'};
       my $enable_id = $pack_row->{'ID'};
       my $pack_loc = $pack_row->{'PACK_LOC'};
+      my ($forced, $schedule, $scheduled_package);
+
+      #We check if package is scheduled 
+      for $scheduled_package (@scheduled_packages) {
+        if ( $scheduled_package->{'FILEID'} == $fileid ) {
+	  $schedule = $scheduled_package->{'SCHEDULE'};
+	  last;
+        }
+      }
 
       #We check if package is marcked as forced
       if ( grep /^$fileid$/, @forced_packages ) {
@@ -252,7 +264,7 @@ sub download_prolog_resp{
       # If the package is in history, the device will not be notified
       # We have to show this behaviour to user. We use the package events.
       if ($forced == 0){
-        if( grep /^$fileid$/, @history ){
+        if ( grep /^$fileid$/, @history ){
           $dbh->do(q{ UPDATE devices SET TVALUE='SUCCESS_ALREADY_IN_HISTORY', COMMENTS=? WHERE NAME='DOWNLOAD' AND HARDWARE_ID=? AND IVALUE=? }, {},  scalar localtime(), $current_context->{'DATABASE_ID'}, $enable_id ) ;
           next ;
         }
@@ -298,6 +310,7 @@ sub download_prolog_resp{
         'PACK_LOC'   => $pack_loc,
         'CERT_PATH'  => $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
         'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH',
+        'SCHEDULE'   => $schedule?$schedule:'',
         'FORCE'      => $forced
       };
 
@@ -385,6 +398,66 @@ sub download_duplicate {
 
   # If we encounter problems, it aborts whole replacement
   return $dbh->do('DELETE FROM download_history WHERE HARDWARE_ID=?', {}, $device);
+}
+
+
+# Subroutine to get packagesmarked as scheduled 
+sub get_scheduled_packages {
+  my ($dbh, $hardware_id, $scheduled_packages) = @_;
+
+  my ($scheduled_sql, $scheduled_req, $scheduled_row, $package, @package_ids);
+
+  $scheduled_sql =  q {
+    SELECT FILEID,TVALUE 
+    FROM devices,download_enable 
+    WHERE HARDWARE_ID=? 
+    AND devices.IVALUE=download_enable.ID 
+    AND devices.NAME='DOWNLOAD_SCHEDULE'
+    AND TVALUE IS NOT NULL
+  };
+
+  $scheduled_req = $dbh->prepare( $scheduled_sql );
+  $scheduled_req->execute( $hardware_id );
+ 
+  for $package (@$scheduled_packages) {
+      push @package_ids, $package->{'FILEID'}; 
+  }
+  
+  while( $scheduled_row = $scheduled_req->fetchrow_hashref ){
+    # If package is not already in array (to prevent problems with groups) 
+    unless ( grep /^$scheduled_row->{'FILEID'}$/, @$scheduled_packages ) {
+      push @$scheduled_packages, {
+        'FILEID'     => $scheduled_row->{'FILEID'},
+        'SCHEDULE'   => $scheduled_row->{'TVALUE'}
+      };
+    }
+  }
+}
+
+# Subroutine to get packagesmarked as forced 
+sub get_forced_packages {
+  my ($dbh, $hardware_id, $forced_packages) = @_;
+
+  my ($forced_sql, $forced_req, $forced_row);
+
+  $forced_sql =  q {
+    SELECT FILEID 
+    FROM devices,download_enable 
+    WHERE HARDWARE_ID=? 
+    AND devices.IVALUE=download_enable.ID 
+    AND devices.NAME='DOWNLOAD_FORCE'
+    AND TVALUE=1
+  };
+
+  $forced_req = $dbh->prepare( $forced_sql );
+  $forced_req->execute( $hardware_id );
+   
+  while( $forced_row = $forced_req->fetchrow_hashref ){
+    # If package is not already in array (to prevent problems with groups) 
+    unless ( grep /^$forced_row->{'FILEID'}$/, @$forced_packages ) {
+      push @$forced_packages, $forced_row->{'FILEID'};
+    }
+  }
 }
 1;
 
