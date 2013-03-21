@@ -364,7 +364,7 @@ our %DATA_MAP= (
        GUID => {},
        LANGUAGE => {},
        INSTALLDATE => {},
-       BITSWIDTH => {},
+       BITSWIDTH => {}
    }
   },
   
@@ -383,7 +383,7 @@ our %DATA_MAP= (
       STATUS => {},
       SUBSYSTEM => {},
       VMTYPE => {},
-      VCPU => {},
+      VCPU => {}
     }
   },
 
@@ -400,6 +400,31 @@ our %DATA_MAP= (
       TYPE => {},
       SERIALNUMBER => {},
       SPEED => {},
+      CORES => {},
+      L2CACHESIZE => {}, 
+      CPUARCH => {},
+      DATA_WIDTH => {},
+      CURRENT_ADDRESS_WIDTH => {},
+      LOGICAL_CPUS => {},
+      VOLTAGE => {},
+      CURRENT_SPEED => {},
+      SOCKET => {}
+    }
+  },
+
+  sim => {
+    mask => 524288,
+    multi => 1,
+    auto => 1,
+    delOnReplace => 1,
+    sortBy => 'SERIALNUMBER',
+    writeDiff => 1,
+    cache => 0,
+    fields =>  {
+      OPERATOR => {},
+      OPNAME => {},
+      COUNTRY => {},
+      SERIALNUMBER => {}
     }
   },
 
@@ -520,7 +545,7 @@ javainfo => {
        DOMAIN => {},
        TYPE => {},
        LASTDATE => {},
-       CHECKSUM => {},
+       CHECKSUM => {}
    }
   },
 
@@ -538,7 +563,7 @@ javainfo => {
        SERIALNUMBER => {},
        COUNTER => {},
        STATUS => {},
-       ERRORSTATE => {},
+       ERRORSTATE => {}
    }
   },
 
@@ -559,7 +584,7 @@ javainfo => {
        FIRMVERSION => {},
        SERIALNUMBER => {},
        REVISION => {},
-       DESCRIPTION => {},
+       DESCRIPTION => {}
    }
   },
 
@@ -574,7 +599,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        SERIALNUMBER => {},
-       SYSTEM => {},
+       SYSTEM => {}
    }
   },
 
@@ -589,7 +614,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        SERIALNUMBER => {},
-       SYSTEM => {},
+       SYSTEM => {}
    }
   },
 
@@ -606,7 +631,7 @@ javainfo => {
        SERIALNUMBER => {},
        SYSTEM => {},
        TYPE => {},
-       MANUFACTURER => {},
+       MANUFACTURER => {}
    }
   },
 
@@ -623,7 +648,7 @@ javainfo => {
        NAME => {},
        DESCRIPTION => {},
        LEVEL => {},
-       MAXCAPACITY => {},
+       MAXCAPACITY => {}
    }
   },
 
@@ -641,7 +666,7 @@ javainfo => {
        TYPE => {},
        LEVEL => {},
        MAXCAPACITY => {},
-       COLOR => {},
+       COLOR => {}
    }
   },
 
@@ -673,7 +698,7 @@ javainfo => {
        IPSUBNET => {},
        IPDHCP => {},
        DRIVER => {},
-       VIRTUALDEV => {},
+       VIRTUALDEV => {}
    }
   },
 
@@ -694,7 +719,7 @@ javainfo => {
        DISKSIZE => {},
        TYPE => {},
        SERIALNUMBER => {},
-       FIRMWARE => {},
+       FIRMWARE => {}
    }
   },
 
@@ -717,7 +742,7 @@ javainfo => {
        NUMFILES => {},
        VOLUMN => {},
        LABEL => {},
-       SERIAL => {},
+       SERIAL => {}
    }
   },
 
@@ -736,7 +761,7 @@ javainfo => {
        TYPE => {},
        SERIALNUMBER => {},
        DESCRIPTION => {},
-       REVISION => {},
+       REVISION => {}
    }
   },
 
@@ -755,7 +780,7 @@ javainfo => {
        REVISION => {},
        SERIALNUMBER => {},
        MANUFACTURER => {},
-       TYPE => {},
+       TYPE => {}
    }
   },
 
@@ -777,7 +802,7 @@ javainfo => {
        REVISION => {},
        SERIALNUMBER => {},
        MANUFACTURER => {},
-       TYPE => {},
+       TYPE => {}
    }
   },
 
@@ -791,7 +816,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       TYPE => {},
+       TYPE => {}
    }
   },
 
@@ -805,7 +830,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       SYSTEM => {},
+       SYSTEM => {}
    }
   },
 
@@ -822,7 +847,7 @@ javainfo => {
        NAME => {},
        INSTALLDATE => {},
        COMMENTS => {},
-       VERSION => {},
+       VERSION => {}
    }
   },
 
@@ -836,7 +861,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       CAPACITY => {},
+       CAPACITY => {}
    }
   },
 
@@ -852,7 +877,7 @@ javainfo => {
    fields =>  {
        SPEED => {},
        TYPE => {},
-       MANUFACTURER => {},
+       MANUFACTURER => {}
    }
   },
 
@@ -867,7 +892,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        DESCRIPTION => {},
-       TYPE => {},
+       TYPE => {}
    }
   },
 
@@ -882,7 +907,7 @@ javainfo => {
    capacities => 'snmp',
    fields =>  {
        NAME => {},
-       TYPE => {},
+       TYPE => {}
    }
   },
 
@@ -896,7 +921,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       NAME => {},
+       NAME => {}
    }
   },
 
@@ -910,7 +935,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       NAME => {},
+       NAME => {}
    }
   },
 
@@ -924,7 +949,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       NAME => {},
+       NAME => {}
    }
   },
 
@@ -938,7 +963,7 @@ javainfo => {
    cache => 0,
    capacities => 'snmp',
    fields =>  {
-       NAME => {},
+       NAME => {}
    }
   },
 
@@ -989,7 +1014,7 @@ javainfo => {
        SOUNDS => {},
        VIDEOS => {},
        MODEMS => {},
-       LOCALPRINTERS => {},
+       LOCALPRINTERS => {}
    }
   },
 
