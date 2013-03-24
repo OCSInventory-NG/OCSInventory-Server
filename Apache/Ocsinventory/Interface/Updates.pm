@@ -21,7 +21,7 @@ sub delete_computers_by_id {
     next if &_lock($hardwareId, $dbh) ;
 
     for my $section ( keys %DATA_MAP ){
-      my $hardwareIdField = get_table_pk($section) ;
+      my $hardwareIdField = get_hardware_table_pk($section) ;
 
       # delOnReplace is used here even if the section is not "auto"
       # "auto" is only useful for the import phases

@@ -21,7 +21,8 @@ our @EXPORT = qw /
   get_dbh_write
   get_dbh_read
   do_sql
-  get_table_pk
+  get_hardware_table_pk
+  get_snmp_table_pk
   get_type_name
   untaint_dbstring
   untaint_dbstring_lst
@@ -89,9 +90,14 @@ sub do_sql {
 }
 
 # Return the id field of an inventory section
-sub get_table_pk{
+sub get_hardware_table_pk{
   my $section = shift;
   return ($section eq 'hardware')?'ID':'HARDWARE_ID';
+}
+
+sub get_snmp_table_pk{
+  my $section = shift;
+  return ($section eq 'snmp')?'ID':'SNMP_ID';
 }
 
 sub get_type_name{

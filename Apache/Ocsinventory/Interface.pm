@@ -18,6 +18,7 @@ require Apache::Ocsinventory::Interface::Config;
 require Apache::Ocsinventory::Interface::History;
 require Apache::Ocsinventory::Interface::Extensions;
 require Apache::Ocsinventory::Interface::Updates;
+require Apache::Ocsinventory::Interface::Snmp;
 
 use strict;
 
@@ -170,4 +171,15 @@ sub ipdiscover_delete_type_V1{
   $type = decode_xml( $type );
   return Apache::Ocsinventory::Interface::Ipdiscover::ipdiscover_del_type( $type );
 }
+
+# ===== ACCESSOR TO SNMP DATA =====
+
+sub get_snmp_V1{
+  my $class = shift;
+# Xml request
+  my $request = shift;
+  return Apache::Ocsinventory::Interface::Snmp::get_snmp( $request );
+}
+
+
 1;
