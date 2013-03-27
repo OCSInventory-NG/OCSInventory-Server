@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add availibility to specify a post command for a package deployment
         * SOAP engine is now able to get SNMP devices inventory
         * Add new 'sims' inventory section to get various SIM card data from phone devices	
         * Add availibility to schedule a package deployment

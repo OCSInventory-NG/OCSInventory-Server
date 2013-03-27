@@ -58,7 +58,7 @@ sub download_prolog_resp{
   my($pack_sql, $hist_sql);
   my($pack_req, $hist_req);
   my($hist_row, $pack_row);
-  my(@packages, @history, @forced_packages, @scheduled_packages, @dont_repeat);
+  my(@packages, @history, @forced_packages, @scheduled_packages, @postcmd_packages, @dont_repeat);
   my $blacklist;
   
   if($ENV{'OCS_OPT_DOWNLOAD'}){
@@ -152,6 +152,9 @@ sub download_prolog_resp{
     #We get scheduled packages affected to the computer 
     &get_scheduled_packages($dbh, $hardware_id, \@scheduled_packages);
 
+    #We get scheduled packages affected with a postcmd command 
+    &get_postcmd_packages($dbh, $hardware_id, \@postcmd_packages);
+
     #We get packages marked as forced affeted to the computer
     &get_forced_packages($dbh, $hardware_id, \@forced_packages);
 
@@ -176,9 +179,12 @@ sub download_prolog_resp{
         #We get scheduled packages affected to the group
         &get_scheduled_packages($dbh, $_, \@scheduled_packages);
 
+        #We get packages affected to the group which contain postcmd command
+        &get_postcmd_packages($dbh, $_, \@postcmd_packages);
+
         while( $pack_row = $pack_req->fetchrow_hashref ){
           my $fileid = $pack_row->{'FILEID'};
-          my ($schedule, $scheduled_package);
+          my ($schedule, $scheduled_package, $postcmd, $postcmd_package);
 
           if( (grep /^$fileid$/, @history) or (grep /^$fileid$/, @dont_repeat)){
             next;
@@ -208,6 +214,14 @@ sub download_prolog_resp{
 	      last;
             }
           }
+
+          #We check if package is affected with a postcmd command
+          for $postcmd_package (@postcmd_packages) {
+            if ( $postcmd_package->{'FILEID'} =~ /^$fileid$/ ) {
+	      $postcmd = $postcmd_package->{'POSTCMD'};
+	      last;
+            }
+          }
           
           push @packages,{
             'TYPE'       => 'PACK',
@@ -217,6 +231,7 @@ sub download_prolog_resp{
             'CERT_PATH'  => $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
             'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH',
             'SCHEDULE'   => $schedule?$schedule:'',
+            'POSTCMD'    => $postcmd?$postcmd:'',
             'FORCE'      => 0 
           };
 
@@ -244,12 +259,20 @@ sub download_prolog_resp{
       my $fileid = $pack_row->{'FILEID'};
       my $enable_id = $pack_row->{'ID'};
       my $pack_loc = $pack_row->{'PACK_LOC'};
-      my ($forced, $schedule, $scheduled_package);
+      my ($forced, $schedule, $scheduled_package, $postcmd, $postcmd_package);
 
       #We check if package is scheduled 
       for $scheduled_package (@scheduled_packages) {
         if ( $scheduled_package->{'FILEID'} == $fileid ) {
 	  $schedule = $scheduled_package->{'SCHEDULE'};
+	  last;
+        }
+      }
+
+      #We check if package is affected with a postcmd command
+      for $postcmd_package (@postcmd_packages) {
+        if ( $postcmd_package->{'FILEID'} == $fileid ) {
+	  $postcmd = $postcmd_package->{'POSTCMD'};
 	  last;
         }
       }
@@ -311,6 +334,7 @@ sub download_prolog_resp{
         'CERT_PATH'  => $pack_row->{'CERT_PATH'}?$pack_row->{'CERT_PATH'}:'INSTALL_PATH',
         'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH',
         'SCHEDULE'   => $schedule?$schedule:'',
+        'POSTCMD'    => $postcmd?$postcmd:'',
         'FORCE'      => $forced
       };
 
@@ -459,5 +483,41 @@ sub get_forced_packages {
     }
   }
 }
+
+
+# Subroutine to get packages affected with a postcmd command 
+sub get_postcmd_packages {
+  my ($dbh, $hardware_id, $postcmd_packages) = @_;
+
+  my ($postcmd_sql, $postcmd_req, $postcmd_row, $package, @package_ids);
+
+  $postcmd_sql =  q {
+    SELECT FILEID,TVALUE 
+    FROM devices,download_enable 
+    WHERE HARDWARE_ID=? 
+    AND devices.IVALUE=download_enable.ID 
+    AND devices.NAME='DOWNLOAD_POSTCMD'
+    AND TVALUE IS NOT NULL
+  };
+
+  $postcmd_req = $dbh->prepare( $postcmd_sql );
+  $postcmd_req->execute( $hardware_id );
+ 
+  for $package (@$postcmd_packages) {
+      push @package_ids, $package->{'FILEID'}; 
+  }
+  
+  while( $postcmd_row = $postcmd_req->fetchrow_hashref ){
+    # If package is not already in array (to prevent problems with groups) 
+    unless ( grep /^$postcmd_row->{'FILEID'}$/, @$postcmd_packages ) {
+      push @$postcmd_packages, {
+        'FILEID'     => $postcmd_row->{'FILEID'},
+        'POSTCMD'   => $postcmd_row->{'TVALUE'}
+      };
+    }
+  }
+}
+
+
 1;
 
