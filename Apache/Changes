@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+2.1rc1
         * Add availibility to specify a post command for a package deployment
         * SOAP engine is now able to get SNMP devices inventory
         * Add new 'sims' inventory section to get various SIM card data from phone devices	
@@ -13,8 +14,6 @@ Revision history for Apache::Ocsinventory
         * Add new 'cpus' inventory section to get various CPU data	
         * Add a new field in hardware section to get the computer architecture	
         * Add new fields for snmp_loadbalancer table in Map.pm
-
-2.0.x
         * Fix Bug #1085020 about ERR_ALREADY_IN_HISTORY message that should be success 
         * Prevent bugs in NOTIFY mode with older XML behaviour
 
