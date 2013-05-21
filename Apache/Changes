@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+        * New plugins system to be able to add new entries in Map.pm and more...
+
 2.1rc1
         * Add availibility to specify a post command for a package deployment
         * SOAP engine is now able to get SNMP devices inventory

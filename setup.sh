@@ -35,6 +35,10 @@ APACHE_ROOT_DOCUMENT=""
 APACHE_MOD_PERL_VERSION=""
 # Where are located OCS Communication server log files
 OCS_COM_SRV_LOG="/var/log/ocsinventory-server"
+# Where are located OCS Communication server plugins configuration files
+OCS_COM_SRV_PLUGINS_CONFIG_DIR="/etc/ocsinventory-server/plugins"
+# Where are located OCS Communication server plugins perl files 
+OCS_COM_SRV_PLUGINS_PERL_DIR="/etc/ocsinventory-server/perl"
 # Where is located perl interpreter
 PERL_BIN=`which perl 2>/dev/null`
 # Where is located make utility
@@ -675,6 +679,52 @@ then
     echo "OK, Communication server will put logs into directory $OCS_COM_SRV_LOG ;-)"
     echo "Using $OCS_COM_SRV_LOG as Communication server log directory" >> $SETUP_LOG
     echo
+
+
+    echo "+----------------------------------------------------------------------------+"
+    echo "| Checking for Communication server plugins configuration directory...       |"
+    echo "+----------------------------------------------------------------------------+"
+    echo
+    echo "Checking for Communication server plugins configuration directory" >> $SETUP_LOG
+    # Ask user 
+    res=0
+    while [ $res -eq 0 ]
+    do
+        echo "Communication server need a directory for plugins configuration files. "
+        echo -n "Where to put Communication server plugins configuration files [$OCS_COM_SRV_PLUGINS_CONFIG_DIR] ?"
+        read ligne
+        if [ -n "$ligne" ]
+        then
+            OCS_COM_SRV_PLUGINS_CONFIG_DIR=$ligne
+        fi
+        res=1
+    done
+    echo "OK, Communication server will put plugins configuration files into directory $OCS_COM_SRV_PLUGINS_CONFIG_DIR ;-)"
+    echo "Using $OCS_COM_SRV_PLUGINS_CONFIG_DIR as Communication server plugins configuration directory" >> $SETUP_LOG
+    echo
+
+
+    echo "+-------------------------------------------------------------------+"
+    echo "| Checking for Communication server plugins perl directory...       |"
+    echo "+-------------------------------------------------------------------+"
+    echo
+    echo "Checking for Communication server perl directory" >> $SETUP_LOG
+    # Ask user 
+    res=0
+    while [ $res -eq 0 ]
+    do
+        echo "Communication server need a directory for plugins Perl modules files."
+        echo -n "Where to put Communication server plugins Perl modules files [$OCS_COM_SRV_PLUGINS_PERL_DIR] ?"
+        read ligne
+        if [ -n "$ligne" ]
+        then
+            OCS_COM_SRV_PLUGINS_PERL_DIR=$ligne
+        fi
+        res=1
+    done
+    echo "OK, Communication server will put plugins Perl modules files into directory $OCS_COM_SRV_PLUGINS_PERL_DIR ;-)"
+    echo "Using $OCS_COM_SRV_PLUGINS_PERL_DIR as Communication server plugins perl directory" >> $SETUP_LOG
+    echo
     
     # jump to communication server directory
     echo "Entering Apache sub directory" >> $SETUP_LOG
@@ -1092,11 +1142,49 @@ then
     echo
     
     echo
-    echo "+----------------------------------------------------------+"
-    echo "| OK, Communication server log directory created ;-)       |"
-    echo "|                                                          |"
-    echo "| Now configuring Apache web server...                     |"
-    echo "+----------------------------------------------------------+"
+    echo "+-----------------------------------------------------------------------------+"
+    echo "| OK, Communication server log directory created ;-)                          |"
+    echo "|                                                                             |"
+    echo "| Creating Communication server plugins configuration directory...            |"
+    echo "+-----------------------------------------------------------------------------+"
+    echo
+    echo "Creating Communication server plugins configuration directory $OCS_COM_SRV_PLUGINS_CONFIG_DIR."
+    echo "Creating Communication server plugins configuration directory $OCS_COM_SRV_PLUGINS_CONFIG_DIR" >> $SETUP_LOG
+    mkdir -p $OCS_COM_SRV_PLUGINS_CONFIG_DIR >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to create plugins confguration directory, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo
+
+    echo
+    echo "+-----------------------------------------------------------------------------+"
+    echo "| OK, Communication server plugins configuration directory created ;-)        |"
+    echo "|                                                                             |"
+    echo "| Creating Communication server plugins Perl directory...                     |"
+    echo "+-----------------------------------------------------------------------------+"
+    echo
+    echo "Creating Communication server plugins Perl directory $OCS_COM_SRV_PLUGINS_PERL_DIR."
+    echo "Creating Communication server plugins Perl directory $OCS_COM_SRV_PLUGINS_PERL_DIR" >> $SETUP_LOG
+    mkdir -p "$OCS_COM_SRV_PLUGINS_PERL_DIR/Apache/Ocsinventory/Plugins" >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: Unable to create plugins Perl directory, please look at error in $SETUP_LOG and fix !"
+        echo
+        echo "Installation aborted !"
+        exit 1
+    fi
+    echo
+
+    echo
+    echo "+-------------------------------------------------------------------+"
+    echo "| OK, Communication server plugins Perl directory created ;-)       |"
+    echo "|                                                                   |"
+    echo "| Now configuring Apache web server...                              |"
+    echo "+-------------------------------------------------------------------+"
     echo
     echo "To ensure Apache loads mod_perl before OCS Inventory NG Communication Server,"
     echo "Setup can name Communication Server Apache configuration file"
@@ -1120,6 +1208,8 @@ then
     $PERL_BIN -pi -e "s#DATABASE_PORT#$DB_SERVER_PORT#g" $COM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#VERSION_MP#$APACHE_MOD_PERL_VERSION#g" $COM_SERVER_APACHE_CONF_FILE.local
     $PERL_BIN -pi -e "s#PATH_TO_LOG_DIRECTORY#$OCS_COM_SRV_LOG#g" $COM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_PLUGINS_CONFIG_DIRECTORY#$OCS_COM_SRV_PLUGINS_CONFIG_DIR#g" $COM_SERVER_APACHE_CONF_FILE.local
+    $PERL_BIN -pi -e "s#PATH_TO_PLUGINS_PERL_DIRECTORY#$OCS_COM_SRV_PLUGINS_PERL_DIR#g" $COM_SERVER_APACHE_CONF_FILE.local
     echo "******** Begin updated $COM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
     cat $COM_SERVER_APACHE_CONF_FILE.local >> $SETUP_LOG
     echo "******** End updated $COM_SERVER_APACHE_CONF_FILE.local ***********" >> $SETUP_LOG
