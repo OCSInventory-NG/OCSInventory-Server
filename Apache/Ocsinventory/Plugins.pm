@@ -20,7 +20,9 @@ BEGIN {
 if($ENV{'OCS_MODPERL_VERSION'} == 1){
 	Apache->httpd_conf("Include $ENV{OCS_PLUGINS_CONF_DIR}");
 }elsif($ENV{'OCS_MODPERL_VERSION'} == 2){
-	Apache2->httpd_conf("Include $ENV{OCS_PLUGINS_CONF_DIR}");
+        use Apache2::ServerUtil();
+        Apache2::ServerUtil->server->add_config(["Include $ENV{OCS_PLUGINS_CONF_DIR}"]);
+	
 }else{
   if(!defined($ENV{'OCS_MODPERL_VERSION'})){
     die("OCS_MODPERL_VERSION not defined. Abort\n");
