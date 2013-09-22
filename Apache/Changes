@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix Bug #1191791 about CHECKSUM value not updated when NOTIFY mode send new network changes
         * New plugins system to be able to add new entries in Map.pm and more...
 
 2.1rc1

@@ -21,6 +21,7 @@ BEGIN{
   }
 }
 
+use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
 use Apache::Ocsinventory::Server::Constants;
@@ -61,6 +62,7 @@ sub notify_handler{
 sub update_ip{
   # Initialize data
   my $current_context = shift;
+  my $update_hardware;
   
   my $dbh    = $current_context->{'DBI_HANDLE'};
   my $result  = $current_context->{'XML_ENTRY'};
@@ -104,9 +106,16 @@ sub update_ip{
       }
       else{
         &_log(323, 'notify', "$newIface->{MAC}<$newIface->{IP}>");
+
         if (exists $result->{HARDWARE}) {   #New behaviour with additional <HARDWARE> tag 
           $dbh->do( $updateMainIp_sql, {}, $result->{HARDWARE}->{IPADDR}, $hardwareId);
+	  $update_hardware = 1;
         }
+
+	#We update CHECKSUM value in hardware table
+	my $mask = $DATA_MAP{networks}{mask};         
+	$mask = $mask|1 if $update_hardware; 
+	$dbh->do("UPDATE hardware SET CHECKSUM=($mask|CHECKSUM)");
       }  
     }
   }
