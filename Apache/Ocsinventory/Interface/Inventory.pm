@@ -130,20 +130,61 @@ sub build_computers_xml_meta {
   return XML::Simple::XMLout( \%xml, 'RootName' => 'COMPUTER' ) or die;
 }
 
+# Helper for resolving custom field names in ACCOUNTINFO
+sub get_custom_field_name_map {
+    my $name_map = {};
+    # Request database
+    my $sth = get_sth('SELECT ID, NAME FROM accountinfo_config WHERE NAME_ACCOUNTINFO IS NULL');
+    # Build data structure...
+    my $rows = $sth->fetchall_arrayref();
+    foreach my $row ( @$rows ) {
+      $name_map->{ "fields_" . $row->[0] } = $row->[1];
+    }
+    $sth->finish;
+    return $name_map;
+}
+
+# Helper for resolving textual values of custom fields
+# of type CHECKBOX, RADIOBUTTON, SELECT
+sub get_custom_fields_values_map {
+  my $values_map = {};
+
+    # Request database
+  my $sth = get_sth('SELECT NAME, IVALUE, TVALUE FROM config WHERE NAME LIKE ?', "ACCOUNT_VALUE_%_%");
+  my $rows = $sth->fetchall_arrayref();
+
+  foreach my $row ( @$rows ) {
+    if ($row->[0] =~ /^ACCOUNT_VALUE_(.*)_[0-9]+$/) {
+      $values_map->{ $1 }->{ $row->[1] } = $row->[2];
+    }
+  }
+  $sth->finish;
+  return $values_map;
+}
+
 # For non-standard sections
 sub build_computers_xml_special_section {
   my ($id, $xml_ref, $section) = @_;
   # Accountinfos retrieving
   if($section eq 'accountinfo'){
+    my $custom_field_names = get_custom_field_name_map();
+    my $custom_fields_values = get_custom_fields_values_map();
     my %element;
     my @tmp;
     # Request database
     my $sth = get_sth('SELECT * FROM accountinfo WHERE HARDWARE_ID=?', $id);
     # Build data structure...
     my $row = $sth->fetchrow_hashref();
-    for( keys( %$row ) ){
-      next if $_ eq get_hardware_table_pk('accountinfo');
-      push @tmp, { Name => $_ ,  content => $row->{ $_ } };
+    foreach my $akey ( keys( %$row ) ) {
+      next if $akey eq get_hardware_table_pk('accountinfo');
+      my $field_name = (exists $custom_field_names->{ $akey }) ? $custom_field_names->{ $akey } : $akey;
+      if (! exists $custom_fields_values->{ $field_name }) {
+        push @tmp, ( { Name => $field_name,  content => $row->{ $akey } } );
+      } else {
+        foreach my $codepoint ( split( /&&&/, $row->{ $akey } ) ) {
+          push @tmp, ( { Name => $field_name, content => $custom_fields_values->{ $field_name }->{ $codepoint } } );
+        }
+      }
     }
     $xml_ref->{'ACCOUNTINFO'}{'ENTRY'} = [ @tmp ];
     $sth->finish;
