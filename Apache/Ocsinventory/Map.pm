@@ -1034,7 +1034,8 @@ javainfo => {
        SOUNDS => {},
        VIDEOS => {},
        MODEMS => {},
-       LOCALPRINTERS => {}
+       LOCALPRINTERS => {},
+       VIRTUALMACHINES => {}
    }
   },
 
