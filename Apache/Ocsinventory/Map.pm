@@ -967,6 +967,26 @@ javainfo => {
    }
   },
 
+  snmp_virtualmachines => {
+   mask => 33554432,
+   multi => 1,
+   auto => 1,
+   delOnReplace => 1,
+   sortBy => '',
+   writeDiff => 1,
+   cache => 0,
+   capacities => 'snmp',
+   fields =>  {
+       CONFIG_FILE => {},
+       CPU => {},
+       MEMORY => {},
+       NAME => {},
+       OS => {},
+       POWER => {},
+       UUID => {} 
+   }
+  },
+
   snmp_accountinfo =>  {
    mask => 0,
    multi => 1,
