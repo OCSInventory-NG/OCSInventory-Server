@@ -157,7 +157,7 @@ sub _get_snmp_parser_ForceArray{
   my $arrayRef = shift ;
 
   for my $section (keys(%DATA_MAP)){
-    if ($DATA_MAP{$section}->{capacities} =~ /^snmp$/ ) {
+    if (defined($DATA_MAP{$section}->{capacities}) && ($DATA_MAP{$section}->{capacities} =~ /^snmp$/)) {
     # Feed the multilines section array in order to parse xml correctly
       if ($DATA_MAP{$section}->{multi}) {
         #We delete the snmp_ pattern to be in concordance with XML

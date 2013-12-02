@@ -208,7 +208,6 @@ sub snmp_handler{
   my $result  = $current_context->{'XML_ENTRY'};
   my $r     = $current_context->{'APACHE_OBJECT'};
   my $hardware_id = $current_context->{'DATABASE_ID'};
-  my $result = $current_context->{'XML_ENTRY'};
 
   # Remanent data
   my ( %SNMP_SECTIONS, @SNMP_SECTIONS );
