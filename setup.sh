@@ -829,27 +829,27 @@ then
             case $UNIX_DISTRIBUTION in
                  "redhat")
                      echo "RedHat based automatic installation"
-                     if [ $DBI=1 ]
+                     if [ $DBI -eq 1 ]
                      then
                          PACKAGE="$PACKAGE perl-DBI"
                      fi
-                     if [ $APACHE_DBI=1 ]
+                     if [ $APACHE_DBI -eq 1 ]
                      then
                          PACKAGE="$PACKAGE perl-Apache-DBI"
                      fi
-                     if [ $DBD_MYSQL=1 ]
+                     if [ $DBD_MYSQL -eq 1 ]
                      then
                          PACKAGE="$PACKAGE perl-DBD-MySQL"
                      fi
-                     if [ $COMPRESS_ZLIB=1 ]
+                     if [ $COMPRESS_ZLIB -eq 1 ]
                      then
                          PACKAGE="$PACKAGE perl-Compress-Zlib"
                      fi
-                     if [ $XML_SIMPLE=1 ]
+                     if [ $XML_SIMPLE -eq 1 ]
                      then
                          PACKAGE="$PACKAGE perl-XML-Simple"
                      fi
-                     if [ $NET_IP=1 ]
+                     if [ $NET_IP -eq 1 ]
                      then
                          PACKAGE="$PACKAGE perl-Net-IP"
                      fi
@@ -870,33 +870,33 @@ then
 		     if [ -f /usr/bin/apt-get ]
     	             then
 	 	         echo "Debian based automatic installation"
-		         if [ $DBI=1 ]
+		         if [ $DBI -eq 1 ]
 		         then
  			     PACKAGE="$PACKAGE libdbi-perl"
 		         fi
-		         if [ $APACHE_DBI=1 ]
+		         if [ $APACHE_DBI -eq 1 ]
 		         then
 			     PACKAGE="$PACKAGE libapache-dbi-perl"
 		         fi
-		         if [ $DBD_MYSQL=1 ]
+		         if [ $DBD_MYSQL -eq 1 ]
 		         then
 			     PACKAGE="$PACKAGE libdbd-mysql-perl"
 		         fi
-		         if [ $COMPRESS_ZLIB=1 ]
+		         if [ $COMPRESS_ZLIB -eq 1 ]
 		         then
                 	     PACKAGE="$PACKAGE libcompress-zlib-perl"
 		         fi
-		         if [ $XML_SIMPLE=1 ]
+		         if [ $XML_SIMPLE -eq 1 ]
 		         then
                 	     PACKAGE="$PACKAGE libxml-simple-perl"
 		         fi
-                         if [ $NET_IP=1 ]
+                         if [ $NET_IP -eq 1 ]
                          then
                 	     PACKAGE="$PACKAGE libnet-ip-perl"
 		         fi
 		         apt-get update
 		         apt-get install $PACKAGE
-		         if [ $? != 0 ]
+		         if [ $? -ne 0 ]
 		         then
 			     echo "Installation aborted !"
 			     echo "Installation script encounter problems to install packages !"
