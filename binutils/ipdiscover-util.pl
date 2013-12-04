@@ -370,7 +370,8 @@ my @hosts;
 my $null;
 #   
 
-$request = $dbh->prepare('SELECT IP,MASK,MAC,DATE FROM netmap LEFT JOIN networks ON MACADDR=MAC where MACADDR IS NULL');  
+# Filter out already flagged MAC addresses - drich
+$request = $dbh->prepare('SELECT IP,MASK,MAC,DATE FROM netmap LEFT JOIN networks ON MACADDR=MAC where MACADDR IS NULL AND MAC NOT IN (SELECT MACADDR FROM network_devices)');  
 $request->execute;
 #  
 #Determine the subnets
@@ -521,6 +522,8 @@ if($net){
 my @PCW;
 #Linux computers
 my @PCL;
+#Mac computers
+my @PCM;
 #net peripherals
 my @PR;
 #Phantom computers
@@ -533,7 +536,7 @@ if($analyse){
     open CACHE, ">$path/ipd/$filter.ipd" or die $!;
     unless(flock(CACHE, LOCK_EX|LOCK_NB)){
       if($xml){
-        print "<ERROR><MESSAGE>345</MESSAGE></ERROR>";
+        print "<ERROR><MESSAGE>346</MESSAGE></ERROR>";
 	exit(0);
       }else{
         die "An other analyse is in progress\n";
@@ -557,14 +560,14 @@ if($analyse){
   open NMAP, "+>$path/$filter.gnmap";
   unless(flock(NMAP, LOCK_EX|LOCK_NB)){
       if($xml){
-        print "<ERROR><MESSAGE>345</MESSAGE></ERROR>";
+        print "<ERROR><MESSAGE>347</MESSAGE></ERROR>";
 	exit(0);
       }else{
         die "An other analyse is in progress\n";
       }
     }
   #Analyse
-  system("nmap -R -v @ips -p 135,80,22,23 -oG $path/$filter.gnmap -P0 > /dev/null");
+  system("nmap -R -v @ips -p 135,80,22,23 -oG $path/$filter.gnmap -P0 -O > /dev/null");
   #
   my @gnmap;
   if($net){
@@ -580,7 +583,34 @@ if($analyse){
     for $ref (@hosts){
       $h = $$ref[1];
          for(@gnmap){
+	   next if /^#/;        # Skip comments
 	   if(/Host: $h\b/){
+            if (/Status: Down/){
+               $PH[$j] = $ref;
+               $j++;
+               next REF;
+            }elsif(/Status: /){        # status up is meaningless to us
+              next;
+            }
+            # Try OS detection first
+            if(/OS: .*Windows/){
+               $PCW[$w] = $ref;
+              $w++;
+               next REF;
+            }elsif(/OS: .*Apple Mac/){
+               $PCM[$l] = $ref;
+               $l++;
+               next REF;
+            }elsif(/OS: .*Linux/ and !/OS: .*embedded/){
+               $PCL[$l] = $ref;
+              $l++;
+               next REF;
+            }elsif(/OS: /){    # Something else, call it network
+               $PR[$r] = $ref;
+              $r++;
+              next REF;
+            }
+
 	     if(/135\/o/){
                $PCW[$w] = $ref;
 	       $w++;
@@ -593,7 +623,7 @@ if($analyse){
                $PH[$j] = $ref;
 	       $j++;
                next REF;
-  	     }elsif( (/\d\d\/f/) and ( (/\d\d\/o/) or (/\d\d\/c/) ) ){
+	     }elsif(/(22\/f.+23\/f.+80\/f.+135\/f)/){
   	       $PF[$f] = $ref;
 	       $f++;
   	       next REF;
@@ -610,6 +640,7 @@ if($analyse){
    print CACHE "<NETANALYSE>\n" if $xml;
    &_print(\@PCW, 'WINDOWS COMPUTERS');
    &_print(\@PCL, 'LINUX COMPUTERS');
+   &_print(\@PCM, 'MAC COMPUTERS');
    &_print(\@PR, 'NETWORK DEVICES');
    &_print(\@PF, 'FILTERED HOSTS');
    &_print(\@PH, 'PHANTOM HOSTS');
@@ -651,6 +682,7 @@ sub _print{
 	  $xml{'DATE'} = [ $$_[2] ];
 	  $xml{'TYPE'} = ['WINDOWS'] if $lib =~/windows/i;
 	  $xml{'TYPE'} = ['LINUX'] if $lib =~/linux/i;
+	  $xml{'TYPE'} = ['MAC'] if $lib =~/mac/i;
 	  $xml{'TYPE'} = ['FILTERED'] if $lib =~/filtered/i;
 	  $xml{'TYPE'} = ['NETWORK'] if $lib =~/network/i;
 	  $xml{'TYPE'} = ['PHANTOM'] if $lib =~/phantom/i;
