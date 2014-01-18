@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add new fields for printers table in Map.pm
         * Fix Bug #1214436 about removing already registered hosts and add Mac support in ipdiscover-util.pl
         * Add a new table for SNMP virtual machines data in Map.pm
         * Fix Bug #1248582 about custom field names not decoded in SOAP ACCOUNTINFO
