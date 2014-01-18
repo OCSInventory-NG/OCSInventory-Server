@@ -309,7 +309,14 @@ our %DATA_MAP= (
        NAME => {},
        DRIVER => {},
        PORT => {},
-       DESCRIPTION => {}
+       DESCRIPTION => {},
+       SERVERNAME => {},
+       SHARENAME => {},
+       RESOLUTION => {},
+       COMMENT => {},
+       SHARED => {},
+       NETWORK => {},
+       
    }
   },
 
