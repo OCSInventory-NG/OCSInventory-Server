@@ -315,8 +315,7 @@ our %DATA_MAP= (
        RESOLUTION => {},
        COMMENT => {},
        SHARED => {},
-       NETWORK => {},
-       
+       NETWORK => {}
    }
   },
 
