@@ -430,7 +430,8 @@ our %DATA_MAP= (
       OPERATOR => {},
       OPNAME => {},
       COUNTRY => {},
-      SERIALNUMBER => {}
+      SERIALNUMBER => {},
+      DEVICEID => {}
     }
   },
 
