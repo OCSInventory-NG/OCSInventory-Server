@@ -134,15 +134,24 @@ sub build_snmp_xml_special_section {
   my ($id, $xml_ref, $section) = @_;
   # Accountinfos retrieving
   if($section eq 'snmp_accountinfo'){
+    my $custom_field_names = get_custom_field_name_map('SNMP');
+    my $custom_fields_values = get_custom_fields_values_map('ACCOUNT_SNMP_VALUE');
     my %element;
     my @tmp;
     # Request database
     my $sth = get_sth('SELECT * FROM snmp_accountinfo WHERE SNMP_ID=?', $id);
     # Build data structure...
     my $row = $sth->fetchrow_hashref();
-    for( keys( %$row ) ){
-      next if $_ eq get_snmp_table_pk('snmp_accountinfo');
-      push @tmp, { Name => $_ ,  content => $row->{ $_ } };
+    foreach my $akey ( keys( %$row ) ) {
+      next if $akey eq get_snmp_table_pk('snmp_accountinfo');
+      my $field_name = (exists $custom_field_names->{ $akey }) ? $custom_field_names->{ $akey } : $akey;
+      if (! exists $custom_fields_values->{ $field_name }) {
+        push @tmp, ( { Name => $field_name,  content => $row->{ $akey } } );
+      } else {
+        foreach my $codepoint ( split( /&&&/, $row->{ $akey } ) ) {
+          push @tmp, ( { Name => $field_name, content => $custom_fields_values->{ $field_name }->{ $codepoint } } );
+        }
+      }
     }
     $xml_ref->{'ACCOUNTINFO'}{'ENTRY'} = [ @tmp ];
     $sth->finish;

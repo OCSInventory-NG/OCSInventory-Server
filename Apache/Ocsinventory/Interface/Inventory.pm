@@ -130,45 +130,13 @@ sub build_computers_xml_meta {
   return XML::Simple::XMLout( \%xml, 'RootName' => 'COMPUTER' ) or die;
 }
 
-# Helper for resolving custom field names in ACCOUNTINFO
-sub get_custom_field_name_map {
-    my $name_map = {};
-    # Request database
-    my $sth = get_sth('SELECT ID, NAME FROM accountinfo_config WHERE NAME_ACCOUNTINFO IS NULL');
-    # Build data structure...
-    my $rows = $sth->fetchall_arrayref();
-    foreach my $row ( @$rows ) {
-      $name_map->{ "fields_" . $row->[0] } = $row->[1];
-    }
-    $sth->finish;
-    return $name_map;
-}
-
-# Helper for resolving textual values of custom fields
-# of type CHECKBOX, RADIOBUTTON, SELECT
-sub get_custom_fields_values_map {
-  my $values_map = {};
-
-    # Request database
-  my $sth = get_sth('SELECT NAME, IVALUE, TVALUE FROM config WHERE NAME LIKE ?', "ACCOUNT_VALUE_%_%");
-  my $rows = $sth->fetchall_arrayref();
-
-  foreach my $row ( @$rows ) {
-    if ($row->[0] =~ /^ACCOUNT_VALUE_(.*)_[0-9]+$/) {
-      $values_map->{ $1 }->{ $row->[1] } = $row->[2];
-    }
-  }
-  $sth->finish;
-  return $values_map;
-}
-
 # For non-standard sections
 sub build_computers_xml_special_section {
   my ($id, $xml_ref, $section) = @_;
   # Accountinfos retrieving
   if($section eq 'accountinfo'){
-    my $custom_field_names = get_custom_field_name_map();
-    my $custom_fields_values = get_custom_fields_values_map();
+    my $custom_field_names = get_custom_field_name_map('COMPUTERS');
+    my $custom_fields_values = get_custom_fields_values_map('ACCOUNT_VALUE');
     my %element;
     my @tmp;
     # Request database
