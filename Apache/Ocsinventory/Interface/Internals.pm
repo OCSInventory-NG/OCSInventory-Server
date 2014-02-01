@@ -33,6 +33,8 @@ our @EXPORT = qw /
   encode_xml
   search_engine
   send_error 
+  get_custom_field_name_map
+  get_custom_fields_values_map
 /;
 
 sub decode_xml{
@@ -157,4 +159,42 @@ sub untaint_int{
   my $int = shift;
   return $int =~ /^\d+$/;
 }
+
+# Helper for resolving custom field names in ACCOUNTINFO
+sub get_custom_field_name_map {
+    my $account_type = shift;
+    my $name_map = {};
+
+    # Request database
+    my $sth = get_sth('SELECT ID, NAME FROM accountinfo_config WHERE NAME_ACCOUNTINFO IS NULL AND ACCOUNT_TYPE=?', $account_type);
+    # Build data structure...
+    my $rows = $sth->fetchall_arrayref();
+    foreach my $row ( @$rows ) {
+      $name_map->{ "fields_" . $row->[0] } = $row->[1];
+    }
+    $sth->finish;
+    return $name_map;
+}
+
+# Helper for resolving textual values of custom fields
+# of type CHECKBOX, RADIOBUTTON, SELECT
+sub get_custom_fields_values_map {
+  my $account_value = shift;
+  my $values_map = {};
+
+  # Request database
+  my $sth = get_sth('SELECT NAME, IVALUE, TVALUE FROM config WHERE NAME LIKE ?', $account_value."_%_%");
+  my $rows = $sth->fetchall_arrayref();
+
+  my $regexp = $account_value."_(.*)_[0-9]+";
+
+  foreach my $row ( @$rows ) {
+    if ($row->[0] =~ /^$regexp$/) {
+      $values_map->{ $1 }->{ $row->[1] } = $row->[2];
+    }
+  }
+  $sth->finish;
+  return $values_map;
+}
+
 1;
