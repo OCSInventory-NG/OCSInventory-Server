@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix a mistake for OCS_PLUGINS_PERL_DIR and OCS_PLUGINS_CONF_DIR options in ocsinventory-server.conf
+
 2.1
         * Add new fields for printers table in Map.pm
         * Fix Bug #1214436 about removing already registered hosts and add Mac support in ipdiscover-util.pl
