@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix Bug #1311852 about CHECKSUM updated for all computers
         * Fix a mistake for OCS_PLUGINS_PERL_DIR and OCS_PLUGINS_CONF_DIR options in ocsinventory-server.conf
 
 2.1

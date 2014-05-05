@@ -115,7 +115,7 @@ sub update_ip{
 	#We update CHECKSUM value in hardware table
 	my $mask = $DATA_MAP{networks}{mask};         
 	$mask = $mask|1 if $update_hardware; 
-	$dbh->do("UPDATE hardware SET CHECKSUM=($mask|CHECKSUM)");
+	$dbh->do("UPDATE hardware SET CHECKSUM=($mask|CHECKSUM) WHERE ID=$hardwareId");
       }  
     }
   }
