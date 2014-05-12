@@ -197,7 +197,7 @@ sub _lock{
    my $device = shift;
    my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} || shift;
   
-  if($dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NULL)', {} , $device, $$ )){
+  if($dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NOW())', {} , $device, $$ )){
     $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 
       if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
     return(0);
