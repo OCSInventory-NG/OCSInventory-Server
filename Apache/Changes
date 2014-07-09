@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+2.1.2
+
 2.1.1
         * Fix Bug #1315004 about MySQL replication broken using MySQL 5.6
         * Fix Bug #1311852 and Bug #1296633 about CHECKSUM updated for all computers
