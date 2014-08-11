@@ -119,9 +119,14 @@ sub build_xml_standard_section{
       next if $DATA_MAP{ $section }->{fields}->{$_}->{noSql};
       # New DB schema support
       if( $DATA_MAP{ $section }->{fields}->{$_}->{type} ){
-        $row->{ $_ } = get_type_name($section, $_, $row->{ $_ });
+        my $field = $_;
+        $field =~ s/_ID//g;    #We delete the _ID pattern to be in concordance with table name
+        $row->{ $_ } = get_type_name($section, $field, $row->{ $_ });
+        $element{$field} = [ $row->{ $_ } ];
       }
-      $element{$_} = [ $row->{ $_ } ];
+      else {
+        $element{$_} = [ $row->{ $_ } ];
+      }
     }
 
     push @tmp, { %element };
