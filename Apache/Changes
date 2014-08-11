@@ -1,5 +1,7 @@
 Revision history for Apache::Ocsinventory
 
+        * Fix bug in SOAP engine while retrieving data from type tables
+
 2.1.2
 
 2.1.1
