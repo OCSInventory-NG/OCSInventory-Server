@@ -192,8 +192,8 @@ sub snmp_prolog_resp{
         };
       } 
 
-    } else { &_log(104,'snmp',"error: agent must have a deviceid in database !!"); }
-  } else { &_log(103,'snmp',"error: agent must communicate using https to be able to get SNMP communities (only affects OCS unix agent) !!"); } 
+    } else { &_log(104,'snmp',"error: agent must have a deviceid in database !!") if $ENV{'OCS_OPT_LOGLEVEL'}; }
+  } else { &_log(103,'snmp',"error: agent must communicate using https to be able to get SNMP communities (only affects OCS unix agent) !!") if $ENV{'OCS_OPT_LOGLEVEL'} and $ENV{'OCS_OPT_SNMP_PRINT_HTTPS_ERROR'} } 
 
 }
 

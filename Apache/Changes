@@ -1,5 +1,8 @@
 Revision history for Apache::Ocsinventory
 
+        * New OCS_OPT_SNMP_PRINT_HTTPS_ERROR configuration option to enable or disable error message display about agent https communication in logfile
+
+2.1.x
         * Fix bug in SOAP engine while retrieving data from type tables
 
 2.1.2
