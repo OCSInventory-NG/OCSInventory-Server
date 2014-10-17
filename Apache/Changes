@@ -1,5 +1,6 @@
 Revision history for Apache::Ocsinventory
 
+        * Add new 'batteries' inventory section to get various batteries data
         * New OCS_OPT_SNMP_PRINT_HTTPS_ERROR configuration option to enable or disable error message display about agent https communication in logfile
 
 2.1.x
