@@ -25,7 +25,7 @@ Revision history for Apache::Ocsinventory
         * Remove OCS_OPT_SUPPORT configuration option and <SUPPORT_LOG> XML tag in PROLOG 
         * Add availibility to reforce a package deployment
         * Add availability to specify custom MIBS for SNMP scans
-        * Add availability to specify a custom network adress for SNMP scans 
+        * Add availability to specify a custom network address for SNMP scans 
         * New OCS_OPT_DOWNLOAD_EXECUTION_TIMEOUT configuration option to prevent package commands to run indefinitely
         * setup.sh script can now detect Suse/OpenSuse distributions      
         * Add new 'cpus' inventory section to get various CPU data	
@@ -195,7 +195,7 @@ Revision history for Apache::Ocsinventory
 	* Fix the duplicate error in packages history (download)
 
 1.02 RC1
-	* As the dictionnary and "all softs" are inventory cache dependant = INVENTORY_CACHE_REVALIDATE default => 7
+	* As the dictionary and "all softs" are inventory cache dependant = INVENTORY_CACHE_REVALIDATE default => 7
 	* Fixed the DEVICEID checking
 	* Important fix in "on the fly deletion" in inventory cache
 	* Added fallback values for '??' (unix agents prior than 0.8)

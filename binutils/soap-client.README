@@ -36,16 +36,16 @@ In addition to CHECKSUM (&), you can also request on :
 => tag list
 => database id list. 
 
-You can use these criterias in only one request, and you can put few values for each.
+You can use these criteria in only one request, and you can put few values for each.
 
 For example:
 
 <REQUEST>
   <ENGINE>FIRST</ENGINE> <= The name of the search engine (only this one is implemented for the moment)
-  <ASKING_FOR>INVENTORY</ASKING_FOR> <= We want inventory date (oposite to META DATA)
+  <ASKING_FOR>INVENTORY</ASKING_FOR> <= We want inventory date (opposite to META DATA)
   <CHECKSUM>1</CHECKSUM>         <= We want only hardware section (if it changed since our last reset_checksum) See below.
   <OFFSET>3</OFFSET>		 <= We want the third page of the result
-  <WANTED>2</WANTED>		 <= We want to use the software dictionnary and the accountinfos
+  <WANTED>2</WANTED>		 <= We want to use the software dictionary and the accountinfos
   <USERID>foo</USERID>		 <= We want the computers on those foo logged in
   <USERID>bar</USERID>		 <= ...where bar logged in
   <TAG>room109</TAG>		 <= We want the computer which have the "room109 tag"
@@ -77,7 +77,7 @@ Description : Configure ocs with an external tool
 Name : ocs_config_V2
 Args : option name, integer value, string value
 Returns : XML. In case of success : <RESULT><IVALUE></IVALUE><TVALUE></TVALUE></RESULT>, in case of error, the same as above.
-Description : Handle the new ocs config sytem (see Apache::Ocsinventory::Server::System::Config)
+Description : Handle the new ocs config system (see Apache::Ocsinventory::Server::System::Config)
 
 Name : get_dico_soft_element_V1
 Args : a word to look for

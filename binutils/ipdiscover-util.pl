@@ -118,7 +118,7 @@ EOF
   }
 }
 if($analyse and !$net){
-  die "Wich subnet do you want to analyse ?\n";
+  die "Which subnet do you want to analyse ?\n";
 } 
 if($cache or $auto){
   unless(-d "$path/ipd"){

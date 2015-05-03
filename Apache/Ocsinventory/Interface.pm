@@ -85,9 +85,9 @@ sub ocs_config_V2{
   return Apache::Ocsinventory::Interface::Config::ocs_config_read( $key, 0 );
 }
 
-# ===== SOFTWARE DICTIONNARY =====
+# ===== SOFTWARE DICTIONARY =====
 
-# Get a software dictionnary word
+# Get a software dictionary word
 sub get_dico_soft_element_V1{
   my( $class, $word ) = @_;
   $word = decode_xml( $word );
