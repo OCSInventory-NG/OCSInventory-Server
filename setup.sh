@@ -665,8 +665,8 @@ then
     res=0
     while [ $res -eq 0 ]
     do
-        echo "Communication server can create detailled logs. This logs can be enabled"
-        echo "by setting interger value of LOGLEVEL to 1 in Administration console"
+        echo "Communication server can create detailed logs. This logs can be enabled"
+        echo "by setting integer value of LOGLEVEL to 1 in Administration console"
         echo "menu Configuration."
         echo -n "Where to put Communication server log directory [$OCS_COM_SRV_LOG] ?"
         read ligne
@@ -1239,14 +1239,14 @@ then
     fi
     echo
     echo "+----------------------------------------------------------+"
-    echo "| OK, Communication server setup sucessfully finished ;-)  |"
+    echo "| OK, Communication server setup sucessfuly finished ;-)  |"
     echo "|                                                          |"
     echo "| Please, review $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE"
     echo "| to ensure all is good. Then restart Apache daemon.       |"
     echo "+----------------------------------------------------------+"
     echo
     echo "Leaving Apache directory" >> $SETUP_LOG
-    echo "Communication server installation successfull" >> $SETUP_LOG
+    echo "Communication server installation successful" >> $SETUP_LOG
 fi
 
 echo
@@ -1274,7 +1274,7 @@ then
     echo "root document directory."
     echo "If you choose to move directory, YOU MUST MOVE 'download' directory to"
     echo "Administration Server writable/cache directory (by default"
-    echo "$ADM_SERVER_VAR_DIR), especialy if you use deployement feature."
+    echo "$ADM_SERVER_VAR_DIR), especially if you use deployment feature."
     echo
     echo -n "Do you wish to continue ([y]/n)?"
     read ligne
@@ -1302,7 +1302,7 @@ then
     echo "OK, using directory $ADM_SERVER_STATIC_DIR to install static files ;-)"
     echo "Using directory $ADM_SERVER_STATIC_DIR for static files" >> $SETUP_LOG
     echo
-    echo "Where to create writable/cache directories for deployement packages,"
+    echo "Where to create writable/cache directories for deployment packages,"
     echo -n "administration console logs, IPDiscover and SNMP [$ADM_SERVER_VAR_DIR] ?"
     read ligne
     if test -z $ligne
@@ -1680,7 +1680,7 @@ then
     echo "| to configure database server and create/update schema.   |"
     echo "+----------------------------------------------------------+"
     echo
-    echo "Administration server installation successfull" >> $SETUP_LOG
+    echo "Administration server installation successful" >> $SETUP_LOG
 fi
 
 echo

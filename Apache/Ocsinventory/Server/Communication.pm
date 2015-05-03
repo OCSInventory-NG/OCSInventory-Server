@@ -37,7 +37,7 @@ use Apache::Ocsinventory::Server::System(qw/
 
 use Apache::Ocsinventory::Server::Communication::Session;
 
-# Subroutine wich answer to client prolog
+# Subroutine which answer to client prolog
 sub _prolog{
 
   my $frequency;

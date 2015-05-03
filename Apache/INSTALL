@@ -54,7 +54,7 @@ directory !
 File etc/logrotate.d/ocsinventory-server is a sample to enable rotation of
 Communication Server logs.
 
-Directory binutils contains usefull perl scripts to batch import locally 
+Directory binutils contains useful perl scripts to batch import locally 
 generated inventory results (.ocs files), to analyse Communication Server
 logs... Refer to README in directory.
 
