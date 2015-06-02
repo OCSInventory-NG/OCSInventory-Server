@@ -1,0 +1,118 @@
+Revision history for Apache::Ocsinventory
+
+1.3 beta3
+    * fix the SQL schema 
+
+1.3 beta2
+    * fix setup.sh for Debian
+    * minor fixes
+    * add binutils/create-release-tarball.sh
+
+1.3 beta1
+	* Added virtual device detection for a network iface
+	* Added description field to printers section
+	* Use of hardware.UUID and hardware.ASSETTAG in duplicates detection
+ 	* Duplicates mgmt: Now removing current device from dynamic groups and keep the static groups membership
+	* The SOAP service is now able to share data with engine in +w mode by the use of ::System::_lock()
+	* Deleting computers using SOAP service
+	  http://sourceforge.net/tracker/?func=detail&aid=2776298&group_id=58373&atid=487495 
+	* itmgmt_comments support in duplicates
+	* Download: Added ERR_ALREADY_IN_HISTORY status code (package affected but already in history)
+	* Added source IP in inventory
+	  https://sourceforge.net/tracker/?func=detail&aid=2807594&group_id=58373&atid=487495
+	* Added DRIVES/CREATEDATE support
+	  https://sourceforge.net/tracker/?func=detail&atid=487495&aid=2275640&group_id=58373
+	* Added ASSETTAG support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2804146&group_id=58373&atid=487495
+	* Added DNS device informations
+	  https://sourceforge.net/tracker/?func=detail&aid=1566957&group_id=58373&atid=487495
+	* Fixed .ocs files generation on windows server
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2817320&group_id=58373&atid=487492
+	* Mobile devices support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2810746&group_id=58373&atid=487495
+	* Fixed the "bad software import bug"
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2129983&group_id=58373&atid=487492
+ 	* DB schema changes support through "type=>1" field meta information in Map.pm
+	* Unicode support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2796796&group_id=58373&atid=487495
+	  Thanks to Andrek
+	* Added DEFAULTGATEWAY support
+	* Added inventory of virtualization (Philippe Libat)
+	* Fixed a bug in SOAP Engine 
+	  https://sourceforge.net/tracker/?func=detail&atid=487492&aid=2787130&group_id=58373
+
+1.02 final
+	* Handling the trailing '/' in deploy feature and calling _end in more standard way (Ocsinventory.pm)
+	* Fix a typo (logging) in System.pm (OCS_OPT_LOGPATH) Thx to Remi Collet
+	* Fix: call to _accountinfo() in Inventory.pm whereas Update::AccountInfos not in the scope
+
+1.02 RC2
+	* Fix the problem of feeding cache when write_diff is OFF
+	* Fix the duplicate error in packages history (download)
+
+1.02 RC1
+	* As the dictionnary and "all softs" are inventory cache dependant = INVENTORY_CACHE_REVALIDATE default => 7
+	* Fixed the DEVICEID checking
+	* Important fix in "on the fly deletion" in inventory cache
+	* Added fallback values for '??' (unix agents prior than 0.8)
+	* Added OCS_OPT_INVENTORY_CACHE_KEEP setting
+	* Inventory_cache deletion is handled "on the fly"
+	* Inventory cache clean now retry on fault
+	* Inventory cache clean is now off by default
+	* IPDISCOVER: Do not evaluate if mode is local
+	* Added LOCAL_FL to CURRENT_CONTEXT
+	* The default Ip(hardware.IPADDR) is now based on REMOTE_ADDR (or HTTP_X_FORWARDED_FOR)
+	* Added IS_TRUSTED test if INVENTORY_SESSION_ONLY
+	* Inventory_cache is now computed on row level
+	* Moved user agent update in prolog stage
+	* Added old_deviceid log
+	* Added "fallback" field's attribute to Map.pm
+	* Added OCS_OPT_COMPRESS_TRY_OTHERS setting
+	* Notify: Added IP address update event handling
+	* Added Notify.pm capacity
+	* Fix a bug in DATA_MAP: accountinfos is a "multi" section
+	* Added log when using compression different than raw ZLIB
+	* Added -path parameter to ipdiscover-util.pl (changes in GUI for FHS support)
+	* Added OCS_OPT_INVENTORY_SESSION_ONLY: An inventory is accepted only if it is required by server
+	* Added session (prolog=>post_inventory) Options: SESSION_VALIDITY_TIME, SESSION_CLEAN_TIME
+	* Added error 523
+	* Added OCS_OPT_* parameters checking to server starting
+	* Bug fix in inventory cache revalidate (lock fault)
+	* Added disable caches computation (group and inventory) feature (REVALIDATE* set to 0)
+	* Removed inventory cache checking for a section that has not changed since last inventory
+	* Added OCS_OPT_OPTIONS_NOT_OVERLOADED (configure engine to take its settings from file only)
+	* Higher server's verbosity
+	* Bug fix: Do not handle in Duplicates the "auto => 0" sections
+	* Bug fix: Replacement of a "one shot" computer generates an error  (QUALITY is NULL)
+	* Bug fix: do not close logfile if LOGLEVEL is off
+	* Added ocsinventory-log.pl sample and associated README
+	* A few improvements and fixes on web service
+	* Added groups.REVALIDATE_FROM field : groups.CREATE_TIME is now the real groups computation date
+	* Added a minimal system to load external methods in web service (OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF)
+	* Added ipdiscover_delete_type_V1() to web service
+	* Added ipdiscover_create_type_V1() to web service
+	* Added ipdiscover_untag_V1() to web service
+	* Added ipdiscover_remove_V1() to web service
+	* Added ipdiscover_tag_V1() to web service
+	* Added get_ipdiscover_device() to web service
+	* Added OCS_OPT_WEB_SERVICE_RESULTS_LIMIT setting
+	* Added XML::Entities dependency on SOAP service (as SOAP::Lite may not decode CDATA)
+	* Web service upgrade ( bug fixes, and many improvements)
+	* New configuration system using Apache::Ocsinventory::Server::System::Config
+	* Groups are now computed using DB Slae if available
+	* Engine extensions : "Option" renamed to "Capacity"
+	* Changed module structure
+	* Code improvement for Inventory.pm
+	* Added model serial as auto duplicate criteria
+	* Added INVENTORY_WRITE_DIFF for lower load on DB backends and more afficient sql query cache
+	* Added Slave DB backend support (for read: soap engine...etc)
+	* PROLOG_FREQ specific parameter handling (computer, mass processing and group levels)
+	* DOWNLOAD* specific parameters handling (computer, mass processing and group levels)
+	* IPDISCOVER specific parameter handling (computer, mass processing and group levels)
+	* Computer's groups support (dynamic and static)
+	* blacklists of MAC and SERIAL are now handled from database
+	* Multiple ocs servers support (Backends)
+	* Trusted computers support (filter exceptions)
+	* GZIP compression support
+	* No compression support
+	* inventory cache handling improved
