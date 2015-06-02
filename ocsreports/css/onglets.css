@@ -1,0 +1,39 @@
+/* Thanks for Douglas Bowman for this code
+http://www.alistapart.com/articles/slidingdoors/
+*/
+
+#header {
+   /*   float:center;*/
+      width:100%;
+      font-size:93%;
+      line-height:normal;
+      }
+#header ul {
+  margin:7;
+  padding:7px 5px 12px;
+  list-style:none;
+  }
+#header li {
+  float:left; 
+  background:url(../image/norm_left.gif) no-repeat left top;
+  margin:0;
+  padding:0 0 0 9px;
+  }
+#header a {
+  float:left;
+  display:block;
+  background:url(../image/norm_right.gif) no-repeat right top;
+  padding:5px 15px 4px 6px;
+  text-decoration:none;
+  font-weight:bold;
+  color:#765;
+  }
+#header #current {
+  background-image:url(../image/norm_left_on.gif);
+  border-width:0;
+  }
+#header #current a {
+  background-image:url(../image/norm_right_on.gif);
+  color:#333;
+  padding-bottom:5px;
+  }

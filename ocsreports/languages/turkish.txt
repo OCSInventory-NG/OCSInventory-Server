@@ -1,0 +1,709 @@
+0 iso-8859-9
+2 B�t�n Bilgiyarlar
+3 Bilgisayar ve Bilgisayar yaz�l�m�...
+5 Sorumlulu�um Alt�ndaki Birlik
+9 Arama ve Kriterler
+12 Etki de�eri
+13 G�nder
+17 Temsilci
+19 Yaz�l�m versiyonu
+20 Yaz�l�m
+23 Bilgisayar
+24 Kullan�c�
+25 ��letim sistemi
+26 Bellek
+27 Bellek H�z� (MHz)
+28 Bilgisayar Say�s�
+30 Arama
+31 Bir parametre
+32 Se�im
+33 Alan
+34 IP Adresi
+35 Bilgisayar Ad�
+36 Seri Numaras�
+41 Yenile
+42 Sonu� yok
+43 Ana M�n�
+45 Bo� yer
+46 Son envanter
+48 Bilgisayar ayr�nt�s�
+49 Ad�
+50 De�i�tir
+51 Yorumlar
+53 Tan�m
+54 ��lemci
+55 Say�
+56 Y�netimsel Bilgi
+61 Video Kart�
+62 �nerilen
+63 Depo
+64 Yap�mc�
+65 Model
+66 T�r
+67 Disk Boyutu
+69 Edit�r
+70 Ata
+79 Yaz�c�(s)
+80 Ba�l�k
+81 Konum
+82 A�(s)
+83 Kapasite
+84 Aray�z
+85 Mektup
+86 Sistem Dosyalar�
+87 Toplam
+88 Bo�
+90 Sonu�(s)
+91 Giri� Aleti
+92 Disk(s)
+93 Kontrol(s)
+94 Slot numaras�
+95 MAC adresi
+96 G�venli
+97 Monit�r(s)
+98 Dikkat,Sadece 8 se�im hakk�n�z var !
+99 Bilgisayar ayr�nt�lar�
+103 G�ncelle
+107 Bi�im
+108 Kay�t Talebi
+111 Pencere izni
+113 �ptal
+114 Kay�t
+115 G�ncelle
+116 Ekle
+117 Kay�t
+119 Silmek istedi�inizden eminmisiniz 
+122 sil
+129 E�itler
+130 Ba�ka
+134 Veri taban�na yeni bir dosya ekle
+135 Dikkat, Dosyay� tamamen siliyorsunuz!
+136 �ndir
+137 Dosya
+168 Bu bi�imlendirme dosyas� ge�ersiz (dosya  zip, pl veya unix binary olmal�)
+170 Ayn� dosya zaten var !
+171 Dosyay� Sil
+172 Bu dosya hatal�!
+173 Temele eklenmedi
+174 G�venlik
+175 �o�alt
+176 Ips
+177 Birle�tirmede gere�inden fazla bilgisayar var.
+178 Etiket/ Number of PC repartition
+180 Yanlış kullanıcı adı veya şifre
+182 Bilgisayarlar�n belirli bir etiketi var
+183 �ndir
+184 Bu dosya i�ermemekte"De�i�ik versiyon"
+185 Versin 1
+186 Bu dosya balkon dosya i�ermemekte
+187 Bu dosya ge�erli s�k��t�rma dosyas� de�il
+188 Geri
+189 En iki bilgisayar se�melisiniz
+190 Rapor bilgisi:
+191 Silindi
+192 Gereksiz �zet
+193 Sunucu Ad� + Seri numaras�
+194 Sunucu Ad� + Mac adresi
+195 Mac adresi+ Seri numaras�
+196 Yanl�zca sunucu ad�
+197 yanl�zca serinumaras�
+198 Yanl�zca mac adresi
+199 Gereksiz
+200 Uygun g�r�len art�klardaki azalma miktar�
+201 K���kler
+202 B�y�kler
+203 Aras�nda
+204 D��arda
+205 Kullan�labilir
+206 Kaydet
+207 A� Ge�idi 
+208 Maske 
+209 BIOS Versiyon
+210 BIOS Tarihi
+211 Sistem k�t���
+212 Anahtar Ad�
+213 Anahtar De�eri
+214 Bu sayfay� yazd�r
+215 �ifre Hatal�
+216 Yanlış kullanıcı adı veya şifre
+217 �ifre
+218 Acenta Verisoyu
+219 uninventoried A� aray�z�
+220 Silindi
+221 IP Toplant� Bilgisayarlar�
+222 Uyar�! Se�ili t�m bilgisayarlar tek bir bilgisayara do�ru birle�tiriliyor ! Eminmisiniz ?
+223 Dan��ma
+224 De�er
+225 Y�netici Bilgisi
+226 Rapor bilgisi tablosu ba�ar�yla silindi
+227 s�t�n� silmek istedi�inizden eminmisiniz?
+228 Yeni bir y�netel bilgi giri�i
+229 Yaz�(255)
+230 Tamsay� 
+231 Ger�ek 
+232 Tarih
+233 G�ncel bilgi
+234 Ba�ar�yla eklendi
+235 Kullan�c�lar
+236 De�i�tire ge�
+237 Yeni �ifre
+238 Do�rulama
+239 Her bir alan doldu
+240 �ifreniz farkl�
+241 �ifreniz ba�ar�yla de�i�tirildi
+242 Y�netici 
+243 Kullan�c�
+244 Yeni Bir kullan�c�
+245 Ba�ar�yla silindi
+246 Kullan�c�y� silmek istedi�inizden eminmisiniz?
+247 MySql Oturumu a�
+248 MySql �ifresi
+249 MySql ba�lant�s� kurulmad�. L�tfen ge�erli oturumu giri�ini yap�n�z/Devam.
+250 MySql Sunucu Ad�
+251 Oturum Kapat
+252 Ad� (se�iminiz)        	
+253 Sistem k�t��� 	
+254 Anahtar yolu (Ex: yaz�l�mMozilla)  	
+255 Anahtar ad� okunacak (* tamam�)
+256 se�im
+257 Sistem k�t��� anahtar�
+258 Sistem k�t��� anahtar� de�eri
+259 Hata ,Bilgi girilemedi (�zel karakter kullanmay�n�z)
+260 Label file modification ok
+261 Label file deleted
+262 Type in a label
+263 Dosya etiketi bi�imi
+264 Dosya etiketi yok
+265 Herhangi biri
+266 Ge�ersiz tarih
+267 dd/mm/yyyy
+268 H�z
+269 %m/%d/%Y
+270 Modem(s)
+271 Yar�k(s)
+272 Ba�lama noktas�(s)
+273 BIOS
+274 ��letim sistemi ad�
+275 ��letim sistemi Versiyonu
+276 T�mdevre ailesi
+277 Versiyon
+278 s�r�c�
+279 Ba�lama noktas�
+280 MIB tipi
+281 DHCP IP
+282 A� Ge�idi
+283 Ama�
+284 BIOS Yap�mc�s�
+285 De�i�ik bir parametre se�iniz
+286 Hizmet paketi
+287 Yerele getir
+288 Yerele ithal et
+289 A� dan��man�
+290 Ip sorgusu
+291 Uzman modu
+292 Ekle/ a� ayg�t� sil
+293 a� ayg�t� tipi
+294 Alt a� isimleri
+295 D�zelte t�kla
+296 Uid
+297 Adres defterine yaz�lmad�
+298 B�t�n alanlar dolu
+299 Ge�ersiz ip adresi (olmal�: x.x.x.x)
+300 Ge�ersiz mask: olmal�: x.x.x.x or xx (xx<32)
+301 A�a girildi
+302 A� silindi
+303 Alt a� ekle
+304 A� ad�
+305 Uid
+306 Alt a� listesi
+307 Yeni bir tip ekle
+308 Tip ad�
+309 A� ayg�t� tipi
+310 Ip say�s� daha az olmal�
+311 Sunucular
+312 IpDis
+313 A� ge�idi bilgisayarlar�
+314 IpDiscover A� ge�idi bilgisayarlar�
+315 Sald�ran bilgisayarlar
+316 Alt a�
+317 Analiz
+318 DNS Ad�
+319 a� analiz sonucu
+320 bu analiz zaten bitti
+321 gizli dosyalar� g�rmek istermisiniz ?
+322 Gizli Dosyalar i�in
+323 Olu�tur
+324 Sunucu de�erlendir
+325 Bo�
+326 Meske tipi yok
+327 Bilgisayar detaylar�
+328 Bulundu
+329 Stok
+330 NetBIOS ad�
+331 A� numaras�
+332 L�tfen bekleyiniz...
+333 Yenir br a� ayg�t� ekle
+334 A� ayg�t� listesi
+335 Ayg�t tipi
+336 ayg�t tan�m�
+337 Bu program hi�bir �eye g�nderilemedi
+338 S�n�rl� mod
+339 Bulman�z gereken -util.pl (Linux only) Uzman modu i�in
+340 G�ster
+341 Ba�lat�lamad�, ayarlar�n�z� d�zg�n yapmal�s�n�z
+342 Di�er kullanc�lar� k�k dizine do�ru bir �ekilde yazman�z gerekiyor.
+344 Hata
+345 Bu analiz �u anda �al���yor, L�tfen bir ka� saniye sonra tekrar deneyniz
+346 �nceki
+347 Sonraki
+348 Pencere kullan�c�s�
+349 S�t�n ekle
+350 CPU tipi
+351 CPU mumaras�
+352 Son
+353 Nitelik
+354 Ba�l�l�k
+355 �irket
+356 sahip
+357 Kullan�c� acentas�
+358 Joker: ? (Bir karakter), * (Bir ka� karakter)
+359 Monit�r seri
+360 Yap�m  (haftas�/y�l�)
+362 A�
+363 Zaten var
+364 Bulundu
+365 Sald�r� bulundu
+366 Kimlik saptand�
+367 A� ayg�t�
+368 A� kapal�
+369 sunuldu
+370 Yay�lma
+371 B�t�n bilgisayarlar
+372Bilgisayar se�imi
+373 Kay�tl� kullan�c�
+374 Kay�tl� Kurum
+375 OCS NG Acenta versiyonu
+376 Bilgisayar kapal�. L�tfen bir ka� saniye sonra tekrar deneyiniz.
+377 ��lemci h�z� (Mhz)
+380 S�zl�k
+381 Say�
+382 Yaz�l�m ad�
+383 Sayfa
+384 T�m�n� Ta��
+385 Yeni kategori
+386 Veya
+387 Kategori bulundu
+388 Kategori 
+389 Hi�
+390 s�lz�k kategorisi
+391 Kategori ad�
+392 sil
+393 Ara
+394 Arama Kategorisi
+395 Yaz�l�m� her yerde ara
+396 Yeniden ba�lat
+397 Kategoriye git
+398 Kategori listesi
+410 Tamamen
+411 Alanlar sadece Say�lar� kapsamakta !
+412 Sistem k�t��� anahtar� ge�erli
+413 Otomatik g�ncelleme ge�erli
+414 otomatik yay�lma ge�erli
+415 Deletion logging functionality (needed by GLPI).
+416 Logging functionality.
+417 Automatic software distribution functionality.
+418 Differentiate inventories functionality.
+419 Maximum number of day before an ipdiscover computer is replaced.
+420 Automatic software distribution: see documentation.
+421 Automatic software distribution: see documentation.
+422 Automatic software distribution: see documentation.
+423 Automatic software distribution: see documentation. (Packages with a higher or equals priority won't be downloaded anymore).
+424 Validity of a package as from its consideration by the agent.
+425 Max number of computers per gateway retrieving IP on the network.
+426 Validity of inventories. (ALWAYS: inventory at each login. NEVER: no inventory)
+427 Defines criteria that must be equals for two computers to be automatically merged.
+428 Mevzilendir
+429 Frekans
+430 K�me y���n�
+431 Etkinle�tir
+432 Non notified
+433 Affect
+434 paket kuruldu
+435 Yeni paket olu�tur
+436 Dosya a��lm�yor
+437 Paketiniz ba�ar�l� bir �ekilde dizine olu�turuldu
+438 Yei paket olu�tur
+439 Protokol
+440 �ncelik
+441 Algoritma
+442 Kodlay�c�
+443 Hareket
+444 Komut
+445 yol
+446 Dosya ad�
+447 User notifications
+448 Kullanc�y� uyar
+449 Yaz�
+450 Geri say�m
+451 Kullan�c� durduruldu
+452 Kullan�c� ertelendi
+453 Installation completion need user action
+454 Hay�r
+455 Evet
+456 Y�r�t
+457 Stok
+458 Ba�lat
+459 Geri say�lacak say�
+460 Unique identifier
+461 Digest
+462 Toplam boyut
+463 Par�a boyutu (1 KB min)
+464 Par�a numaras�
+465 Etkin paket
+466 Uyar�: Bilgi dosyas� bulunamad�
+467 Uyar�: Dosya par�as� bulunamad�
+468 Bu paketi aktif hale getirmek istedi�inizden eminmisiniz?
+469 Paket aktif, Sanal yap�ls�nm�?
+470 Https url
+471 Par�a url
+472 Hata: Par�a silinmedi
+473 Zaman izni numaras�
+474 Zaman izni 10 dan uzun
+475 Zaman izni
+476 Veya Paketi elle etiki hale getir
+477 Paketi etkile
+478 Bilgisayar(lar)
+479 Bilgisayar se�ilmedi
+480 Par�alar
+481 Aktif paketler
+482 Uyar� Bildiri
+483 Onay Ba�ar�l�
+484 �zel frakans� etkile
+485 Herzaman Bul
+486 Asla Bulma
+487 �zel
+488 Varsay�lan
+489 Harekete izin ver
+490 Harekete Asla izin verme
+491 Harekete herzaman izin ver a�da
+492 ELECTED IpDiscover of network
+493 Default (can be elected)
+494 Custom inventory frequency
+495 Inventoried every 
+496 G�n(s)
+497 Varsay�lan, Kullan�c� parametre frekans�.
+498 Paket
+499 Sunucu
+500 Masa �st� uygulamas�
+501 Paket ekle
+502 Se�im
+503 G�� se�imi
+504 Se�im yok
+505 Se�imler
+506 se�imler yok
+507 Al
+508 Alma
+509 Biraz
+510 Paket yok
+511 �kinci
+512 Yay�lma
+513 Olu�turmak
+514 �al��t�r
+515 �al��t�r�ld�
+516 KB
+517 Bu se�im sadece sahte birbilgisayarda yap�l�r.
+518 G�� ke�fi
+519 Bilgisayar zaten a� i�in se�ilmi�.
+520 Bilgisayar zaten zorunlu a� i�in bulundu
+521 Bilgisayar zaten zorunlu se�imde
+522 Standart bilgisayar
+523 Eski duruma geri d�n
+524 Birdaha tekrar etkileme
+525 Eminmisiniz?
+526 Sahte bilgisayar yok
+527 Ocak
+528 �ubat
+529 Nisan
+531 May�s
+532 Haziran
+533 Temmuz
+534 A�ustos
+535 Eyl�l
+536 Ekim
+537 Kas�m
+538 Aral�k
+539 Pazar
+540 Pazartesi
+541 Sal�
+542 �ar�amba
+543 Per�embe
+544 Cuma
+545 Cumartesi
+546 Durum
+547 Hepsi
+548 T�m� ama ba�ar�l�
+549 Dosya(Ekle, client bilgisayara)
+550 File (Zorunlu de�il, komutu ge�mi�e"Uygula" )
+551 Bu paketin ismi zaten var
+552 <i>Bilgisayar araman�z gerekiyor, ve aktivasyon paketinin mevkisini t�klay�n<br>Hem bir bilgisara hemde bir pakete etki ediyor</i>.
+553 Pencere anahtar�
+557 Userdomain
+558 Affected packages
+559 This file is not .ocs
+560 To server
+561 Unknown (deleted package)
+562 Networks having uid:
+563 Manufacturer
+564 Agent auto-launching frequency
+565 Server used for local inventories
+566 Port used for local inventories
+567 Ipdiscover latency
+568 RAM(MB)
+569 CPU(MHz)
+570 Help
+571 Validate all
+572 Success
+573 Errors
+574 Stats
+575 Unaffect not notified
+576 Customized ipdiscover
+577 Group name
+580 All computers (replay)
+581 All computers (cached)
+582 and
+583 Groups
+584 For the request
+585 For selection
+586 New group
+587 New static group
+588 Overwrite group
+589 statically add to group
+590 Reset state
+591 Include statically
+592 Exclude statically
+593 Creation date
+594 Cache generated on
+595 STATIC GROUP
+596 DYNAMICALLY INCLUDED
+597 STATICALLY EXCLUDED
+598 Include
+599 Reset
+600 Exclude
+601 Mass affectation
+602 You need to send a file
+603 No computer found, please check your file
+604 computer(s) successfully affected(s)
+605 computer(s) failed
+606 Computers file
+607 Group
+608 created
+609 overwritten
+610 STATICALLY INCLUDED
+611 NO CACHE
+612 STATIC
+613 DYNAMIC
+614 EXCLUDED
+615 Query
+616 Perimeter of user
+617 New
+618 Perimeter
+619 Local user
+620 No computer in your perimeter.
+621 The group was not created. Its name is already in use
+622 Cached
+623 The information you are trying to access does not exist
+624 Do you really want to delete group 
+625 Enable this alteration
+626 Disable this alteration
+627 At least one of the fields is empty... Not made Update.
+628 Servers
+629 New group of servers of redistribution
+630 A group of existing servers
+631 Add to
+632 Crush
+633 Management groups servers
+634 Wished action
+635 New name
+636 Description
+637 Replace
+638 THE GROUP'S NAME CAN'T BE EMPTY
+639 THIS GROUP'S SERVER NOT EXIST
+640 Do you really want to delete
+641 Management of the redistribution servers
+642 the group
+643 All machine
+644 this machine
+645 GROUP DETAIL
+646 URL
+647 PORT NUMBER
+648 REPERTOIRE STORE
+649 AUTOMATIC ACTIVATION
+650 MANUAL ACTIVATION
+651 Servers group
+652 Machine(s)
+653 Blacklist MAC address
+654 Enter a new MAC address for blacklist
+655 Insertion made
+656 This datum already exists in the list 
+657 Fields in red are in error!!! (Empty fields or size < 2) 
+658 machine don't have redistribution servers. <br>It is thus necessary to affect this package individually.
+659 Machines already have this teledeploy package. This package's statut for these machines is now 
+660 GROUP OF SERVEUR NOT EXIST
+661 PACKAGES FOR SERVER OF REDISTRIBUTION
+662 Rules of affectation
+663 INTERNES PROBLEM
+664 Action made
+665 NO SELECTED MACHINE. GROUP OF SERVER NOT CREATED 
+666 Group of server made
+667 FOR THE PACKAGE
+668 to Affect with which rule?
+669 ATTENTION: there are doubloons of priority < br > A single rule will be retained!
+670 A rule already carries this name
+671 The name of this rule can't be empty!
+672 This rule does not exist!!!
+673 Administration of the rules of affectation
+674 NAME OF THE RULE
+675 PRIORITY
+676 MACHINE VALUE
+677 OPERATOR
+678 SERVER VALUE
+679 NAME
+680 DOMAIN
+681 USER
+682 to Add a supplementary condition
+683 Validate the rule
+684 The following fields must be seized
+685 Add a rule
+686 The condition
+687 You cannot delete it.
+688 Packages are affected on this goupe!
+689 Packages are affected on this server!
+690 You cannot delete all the machines.
+691 Generic Values: $IP$ and $NAME$
+692 You modify ALL the values of the servers
+693 You modify the values of the following server:
+694 to find the default values, validate the vacuous fields
+695 You modify the group of servers
+696 to Show packages activated to affect on
+697 a machine
+698 a group of server
+699 Are you sure to want to affect this package in these machines?
+700 Blacklist choices
+701 Blacklist of serial number
+702 Enter a new serial number to blacklister
+703 Blacklist
+704 Are you sure to want to blacklister 
+705 Are you sure to want to unblacklister
+706 Unblacklister
+707 this serial number
+708 this mac address
+709 Customized PROLOG_FREQ 
+710 Customized download
+711 Taken into account modifications
+712 Language file
+712 Language file
+713 Are you sure to replace this language file
+714 Reference language file
+715 Choose the language file to modify
+716 Update the language file
+717 customized
+718 Ignore
+719 (per second)
+720 Waiting time between 2 cycles of deployment
+721 Waiting time between 2 downloaded fragments
+722 Waiting times between 2 periods of deployment
+723 maximum Priority of the downloaded packages <br> (The packages of a superior priority are ignored)
+724 Time between 2 contacting between the agent and the server
+725 (in the hour)
+726 URI of the servers of redistribution ($IP and NAME$ are the generic values)
+727 Directory of destination of packages.
+728 Inventory
+729 computers
+730 hours
+731 Feature of appointed on the base to every section of inventory.
+732 milisecond(s)
+733 Inactive
+734 Inventory files
+735 Filters
+736 Enable the computer's groups feature
+737 Random number computed in the defined range. Designed to avoid computing many groups in the same process
+738 Specify the validity of computer's groups (default: compute it once a day - see offset)
+739 Futur security improvements
+740 Validity of a computer's lock
+741 Configure engine to update inventory regarding to CHECKSUM agent value (lower DB backend load)
+742 Make engine consider an inventory as a transaction (lower concurency, better disk usage)
+743 Configure engine to make a differential update of inventory sections (row level). Lower DB backend load, higher frontend load
+744 Accept an inventory only if required by server ( Refuse "forced" inventory)
+745 Specify when the engine will clean the inventory cache structures
+746 Specify the minimal difference to replace an ipdiscover agent
+747 Disable the time before a first election (not recommended)
+748 Enable groups for ipdiscover (for example, you might want to prevent some groups to be ipdiscover agents)
+749 Use with ocsinventory-injector, enable the multi entities feature
+750 Generate either compressed file or clear XML text
+751 Specify if you want to keep trace of all inventory between to synchronisation with the higher level server
+752 Path to ocs files directory (must be writeable)
+753 Enable prolog filter stack
+754 Enable core filter system to modify some things "on the fly"
+755 Enable inventory flooding filter. A dedicated ipaddress ia allowed to send a new computer only once in this period
+756 Period definition for INVENTORY_FILTER_FLOOD_IP
+757 Enable inventory filter stack
+758 Specify if you want to track packages affected to a group on computer's level
+759 Must be superior or egal in
+760 Webservice
+761 Enable/Disable the soap service
+762 Result page size (be aware of performances issues)
+763 Include file of your own modules
+764 Options below are not settable by GUI.<br>(see ocsinventory-server.conf)
+765 All softwares
+766 NO RESULT
+767 BE CAREFUL: RESULT WITH FILTER
+768 Number of recording
+769 Tranfer Made
+770 UPDATE OF 
+771 This category already exists
+772 The category's name can't be null
+773 You must select category's name
+774 You try to make a transfer of the category towards the same category
+775 Directory of creation of packages
+776 Directory of stake in cache of the analyses of ipdiscover
+777 Validity of a session
+778 Number of different WORKGROUP
+779 Different TAG
+780 Different IPSUBNET
+781 Machines having a software deployement pending
+782 Machines having a package in error
+783 Number of different OS
+784 Different agent
+785 Different processors
+786 Different resolutions
+787 Machines with a processor >=
+788 Machines with a processor =<
+789 Machines with a processor between
+790 Machines with RAM >=
+791 Machines with RAM =<
+792 Machines with RAM between
+793 Machines in base
+794 Seen machines
+795 Machines contact server today
+796 Number of inventory machine today
+797 Machines not see since more of
+798 ACTIVITY
+799 HARDWARE
+800 ELSE
+801 Don't show this field
+802 Show this fied
+803 Counts in the daytime since the machine don't contact server
+804 Minimum speed processor
+805 Maximum speed processor
+806 Minimum RAM amount
+807 Maximum RAM amount
+808 Repartition
+809 STATICS GROUPS 
+810 DYNAMICS GROUPS 
+811 Are you sure to want to modify the visibility of the group
+812 The software in 0 is present in CACHE but are not any more settled on machines.<br>They cannot be put in a category of dictionary
+813 hard disk number with remaining size >
+814 hard disk number with remaining size <
+815 hard disk number with remaining size between
+816 hard disk maximum remaining size 
+817 hard disk minimum remaining size
