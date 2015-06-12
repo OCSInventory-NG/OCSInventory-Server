@@ -2,19 +2,21 @@
 
 set -e
 
-RELEASE=$1
+BRANCH=$1
 
-if [ -z $RELEASE ]; then
+if [ -z $BRANCH ]; then
 	echo "$0 VERSION"
 	exit 1
 fi
 
-bzr branch https://code.launchpad.net/ocsinventory-server/trunk OCSNG_UNIX_SERVER-$RELEASE
-rm -rf OCSNG_UNIX_SERVER-$RELEASE/.bzr
-cd OCSNG_UNIX_SERVER-$RELEASE
-bzr branch https://code.launchpad.net/ocsinventory-ocsreports/stable ocsreports
-rm -rf ocsreports/.bzr
+git clone https://github.com/OCSInventory-NG/OCSInventory-Server.git -b $BRANCH
+rm -rf OCSInventory-Server/.git
+cd OCSInventory-Server
+git clone https://github.com/OCSInventory-NG/OCSInventory-OCSReports.git -b $BRANCH
+mv OCSInventory-OCSReports ocsreports
+rm -rf ocsreports/.git
 # Reset the default settings so install.php will be correctly loaded
 rm ocsreports/dbconfig.inc.php
 cd ..
-tar cfz OCSNG_UNIX_SERVER-$RELEASE.tar.gz OCSNG_UNIX_SERVER-$RELEASE
+mv OCSInventory-Server OCSNG_UNIX_SERVER-$BRANCH
+tar cfz OCSNG_UNIX_SERVER-$BRANCH.tar.gz OCSNG_UNIX_SERVER-$BRANCH
