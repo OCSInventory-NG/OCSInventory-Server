@@ -15,63 +15,51 @@ use strict;
 use LWP::Simple;
 use Archive::Zip;
 use File::Copy;
+use File::Path;
 use DBI;
   
 sub InstallPlugins {
-		
- my $dbh = DBI->connect("dbi:mysql:$ENV{OCS_DB_NAME}","$ENV{OCS_DB_USER}","$ENV{OCS_DB_PWD}")
- or die "Connection Error: $DBI::errstr\n";
- my $sql = "select name from plugins";
- my $sth = $dbh->prepare($sql);
- $sth->execute
- or die "SQL Error: $DBI::errstr\n";
 
- my @tableau ;
+my $pluginName = $_[1];
 
- while (@tableau = $sth->fetchrow_array) 
- {
-
-	# Download the created archive from the ocsreports which contain the communication server code (.conf and map.pm)
-	my $url = "http://$ENV{OCS_DB_HOST}/ocsreports/upload/@tableau.zip";
-	my $file = "/etc/ocsinventory-server/@tableau.zip";
+# Download the created archive from the ocsreports which contain the communication server code (.conf and map.pm)
+my $url = "http://$ENV{OCS_DB_HOST}/ocsreports/upload/$pluginName.zip";
+my $file = "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.zip";
+our $test;
 	
-	our $test;
+if (-e "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName") {
+	$test = 1;
+	print "Archive existante";
+}
+else
+{
 	
-	if (-e $file) {
-		$test = 1;
-		print "Archive existante";
-	}
-	else
+	print "$url\n";
+	
+	my $status = getstore($url, $file);
+
+	# If download succes, unzip, create dir, move files.
+	if (is_success($status))
 	{
-		
-		print "$url\n";
-		
-		my $status = getstore($url, $file);
-	
-		# If download succes, unzip, create dir, move files.
-		if (is_success($status))
-		{
-
-			my $pluginsdir = "/etc/ocsinventory-server/plugins";
-			my $zipname = $file;
-			my $destinationDirectory = $pluginsdir;
-			my $zip = Archive::Zip->new($zipname);
-			my $member;
+		my $pluginsdir = "$ENV{OCS_PLUGINS_CONF_DIR}";
+		my $zipname = $file;
+		my $destinationDirectory = $pluginsdir;
+		my $zip = Archive::Zip->new($zipname);
+		my $member;
 				
-			foreach my $member ($zip->members)
-			{
-				next if $member->isDirectory;
-				(my $extractName = $member->fileName) =~ s{.*/}{};
-				$member->extractToFileNamed("$destinationDirectory/$extractName");
-			}
-
-			my $dirtocreate = "$pluginsdir/@tableau";
-			mkdir $dirtocreate;
-
-			move("$pluginsdir/Map.pm","$pluginsdir/@tableau/Map.pm");
+		foreach my $member ($zip->members)
+		{
+			next if $member->isDirectory;
+			(my $extractName = $member->fileName) =~ s{.*/}{};
+			$member->extractToFileNamed("$destinationDirectory/$extractName");
 		}
+		my $dirtocreate = "$pluginsdir/$pluginName";
+		mkdir $dirtocreate;
+			
+		unlink $file;
+		move("$pluginsdir/Map.pm","$pluginsdir/$pluginName/Map.pm");
 	}
- }
+}
 
 my $result = "Install OK";
 return( SOAP::Data->name( 'Result' => $result )->type( 'string' ) );
@@ -81,7 +69,16 @@ return( SOAP::Data->name( 'Result' => $result )->type( 'string' ) );
 # Seek for deleted plugins // Delete map.pm and conf entry.
 
 sub DeletePlugins {
-	my ( $PluginName ) = @_;
+	
+	my $pluginName = $_[1];
+	
+	my $pluginsdir = "$ENV{OCS_PLUGINS_CONF_DIR}";
+	
+	if (-e "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.conf"){
+		unlink "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.conf";
+	}
+	
+	rmtree "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName";
 	
 	my $result = "Delete OK";
     return( SOAP::Data->name( 'Result' => $result )->type( 'string' ) );
