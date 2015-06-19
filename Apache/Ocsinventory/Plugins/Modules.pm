@@ -53,11 +53,14 @@ else
 			(my $extractName = $member->fileName) =~ s{.*/}{};
 			$member->extractToFileNamed("$destinationDirectory/$extractName");
 		}
-		my $dirtocreate = "$pluginsdir/$pluginName";
+		my $dirtocreate = "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginName";
 		mkdir $dirtocreate;
+		
+		#Up case plugin directory in OCS server for match with actual template
+		my $pluginNameUc = ucfirst($pluginName);
 			
 		unlink $file;
-		move("$pluginsdir/Map.pm","$pluginsdir/$pluginName/Map.pm");
+		move("$pluginsdir/Map.pm","$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginNameUc/Map.pm");
 	}
 }
 
@@ -72,13 +75,16 @@ sub DeletePlugins {
 	
 	my $pluginName = $_[1];
 	
+	#Up case plugin directory in OCS server for match with actual template for deletion
+	my $pluginNameUc = ucfirst($pluginName);
+	
 	my $pluginsdir = "$ENV{OCS_PLUGINS_CONF_DIR}";
 	
 	if (-e "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.conf"){
 		unlink "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.conf";
 	}
 	
-	rmtree "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName";
+	rmtree "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginNameUc";
 	
 	my $result = "Delete OK";
     return( SOAP::Data->name( 'Result' => $result )->type( 'string' ) );
