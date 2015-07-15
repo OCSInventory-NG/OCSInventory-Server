@@ -53,11 +53,12 @@ else
 			(my $extractName = $member->fileName) =~ s{.*/}{};
 			$member->extractToFileNamed("$destinationDirectory/$extractName");
 		}
-		my $dirtocreate = "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginName";
-		mkdir $dirtocreate;
 		
 		#Up case plugin directory in OCS server for match with actual template
 		my $pluginNameUc = ucfirst($pluginName);
+		
+		my $dirtocreate = "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginNameUc";
+		mkdir $dirtocreate;
 			
 		unlink $file;
 		move("$pluginsdir/Map.pm","$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginNameUc/Map.pm");
