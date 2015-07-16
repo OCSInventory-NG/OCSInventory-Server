@@ -1675,9 +1675,9 @@ then
     #Fix permissions on server side for plugin engine (perl / plugins) dir usualy in etc/ocsinventory-server..
     
     # Where are located OCS Communication server plugins configuration files
-	chown -R $APACHE_USER:$APACHE_GROUPE OCS_COM_SRV_PLUGINS_CONFIG_DIR
+	chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_CONFIG_DIR
 	# Where are located OCS Communication server plugins perl files 
-	chown -R $APACHE_USER:$APACHE_GROUPE OCS_COM_SRV_PLUGINS_PERL_DIR
+	chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_PERL_DIR
     
     if [ $? -ne 0 ]
     then
