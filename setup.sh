@@ -946,7 +946,8 @@ then
     if [ $? -ne 0 ]
     then
         echo "*** Warning: PERL module SOAP::Lite is not installed !"
-        echo "This module is only required by OCS Inventory NG SOAP Web Service."
+        echo "This module is required by OCS Inventory NG SOAP Web Service."
+        echo "Plugin engine will not work without SOAP Lite installed, Try cpan -i SOAP::Lite"
         echo -n "Do you wish to continue ([y]/n] ?"
         read ligne
         if [ -z "$ligne" ] || [ "$ligne" = "y" ]
@@ -1407,6 +1408,14 @@ then
     echo "Fixing permissions on directory $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR" >> $SETUP_LOG
     # Set PHP pages directory owned by root, group Apache
     chown -R root:$APACHE_GROUP $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
+    # Set "download/" "upload/" "plugins/main_section" "plugins/computer_detail" "plugins/language" "config/" own to apache
+    chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/config >> $SETUP_LOG 2>&1
+    chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/plugins/computer_detail >> $SETUP_LOG 2>&1
+    chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/plugins/main_sections >> $SETUP_LOG 2>&1
+    chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/plugins/language >> $SETUP_LOG 2>&1
+    chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/download >> $SETUP_LOG 2>&1
+    chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/upload >> $SETUP_LOG 2>&1
+    
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
@@ -1662,6 +1671,14 @@ then
     echo "Writing Administration server configuration to file $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE"
     echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
     cp -f $ADM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
+    
+    #Fix permissions on server side for plugin engine (perl / plugins) dir usualy in etc/ocsinventory-server..
+    
+    # Where are located OCS Communication server plugins configuration files
+	chown -R $APACHE_USER:$APACHE_GROUPE OCS_COM_SRV_PLUGINS_CONFIG_DIR
+	# Where are located OCS Communication server plugins perl files 
+	chown -R $APACHE_USER:$APACHE_GROUPE OCS_COM_SRV_PLUGINS_PERL_DIR
+    
     if [ $? -ne 0 ]
     then
         echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
