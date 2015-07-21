@@ -1,5 +1,9 @@
 Revision history for Apache::Ocsinventory
 
+2.2 RC
+		* Add plugins web service which is used by the plugin engine to install plugin ( Use SOAP::Lite )
+		* Add compatibility with Apache 2.4 and more : https://github.com/OCSInventory-NG/OCSInventory-Server/commit/861dcb17f826d9580f0f5f0937bd1ae7376e6602
+		
 2.2beta1
         * Add <EXCLUDE_TAG> and <EXCLUDE_ID> requests tags in SOAP engine to be able to exclude tags or ids during SOAP requests
         * Add new 'batteries' inventory section to get various batteries data
