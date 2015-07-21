@@ -6,6 +6,7 @@ In order to install OCS 2.2 the following requirement are needed :
 	- apache2
 	- php
 	- php-mysql
+	- php-gd
 	- libxml-simple-perl
 	- libdbi-perl
 	- libdbd-mysql-perl
