@@ -749,6 +749,7 @@ then
     COMPRESS_ZLIB=0
     XML_SIMPLE=0
     NET_IP=0
+    SOAP_LITE=0
     echo "Checking for DBI PERL module..."
     echo "Checking for DBI PERL module" >> $SETUP_LOG
     $PERL_BIN -mDBI -e 'print "PERL module DBI is available\n"' >> $SETUP_LOG 2>&1
@@ -814,6 +815,30 @@ then
         NET_IP=1
     else
         echo "Found that PERL module Net::IP is available."
+    fi
+    # Check for SOAP::Lite   
+    echo "Checking for SOAP::Lite Perl module..."
+    echo "Checking for SOAP::Lite Perl module" >> $SETUP_LOG
+    $PERL_BIN -mSOAP::Lite -e 'print "PERL module SOAP::Lite is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module SOAP::Lite is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+        SOAP_LITE=1
+    else
+        echo "Found that PERL module SOAP::Lite is available."
+    fi
+    # Check for Zip::Archive
+    echo "Checking for Archive::Zip Perl module..."
+    echo "Checking for Archive::Zip Perl module" >> $SETUP_LOG
+    $PERL_BIN -mArchive::Zip -e 'print "PERL module Archive::Zip is available\n"' >> $SETUP_LOG 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "*** ERROR: PERL module Archive::Zip is not installed !"
+        REQUIRED_PERL_MODULE_MISSING=1
+        Archive_Zip=1
+    else
+        echo "Found that PERL module Archive::Zip is available."
     fi
     if [ $REQUIRED_PERL_MODULE_MISSING -ne 0 ]
     then
@@ -939,29 +964,6 @@ then
     echo "+----------------------------------------------------------+"
     echo "| Checking for optional Perl Modules...                    |"
     echo "+----------------------------------------------------------+"
-    echo
-    echo "Checking for SOAP::Lite PERL module..."
-    echo "Checking for SOAP::Lite PERL module" >> $SETUP_LOG
-    $PERL_BIN -mSOAP::Lite -e 'print "PERL module SOAP::Lite is available\n"' >> $SETUP_LOG 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "*** Warning: PERL module SOAP::Lite is not installed !"
-        echo "This module is required by OCS Inventory NG SOAP Web Service."
-        echo "Plugin engine will not work without SOAP Lite installed, Try cpan -i SOAP::Lite"
-        echo -n "Do you wish to continue ([y]/n] ?"
-        read ligne
-        if [ -z "$ligne" ] || [ "$ligne" = "y" ]
-        then
-            echo "User choose to continue setup without PERL module SOAP::Lite" >> $SETUP_LOG
-        else
-            echo
-            echo "Installation aborted !"
-            echo "User choose to abort installation !" >> $SETUP_LOG
-            exit 1
-        fi
-    else
-        echo "Found that PERL module SOAP::Lite is available."
-    fi
     echo
     echo "Checking for Apache2::SOAP PERL module..."
     echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
