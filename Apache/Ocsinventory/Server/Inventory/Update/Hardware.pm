@@ -35,7 +35,7 @@ sub _hardware{
   my $ipAddress = &_get_default_iface();
 
   $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
-	LASTDATE=NOW(), 
+	LASTDATE=".((defined($base->{LASTDATE})&&($base->{LASTDATE} ne "1970-01-01"))?$dbh->quote($base->{LASTDATE}):"NOW()").", 
 	LASTCOME=NOW(),
 	CHECKSUM=(".(defined($base->{CHECKSUM})?$base->{CHECKSUM}:CHECKSUM_MAX_VALUE)."|CHECKSUM|1),
 	NAME=".$dbh->quote($base->{NAME}).", 
