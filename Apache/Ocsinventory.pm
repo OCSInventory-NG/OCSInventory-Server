@@ -200,10 +200,19 @@ sub handler{
     # Parse the XML request
     # Retrieving xml parsing options if needed
     &_get_xml_parser_opt( \%XML_PARSER_OPT ) unless %XML_PARSER_OPT;
-    unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
-      &_log(507,'handler','Xml stage');
-      return &_end(APACHE_BAD_REQUEST);
-    }
+    eval {
+      unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
+        &_log(507,'handler','Xml stage');
+        return &_end(APACHE_BAD_REQUEST);
+      }
+    } or do {
+    # filter the invalid characters in a xml file
+      $inflated =~ s/[\x00-\x08\x0B-\x1F\x7F-\xFF]//g;
+      unless($query = XML::Simple::XMLin( $inflated, %XML_PARSER_OPT )){
+        &_log(507,'handler','Xml stage');
+        return &_end(APACHE_BAD_REQUEST);
+      }
+    };
     $CURRENT_CONTEXT{'XML_ENTRY'} = $query;
 
     # Get the request type
