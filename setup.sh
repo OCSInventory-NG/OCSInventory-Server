@@ -231,10 +231,10 @@ then
     APACHE_BIN_FOUND=`which httpd 2>/dev/null`
     if [ -z "$APACHE_BIN_FOUND" ]
     then
-        APACHE_BIN_FOUND=`which apache 2>/dev/null`
+        APACHE_BIN_FOUND=`which apache2ctl 2>/dev/null`
         if [ -z "$APACHE_BIN_FOUND" ]
         then
-            APACHE_BIN_FOUND=`which apache2 2>/dev/null`
+            APACHE_BIN_FOUND=`which apachectl 2>/dev/null`
             if [ -z "$APACHE_BIN_FOUND" ]
             then
 		APACHE_BIN_FOUND=`which httpd2 2>/dev/null`
