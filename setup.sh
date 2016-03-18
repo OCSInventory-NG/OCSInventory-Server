@@ -447,42 +447,21 @@ echo
 echo "Checking for Apache Include configuration directory" >> $SETUP_LOG
 if [ -z "$APACHE_CONFIG_DIRECTORY" ]
 then
-    case $UNIX_DISTRIBUTION in
-    "redhat")
-    	# Works on RH/Fedora/CentOS
-    	CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'*' -f1`
-    	if [ -n "$CONFIG_DIRECTORY_FOUND" ]
-    	then
-        	APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
-        	echo "Redhat compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-        fi
-	;;
-    "debian")
-        # Works on Debian/Ubuntu
-        CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep Include | grep conf.d |head -1 | cut -d' ' -f2 | cut -d'[' -f1`
-        if [ -n "$CONFIG_DIRECTORY_FOUND" ]
-        then
-            APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/$CONFIG_DIRECTORY_FOUND"
-            echo "Debian compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-        fi
-    	;;
-    "suse")
-	 # Works on SuSE/OpenSuSE
-        CONFIG_DIRECTORY_FOUND=`eval cat $APACHE_CONFIG_FILE | grep conf.d | tail -1 | cut -d' ' -f4 | cut -d'/' -f1`
-        if [ -n "$CONFIG_DIRECTORY_FOUND" ]
-        then
-                APACHE_CONFIG_DIRECTORY_FOUND="`dirname $APACHE_CONFIG_FILE`/$CONFIG_DIRECTORY_FOUND"
-                echo "SuSE compliant Apache Include configuration directory $CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
-        fi
-	;;
-    *)
-	# No compliant include configuration
-	APACHE_CONFIG_DIRECTORY_FOUND=""
-	echo "No compliant Apache Include configuration directory found" >> $SETUP_LOG
-	;;
-    esac
+    if [ -d "$APACHE_ROOT/conf.d" ]
+		then
+			APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/conf.d"
+	elif [ -d "$APACHE_ROOT/conf-available" ]
+		then
+			APACHE_CONFIG_DIRECTORY_FOUND="$APACHE_ROOT/conf-available"
+		else
+			APACHE_CONFIG_DIRECTORY_FOUND=""	
+	fi
+
+	if [ -d "$APACHE_CONFIG_DIRECTORY_FOUND" ]
+		then
+			echo "Found Apache Include configuration directory $APACHE_CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
+	fi
 fi
-echo "Found Apache Include configuration directory $APACHE_CONFIG_DIRECTORY_FOUND" >> $SETUP_LOG
 # Ask user's confirmation 
 echo "Setup found Apache Include configuration directory in"
 echo "$APACHE_CONFIG_DIRECTORY_FOUND."
