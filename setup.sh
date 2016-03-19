@@ -923,9 +923,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 							;;
 
 							"debian") 
-								if [ -f /usr/bin/apt-get ]
-									then
-										echo "Debian based automatic installation"
+								echo "Debian based automatic installation"
 								if [ $DBI -eq 1 ]
 									then
 										PACKAGE="$PACKAGE libdbi-perl"
