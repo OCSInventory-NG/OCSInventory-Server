@@ -763,6 +763,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		XML_SIMPLE=0
 		NET_IP=0
 		SOAP_LITE=0
+		ARCHIVE_ZIP=0
 		
 		echo "Checking for DBI PERL module..."
 		echo "Checking for DBI PERL module" >> $SETUP_LOG
@@ -857,7 +858,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 			then
 				echo "*** ERROR: PERL module Archive::Zip is not installed !"
 				REQUIRED_PERL_MODULE_MISSING=1
-				Archive_Zip=1
+				ARCHIVE_ZIP=1
 			else
 				echo "Found that PERL module Archive::Zip is available."
 		fi
@@ -900,8 +901,15 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 									then
 										PACKAGE="$PACKAGE perl-Net-IP"
 								fi
+								if [ $SOAP_LITE -eq 1 ]
+									then
+										PACKAGE="$PACKAGE perl-SOAP-Lite"
+								fi
+								if [ $ARCHIVE_ZIP -eq 1 ]
+									then
+										PACKAGE="$PACKAGE perl-Archive-Zip"
+								fi
 
-								yum update
 								yum install $PACKAGE
 								if [ $? != 0 ]
 									then
@@ -942,6 +950,14 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 									then
 										PACKAGE="$PACKAGE libnet-ip-perl"
 								fi
+								if [ $SOAP_LITE -eq 1 ]
+									then
+										PACKAGE="$PACKAGE libarchive-zip-perl"
+								fi
+								if [ $ARCHIVE_ZIP -eq 1 ]
+									then
+										PACKAGE="$PACKAGE libsoap-lite-perl"
+								fi
 								
 								apt-get update
 								apt-get install $PACKAGE
@@ -953,7 +969,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 										echo "Installation aborted" >> $SETUP_LOG
 										exit 1
 								fi
-								
 								echo "All packages have been installed on this computer"
 							;;
 
