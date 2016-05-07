@@ -25,7 +25,7 @@ REMOVE (or move) directories 'ocsreports' and 'download' from Apache root
 document directory.
 If you choose to move directory, YOU MUST MOVE 'download' directory to 
 Administration Server variable/cache directory (by default 
-/var/lib/ocsinventory-reports), especially if you use deployement feature.
+/var/lib/ocsinventory-reports), especially if you use deployment feature.
 ================================================================================
 
 

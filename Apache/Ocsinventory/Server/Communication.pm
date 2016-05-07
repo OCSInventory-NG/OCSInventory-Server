@@ -92,11 +92,11 @@ sub _prolog{
 
 
     ##########
-    # If special value 0, we allways accept
+    # If special value 0, we always accept
     if($frequency==0){
       &_prolog_resp(PROLOG_RESP_SEND);
       return APACHE_OK;
-    # If -1, we allways reject
+    # If -1, we always reject
     }elsif($frequency==(-1)){
       &_prolog_resp(PROLOG_RESP_BREAK);
       return APACHE_OK;
