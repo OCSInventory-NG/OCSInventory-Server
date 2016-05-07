@@ -1280,7 +1280,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo
 		
 		echo "+----------------------------------------------------------------------+"
-		echo "|        OK, Communication server setup sucessfuly finished ;-)        |"
+		echo "|       OK, Communication server setup successfully finished ;-)       |"
 		echo "|                                                                      |"
 		echo "| Please, review $APACHE_CONFIG_DIRECTORY/$COM_SERVER_APACHE_CONF_FILE |"
 		echo "|         to ensure all is good. Then restart Apache daemon.           |"
@@ -1739,7 +1739,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
 		cp -f $ADM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
 	
-		#Fix permissions on server side for plugin engine (perl / plugins) dir usualy in etc/ocsinventory-server..
+		#Fix permissions on server side for plugin engine (perl / plugins) dir usually in etc/ocsinventory-server..
 		# Where are located OCS Communication server plugins configuration files
 		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_CONFIG_DIR
 		# Where are located OCS Communication server plugins perl files 

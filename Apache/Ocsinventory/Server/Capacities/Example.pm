@@ -77,7 +77,7 @@ $Apache::Ocsinventory::OPTIONS{'OCS_OPT_EXAMPLE_TOTO'} = 'titi';
 
 sub example_prolog_read{
 # This handler must return either PROLOG_CONTINUE or PROLOG_STOP
-# This mecanism enable you to completly stop the process at its beginning
+# This mechanism enables you to completely stop the process at its beginning
   my $stop = 0;
   if($stop){
     &_log(0,'example','stop prolog !!') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -97,7 +97,7 @@ sub example_prolog_resp{
 
 sub example_pre_inventory{
 # This handler must return either INVENTORY_CONTINUE or INVENTORY_STOP
-# This mecanism enable you to completly stop the process at its beginning
+# This mechanism enables you to completely stop the process at its beginning
   my $stop = 0;
   if($stop){
     &_log(0,'example','I HATE inventory, I stop it !!') if $ENV{'OCS_OPT_LOGLEVEL'};
