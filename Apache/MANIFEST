@@ -1,8 +1,8 @@
 Changes
 INSTALL
 LICENSE
-Makefile.PL
 MANIFEST			This list of files
+Makefile.PL
 Ocsinventory.pm
 Ocsinventory/Interface.pm
 Ocsinventory/Interface/Config.pm
@@ -12,8 +12,13 @@ Ocsinventory/Interface/History.pm
 Ocsinventory/Interface/Internals.pm
 Ocsinventory/Interface/Inventory.pm
 Ocsinventory/Interface/Ipdiscover.pm
+Ocsinventory/Interface/Snmp.pm
 Ocsinventory/Interface/Updates.pm
 Ocsinventory/Map.pm
+Ocsinventory/Plugins.pm
+Ocsinventory/Plugins/Apache.pm
+Ocsinventory/Plugins/Modules.pm
+Ocsinventory/SOAP.pm
 Ocsinventory/Server/Capacities/Datafilter.pm
 Ocsinventory/Server/Capacities/Download.pm
 Ocsinventory/Server/Capacities/Download/Inventory.pm
@@ -45,4 +50,3 @@ Ocsinventory/Server/Modperl2.pm
 Ocsinventory/Server/System.pm
 Ocsinventory/Server/System/Config.pm
 Ocsinventory/Server/Useragent.pm
-Ocsinventory/SOAP.pm
