@@ -12,12 +12,12 @@ In order to install OCS 2.2 the following requirement are needed :
 	- libdbd-mysql-perl
 	- libapache-dbi-perl
 	- libnet-ip-perl
-	- libphp-pclzip
-	- Archive::Zip
-	- SOAP::Lite (Plugin engine need it)
-	- XML:Entities
-	- NET::IP
-	- Apache::DBI
+	- php-pclzip
+	- libarchive-zip-perl (providing Archive::Zip)
+	- libsoap-lite-perl (providing SOAP::Lite, plugin engine need it)
+	- libxml-simple-perl (providing XML:Entities)
+	- libnet-ip-perl (providing NET::IP)
+	- libapache-dbi-perl (providing Apache::DBI)
 	
 Run "setup.sh" and follow the instructions.
 If you get a error / warning because of a missing module, install it and retry.	
