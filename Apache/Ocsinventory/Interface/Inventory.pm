@@ -39,8 +39,13 @@ sub get_computers {
     
   # Returned values
   my @result;
-  # First xml parsing 
-  my $parsed_request = XML::Simple::XMLin( $request ) or die($!);
+  # First xml parsing
+  my $parsed_request;
+  eval {
+    $parsed_request = XML::Simple::XMLin( $request );
+  } or do {
+    return "You've malformed XML please check your SOAP Request";
+  };
   # Max number of responses sent back to client
   my $max_responses = $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT};
   my @ids;
