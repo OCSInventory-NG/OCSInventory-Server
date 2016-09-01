@@ -998,25 +998,26 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo
 		echo "Checking for Apache2::SOAP PERL module..."
 		echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
-		$PERL_BIN -mApache2::SOAP -e 'print "PERL module Apache2::SOAP is available\n"' >> $SETUP_LOG 2>&1
-		if [ $? -ne 0 ]
-			then
-				echo "*** Warning: PERL module Apache2::SOAP is not installed !"
-				echo "This module is only required by OCS Inventory NG SOAP Web Service."
-				echo -n "Do you wish to continue ([y]/n] ?"
-				read ligne
-				if [ -z "$ligne" ] || [ "$ligne" = "y" ]
-					then
-						echo "User choose to continue setup without PERL module SOAP::Apache2" >> $SETUP_LOG
-					else
-						echo
-						echo "Installation aborted !"
-						echo "User choose to abort installation !" >> $SETUP_LOG
-						exit 1
-				fi
-			else
-				echo "Found that PERL module SOAP::Apache2 is available."
-		fi
+		$apache2soap = "$(cpan -l | grep -m1 "Apache2::SOAP" | awk '{print $1};')"
+                if [ $apache2soap -ne "Apache2::SOAP" ]
+                        then
+                                echo "PERL module Apache2::SOAP is available\n" >> $SETUP_LOG
+                                echo "*** Warning: PERL module Apache2::SOAP is not installed !"
+                                echo "This module is only required by OCS Inventory NG SOAP Web Service."
+                                echo -n "Do you wish to continue ([y]/n] ?"
+                                read ligne
+                                if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+                                        then
+                                                echo "User choose to continue setup without PERL module SOAP::Apache2" >> $SETUP_LOG
+                                        else
+                                                echo
+                                                echo "Installation aborted !"
+                                                echo "User choose to abort installation !" >> $SETUP_LOG
+                                                exit 1
+                                fi
+                        else
+                                echo "Found that PERL module SOAP::Apache2 is available."
+                fi
 		
 		echo "Checking for XML::Entities PERL module..."
 		echo "Checking for XML::Entities PERL module" >> $SETUP_LOG
