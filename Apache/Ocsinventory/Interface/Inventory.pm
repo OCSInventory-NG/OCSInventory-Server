@@ -39,6 +39,8 @@ sub get_computers {
     
   # Returned values
   my @result;
+  # Remove backslash from xml
+  $request =~ s/\\$// ;
   # First xml parsing
   my $parsed_request;
   eval {
