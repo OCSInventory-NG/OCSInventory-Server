@@ -211,6 +211,23 @@ sub _prolog_build_resp{
     }
           $resp->{'PROLOG_FREQ'} = [ $groupFreq || $ENV{'OCS_OPT_PROLOG_FREQ'} ];
   }
+
+  #Agent inventory on startup feature
+  if(defined($Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS'}{'INVENTORY_ON_STARTUP'}->{'IVALUE'})){
+    $resp->{'INVENTORY_ON_STARTUP'} = [$Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS'}{'INVENTORY_ON_STARTUP'}->{'IVALUE'}];
+  }else{
+    my ($groupFreq, $groupsParams);
+  
+    if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
+      $groupsParams = $Apache::Ocsinventory::CURRENT_CONTEXT{'PARAMS_G'};
+      for(keys(%$groupsParams)){
+        $groupFreq = $$groupsParams{$_}->{'INVENTORY_ON_STARTUP'}->{'IVALUE'} 
+        if (exists($$groupsParams{$_}->{'INVENTORY_ON_STARTUP'}->{'IVALUE'}) 
+          and $$groupsParams{$_}->{'INVENTORY_ON_STARTUP'}->{'IVALUE'}<$groupFreq) or !$groupFreq;
+      }
+    }
+          $resp->{'INVENTORY_ON_STARTUP'} = [ $groupFreq || $ENV{'OCS_OPT_INVENTORY_ON_STARTUP'} ];
+  }
   
   if($decision == PROLOG_RESP_BREAK){
     $resp->{'RESPONSE'} = [ 'STOP' ];

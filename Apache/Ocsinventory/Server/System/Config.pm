@@ -55,6 +55,14 @@ our %CONFIG = (
     level => CRITICAL,
     filter => qr '^([1-9]\d*)$'
   },
+  INVENTORY_ON_STARTUP => { 
+    type => 'IVALUE',
+    default => 0,
+    unit => 'NA',
+    description => 'Launch inventory on agent service statup',
+    level => IMPORTANT,
+    filter => qr '^(1|0)$'
+  },
   DEPLOY => { 
     type => 'IVALUE',
     default => 0,
