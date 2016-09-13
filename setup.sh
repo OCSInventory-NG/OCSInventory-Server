@@ -998,8 +998,8 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo
 		echo "Checking for Apache2::SOAP PERL module..."
 		echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
-		$apache2soap = "$(cpan -l | grep -m1 "Apache2::SOAP" | awk '{print $1};')"
-                if [ $apache2soap -ne "Apache2::SOAP" ]
+                $PERL_BIN -mSOAP::Transport::HTTP2 -e 'print "PERL module Apache2::SOAP is available\n"' >> $SETUP_LOG 2>&1
+                if [ $? -ne 0 ]
                         then
                                 echo "PERL module Apache2::SOAP is available\n" >> $SETUP_LOG
                                 echo "*** Warning: PERL module Apache2::SOAP is not installed !"
