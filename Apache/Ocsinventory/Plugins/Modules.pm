@@ -40,8 +40,6 @@ sub InstallPlugins {
     else
     {
 
-        print "$url\n";
-
         my $status = getstore($url, $file);
 
         # If download succes, unzip, create dir, move files.
