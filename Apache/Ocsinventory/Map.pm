@@ -289,6 +289,7 @@ our %DATA_MAP= (
        TYPE => {},
        TYPEMIB => {},
        SPEED => {},
+       MTU => {},
        MACADDR => { fallback => '00:00:00:00:00:00' },
        STATUS => {},
        IPGATEWAY => {},

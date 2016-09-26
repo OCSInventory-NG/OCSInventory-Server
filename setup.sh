@@ -998,8 +998,8 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo
 		echo "Checking for Apache2::SOAP PERL module..."
 		echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
-		$apache2soap = "$(cpan -l | grep -m1 "Apache2::SOAP" | awk '{print $1};')"
-                if [ $apache2soap -ne "Apache2::SOAP" ]
+                $PERL_BIN -mSOAP::Transport::HTTP2 -e 'print "PERL module Apache2::SOAP is available\n"' >> $SETUP_LOG 2>&1
+                if [ $? -ne 0 ]
                         then
                                 echo "PERL module Apache2::SOAP is available\n" >> $SETUP_LOG
                                 echo "*** Warning: PERL module Apache2::SOAP is not installed !"
@@ -1463,6 +1463,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/plugins/language >> $SETUP_LOG 2>&1
 		chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/download >> $SETUP_LOG 2>&1
 		chown -R $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR/upload >> $SETUP_LOG 2>&1
+		chown $APACHE_USER:$APACHE_GROUPE $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
 	
 		if [ $? -ne 0 ]
 			then
