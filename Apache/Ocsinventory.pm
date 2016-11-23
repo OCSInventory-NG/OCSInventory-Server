@@ -39,7 +39,7 @@ BEGIN{
   }
 }
 
-$Apache::Ocsinventory::VERSION = '2.2';
+$Apache::Ocsinventory::VERSION = '2.3';
 $Apache::Ocsinventory::BUILD_VERSION = '735';
 $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 
