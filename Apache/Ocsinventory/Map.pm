@@ -471,6 +471,23 @@ our %DATA_MAP= (
     }
   },
 
+  usbdevices => {
+    mask => 2097152,
+    multi => 0,
+    auto => 1,
+    delOnReplace => 1,
+    sortBy => 'DESCRIPTION',
+    writeDiff => 1,
+    cache => 0,
+    fields => {
+      DESCRIPTION => {},
+      INTERFACE => {},
+      MANUFACTURER => {},
+      SERIAL => {},
+      TYPE => {} 
+    }
+  },
+
   javainfo => {
     mask => 0,
     multi => 0,
