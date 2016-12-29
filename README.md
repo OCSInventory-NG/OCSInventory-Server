@@ -8,7 +8,7 @@
   <a href="http://ask.ocsinventory-ng.org">Ask question</a> |
   <a href="#COMMING_SOON_STAY_CONNECTED">Installation</a> |
   <a href="http://www.ocsinventory-ng.org/?utm_source=github-ocs">Website</a> |
-  <a href="https://www.factorfx.com/ocs-en">Support</a>
+  <a href="https://www.factorfx.com/ocs-en?utm_source=github-ocs">Support</a>
 </p>
 
 <p align='justify'>
