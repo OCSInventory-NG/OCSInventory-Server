@@ -45,8 +45,8 @@ OCS Inventory NG includes the packet deployment functionality to be sure that al
 - Perl module DBD::Mysql version 2.9004 or higher
 - Perl module Apache::DBI version 0.93 or higher
 - Perl module Net::IP version 1.21 or higher
-- Perl Module Archive::Zip 
-- Perl Module Apache2:SOAP
+- Perl module Archive::Zip 
+- Perl module Apache2:SOAP
 - Perl module SOAP::Lite version 0.66 or higher
 - Perl module XML::Entities version 0.02 or higher, not required, used only with SOAP web service
 
