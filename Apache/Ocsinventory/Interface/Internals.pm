@@ -1,7 +1,7 @@
 ###############################################################################
 ## Copyright 2005-2016 OCSInventory-NG/OCSInventory-Server contributors.
 ## See the Contributors file for more details about them.
-## 
+##
 ## This file is part of OCSInventory-NG/OCSInventory-ocsreports.
 ##
 ## OCSInventory-NG/OCSInventory-Server is free software: you can redistribute
@@ -44,7 +44,7 @@ our @EXPORT = qw /
   decode_xml
   encode_xml
   search_engine
-  send_error 
+  send_error
   get_custom_field_name_map
   get_custom_fields_values_map
 /;
@@ -67,10 +67,10 @@ sub search_engine{
 }
 
 sub engine_first {
-  my ($request, $ids, $begin, $main_table, $accountinfo_table, $deviceid_column, $pk) = @_;
+  my ($request, $ids, $begin, $main_table, $accountinfo_table, $deviceid_column, $pk, $sort_by, $sort_dir) = @_;
   my $parsed_request = XML::Simple::XMLin( $request, ForceArray => ['ID', 'EXCLUDE_ID', 'TAG', 'EXCLUDE_TAG', 'USERID'], SuppressEmpty => 1 ) or die;
   my ($id, $name, $userid, $checksum, $tag);
-    
+
   # Database ids criteria
   die("BAD_REQUEST") if ( $parsed_request->{ID} and $parsed_request->{EXCLUDE_ID} );
 
@@ -118,8 +118,8 @@ sub engine_first {
     }
   }
   # Generate sql string
-  my $search_string = "SELECT DISTINCT $main_table.ID FROM $main_table,$accountinfo_table WHERE $main_table.$deviceid_column NOT LIKE '\\_%' AND $main_table.ID=$accountinfo_table.$pk $id $name $userid $checksum $tag ORDER BY hardware.LASTDATE DESC limit $begin,$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
-  # Play it  
+  my $search_string = "SELECT DISTINCT $main_table.ID FROM $main_table,$accountinfo_table WHERE $main_table.$deviceid_column NOT LIKE '\\_%' AND $main_table.ID=$accountinfo_table.$pk $id $name $userid $checksum $tag ORDER BY hardware.$sort_by $sort_dir limit $begin,$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
+  # Play it
   my $sth = get_sth($search_string);
   # Get ids
   while( my $row = $sth->fetchrow_hashref() ){
@@ -177,8 +177,8 @@ sub reset_checksum {
 }
 sub send_error{
   my $error = shift;
-  return XMLout ( 
-    { 'ERROR' => [ $error ] }, 
+  return XMLout (
+    { 'ERROR' => [ $error ] },
     RootName => 'RESULT'
   );
 }
