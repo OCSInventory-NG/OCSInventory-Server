@@ -69,8 +69,19 @@ sub get_snmp {
   else{
     $begin = 0;
   }
+
+  my $sort_by = "ID";
+  if( defined $parsed_request->{'SORT_BY'} and ($parsed_request->{'SORT_BY'} =~ m/(LASTCOME|LASTDATE)/)) {
+    $sort_by = $parsed_request->{'SORT_BY'};
+  }
+
+  my $sort_dir = "ASC";
+  if( defined $parsed_request->{'SORT_DIR'} and ($parsed_request->{'SORT_DIR'} eq "DESC")) {
+    $sort_dir = "DESC";
+  }
+
   # Call search_engine stub
-  search_engine($parsed_request->{ENGINE}, $request, \@ids, $begin, $main_table, $accountinfo_table, $deviceid_column, $key_column);
+  search_engine($parsed_request->{ENGINE}, $request, \@ids, $begin, $main_table, $accountinfo_table, $deviceid_column, $key_column, $sort_by, $sort_dir);
   # Type of requested data (meta datas, inventories, special features..
   my $type=$parsed_request->{'ASKING_FOR'}||'SNMP_INVENTORY';
   $type =~ s/^(.+)$/\U$1/;

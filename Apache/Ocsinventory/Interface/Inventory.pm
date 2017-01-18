@@ -1,7 +1,7 @@
 ###############################################################################
 ## Copyright 2005-2016 OCSInventory-NG/OCSInventory-Server contributors.
 ## See the Contributors file for more details about them.
-## 
+##
 ## This file is part of OCSInventory-NG/OCSInventory-ocsreports.
 ##
 ## OCSInventory-NG/OCSInventory-Server is free software: you can redistribute
@@ -32,12 +32,12 @@ require Exporter;
 
 our @ISA = qw /Exporter/;
 
-our @EXPORT = qw / 
+our @EXPORT = qw /
 /;
 
 sub get_computers {
   my $request = decode_xml( shift );
-  
+
   my %build_functions = (
     'INVENTORY' => \&build_computers_xml_inventory,
     'META' => \&build_computers_xml_meta
@@ -48,7 +48,7 @@ sub get_computers {
   my $accountinfo_table = "accountinfo";
   my $deviceid_column = "DEVICEID";
   my $pk = "HARDWARE_ID";
-    
+
   # Returned values
   my @result;
   # Remove backslash from xml
@@ -76,12 +76,23 @@ sub get_computers {
   else{
     $begin = 0;
   }
+
+  my $sort_by = "ID";
+  if( defined $parsed_request->{'SORT_BY'} and ($parsed_request->{'SORT_BY'} =~ m/(LASTCOME|LASTDATE)/)) {
+    $sort_by = $parsed_request->{'SORT_BY'};
+  }
+
+  my $sort_dir = "ASC";
+  if( defined $parsed_request->{'SORT_DIR'} and ($parsed_request->{'SORT_DIR'} eq "DESC")) {
+    $sort_dir = "DESC";
+  }
+
   # Call search_engine sub
-  search_engine($parsed_request->{ENGINE}, $request, \@ids, $begin, $main_table, $accountinfo_table, $deviceid_column, $pk);
+  search_engine($parsed_request->{ENGINE}, $request, \@ids, $begin, $main_table, $accountinfo_table, $deviceid_column, $pk, $sort_by, $sort_dir);
   # Type of requested data (meta datas, inventories, special features..
   my $type=$parsed_request->{'ASKING_FOR'}||'INVENTORY';
   $type =~ s/^(.+)$/\U$1/;
-  
+
   # Generate xml responses
   for(@ids){
       push @result, &{ $build_functions{ $type } }($_, $main_table, $parsed_request->{CHECKSUM}, $parsed_request->{WANTED});#Wanted=>special sections bitmap
@@ -125,9 +136,9 @@ sub build_computers_xml_meta {
   my @mapped_fields = qw / NAME TAG DEVICEID LASTDATE LASTCOME CHECKSUM DATABASEID/;
   # For others
   my @other_fields = qw //;
-  
+
   my $sql_str = qq/
-    SELECT 
+    SELECT
       hardware.DEVICEID AS DEVICEID,
       hardware.LASTDATE AS LASTDATE,
       hardware.LASTCOME AS LASTCOME,
@@ -193,7 +204,7 @@ sub get_dico_soft_extracted{
   my $sth = get_sth('SELECT DISTINCT FORMATTED FROM dico_soft WHERE EXTRACTED=?', $extracted);
   unless($sth->rows){
     $sth->finish();
-    return undef;  
+    return undef;
   }
   my ($formatted) = $sth->fetchrow_array;
   $sth->finish();

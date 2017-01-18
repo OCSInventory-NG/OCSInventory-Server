@@ -41,18 +41,20 @@ You can use these criteria in only one request, and you can put few values for e
 For example:
 
 <REQUEST>
-  <ENGINE>FIRST</ENGINE> <= The name of the search engine (only this one is implemented for the moment)
+  <ENGINE>FIRST</ENGINE>             <= The name of the search engine (only this one is implemented for the moment)
   <ASKING_FOR>INVENTORY</ASKING_FOR> <= We want inventory date (opposite to META DATA)
-  <CHECKSUM>1</CHECKSUM>         <= We want only hardware section (if it changed since our last reset_checksum) See below.
-  <OFFSET>3</OFFSET>		 <= We want the third page of the result
-  <WANTED>2</WANTED>		 <= We want to use the software dictionary and the accountinfos
-  <USERID>foo</USERID>		 <= We want the computers on those foo logged in
-  <USERID>bar</USERID>		 <= ...where bar logged in
-  <TAG>room109</TAG>		 <= We want the computer which have the "room109 tag"
-  <TAG>room110</TAG>		 <= ...or the "room110" tag
-  <TAG>spare</TAG>		 <= ...or th "spare" tag
-  <ID>35</ID>			 <= Only the DATABASE ID 35
-  <ID>36</ID>			 <= ...or 36
+  <CHECKSUM>1</CHECKSUM>             <= We want only hardware section (if it changed since our last reset_checksum) See below.
+  <OFFSET>3</OFFSET>                 <= We want the third page of the result
+  <WANTED>2</WANTED>                 <= We want to use the software dictionary and the accountinfos
+  <USERID>foo</USERID>               <= We want the computers on those foo logged in
+  <USERID>bar</USERID>               <= ...where bar logged in
+  <TAG>room109</TAG>                 <= We want the computer which have the "room109 tag"
+  <TAG>room110</TAG>                 <= ...or the "room110" tag
+  <TAG>spare</TAG>                   <= ...or th "spare" tag
+  <ID>35</ID>                        <= Only the DATABASE ID 35
+  <ID>36</ID>                        <= ...or 36
+  <SORT_BY>LASTDATE</SORT_BY>        <= We want to sort by LASTDATE (defaults to ID), allowed values: ID,LASTDATE,LASTCOME
+  <SORT_DIR>DESC</SORT_DIR>          <= We want to sort DESC (defaults to ASC), allowed values: ASC,DESC
 </REQUEST>
 
 
