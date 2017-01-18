@@ -118,7 +118,7 @@ sub engine_first {
     }
   }
   # Generate sql string
-  my $search_string = "SELECT DISTINCT $main_table.ID FROM $main_table,$accountinfo_table WHERE $main_table.$deviceid_column NOT LIKE '\\_%' AND $main_table.ID=$accountinfo_table.$pk $id $name $userid $checksum $tag ORDER BY hardware.LASTDATE DESC limit $ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
+  my $search_string = "SELECT DISTINCT $main_table.ID FROM $main_table,$accountinfo_table WHERE $main_table.$deviceid_column NOT LIKE '\\_%' AND $main_table.ID=$accountinfo_table.$pk $id $name $userid $checksum $tag ORDER BY hardware.LASTDATE DESC limit $begin,$ENV{OCS_OPT_WEB_SERVICE_RESULTS_LIMIT}";
   # Play it  
   my $sth = get_sth($search_string);
   # Get ids
