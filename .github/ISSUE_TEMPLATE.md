@@ -5,7 +5,7 @@ Operating system :
 
 ### Server informations
 Perl version : 
-Myqsl / Mariadb / Percona version :  
+Mysql / Mariadb / Percona version :  
 
 ### OCS Inventory informations
 Ocs server version : 
