@@ -5,9 +5,9 @@
 # Github base url for download releases
 ReleaseBaseUrl="https://github.com/OCSInventory-NG/OCSInventory-ocsreports/releases/download/"
 # Last release tag
-LastReleaseTag="2.3RC1/"
+LastReleaseTag="2.3/"
 # Archive name
-LastReleaseArchive="OCSNG_UNIX_SERVER-2.3RC"
+LastReleaseArchive="OCSNG_UNIX_SERVER-2.3"
 # Archive extension
 ArchiveExtension=".tar.gz"
 # File destination
