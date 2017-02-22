@@ -7,8 +7,8 @@
   <b>Some Links:</b><br>
   <a href="http://ask.ocsinventory-ng.org">Ask question</a> |
   <a href="#COMMING_SOON_STAY_CONNECTED">Installation</a> |
-  <a href="http://www.ocsinventory-ng.org/?utm_source=github-ocs">Website</a> |
-  <a href="https://www.factorfx.com/ocs-en?utm_source=github-ocs">Support</a>
+  <a href="https://www.ocsinventory-ng.org/?utm_source=github-ocs">Website</a> |
+  <a href="https://www.ocsinventory-ng.org/en/#ocs-pro-en">OCS Professional</a>
 </p>
 
 <p align='justify'>
