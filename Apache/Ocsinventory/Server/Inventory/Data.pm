@@ -69,28 +69,26 @@ sub _init_map{
      
     # Parse fields of the current section
     for $field ( keys(%{$DATA_MAP{$section}->{fields}} ) ){
-      if(ref($refXml) eq 'HASH'){
-        if(!$DATA_MAP{$section}->{fields}->{$field}->{noSql}){
-          push @{$sectionsMeta->{$section}->{field_arrayref}}, $field;
-          $sectionsMeta->{$section}->{noSql} = 1 unless $sectionsMeta->{$section}->{noSql};
-        }
-        if($DATA_MAP{$section}->{fields}->{$field}->{filter}){
-          next unless $ENV{OCS_OPT_INVENTORY_FILTER_ENABLED};
-          push @{$sectionsMeta->{$section}->{field_filtered}}, $field;
-          $sectionsMeta->{$section}->{filter} = 1 unless $sectionsMeta->{$section}->{filter};
-        }
-        if($DATA_MAP{$section}->{fields}->{$field}->{cache}){
-          next unless $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
-          $sectionsMeta->{$section}->{field_cached}->{$field} = $field_index;
-          $sectionsMeta->{$section}->{cache} = 1 unless $sectionsMeta->{$section}->{cache};
-        }
-        if(defined $DATA_MAP{$section}->{fields}->{$field}->{fallback}){
-          $sectionsMeta->{$section}->{fields}->{$field}->{fallback} = $DATA_MAP{$section}->{fields}->{$field}->{fallback};
-        }
+      if(!$DATA_MAP{$section}->{fields}->{$field}->{noSql}){
+        push @{$sectionsMeta->{$section}->{field_arrayref}}, $field;
+        $sectionsMeta->{$section}->{noSql} = 1 unless $sectionsMeta->{$section}->{noSql};
+      }
+      if($DATA_MAP{$section}->{fields}->{$field}->{filter}){
+        next unless $ENV{OCS_OPT_INVENTORY_FILTER_ENABLED};
+        push @{$sectionsMeta->{$section}->{field_filtered}}, $field;
+        $sectionsMeta->{$section}->{filter} = 1 unless $sectionsMeta->{$section}->{filter};
+      }
+      if($DATA_MAP{$section}->{fields}->{$field}->{cache}){
+        next unless $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
+        $sectionsMeta->{$section}->{field_cached}->{$field} = $field_index;
+        $sectionsMeta->{$section}->{cache} = 1 unless $sectionsMeta->{$section}->{cache};
+      }
+      if(defined $DATA_MAP{$section}->{fields}->{$field}->{fallback}){
+        $sectionsMeta->{$section}->{fields}->{$field}->{fallback} = $DATA_MAP{$section}->{fields}->{$field}->{fallback};
+      }
 
-        if(defined $DATA_MAP{$section}->{fields}->{$field}->{type}){
-          $sectionsMeta->{$section}->{fields}->{$field}->{type} = $DATA_MAP{$section}->{fields}->{$field}->{type};
-        }  
+      if(defined $DATA_MAP{$section}->{fields}->{$field}->{type}){
+        $sectionsMeta->{$section}->{fields}->{$field}->{type} = $DATA_MAP{$section}->{fields}->{$field}->{type};
       }   
  
       $field_index++;      
@@ -125,18 +123,20 @@ sub _get_bind_values{
   my ($bind_value, $xmlvalue, $xmlfield);
 
   for my $field ( @{ $sectionMeta->{field_arrayref} } ) {
-    if(defined($refXml->{$field}) && !defined($sectionMeta->{fields}->{$field}->{type}) && $refXml->{$field} ne '' && $refXml->{$field} ne '??' && $refXml->{$field}!~/^N\/?A$/) {
-      $bind_value = $refXml->{$field}
-    }
-    else{
-       if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
-         $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
-         &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
-       }
-       else{
-         &_log( 000, 'generic-fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
-         $bind_value = '';
-       }
+    if(ref($refXml) eq 'HASH'){
+      if(defined($refXml->{$field}) && !defined($sectionMeta->{fields}->{$field}->{type}) && $refXml->{$field} ne '' && $refXml->{$field} ne '??' && $refXml->{$field}!~/^N\/?A$/) {
+        $bind_value = $refXml->{$field}
+      }
+      else{
+        if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
+          $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
+          &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+        }
+        else{
+          &_log( 000, 'generic-fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+          $bind_value = '';
+        }
+      }
     }
 
     # We have to substitute the value with the ID matching "type_section_field.name" if the field is tagged "type".
