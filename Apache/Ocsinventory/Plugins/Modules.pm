@@ -118,7 +118,10 @@ sub DeletePlugins {
             unlink "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.conf";
     }
 
-    rmtree "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginNameUc";
+    if($pluginNameUc != ""){
+    	my $dirToDel = "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/$pluginNameUc";
+	rmtree($dirToDel);
+    }
 
     my $result = "Delete_OK";
 
