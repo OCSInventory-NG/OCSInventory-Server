@@ -1,13 +1,14 @@
 #!/bin/sh
 
 # Define constant
+VERSION=$1
 
 # Github base url for download releases
 ReleaseBaseUrl="https://github.com/OCSInventory-NG/OCSInventory-ocsreports/releases/download/"
 # Last release tag
-LastReleaseTag="2.3/"
+LastReleaseTag="${VERSION}/"
 # Archive name
-LastReleaseArchive="OCSNG_UNIX_SERVER-2.3"
+LastReleaseArchive="OCSNG_UNIX_SERVER-${VERSION}"
 # Archive extension
 ArchiveExtension=".tar.gz"
 # File destination
