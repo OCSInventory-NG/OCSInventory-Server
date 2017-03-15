@@ -107,14 +107,14 @@ echo "| Checking for Apache web server binaries !				|"
 echo "+----------------------------------------------------------+"
 echo
 
-echo "CAUTION: If upgrading Communication server from OCS Inventory NG 1.0 RC2 and"
+echo "CAUTION: If upgrading Communication server from OCS Inventory NG 2.2 RC1 and"
 echo "previous, please remove any Apache configuration for Communication Server!"
 echo
 echo -n "Do you wish to continue ([y]/n)?"
 read ligne
 if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 	then
-		echo "Assuming Communication server 1.0 RC2 or previous is not installed"
+		echo "Assuming Communication server 2.2 RC1 or previous is not installed"
 		echo "on this computer."
 		echo
 	else
