@@ -9,6 +9,7 @@ In order to install OCS 2.3 the following requirement are needed :
 	- php-gd
 	- php-xml
 	- php-mbstring
+	- php-curl
 	- libxml-simple-perl
 	- libdbi-perl
 	- libdbd-mysql-perl
