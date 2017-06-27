@@ -88,7 +88,7 @@ echo "+----------------------------------------------------------+"
 echo
 
 # Check for OS or linux distribution
-echo "Trying to determine whitch OS or Linux distribution you use"
+echo "Trying to determine which OS or Linux distribution you use"
 
 if [ -f /etc/redhat-release ]
 	then
@@ -537,15 +537,15 @@ if [ -z "$PERL_BIN" ]
 		echo "installation aborted" >> $SETUP_LOG
 		exit 1
 	else
-		echo "Found PERL Intrepreter at <$PERL_BIN> ;-)"
-		echo "Found PERL Intrepreter at <$PERL_BIN>" >> $SETUP_LOG
+		echo "Found PERL interpreter at <$PERL_BIN> ;-)"
+		echo "Found PERL interpreter at <$PERL_BIN>" >> $SETUP_LOG
 fi
 
 # Ask user's confirmation 
 res=0
 while [ $res -eq 0 ]
 	do
-		echo -n "Where is PERL Intrepreter binary [$PERL_BIN] ?"
+		echo -n "Where is PERL interpreter binary [$PERL_BIN] ?"
 		read ligne
 		if [ -n "$ligne" ]
 			then
@@ -569,8 +569,8 @@ while [ $res -eq 0 ]
 		fi
 done
 
-echo "OK, using PERL Intrepreter $PERL_BIN ;-)"
-echo "Using PERL Intrepreter $PERL_BIN" >> $SETUP_LOG
+echo "OK, using PERL interpreter $PERL_BIN ;-)"
+echo "Using PERL interpreter $PERL_BIN" >> $SETUP_LOG
 echo
 
 
