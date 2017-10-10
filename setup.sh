@@ -950,11 +950,11 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 								fi
 								if [ $SOAP_LITE -eq 1 ]
 									then
-										PACKAGE="$PACKAGE libarchive-zip-perl"
+										PACKAGE="$PACKAGE libsoap-lite-perl"
 								fi
 								if [ $ARCHIVE_ZIP -eq 1 ]
 									then
-										PACKAGE="$PACKAGE libsoap-lite-perl"
+										PACKAGE="$PACKAGE libarchive-zip-perl"
 								fi
 								
 								apt-get update
