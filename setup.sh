@@ -78,7 +78,7 @@ ADM_SERVER_VAR_IPD_DIR="ipd"
 # OS or linux distribution from automatic detection
 UNIX_DISTRIBUTION=""
 # Default install directory for rest api
-REST_API_DIRECTORY=""
+REST_API_DIRECTORY="/usr/share/perl5/"
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -1136,7 +1136,18 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "+----------------------------------------------------------+"
 				echo
 
-				
+				echo -n "Where do you want the API code to be store [$REST_API_DIRECTORY] ?"
+				read ligne
+				if [ -z "$ligne" ]
+					then
+						REST_API_DIRECTORY=$REST_API_DIRECTORY
+					else
+						REST_API_DIRECTORY="$ligne"
+				fi
+
+				echo "Copying files to $REST_API_DIRECTORY" >> $SETUP_LOG
+				cp -r Api/ $REST_API_DIRECTORY
+
 
 			fi
 		echo
