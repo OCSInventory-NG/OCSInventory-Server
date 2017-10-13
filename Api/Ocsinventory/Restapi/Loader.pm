@@ -3,12 +3,6 @@ package Api::Ocsinventory::Restapi;
 # Framework uses
 use Mojolicious::Lite;
 
-# Basics use for API
-use Apache::Ocsinventory::Map;
-use Apache::Ocsinventory::Server::Constants;
-use Apache::Ocsinventory::Interface::Database;
-use Apache::Ocsinventory::Interface::Internals;
-
 # Common sub for api
 require Api::Ocsinventory::Restapi::ApiCommon;
 
