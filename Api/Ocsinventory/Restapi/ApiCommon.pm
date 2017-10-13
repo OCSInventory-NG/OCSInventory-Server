@@ -3,7 +3,6 @@ package Api::Ocsinventory::Restapi::ApiCommon;
 # External imports
 use DBI;
 use Switch;
-use Data::Dumper;
 use Mojo::JSON qw(decode_json encode_json);
 
 # Basics use for Common Sub
