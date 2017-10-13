@@ -1119,6 +1119,24 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 						echo "Found that PERL module Plack::Handler is available."
 				fi
 
+				echo
+				echo "+----------------------------------------------------------+"
+				echo "| Configuring REST API Server configuration files ...  		 |"
+				echo "+----------------------------------------------------------+"
+				echo
+
+				echo "Configuring Rest API server (file $API_REST_APACHE_CONF_FILE)" >> $SETUP_LOG
+				cp etc/ocsinventory/$API_REST_APACHE_CONF_FILE $API_REST_APACHE_CONF_FILE.local
+				echo "Writing Rest API configuration to file $APACHE_CONFIG_DIRECTORY/$API_REST_APACHE_CONF_FILE" >> $SETUP_LOG
+				cp -f $API_REST_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/zz-$API_REST_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
+
+				echo
+				echo "+----------------------------------------------------------+"
+				echo "| Configuring REST API Server files ...               		 |"
+				echo "+----------------------------------------------------------+"
+				echo
+
+				
 
 			fi
 		echo
