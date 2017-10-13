@@ -1,9 +1,16 @@
 package Api::Ocsinventory::Restapi::ApiCommon;
 
+# External imports
 use DBI;
 use Switch;
 use Data::Dumper;
 use Mojo::JSON qw(decode_json encode_json);
+
+# Basics use for Common Sub
+use Apache::Ocsinventory::Map;
+use Apache::Ocsinventory::Server::Constants;
+use Apache::Ocsinventory::Interface::Database;
+use Apache::Ocsinventory::Interface::Internals;
 
 # Connect api to ocs database
 sub api_database_connect{
@@ -32,8 +39,6 @@ sub api_database_connect{
 sub error_return{
 
     my ($err_code) = @_;
-    my $return_string ;
-    my $capacities_key = "snmp";
 
     # Switch depending on the error code
 	switch ($err_code) {
