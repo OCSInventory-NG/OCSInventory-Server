@@ -74,14 +74,13 @@ sub InstallPlugins {
                 eval{mkpath($createplugindir)};
                 if ($@){ 
                 $result="Error: Can't create folders - Does apache have permissions to /etc/ocsinventory/ocsinventory-server/* ?";
-               }                        
-
+               }
             }
 
             # Check for write perm in perl dir            
             if(!(-w "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins"))
             {
-               # $result = "Err_04";
+                $result = "Err_04";
                 $perm = 0;
             }
 
