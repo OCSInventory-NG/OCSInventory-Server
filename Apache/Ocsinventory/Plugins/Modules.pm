@@ -69,7 +69,7 @@ sub InstallPlugins {
             if(-e "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/"){
             }
             else{
-                my $createplugindir = "/etc/ocsinventory/ocsinventory-server/perl/Apache/Ocsinventory/Plugins";
+                my $createplugindir = "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins";
                 eval{mkpath($createplugindir)};
                 if ($@){ 
                 $result="Error: Can't create folders - Does apache have permissions to /etc/ocsinventory/ocsinventory-server/* ?";
