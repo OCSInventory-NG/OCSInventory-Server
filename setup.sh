@@ -1066,9 +1066,9 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				if [ $? -ne 0 ]
 					then
 						echo "*** ERROR: PERL module Mojolicious::Lite is not installed !"
-						echo -n "Do you wish to continue ([y]/n] ?"
+						echo -n "Do you wish to continue (y/[n])?"
 						read ligne
-						if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+						if [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 							then
 								echo "User choose to continue setup without PERL module Mojolicious::Lite" >> $SETUP_LOG
 							else
@@ -1085,9 +1085,9 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				if [ $? -ne 0 ]
 					then
 						echo "*** ERROR: PERL module Switch is not installed !"
-						echo -n "Do you wish to continue ([y]/n] ?"
+						echo -n "Do you wish to continue (y/[n])?"
 						read ligne
-						if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+						if [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 							then
 								echo "User choose to continue setup without PERL module Switch" >> $SETUP_LOG
 							else
@@ -1104,9 +1104,9 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				if [ $? -ne 0 ]
 					then
 						echo "*** ERROR: PERL module Plack::Handler is not installed !"
-						echo -n "Do you wish to continue ([y]/n] ?"
+						echo -n "Do you wish to continue (y/[n])?"
 						read ligne
-						if [ -z "$ligne" ] || [ "$ligne" = "y" ]
+						if [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 							then
 								echo "User choose to continue setup without PERL module Plack::Handler" >> $SETUP_LOG
 							else
