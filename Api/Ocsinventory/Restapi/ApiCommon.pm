@@ -28,7 +28,7 @@ sub api_database_connect{
     $dbPwd  = $ENV{'OCS_DB_PWD'};
 
     # Connection...
-    my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd);
+    my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd, {RaiseError => 1}) or die $DBI::errstr;
 
     return $dbh;
 
