@@ -1125,6 +1125,9 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "+----------------------------------------------------------+"
 				echo
 
+				# Get first INC path to determine a valid path
+				REST_API_DIRECTORY = $($PERL_BIN -e 'print \"@INC[1]\"')
+
 				echo -n "Where do you want the API code to be store [$REST_API_DIRECTORY] ?"
 				read ligne
 				if [ -z "$ligne" ]
@@ -1142,9 +1145,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "| Configuring REST API Server configuration files ...  		 |"
 				echo "+----------------------------------------------------------+"
 				echo
-
-				# Get first INC path to determine a valid path
-				REST_API_DIRECTORY = $PERL_BIN -pi -e "print \"@INC[1]\""
 
 				echo "Configuring Rest API server (file $API_REST_APACHE_CONF_FILE)" >> $SETUP_LOG
 				cp etc/ocsinventory/$API_REST_APACHE_CONF_FILE $API_REST_APACHE_CONF_FILE.local
