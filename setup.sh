@@ -1126,7 +1126,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo
 
 				# Get first INC path to determine a valid path
-				REST_API_DIRECTORY = $($PERL_BIN -e 'print \"@INC[1]\"')
+				REST_API_DIRECTORY=$($PERL_BIN -e 'print \"@INC[1]\"')
 
 				echo -n "Where do you want the API code to be store [$REST_API_DIRECTORY] ?"
 				read ligne
