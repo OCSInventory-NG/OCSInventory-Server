@@ -78,7 +78,7 @@ ADM_SERVER_VAR_IPD_DIR="ipd"
 # OS or linux distribution from automatic detection
 UNIX_DISTRIBUTION=""
 # Default install directory for rest api
-REST_API_DIRECTORY="/usr/share/perl5/"
+REST_API_DIRECTORY=""
 
 ###################### DO NOT MODIFY BELOW #######################
 
@@ -1121,17 +1121,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 
 				echo
 				echo "+----------------------------------------------------------+"
-				echo "| Configuring REST API Server configuration files ...  		 |"
-				echo "+----------------------------------------------------------+"
-				echo
-
-				echo "Configuring Rest API server (file $API_REST_APACHE_CONF_FILE)" >> $SETUP_LOG
-				cp etc/ocsinventory/$API_REST_APACHE_CONF_FILE $API_REST_APACHE_CONF_FILE.local
-				echo "Writing Rest API configuration to file $APACHE_CONFIG_DIRECTORY/$API_REST_APACHE_CONF_FILE" >> $SETUP_LOG
-				cp -f $API_REST_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/zz-$API_REST_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
-
-				echo
-				echo "+----------------------------------------------------------+"
 				echo "| Configuring REST API Server files ...               		 |"
 				echo "+----------------------------------------------------------+"
 				echo
@@ -1148,6 +1137,20 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "Copying files to $REST_API_DIRECTORY" >> $SETUP_LOG
 				cp -r Api/ $REST_API_DIRECTORY
 
+				echo
+				echo "+----------------------------------------------------------+"
+				echo "| Configuring REST API Server configuration files ...  		 |"
+				echo "+----------------------------------------------------------+"
+				echo
+
+				# Get first INC path to determine a valid path
+				REST_API_DIRECTORY = $PERL_BIN -pi -e "print \"@INC[1]\""
+
+				echo "Configuring Rest API server (file $API_REST_APACHE_CONF_FILE)" >> $SETUP_LOG
+				cp etc/ocsinventory/$API_REST_APACHE_CONF_FILE $API_REST_APACHE_CONF_FILE.local
+				$PERL_BIN -pi -e "s#REST_API_PATH#$REST_API_DIRECTORY#g" $COM_SERVER_APACHE_CONF_FILE.local
+				echo "Writing Rest API configuration to file $APACHE_CONFIG_DIRECTORY/$API_REST_APACHE_CONF_FILE" >> $SETUP_LOG
+				cp -f $API_REST_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/zz-$API_REST_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
 
 			fi
 		echo
