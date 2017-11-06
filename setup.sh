@@ -1137,6 +1137,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 						REST_API_DIRECTORY="$ligne"
 				fi
 
+				echo "Copying files to $REST_API_DIRECTORY"
 				echo "Copying files to $REST_API_DIRECTORY" >> $SETUP_LOG
 				cp -r Api/ $REST_API_DIRECTORY
 
