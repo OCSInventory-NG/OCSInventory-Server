@@ -1150,7 +1150,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "Configuring Rest API server (file $API_REST_APACHE_CONF_FILE)" >> $SETUP_LOG
 				cp etc/ocsinventory/$API_REST_APACHE_CONF_FILE $API_REST_APACHE_CONF_FILE.local
 				$PERL_BIN -pi -e "s#'REST_API_PATH'#'$REST_API_DIRECTORY'#g" $API_REST_APACHE_CONF_FILE.local
-				$PERL_BIN -pi -e "s#'REST_API_LOADER_PAT'H#'$REST_API_DIRECTORY'#g" $API_REST_APACHE_CONF_FILE.local
+				$PERL_BIN -pi -e "s#'REST_API_LOADER_PATH#'$REST_API_DIRECTORY'#g" $API_REST_APACHE_CONF_FILE.local
 				echo "Writing Rest API configuration to file $APACHE_CONFIG_DIRECTORY/$API_REST_APACHE_CONF_FILE" >> $SETUP_LOG
 				cp -f $API_REST_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/zz-$API_REST_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
 
