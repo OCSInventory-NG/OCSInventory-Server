@@ -68,7 +68,7 @@ get '/v1/ipdiscover/:network' => sub {
         $c->render(data => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
 };
 
-get '/v1/snmp/listID' => sub {
+get '/v1/snmps/listID' => sub {
         my $c = shift;
         $c->render(data => Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId::get_snmps_id());
 };
