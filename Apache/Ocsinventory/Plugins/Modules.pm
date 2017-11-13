@@ -35,7 +35,7 @@ sub InstallPlugins {
     my $pluginName = $_[1];
 
     # Download the created archive from the ocsreports which contain the communication server code (.conf and map.pm)
-    my $url = "http://$ENV{OCS_DB_HOST}/ocsreports/upload/$pluginName.zip";
+    my $url = "http://$ENV{OCS_DB_HOST}/ocsreports/plugins/upload/$pluginName.zip";
     my $file = "$ENV{OCS_PLUGINS_CONF_DIR}/$pluginName.zip";
     our $result;
     our $perm = 1;
@@ -64,7 +64,19 @@ sub InstallPlugins {
                 $result = "Err_03";
                 $perm = 0;
             }
-            # Check for write perm in perl dir
+            # Checking if folder even exists - This folder doesn't exists for some reason in fresh install (CentOS7) - Creating it or otherwise we will get Err_04 for sure later
+            # It doesn't seem to have right permissions, so a manual chmod is a must..
+            if(-e "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins/"){
+            }
+            else{
+                my $createplugindir = "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins";
+                eval{mkpath($createplugindir)};
+                if ($@){ 
+                $result="Error: Can't create folders - Does apache have permissions to /etc/ocsinventory/ocsinventory-server/* ?";
+               }
+            }
+
+            # Check for write perm in perl dir            
             if(!(-w "$ENV{OCS_PLUGINS_PERL_DIR}/Apache/Ocsinventory/Plugins"))
             {
                 $result = "Err_04";
