@@ -7,6 +7,11 @@ Operating system :
 Perl version : 
 Mysql / Mariadb / Percona version :  
 
+### Server installation method ( Only one choice )
+- [ ] RPM Package
+- [ ] Install SH
+- [ ] Manual installation
+
 ### OCS Inventory informations
 Ocs server version : 
 
