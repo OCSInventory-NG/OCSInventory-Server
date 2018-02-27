@@ -1,5 +1,9 @@
 package Api::Ocsinventory::Restapi::ApiCommon;
 
+# For dev purpose only
+# use lib "/usr/local/share/OCSInventory-Server/";
+# use Data::Dumper;
+
 # External imports
 use DBI;
 use Switch;
@@ -37,9 +41,9 @@ sub api_database_connect{
 # Depending on input code, return error code
 sub error_return{
 
-    my ($err_code) = @_;
+  my ($err_code) = @_;
 
-    # Switch depending on the error code
+  # Switch depending on the error code
 	switch ($err_code) {
 		case 001		{ print "Arguments missing" }
 		case 002		{ print "Arguments not valid" }
@@ -120,6 +124,9 @@ sub get_item_main_table_informations{
         return error_return(003);
     }
 
+    $start =~ s/\D//g;
+    $limit =~ s/\D//g;
+
     if($limit > 0 && $start >= 0){
         $items = $database->selectall_arrayref(
             "SELECT * from $item_type LIMIT $limit OFFSET $start",
@@ -136,23 +143,54 @@ sub get_item_main_table_informations{
 
 sub execute_custom_request{
 
-    my ($query, $start, $limit) = @_;
+    my ($query, $start, $limit, @args) = @_;
 
     my $database = api_database_connect();
 
     if($start ne "" && $limit ne ""){
-        $object = $database->selectall_arrayref(
-            "$query LIMIT $limit OFFSET $start",
-            { Slice => {} }
-        );
-    }else{
-        $object = $database->selectall_arrayref(
-            "$query",
-            { Slice => {} }
-        );
+        $start =~ s/\D//g;
+        $limit =~ s/\D//g;
+        $query .= "LIMIT $limit OFFSET $start";
     }
 
-    return $object;
+    my $sth = $database->prepare($query);
+
+    if(@args ne ""){
+      $sth->execute( @args );
+    }else{
+      $sth->execute();
+    }
+
+    return $sth->fetchall_arrayref();
+
+}
+
+# Format search depending on url parmeters
+# ATM : only on main hardware table
+sub format_query_for_computer_search{
+
+  my ($args_array) = @_;
+
+  my $query_string = "SELECT ID from hardware WHERE";
+  my @args;
+  my $start = "";
+  my $limit = "";
+
+  while(my($field_name, $searched_value) = each $args_array) {
+    if(lc($field_name) eq "limit"){
+      $limit = $searched_value;
+    }elsif (lc($field_name) eq "start"){
+      $start = $searched_value;
+    }else{
+      $field_name =~ tr/a-zA-Z//dc ;
+      $query_string .= " $field_name = ? AND";
+      push @args, $searched_value;
+    }
+  }
+
+  $query_string = substr($query_string, 0, -3);
+
+  return execute_custom_request($query_string, $start, $limit, @args);
 
 }
 
