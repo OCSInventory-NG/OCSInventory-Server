@@ -21,11 +21,7 @@ sub get_ipdiscovers{
 
     my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, $start, $limit);
 
-    foreach my $netmap ( @$netmaps ) {
-        $$json_return{"$netmap->{NETID}"} = $netmap;
-    }
-
-    return encode_json($json_return);
+    return encode_json($netmaps);
 }
 
 1;
