@@ -1,5 +1,9 @@
 package Api::Ocsinventory::Restapi;
 
+# For dev purpose only
+# use lib "/usr/local/share/OCSInventory-Server/";
+# use Data::Dumper;
+
 # Framework uses
 use Mojolicious::Lite;
 
@@ -11,6 +15,7 @@ require Api::Ocsinventory::Restapi::Computer::Get::ComputerId; # Get specific Co
 require Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField; # Get specific field of Computer
 require Api::Ocsinventory::Restapi::Computer::Get::Computers; # Get list of Computers
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersListId; # Get list of Computers ID
+require Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch; # Get list of ID depending on search
 
 ## IPDiscover section
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover;
@@ -50,6 +55,14 @@ get '/v1/computers' => sub {
         my $limit = $c->param('limit')||0;
 
         $c->render(data => Api::Ocsinventory::Restapi::Computer::Get::Computers::get_computers($limit, $start));
+};
+
+get '/v1/computers/search' => sub {
+        my $c = shift;
+
+        my $params_hash = $c->req->params->to_hash;
+
+        $c->render(data => Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch::get_computers_search($params_hash));
 };
 
 get '/v1/ipdiscover' => sub {
