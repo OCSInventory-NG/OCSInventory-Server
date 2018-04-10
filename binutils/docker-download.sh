@@ -8,7 +8,7 @@ ReleaseBaseUrl="https://github.com/OCSInventory-NG/OCSInventory-ocsreports/relea
 # Last release tag
 LastReleaseTag="${VERSION}/"
 # Archive name
-LastReleaseArchive="OCSNG_UNIX_SERVER-${VERSION}"
+LastReleaseArchive="OCSNG_UNIX_SERVER_${VERSION}"
 # Archive extension
 ArchiveExtension=".tar.gz"
 # File destination
