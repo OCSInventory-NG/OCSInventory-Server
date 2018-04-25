@@ -41,9 +41,10 @@ sub get_category_software{
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
     my $sql;
     my @cats;
+    my $result;
 
     $sql = "SELECT c.ID, c.CATEGORY_NAME, s.SOFTWARE_EXP FROM software_categories c, software_category_exp s WHERE s.CATEGORY_ID = c.ID";
-    my $result = $dbh->prepare($sql);
+    $result = $dbh->prepare($sql);
     $result->execute;
 
     while( my $row = $result->fetchrow_hashref() ){
@@ -64,16 +65,16 @@ sub set_category{
     my $soft_cat;
     my $default_cat;
 
-    my $tmp = $dbh->prepare("SELECT ivalue FROM config WHERE config.name='DEFAULT_CATEGORY'");
-    $tmp->execute;
-    while (my $row = $tmp->fetchrow_hashref()){
+    my $sql = $dbh->prepare("SELECT ivalue FROM config WHERE config.name='DEFAULT_CATEGORY'");
+    $sql->execute;
+    while (my $row = $sql->fetchrow_hashref()){
         $default_cat = $row->{ivalue};
     }
 
     foreach my $soft (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}){
         foreach my $cat (@cats){
-            my $tmp = $cat->{SOFTWARE_EXP};
-            if ($soft->{NAME} =~ /$tmp/) {
+            my $regex = $cat->{SOFTWARE_EXP};
+            if ($soft->{NAME} =~ /$regex/) {
                 $soft_cat = $cat->{ID};
             }
         }
