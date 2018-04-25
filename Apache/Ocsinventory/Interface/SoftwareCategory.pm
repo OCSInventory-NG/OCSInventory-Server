@@ -27,7 +27,6 @@ use Apache::Ocsinventory::Interface::Internals;
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 require Exporter;
 
