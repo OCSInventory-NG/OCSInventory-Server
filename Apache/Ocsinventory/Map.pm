@@ -383,7 +383,8 @@ our %DATA_MAP= (
        GUID => {},
        LANGUAGE => {},
        INSTALLDATE => {},
-       BITSWIDTH => {}
+       BITSWIDTH => {},
+       CATEGORY => {}
     }
   },
 

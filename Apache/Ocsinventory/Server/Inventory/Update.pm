@@ -25,6 +25,8 @@ use Apache::Ocsinventory::Server::Inventory::Cache;
 use Apache::Ocsinventory::Server::Inventory::Update::Hardware;
 use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
 
+use Apache::Ocsinventory::Interface::SoftwareCategory;
+
 use strict;
 
 require Exporter;
@@ -41,7 +43,9 @@ sub _update_inventory{
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
 
   my $section;
- 
+
+  set_category();
+
   &_reset_inventory_cache( $sectionsMeta, $sectionsList ) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
    
   # Call special sections update
