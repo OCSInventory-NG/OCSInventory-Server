@@ -21,10 +21,6 @@
 ################################################################################
 package Apache::Ocsinventory::Interface::SoftwareCategory;
 
-use Apache2::Log;
-use Apache2::Const -compile => qw(OK :log);
-use APR::Const -compile => qw(:error SUCCESS);
-
 use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Interface::Database;
 use Apache::Ocsinventory::Interface::Internals;
@@ -43,29 +39,21 @@ our @EXPORT = qw /
 /;
 
 sub get_category_software{
-    my $sth;
-    my $s = Apache2::ServerUtil->server;
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
     my $sql;
     my @cats;
-
-    $s->log_error("test");
 
     $sql = "SELECT c.ID, c.CATEGORY_NAME, s.SOFTWARE_EXP FROM software_categories c, software_category_exp s WHERE s.CATEGORY_ID = c.ID";
     my $result = $dbh->prepare($sql);
     $result->execute;
 
     while( my $row = $result->fetchrow_hashref() ){
-        #$s->log_error("Prout");
-        #$s->log_error($row->{CATEGORY_NAME});
-        #$s->log_error($row->{SOFTWARE_EXP});
         push @cats, {
             'ID' => $row->{ID},
             'CATEGORY_NAME' => $row->{CATEGORY_NAME},
             'SOFTWARE_EXP' =>  $row->{SOFTWARE_EXP}
         }
     }
-    #$sth->finish();
 
     return @cats;
 }
@@ -73,7 +61,6 @@ sub get_category_software{
 sub set_category{
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
-    my $s = Apache2::ServerUtil->server;
     my @cats = get_category_software();
     my $soft_cat;
     my $default_cat;
@@ -83,7 +70,6 @@ sub set_category{
     while (my $row = $tmp->fetchrow_hashref()){
         $default_cat = $row->{ivalue};
     }
-
 
     foreach my $soft (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}){
         foreach my $cat (@cats){
