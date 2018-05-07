@@ -74,7 +74,8 @@ sub _hardware{
 	WINPRODKEY=".$dbh->quote($base->{WINPRODKEY}).",
 	IPSRC=".$dbh->quote($Apache::Ocsinventory::CURRENT_CONTEXT{IPADDRESS}).",
 	UUID=".$dbh->quote($base->{UUID}).",
-	ARCH=".$dbh->quote($base->{ARCH})."
+	ARCH=".$dbh->quote($base->{ARCH}).",
+	CATEGORY_ID=".$dbh->quote($base->{CATEGORY_ID})."
 	 WHERE ID=".$deviceId)
   or return(1);
 

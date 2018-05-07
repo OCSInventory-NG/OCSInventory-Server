@@ -71,7 +71,8 @@ our %DATA_MAP= (
        SSTATE => { noXml => 1 },
        USERAGENT => { noXml => 1 },
        IPSRC => {},
-       ARCH => {}
+       ARCH => {},
+       CATEGORY_ID => {}
      },
   },
 

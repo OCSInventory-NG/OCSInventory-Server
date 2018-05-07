@@ -45,6 +45,7 @@ sub _update_inventory{
   my $section;
 
   set_category();
+  set_asset_category();
 
   &_reset_inventory_cache( $sectionsMeta, $sectionsList ) if $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED};
    
