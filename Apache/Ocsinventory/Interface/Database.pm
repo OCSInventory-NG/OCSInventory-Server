@@ -71,6 +71,9 @@ sub database_connect{
 
   # Connection...
   my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd, \%params);
+  unless($dbh) {
+    die DBI->errstr;
+  }
   $dbh->do("SET NAMES 'utf8'") if($dbh && $ENV{'OCS_OPT_UNICODE_SUPPORT'});
   $dbh->do("SET sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
   return $dbh;  
