@@ -8,7 +8,7 @@ ReleaseBaseUrl="https://github.com/OCSInventory-NG/OCSInventory-ocsreports/relea
 # Last release tag
 LastReleaseTag="${VERSION}/"
 # Archive name
-LastReleaseArchive="OCSNG_UNIX_SERVER-${VERSION}"
+LastReleaseArchive="OCSNG_UNIX_SERVER_${VERSION}"
 # Archive extension
 ArchiveExtension=".tar.gz"
 # File destination
@@ -17,10 +17,12 @@ FileDestination="/tmp/ocs"
 FullArchiveUrl=$ReleaseBaseUrl$LastReleaseTag$LastReleaseArchive$ArchiveExtension
 
 # Get archive
-wget $FullArchiveUrl
 
-# Un tar release archive
-tar -xzvf $LastReleaseArchive$ArchiveExtension
-
-# Move to the selected directory
-mv $LastReleaseArchive $FileDestination
+if wget $FullArchiveUrl; then
+	echo $LastReleaseArchive
+else
+	LastReleaseArchive="OCSNG_UNIX_SERVER-${VERSION}"
+	FullArchiveUrl=$ReleaseBaseUrl$LastReleaseTag$LastReleaseArchive$ArchiveExtension
+	wget $FullArchiveUrl
+	echo $FullArchiveUrl
+fi
