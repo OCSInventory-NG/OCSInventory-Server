@@ -26,3 +26,7 @@ else
 	wget $FullArchiveUrl
 	echo $FullArchiveUrl
 fi
+
+tar -xzvf $LastReleaseArchive$ArchiveExtension
+
+mv $LastReleaseArchive $FileDestination
