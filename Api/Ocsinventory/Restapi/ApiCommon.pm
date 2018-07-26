@@ -176,7 +176,7 @@ sub format_query_for_computer_search{
   my $start = "";
   my $limit = "";
 
-  while(my($field_name, $searched_value) = each $args_array) {
+  while(my($field_name, $searched_value) = each @args_array) {
     if(lc($field_name) eq "limit"){
       $limit = $searched_value;
     }elsif (lc($field_name) eq "start"){
