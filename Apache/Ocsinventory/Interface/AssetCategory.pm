@@ -51,7 +51,11 @@ sub set_asset_category{
         my $execution;
 
         for (my $i = 0; $i < scalar @part_query; $i++){
-            $query .= @part_query[$i] . @args[$i];
+            if (@args[$i]) {
+                $query .= $part_query[$i] . $args[$i];
+            } else {
+                $query .= $part_query[$i];
+            }
         }
 
         $execution = $dbh->prepare($query);
