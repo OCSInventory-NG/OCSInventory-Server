@@ -375,6 +375,7 @@ sub _modules_search{
 
 sub _get_xml_parser_opt{
   my $hash_ref = shift; 
+  $hash_ref->{'ParserOpts'} = [ NoLWP => 1 ]; # Prevent XXE (see CVE-2018-14473)
   $hash_ref->{'SuppressEmpty'} = 1;
   $hash_ref->{'ForceArray'} = [];
   @{$hash_ref->{'ForceArray'}} = &_get_xml_parser_opt_force_array();
