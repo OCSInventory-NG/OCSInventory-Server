@@ -54,7 +54,16 @@ sub start_session{
 sub clean_sessions{
   my $current_context = shift;
   my $dbh = $current_context->{DBI_HANDLE};
-  
+
+  # check before waiting for insert lock
+  my $check_clean = $dbh->prepare('SELECT UNIX_TIMESTAMP()-IVALUE AS IVALUE FROM engine_persistent WHERE NAME="SESSION_CLEAN_DATE"');
+  if($check_clean->execute() && $check_clean->rows()){
+    my $row = $check_clean->fetchrow_hashref();
+    if($row->{IVALUE}< $ENV{OCS_OPT_SESSION_CLEAN_TIME} ){
+      return;
+    }
+  }
+
   # To avoid race conditions
   if( !$dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('SESSION',?,'CLEAN')", {}, $$) ){
     &_log(315,'session',"already handled") if $ENV{'OCS_OPT_LOGLEVEL'};
