@@ -117,24 +117,24 @@ sub set_category{
               if( defined $sign ){
                   switch ($sign) {
                     case "EQUAL" {
-                        $minV = $version =~ s/.//r;
-                        $majV = $soft->{VERSION} =~ s/.//r;
+                        $minV = $version =~ s/.//g;
+                        $majV = $soft->{VERSION} =~ s/.//g;
                         $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
                         if( defined $response) {
                             $soft_cat = $cat->{ID};
                         }
                     }
                     case "LESS" {
-                        $minV = $version =~ s/.//r;
-                        $majV = $soft->{VERSION} =~ s/.//r;
+                        $minV = $version =~ s/.//g;
+                        $majV = $soft->{VERSION} =~ s/.//g;
                         $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
                         if( defined $response) {
                             $soft_cat = $cat->{ID};
                         }
                     }
                     case "MORE" {
-                        $minV = $version =~ s/.//r;
-                        $majV = $soft->{VERSION} =~ s/.//r;
+                        $minV = $version =~ s/.//g;
+                        $majV = $soft->{VERSION} =~ s/.//g;
                         $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
                         if( defined $response) {
                             $soft_cat = $cat->{ID};
