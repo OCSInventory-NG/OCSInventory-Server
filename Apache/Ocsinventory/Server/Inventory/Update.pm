@@ -27,6 +27,7 @@ use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
 
 use Apache::Ocsinventory::Interface::SoftwareCategory;
 use Apache::Ocsinventory::Interface::AssetCategory;
+use Apache::Ocsinventory::Interface::Saas;
 
 use strict;
 
