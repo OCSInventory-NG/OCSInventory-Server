@@ -74,6 +74,23 @@ sub _prolog{
     return APACHE_BAD_REQUEST;
   }
 
+  # Max sessions per time
+  if(defined($ENV{OCS_OPT_MAX_SESSIONS_PER_TIME}) && ($ENV{OCS_OPT_MAX_SESSIONS_PER_TIME} > 0) &&
+     defined($ENV{OCS_OPT_MAX_SESSIONS_TIME}) && ($ENV{OCS_OPT_MAX_SESSIONS_TIME} > 0))
+  {
+    $request = $dbh->prepare('select count(*) as IVALUE from prolog_conntrack where timestamp > (unix_timestamp()-'.$ENV{OCS_OPT_MAX_SESSIONS_TIME}.')');
+    if($request->execute() && $request->rows())
+    {
+      $row = $request->fetchrow_hashref();
+      if($row->{IVALUE} >= $ENV{OCS_OPT_MAX_SESSIONS_PER_TIME})
+      {
+        &_log(106,'prolog', 'max sessions reached: '.$row->{IVALUE}) if $ENV{'OCS_OPT_LOGLEVEL'};
+        &_prolog_resp(PROLOG_RESP_BREAK);
+        return APACHE_OK;
+      }
+    }
+  }
+
   $frequency = $ENV{'OCS_OPT_FREQUENCY'};
 
   # If we do not have the default frequency
