@@ -29,6 +29,11 @@ use strict;
 use warnings;
 use Switch;
 
+use Apache2::Log;
+
+use Apache2::Const  -compile => qw(OK :log);
+use APR::Const      -compile => qw(:error SUCCESS);
+
 require Exporter;
 
 our @ISA = qw /Exporter/;
@@ -112,36 +117,42 @@ sub set_category{
             my $response;
             my $minV;
             my $majV;
+            #my $s = Apache2::ServerUtil->server;
 
-            if ($soft->{NAME} =~ /$regex/) {
-              if( defined $sign ){
+            if(($regex =~ m/\*/) || ($regex =~ m/\?/)){
+              $regex = $regex =~ s/\*/.*/gr;
+              $regex = $regex =~ s/\?/./gr;
+            }
+
+            if ($soft->{NAME} =~ $regex) {
+              if( ( defined $sign ) && ( $sign ne '' )){
                   switch ($sign) {
                     case "EQUAL" {
-                        $minV = $version =~ s/.//g;
-                        $majV = $soft->{VERSION} =~ s/.//g;
+                        $minV = $version =~ s/\.//gr;
+                        $majV = $soft->{VERSION} =~ s/\.//gr;
                         $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
                         if( defined $response) {
                             $soft_cat = $cat->{ID};
                         }
                     }
                     case "LESS" {
-                        $minV = $version =~ s/.//g;
-                        $majV = $soft->{VERSION} =~ s/.//g;
+                        $minV = $version =~ s/\.//gr;
+                        $majV = $soft->{VERSION} =~ s/\.//gr;
                         $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
                         if( defined $response) {
                             $soft_cat = $cat->{ID};
                         }
                     }
                     case "MORE" {
-                        $minV = $version =~ s/.//g;
-                        $majV = $soft->{VERSION} =~ s/.//g;
+                        $minV = $version =~ s/\.//gr;
+                        $majV = $soft->{VERSION} =~ s/\.//gr;
                         $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
                         if( defined $response) {
                             $soft_cat = $cat->{ID};
                         }
                     }
                   }
-              } if ( (defined $publisher) ) {
+              } if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
                 if ( $publisher eq $soft->{PUBLISHER} ) {
                   $soft_cat = $cat->{ID};
                 }
@@ -149,7 +160,7 @@ sub set_category{
                 $soft_cat = $cat->{ID};
               }
             }
-        }
+          }
         if (!defined $soft_cat) {
             $soft_cat = $default_cat;
         }
