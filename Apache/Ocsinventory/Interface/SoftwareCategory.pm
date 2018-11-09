@@ -27,6 +27,7 @@ use Apache::Ocsinventory::Interface::Internals;
 
 use strict;
 use warnings;
+use Switch;
 
 require Exporter;
 
@@ -34,8 +35,18 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw /
   _get_category_software
+  _compare
   set_category
 /;
+
+
+{   no strict 'refs';
+    # When called like __PACKAGE__->$op( ... ),  __PACKAGE__ is $_[0]
+    *{'bigger'}  = sub { return $_[1] >= $_[2]; };
+    *{'less'}  = sub { return $_[1] <= $_[2]; };
+    *{'equal'} = sub { return $_[1] == $_[2]; };
+}
+
 
 sub get_category_software{
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
@@ -43,7 +54,7 @@ sub get_category_software{
     my @cats;
     my $result;
 
-    $sql = "SELECT c.ID, c.CATEGORY_NAME, s.SOFTWARE_EXP FROM software_categories c, software_category_exp s WHERE s.CATEGORY_ID = c.ID";
+    $sql = "SELECT c.ID, c.CATEGORY_NAME, s.SOFTWARE_EXP, s.SIGN_VERSION, s.VERSION, s.PUBLISHER FROM software_categories c, software_category_exp s WHERE s.CATEGORY_ID = c.ID";
     $result = $dbh->prepare($sql);
     $result->execute;
 
@@ -51,11 +62,32 @@ sub get_category_software{
         push @cats, {
             'ID' => $row->{ID},
             'CATEGORY_NAME' => $row->{CATEGORY_NAME},
-            'SOFTWARE_EXP' =>  $row->{SOFTWARE_EXP}
+            'SOFTWARE_EXP' =>  $row->{SOFTWARE_EXP},
+            'SIGN_VERSION' => $row->{SIGN_VERSION},
+            'VERSION' =>  $row->{VERSION},
+            'PUBLISHER' => $row->{PUBLISHER}
         }
     }
 
     return @cats;
+}
+
+sub compare{
+    my ($sign,$version,$publisher,$v,$p) = @_;
+
+    if ( defined $publisher ) {
+      if ( (__PACKAGE__->$sign($v, $version)) && ($publisher eq $p) ) {
+        return 2;
+      } else {
+        return undef;
+      }
+    } else {
+      if ( __PACKAGE__->$sign($v, $version) ) {
+        return 2;
+      } else {
+        return undef;
+      }
+    }
 }
 
 sub set_category{
@@ -74,8 +106,48 @@ sub set_category{
     foreach my $soft (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}){
         foreach my $cat (@cats){
             my $regex = $cat->{SOFTWARE_EXP};
+            my $sign = $cat->{SIGN_VERSION};
+            my $version = $cat->{VERSION};
+            my $publisher = $cat->{PUBLISHER};
+            my $response;
+            my $minV;
+            my $majV;
+
             if ($soft->{NAME} =~ /$regex/) {
+              if( defined $sign ){
+                  switch ($sign) {
+                    case "EQUAL" {
+                        $minV = $version =~ s/.//g;
+                        $majV = $soft->{VERSION} =~ s/.//g;
+                        $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
+                        if( defined $response) {
+                            $soft_cat = $cat->{ID};
+                        }
+                    }
+                    case "LESS" {
+                        $minV = $version =~ s/.//g;
+                        $majV = $soft->{VERSION} =~ s/.//g;
+                        $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
+                        if( defined $response) {
+                            $soft_cat = $cat->{ID};
+                        }
+                    }
+                    case "MORE" {
+                        $minV = $version =~ s/.//g;
+                        $majV = $soft->{VERSION} =~ s/.//g;
+                        $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
+                        if( defined $response) {
+                            $soft_cat = $cat->{ID};
+                        }
+                    }
+                  }
+              } if ( (defined $publisher) ) {
+                if ( $publisher eq $soft->{PUBLISHER} ) {
+                  $soft_cat = $cat->{ID};
+                }
+              } else {
                 $soft_cat = $cat->{ID};
+              }
             }
         }
         if (!defined $soft_cat) {
