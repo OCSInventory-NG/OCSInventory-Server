@@ -141,10 +141,7 @@ sub set_category{
                         }
                     }
                   }
-              } else {
-                $soft_cat = $cat->{ID};
-              }
-              if ( (!defined $sign) && (defined $publisher) ) {
+              } if ( (defined $publisher) ) {
                 if ( $publisher eq $soft->{PUBLISHER} ) {
                   $soft_cat = $cat->{ID};
                 }
