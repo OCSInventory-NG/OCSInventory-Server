@@ -29,11 +29,6 @@ use strict;
 use warnings;
 use Switch;
 
-use Apache2::Log;
-
-use Apache2::Const  -compile => qw(OK :log);
-use APR::Const      -compile => qw(:error SUCCESS);
-
 require Exporter;
 
 our @ISA = qw /Exporter/;
@@ -117,7 +112,6 @@ sub set_category{
             my $response;
             my $minV;
             my $majV;
-            #my $s = Apache2::ServerUtil->server;
 
             if(($regex =~ m/\*/) || ($regex =~ m/\?/)){
               $regex = $regex =~ s/\*/.*/gr;
