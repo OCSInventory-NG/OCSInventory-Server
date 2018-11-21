@@ -149,12 +149,14 @@ sub set_category{
                           }
                       }
                     }
-                } if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
-                  if ( $publisher eq $soft->{PUBLISHER} ) {
-                    $soft_cat = $cat->{ID};
-                  }
+                } 
+		if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
+                    my $softPublisher = $soft->{PUBLISHER};
+                    if ( (defined $softPublisher) && ($publisher eq $softPublisher) ) {
+                        $soft_cat = $cat->{ID};
+                    }
                 } else {
-                  $soft_cat = $cat->{ID};
+                    $soft_cat = $cat->{ID};
                 }
               }
             }
