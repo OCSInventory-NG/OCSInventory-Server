@@ -76,7 +76,7 @@ sub get_category_software{
 sub compare{
     my ($sign,$version,$publisher,$v,$p) = @_;
 
-    if ( defined $publisher ) {
+    if ( (defined $publisher) && ($publisher ne '')) {
       if ( (__PACKAGE__->$sign($v, $version)) && ($publisher eq $p) ) {
         return 2;
       } else {
@@ -115,6 +115,7 @@ sub set_category{
             my $minV;
             my $majV;
 
+
             if(($regex =~ m/\*/) || ($regex =~ m/\?/)){
               $regex = $regex =~ s/\*/.*/gr;
               $regex = $regex =~ s/\?/./gr;
@@ -149,13 +150,13 @@ sub set_category{
                           }
                       }
                     }
-                } 
-		if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
+                }
+		            if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
                     my $softPublisher = $soft->{PUBLISHER};
                     if ( (defined $softPublisher) && ($publisher eq $softPublisher) ) {
                         $soft_cat = $cat->{ID};
                     }
-                } else {
+                } if( ($publisher eq '') && ($sign eq '')) {
                     $soft_cat = $cat->{ID};
                 }
               }
