@@ -36,6 +36,7 @@ our @ISA = qw /Exporter/;
 our @EXPORT = qw /
   _get_category_software
   _compare
+  _regex
   set_category
 /;
 
@@ -91,6 +92,30 @@ sub compare{
     }
 }
 
+sub regex{
+    my ($regex) = @_;
+
+    if(($regex !~ m/\?/) && ($regex !~ m/\*/)){
+      $regex = "\^".$regex."\$";
+    }
+    if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) eq '*')){
+      $regex = $regex =~ s/\*//gr;
+    }
+    if((substr( $regex, 0, 1 ) eq '*') && (substr( $regex, -1) ne '*')){
+      $regex = $regex =~ s/\*//gr;
+      $regex = $regex."\$";
+    }
+    if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) ne '*')){
+      $regex = $regex =~ s/\*//gr;
+      $regex = "\^".$regex;
+    }
+    if(($regex =~ m/\?/)){
+      $regex = $regex =~ s/\?/./gr;
+    }
+
+    return $regex;
+}
+
 sub set_category{
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
@@ -115,11 +140,7 @@ sub set_category{
             my $minV;
             my $majV;
 
-
-            if(($regex =~ m/\*/) || ($regex =~ m/\?/)){
-              $regex = $regex =~ s/\*/.*/gr;
-              $regex = $regex =~ s/\?/./gr;
-            }
+            $regex = regex($regex);
 
             if(( $os eq 'ALL' ) || ( $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/$os/ )){
               if ($soft->{NAME} =~ $regex) {
