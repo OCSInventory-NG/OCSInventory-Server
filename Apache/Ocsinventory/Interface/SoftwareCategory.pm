@@ -54,7 +54,7 @@ sub get_category_software{
     my @cats;
     my $result;
 
-    $sql = "SELECT c.ID, c.CATEGORY_NAME, s.SOFTWARE_EXP, s.SIGN_VERSION, s.VERSION, s.PUBLISHER FROM software_categories c, software_category_exp s WHERE s.CATEGORY_ID = c.ID";
+    $sql = "SELECT c.ID, c.CATEGORY_NAME, c.OS, s.SOFTWARE_EXP, s.SIGN_VERSION, s.VERSION, s.PUBLISHER FROM software_categories c, software_category_exp s WHERE s.CATEGORY_ID = c.ID";
     $result = $dbh->prepare($sql);
     $result->execute;
 
@@ -62,6 +62,7 @@ sub get_category_software{
         push @cats, {
             'ID' => $row->{ID},
             'CATEGORY_NAME' => $row->{CATEGORY_NAME},
+            'OS' => $row->{OS},
             'SOFTWARE_EXP' =>  $row->{SOFTWARE_EXP},
             'SIGN_VERSION' => $row->{SIGN_VERSION},
             'VERSION' =>  $row->{VERSION},
@@ -109,6 +110,7 @@ sub set_category{
             my $sign = $cat->{SIGN_VERSION};
             my $version = $cat->{VERSION};
             my $publisher = $cat->{PUBLISHER};
+            my $os = $cat->{OS};
             my $response;
             my $minV;
             my $majV;
@@ -118,40 +120,42 @@ sub set_category{
               $regex = $regex =~ s/\?/./gr;
             }
 
-            if ($soft->{NAME} =~ $regex) {
-              if( ( defined $sign ) && ( $sign ne '' )){
-                  switch ($sign) {
-                    case "EQUAL" {
-                        $minV = $version =~ s/\.//gr;
-                        $majV = $soft->{VERSION} =~ s/\.//gr;
-                        $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                        if( defined $response) {
-                            $soft_cat = $cat->{ID};
-                        }
+            if(( $os eq 'ALL' ) || ( $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/$os/ )){
+              if ($soft->{NAME} =~ $regex) {
+                if( ( defined $sign ) && ( $sign ne '' )){
+                    switch ($sign) {
+                      case "EQUAL" {
+                          $minV = $version =~ s/\.//gr;
+                          $majV = $soft->{VERSION} =~ s/\.//gr;
+                          $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
+                          if( defined $response) {
+                              $soft_cat = $cat->{ID};
+                          }
+                      }
+                      case "LESS" {
+                          $minV = $version =~ s/\.//gr;
+                          $majV = $soft->{VERSION} =~ s/\.//gr;
+                          $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
+                          if( defined $response) {
+                              $soft_cat = $cat->{ID};
+                          }
+                      }
+                      case "MORE" {
+                          $minV = $version =~ s/\.//gr;
+                          $majV = $soft->{VERSION} =~ s/\.//gr;
+                          $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
+                          if( defined $response) {
+                              $soft_cat = $cat->{ID};
+                          }
+                      }
                     }
-                    case "LESS" {
-                        $minV = $version =~ s/\.//gr;
-                        $majV = $soft->{VERSION} =~ s/\.//gr;
-                        $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                        if( defined $response) {
-                            $soft_cat = $cat->{ID};
-                        }
-                    }
-                    case "MORE" {
-                        $minV = $version =~ s/\.//gr;
-                        $majV = $soft->{VERSION} =~ s/\.//gr;
-                        $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                        if( defined $response) {
-                            $soft_cat = $cat->{ID};
-                        }
-                    }
+                } if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
+                  if ( $publisher eq $soft->{PUBLISHER} ) {
+                    $soft_cat = $cat->{ID};
                   }
-              } if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
-                if ( $publisher eq $soft->{PUBLISHER} ) {
+                } else {
                   $soft_cat = $cat->{ID};
                 }
-              } else {
-                $soft_cat = $cat->{ID};
               }
             }
           }
