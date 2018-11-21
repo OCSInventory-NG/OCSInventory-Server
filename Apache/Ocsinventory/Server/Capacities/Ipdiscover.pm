@@ -70,7 +70,9 @@ sub _ipdiscover_prolog_resp{
   my $resp = shift;
   
   my ($ua, $os, $v);
- 
+
+  return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
+
   my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
   my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
   my $groupsParams  = $current_context->{'PARAMS_G'};
