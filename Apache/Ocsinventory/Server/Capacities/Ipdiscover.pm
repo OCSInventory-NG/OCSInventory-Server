@@ -361,7 +361,7 @@ sub _ipdiscover_evaluate{
             return 1;
           }
           $dbh->commit;
-          &_log(1001,'ipdiscover',($over?'over':'better')."($_->{IPSUBNET})") if $ENV{'OCS_OPT_LOGLEVEL'};
+           &_log(1001,'ipdiscover',($over?'over':'better')."($_->{IPSUBNET})"."(OLD=($worth[0],$worth[1]),NEW=($DeviceID,$quality))(THRESHOLD=$ENV{'OCS_OPT_IPDISCOVER_BETTER_THRESHOLD'})") if $ENV{'OCS_OPT_LOGLEVEL'};
           return 0;
         }
       }
