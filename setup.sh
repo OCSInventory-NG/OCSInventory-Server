@@ -1548,7 +1548,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		mkdir -p $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
 		if [ $? != 0 ]
 			then
-				echo "*** ERROR: Unable to create ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to create $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
@@ -1590,7 +1590,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		chmod -R go-w $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR >> $SETUP_LOG 2>&1
 		if [ $? -ne 0 ]
 			then
-				echo "*** ERROR: Unable to set permissions on ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to set permissions on $ADM_SERVER_STATIC_DIR/$ADM_SERVER_STATIC_REPORTS_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
@@ -1670,7 +1670,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR >> $SETUP_LOG 2>&1
 		if [ $? != 0 ]
 			then
-				echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to create $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_PACKAGES_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
@@ -1704,7 +1704,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR >> $SETUP_LOG 2>&1
 		if [ $? != 0 ]
 			then
-				echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to create $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SNMP_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
@@ -1738,7 +1738,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR >> $SETUP_LOG 2>&1
 		if [ $? != 0 ]
 			then
-				echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to create $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
@@ -1771,7 +1771,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR >> $SETUP_LOG 2>&1
 		if [ $? != 0 ]
 			then
-				echo "*** ERROR: Unable to create ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to create $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_SCRIPTS_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
@@ -1884,7 +1884,7 @@ fi
 echo
 echo "Setup has created a log file $SETUP_LOG. Please, save this file."
 echo "If you encounter error while running OCS Inventory NG Management server,"
-echo "we can ask you to show us his content !"
+echo "we can ask you to show us its content !"
 echo
 echo "DON'T FORGET TO RESTART APACHE DAEMON !"
 echo
