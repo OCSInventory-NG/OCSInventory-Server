@@ -268,7 +268,7 @@ our %CONFIG = (
     filter => qr '^([1-9]\d*)$'
   },
   IPDISCOVER_BETTER_THRESHOLD => {
-    type => 'TVALUE',
+    type => 'IVALUE',
     default => 1,
     unit => 'day',
     description => 'Specify the minimal difference to replace an ipdiscover agent',
