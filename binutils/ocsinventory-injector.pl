@@ -112,7 +112,6 @@ sub usage {
 	-u --url	: ocsinventory backend URL, default is http://ocsinventory-ng/ocsinventory
 	--useragent	: HTTP user agent, default is OCS-NG_LOCAL_PL_v".VERSION."
 	-r --remove	: remove successfully injected files
-	-m --msg	: show message returned my ocsinventory
 	-v --verbose	: verbose mode
 	--stdin		: read data from STDIN
 
