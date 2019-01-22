@@ -1,7 +1,7 @@
 ###############################################################################
 ## Copyright 2005-2016 OCSInventory-NG/OCSInventory-Server contributors.
 ## See the Contributors file for more details about them.
-## 
+##
 ## This file is part of OCSInventory-NG/OCSInventory-ocsreports.
 ##
 ## OCSInventory-NG/OCSInventory-Server is free software: you can redistribute
@@ -58,7 +58,7 @@ use Encode;
 # Globale structure
 our %CURRENT_CONTEXT;
 our @XMLParseOptForceArray;# Obsolete, for 1.01 modules only
-my %XML_PARSER_OPT; 
+my %XML_PARSER_OPT;
 our @TRUSTED_IP;
 
 sub handler{
@@ -96,26 +96,26 @@ sub handler{
     'USER_AGENT'  => undef,
     'LOCAL_FL' => undef
   );
-  
+
   # No buffer for STDOUT
   select(STDOUT);
   $|=1;
-  
+
   # Get the data and the apache object
   $r=shift;
   $CURRENT_CONTEXT{'APACHE_OBJECT'} = $r;
-  
+
   $CURRENT_CONTEXT{'USER_AGENT'} = &_get_http_header('User-agent', $r);
-  
+
   @TRUSTED_IP = $r->dir_config->get('OCS_OPT_TRUSTED_IP');
-  
+
   #Connect to database
   $dbMode = 'write';
   if($Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ /local/i){
     $CURRENT_CONTEXT{'LOCAL_FL'}=1;
     $dbMode = 'local';
   }
-  
+
   if(!($CURRENT_CONTEXT{'DBI_HANDLE'} = &_database_connect( $dbMode ))){
     &_log(505,'handler','Database connection');
     return &_end(APACHE_SERVER_ERROR);
@@ -125,13 +125,13 @@ sub handler{
     &_log(505,'handler','Database Slave connection');
     return &_end(APACHE_SERVER_ERROR);
   }
-  
+
   #Retrieve server options
   if(&_get_sys_options()){
     &_log(503,'handler', 'System options');
     return &_end(APACHE_SERVER_ERROR);
   }
-  
+
   # First, we determine the http method
   # The get method will be only available for the bootstrap to manage the deploy, and maybe, sometime to give files which will be stored in the database
   if($r->method() eq 'GET'){
@@ -159,7 +159,7 @@ sub handler{
 
   # Here is the post method management
   }elsif($r->method eq 'POST'){
-    
+
     # Get the data
     if( !read(STDIN, $data, $ENV{'CONTENT_LENGTH'}) ){
       &_log(512,'handler','Reading request') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -170,7 +170,7 @@ sub handler{
     $CURRENT_CONTEXT{'RAW_DATA'} = \$raw_data;
     # Debug level for Apache::DBI (apache/error.log)
     # $Apache::DBI::DEBUG=2;
-  
+
     # Read the request
     # Possibilities :
     # prolog : The agent wants to know if he have to send an inventory (and with which options)
@@ -220,19 +220,22 @@ sub handler{
           return &_end(APACHE_BAD_REQUEST);
         }
     };
+
+    $query = verif_xml($query);
+
     $CURRENT_CONTEXT{'XML_ENTRY'} = $query;
 
     # Get the request type
     my $request=$query->{QUERY};
     $CURRENT_CONTEXT{'DEVICEID'} = $query->{DEVICEID} or $CURRENT_CONTEXT{'DEVICEID'} = $query->{CONTENT}->{DEVICEID};
-    
+
     unless($request eq 'UPDATE'){
       if(&_check_deviceid($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'})){
         &_log(502,'inventory','Bad deviceid') if $ENV{'OCS_OPT_LOGLEVEL'};
         return &_end(APACHE_BAD_REQUEST);
       }
     }
-    
+
      # Must be filled
     unless($request){
       &_log(500,'handler','Request not defined');
@@ -242,7 +245,7 @@ sub handler{
     # Init global structure
     my $err = &_init();
     return &_end($err) if $err;
-    
+
     # The three above are hardcoded
     if($request eq 'PROLOG'){
       my $ret = &_prolog();
@@ -272,26 +275,26 @@ sub handler{
 
 sub _init{
   my $request;
-  
+
   # Retrieve Device if exists
   $request = $CURRENT_CONTEXT{'DBI_HANDLE'}->prepare('
-    SELECT DEVICEID,ID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY 
+    SELECT DEVICEID,ID,UNIX_TIMESTAMP(LASTCOME) AS LCOME,UNIX_TIMESTAMP(LASTDATE) AS LDATE,QUALITY,FIDELITY
     FROM hardware WHERE DEVICEID=?'
   );
   unless($request->execute($CURRENT_CONTEXT{'DEVICEID'})){
     return(APACHE_SERVER_ERROR);
   }
-  
+
   for my $ipreg (@TRUSTED_IP){
       if($CURRENT_CONTEXT{'IPADDRESS'}=~/^$ipreg$/){
         &_log(310,'handler','trusted_computer') if $ENV{'OCS_OPT_LOGLEVEL'};
         $CURRENT_CONTEXT{'IS_TRUSTED'} = 1;
       }
   }
-          
+
   if($request->rows){
     my $row = $request->fetchrow_hashref;
-    
+
     $CURRENT_CONTEXT{'EXIST_FL'} = 1;
     $CURRENT_CONTEXT{'DATABASE_ID'} = $row->{'ID'};
     $CURRENT_CONTEXT{'DETAILS'} = {
@@ -300,36 +303,60 @@ sub _init{
       'QUALITY' => $row->{'QUALITY'},
       'FIDELITY' => $row->{'FIDELITY'},
     };
-    
-    # Computing groups list 
+
+    # Computing groups list
     if($ENV{'OCS_OPT_ENABLE_GROUPS'}){
       $CURRENT_CONTEXT{'MEMBER_OF'} = [ &_get_groups() ];
     }
     else{
       $CURRENT_CONTEXT{'MEMBER_OF'} = [];
     }
-    
+
     $CURRENT_CONTEXT{'PARAMS'} = { &_get_spec_params() };
     $CURRENT_CONTEXT{'PARAMS_G'} = { &_get_spec_params_g() };
   }else{
     $CURRENT_CONTEXT{'EXIST_FL'} = 0;
     $CURRENT_CONTEXT{'MEMBER_OF'} = [];
   }
-  
-  $request->finish;  
+
+  $request->finish;
   return;
 }
+
+# XML string verification
+sub verif_xml{
+
+  my ($query) = @_;
+  my $key;
+  my $exp;
+  my $exp2;
+
+  for(%{$query->{CONTENT}}){
+    if(ref($_) ne 'ARRAY'){
+      $key = $_;
+      if(ref($query->{CONTENT}->{$key}) eq 'ARRAY'){
+        for(@{$query->{CONTENT}->{$key}}){
+          for(%{$_}){
+            $exp = $_;
+            $exp2 = $exp =~ s/ //gr;
+            if($exp2 =~ m/=\(/ && $exp2 =~ m/\)/){
+              $_ = 1;
+            }
+          }
+        }
+      } if(ref($query->{CONTENT}->{$key}) eq 'HASH'){
+        for(%{$query->{CONTENT}->{$key}}){
+          $exp = $_;
+          $exp2 = $exp =~ s/ //gr;
+          if($exp2 =~ m/=\(/ && $exp2 =~ m/\)/){
+            $_ = 1;
+          }
+        }
+      }
+    }
+  }
+
+  return $query;
+}
+
 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
