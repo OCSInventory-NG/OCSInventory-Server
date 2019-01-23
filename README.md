@@ -12,8 +12,8 @@
 </p>
 
 <p align='justify'>
-OCS (Open Computers and Software Inventory Next Generation) is an assets management and deployment solution. 
-Since 2001, OCS Inventory NG has been looking for making software and hardware more powerful. 
+OCS (Open Computers and Software Inventory Next Generation) is an assets management and deployment solution.
+Since 2001, OCS Inventory NG has been looking for making software and hardware more powerful.
 OCS Inventory NG asks its agents to know the software and hardware composition of every computer or server.
 </p>
 
@@ -33,22 +33,10 @@ OCS Inventory NG includes the packet deployment functionality to be sure that al
 <br />
 
 ## Requirements
-- MySQL version 4.1 or higher
-- PERL 5.6 or higher (5.8 or higher recommended)
-- Apache version 1.3.33 or higher / Apache version 2.0.X or higher
-- Apache Mod_perl version 1.29 or higher
-- PHP 4.3.2 or higher, with ZIP support enabled.
-- Apache Mod_php version 4.3.2 or higher
-- Perl module XML::Simple version 2.12 or higher
-- Perl module Compress::Zlib version 1.33 or higher
-- Perl module DBI version 1.40 or higher
-- Perl module DBD::Mysql version 2.9004 or higher
-- Perl module Apache::DBI version 0.93 or higher
-- Perl module Net::IP version 1.21 or higher
-- Perl module Archive::Zip 
-- Perl module Apache2:SOAP
-- Perl module SOAP::Lite version 0.66 or higher
-- Perl module XML::Entities version 0.02 or higher, not required, used only with SOAP web service
+
+For the requirements, please follow the OCS Inventory documentation :
+
+http://wiki.ocsinventory-ng.org/01.Prerequisites/Libraries-version/
 
 ## Installation
 To install OCSInventory server simply run the setup script
@@ -60,6 +48,10 @@ If you want to install webconsole OCS Reports you need to fork OCSInventory-ocsr
 ```bash
 git clone https://github.com/OCSInventory-NG/OCSInventory-ocsreports.git ocsreports
 ```
+
+For more informations, please follow the OCS Inventory documentation :
+
+http://wiki.ocsinventory-ng.org/02.Basic-documentation/Setting-up-a-OCS-Inventory-Server/
 
 ## Contributing
 
