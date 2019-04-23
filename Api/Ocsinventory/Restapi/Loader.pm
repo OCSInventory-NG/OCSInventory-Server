@@ -31,20 +31,20 @@ require Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId; # Get list of Snmp ID
 
 get '/v1/computers/listID' => sub {
         my $c = shift;
-        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::ComputersListId::get_computers_id());
+        render_responce($c, Api::Ocsinventory::Restapi::Computer::Get::ComputersListId::get_computers_id());
 };
 
 get '/v1/computer/:id' => sub {
         my $c = shift;
         my $id = $c->stash('id');
-        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::ComputerId::get_computer($id));
+        render_responce($c, Api::Ocsinventory::Restapi::Computer::Get::ComputerId::get_computer($id));
 };
 
 get '/v1/computer/:id/:field' => sub {
         my $c = shift;
         my $id = $c->stash('id');
         my $field = $c->stash('field');
-        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField::get_computer_field($id, $field));
+        render_responce($c, Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField::get_computer_field($id, $field));
 };
 
 get '/v1/computers' => sub {
@@ -54,7 +54,7 @@ get '/v1/computers' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::Computers::get_computers($limit, $start));
+        render_responce($c, Api::Ocsinventory::Restapi::Computer::Get::Computers::get_computers($limit, $start));
 };
 
 get '/v1/computers/search' => sub {
@@ -62,7 +62,7 @@ get '/v1/computers/search' => sub {
 
         my $params_hash = $c->req->params->to_hash;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch::get_computers_search($params_hash));
+        render_responce($c, Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch::get_computers_search($params_hash));
 };
 
 get '/v1/ipdiscover' => sub {
@@ -71,19 +71,19 @@ get '/v1/ipdiscover' => sub {
         my $start = $c->param('start');
         my $limit = $c->param('limit');
 
-        $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
+        render_responce($c, Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
 };
 
 get '/v1/ipdiscover/:network' => sub {
         my $c = shift;
         my $network = $c->stash('network');
 
-        $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
+        render_responce($c, Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
 };
 
 get '/v1/snmps/listID' => sub {
         my $c = shift;
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId::get_snmps_id());
+        render_responce($c, Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId::get_snmps_id());
 };
 
 get '/v1/snmp' => sub {
@@ -93,20 +93,33 @@ get '/v1/snmp' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::Snmp::get_snmp($limit, $start));
+        render_responce($c, Api::Ocsinventory::Restapi::Snmp::Get::Snmp::get_snmp($limit, $start));
 };
 
 get '/v1/snmp/:id' => sub {
         my $c = shift;
         my $id = $c->stash('id');
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($id));
+        render_responce($c, Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($id));
 };
 
 get '/v1/snmp/:id/:field' => sub {
         my $c = shift;
         my $id = $c->stash('id');
         my $field = $c->stash('field');
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpIdField::get_snmp_field($id, $field));
+        render_responce($c, Api::Ocsinventory::Restapi::Snmp::Get::SnmpIdField::get_snmp_field($id, $field));
+};
+
+## Common render logic
+
+sub render_responce {
+        my ($c, $data) = @_;
+
+        if (defined($c->param('noescape'))) {
+                $c->render(text => $data, format => 'json');
+        } else {
+                $c->render(json => $data);
+        };
+
 };
 
 app->start;
