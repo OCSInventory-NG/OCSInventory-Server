@@ -277,6 +277,13 @@ sub _ipdiscover_read_result{
     return 1;
   }
   
+  # check subnet blacklist
+  $request=$dbh->prepare('SELECT SUBNET FROM blacklist_subnet WHERE SUBNET=?');
+  $request->execute($subnet);
+  if($request->rows > 0){
+    return 1;
+  }
+
   return 0;
 }
 
@@ -296,6 +303,13 @@ sub _ipdiscover_find_iface{
         if($_->{IPMASK}=~/^(?:255\.){2}|^0x(?:ff){2}/){
           if($_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/){
   
+    # check subnet blacklist
+    $request = $dbh->prepare('SELECT SUBNET FROM blacklist_subnet WHERE SUBNET=?');
+    $request->execute($_->{IPSUBNET});
+    if($request->rows > 0){
+      next;
+    }
+
     # Looking for a need of ipdiscover
     $request = $dbh->prepare('SELECT HARDWARE_ID FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
     $request->execute($_->{IPSUBNET});
