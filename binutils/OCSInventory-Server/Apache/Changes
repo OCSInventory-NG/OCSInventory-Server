@@ -1,0 +1,270 @@
+Revision history for Apache::Ocsinventory
+
+2.2 RC
+		* Add plugins web service which is used by the plugin engine to install plugin ( Use SOAP::Lite )
+		* Add compatibility with Apache 2.4 and more : https://github.com/OCSInventory-NG/OCSInventory-Server/commit/861dcb17f826d9580f0f5f0937bd1ae7376e6602
+		
+2.2beta1
+        * Add <EXCLUDE_TAG> and <EXCLUDE_ID> requests tags in SOAP engine to be able to exclude tags or ids during SOAP requests
+        * Add new 'batteries' inventory section to get various batteries data
+        * New OCS_OPT_SNMP_PRINT_HTTPS_ERROR configuration option to enable or disable error message display about agent https communication in logfile
+        * Fix bug in SOAP engine while retrieving data from type tables
+
+2.1.2
+
+2.1.1
+        * Fix Bug #1315004 about MySQL replication broken using MySQL 5.6
+        * Fix Bug #1311852 and Bug #1296633 about CHECKSUM updated for all computers
+        * Fix a mistake for OCS_PLUGINS_PERL_DIR and OCS_PLUGINS_CONF_DIR options in ocsinventory-server.conf
+
+2.1
+        * Add new fields for printers table in Map.pm
+        * Fix Bug #1214436 about removing already registered hosts and add Mac support in ipdiscover-util.pl
+        * Add a new table for SNMP virtual machines data in Map.pm
+        * Fix Bug #1248582 about custom field names not decoded in SOAP ACCOUNTINFO
+        * Fix Bug #1191791 about CHECKSUM value not updated when NOTIFY mode send new network changes
+        * New plugins system to be able to add new entries in Map.pm and more...
+
+2.1rc1
+        * Add availibility to specify a post command for a package deployment
+        * SOAP engine is now able to get SNMP devices inventory
+        * Add new 'sims' inventory section to get various SIM card data from phone devices	
+        * Add availibility to schedule a package deployment
+        * Remove OCS_OPT_SUPPORT configuration option and <SUPPORT_LOG> XML tag in PROLOG 
+        * Add availibility to reforce a package deployment
+        * Add availability to specify custom MIBS for SNMP scans
+        * Add availability to specify a custom network address for SNMP scans 
+        * New OCS_OPT_DOWNLOAD_EXECUTION_TIMEOUT configuration option to prevent package commands to run indefinitely
+        * setup.sh script can now detect Suse/OpenSuse distributions      
+        * Add new 'cpus' inventory section to get various CPU data	
+        * Add a new field in hardware section to get the computer architecture	
+        * Add new fields for snmp_loadbalancer table in Map.pm
+        * Fix Bug #1085020 about ERR_ALREADY_IN_HISTORY message that should be success 
+        * Prevent bugs in NOTIFY mode with older XML behaviour
+
+2.0.5
+        * Create "logs" and "scripts" directories for administration console in setup.sh
+
+2.0.4
+
+2.0.3
+        * Fix Bug #881406 about security issue due to snmp_com.txt file which is no longer used
+        * Do not take care of comment lines when getting external useragents file content
+        * Fix various bugs in NOTIFY mode
+
+2.0.2
+        * Add availibilty to allow external useragents using a text file
+
+2.0.1
+        * Remove 'Satisfy any' Apache directive in ocsinventory-server.conf
+        * Fix RPM packages names in setup.sh
+        * Fix Bug #800418 about subnet, gateway and IP DHCP informations disappearance from database
+        * Increase php_value post_max_size and php_value upload_max_filesize values to 101 Mo and 100 Mo in ocsinventory-reports.conf
+        * Change php_value to php_flag for magic_quotes_gpc setting in ocsinventory-reports.conf
+        * Add new useragents for iOS and Android OCS agents in Useragent.pm
+
+2.0
+        * New OCS_OPT_SUPPORT configuration option for OCS Inventory support activation
+        * Add a new <SUPPORT_LOG> XML tag in PROLOG
+        * Add a new module to manage OCS support: Support.pm
+        * Add a <DHCP> XML tag in NOTIFY request to update IPDHCP field in database
+2.0 rc4
+        * Add a warning in setup.sh about what has to be done if the OS has newsyslog installed (BSD systems)               
+        * Fix Bug #744022 about logrotate configuration in setup.sh even if the OS has not logrotate installed
+        * Add availability to specify mysql socket in ipdiscover-util.pl
+        * Fix UTF8 problem while comparing accountinfo strings after inventory step
+2.0 rc3
+        * Use OCS_OPT_DBI_MYSQL_SOCKET in SOAP engine if needed
+        * Ipdiscover now uses useragent instead of OSNAME for automatic election
+        * Fix Bug #721278 about hardware_osname cache table. This table is now feeded by engine
+        * Verify that HARDWARE_ID are not groups when computing groups caches
+        * Disable MySQL strict mode by default
+        * Fix Bug #726522 about OCS_OPT_DBI_MYSQL_SOCKET option in ocsinventory-server.conf
+        * Don't process the sections that are use for capacities special inventory in SOAP engine (but thats the way its meant to be)
+        * Fix a bug in Download.pm: ERR_ALREADY_IN_HISTORY message was never added in devices table
+        * Fix SQL syntax error and add a capacities tables exclusion in Duplicate.pm
+
+2.0 rc2
+        * Add a new variable $Apache::Ocsinventory::BUILD_VERSION in Ocsinventory.pm
+        * Fix Bug #694760 about utf8 strings broken
+
+2.0 rc1
+        * New OCS server module : Snmp.pm . It is use for SNMP integration in OCS Inventory NG. This module comes with Snmp/Data.pm and Snmp/Inventory.pm
+        * Add Useragent.pm to control agents and their versions to solve versions incompatibilty problems between OCS agents and OCS server
+        * Add a new parameter for tables in Map.pm: mandatory. This parameter force database feeding even if inventory section is not in XML
+        * Control if inventory section is in XML before writing it in database to avoid bugs.
+        * Add COMMENTS and VERSION fields in snmp_softwares table
+        * Add new fields in softwares table: GUID, LANGUAGE, LASTDATE and BITSWIDTH
+        * Debug and enhance Data.pm to use the availability to explode database structure using type tables
+        * Add new module Datafiler.pm. This module add availibity to filter data from HARDWARE section (data filtered won't be stored in database)
+        * setup.sh can now install missing perl modules for you using yum or apt-get (Philippe Beaumont)
+        * Add new fileds "DEVICEPORT" and "DEVICETYPE" in snmp_networks table in Map.pm
+        * Add a new field "SYSTEM" for snmp_blades, snmp_firewalls and snmp_loadbalancer tables in Map.pm
+        * Add new tables for SNMP computers data in Map.pm
+        * Add a new table "snmp_switchinfos" in Map.pm
+        * snmp_switchs table is "multi" now in Map.pm
+        * Add the copy of the snmp_com.txt file in setup.sh to set default SNMP "public" community if this file does not exists
+        * Fix various mistakes and missing fields for snmp tables in Map.pm
+        * Add the new Apache configuration for SNMP communities reference file (snmp_com.txt) in setup.sh and ocsinventory-reports.conf
+        * Enhance DB backend by reducing the SQL request number as possible in SNMP inventory
+        * Enhance errors management for SNMP inventory
+        * New OCS_OPT_SNMP_INVENTORY_DIFF config option to enable or disable the SNMP inventory sections update regarding to snmp_laststate table
+        * Add a CHECKSUM for SNMP devices. It is compute using mask values from SNMP inventory sections from Map.pm .
+        * New snmp_laststate table to store md5 hashes for SNMP inventory sections (this table is used for SNMP inventory sections update in database)
+        * SNMP inventory sections are updated in database only if changed since last inventory
+        * Snmp.pm send the snmp_com.txt file URI to the agent
+        * New table snmp_accountinfo
+        * Feel the SNMP_ID filed in snmp_accountinfo when a new SNMP device coming
+        * Feel the TAG field in the snmp_accountinfo while inventory for SNMP devices
+        * Add STATUS and ERRORSTATE fields for snmp_printers table
+        * Map.pm: snmp_networksconnected and snmp_switchs are now auto => 0 due to the special treatments associated to this tables
+        * Don't take care of identified network devices for SNMP scans in Snmp.pm. This devices will be scanned using SNMP too
+        * Add the MAC address in the PROLOG response in Snmp.pm
+        * Use of _get_snmp_parser_ForceArray subroutine to get sections for the 'ForceArray' in Snmp.pm
+        * Add LASTDATE field in the snmp table to store the last inventory date for a SNMP device
+        * Enhance SNMP implementation by getting SNMP communities informations directly from the snmp_communities table
+        * Enable the SNMP activation/deactivation using custom parameters on computer on groups
+        * Map.pm: new table parameter -> capacities  
+        * Map.pm: add new tables for SNMP
+        * Data.pm : use the new "capacities" Map.pm parameter to don't take care of tables that have this parameter when feeding %SECTIONS and @SECTIONS
+        * Config.pm : add a new configuration option for activate/desactivate SNMP feature
+        * ocsinventory-server.conf : add Snmp.pm in Capacities list and add a new configuration option for activate/desactivate SNMP feature
+        * Correct Bug #563791 about GW and SUBNET update in NOTIFY
+        * Correct Bug #563791 about GW and SUBNET update in NOTIFY
+        * Correct a misprint about the use of 'OCS_OPT_UNICODE_SUPPORT' in Data.pm (from sisfb_tech)
+        * Useragent.pm: allow the future 4062 Windows agent and some code cleaning by using a hash reference for %CURRENT_CONTEXT
+        * Add the Windows rearch agent to allow in Useragent.pm
+        * ASSETTAG is in BIOS, not HARDWARE 
+
+	
+1.3.3
+        * Force XML::Simple to use XML::Parser instead of XML::SAX to fix disastrous performance issues in Redhat distribution due to the perl-XML-SAX package problems.
+        * Correct bug about automatic IPDISCOVER election
+
+1.3 	
+        * Unix right: add the exec flag
+        * Quote HARDWARE/TYPE
+        * Save SOFTWARE/FROM (Stéphane Urbanovski)
+        * SQL quote for all the hardware fields
+        * SQL syntax fix. Duplicate 'WHERE' (axil_76)
+        * Decrease OCS_OPT_GROUPS_CACHE_* from one day to 10 minutes
+        * Fix: Computer with ASSETTAG are not inventoried 
+        * Save HARDWARE/UUID
+        * Avoid err 500 if ACCOUNTINFO is not found for a given inventory
+        * Added printers.DESCRIPTION
+        * Added OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT from trunk 
+        * DTD updates 
+
+1.3 beta2
+        * fix setup.sh for Debian
+        * minor fixes
+        * add binutils/create-release-tarball.sh
+
+1.3 beta1
+	* Added virtual device detection for a network iface
+	* Added description field to printers section
+	* Use of hardware.UUID and hardware.ASSETTAG in duplicates detection
+ 	* Duplicates mgmt: Now removing current device from dynamic groups and keep the static groups membership
+	* The SOAP service is now able to share data with engine in +w mode by the use of ::System::_lock()
+	* Deleting computers using SOAP service
+	  http://sourceforge.net/tracker/?func=detail&aid=2776298&group_id=58373&atid=487495 
+	* itmgmt_comments support in duplicates
+	* Download: Added ERR_ALREADY_IN_HISTORY status code (package affected but already in history)
+	* Added source IP in inventory
+	  https://sourceforge.net/tracker/?func=detail&aid=2807594&group_id=58373&atid=487495
+	* Added DRIVES/CREATEDATE support
+	  https://sourceforge.net/tracker/?func=detail&atid=487495&aid=2275640&group_id=58373
+	* Added ASSETTAG support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2804146&group_id=58373&atid=487495
+	* Added DNS device informations
+	  https://sourceforge.net/tracker/?func=detail&aid=1566957&group_id=58373&atid=487495
+	* Fixed .ocs files generation on windows server
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2817320&group_id=58373&atid=487492
+	* Mobile devices support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2810746&group_id=58373&atid=487495
+	* Fixed the "bad software import bug"
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2129983&group_id=58373&atid=487492
+ 	* DB schema changes support through "type=>1" field meta information in Map.pm
+	* Unicode support
+	  https://sourceforge.net/tracker/index.php?func=detail&aid=2796796&group_id=58373&atid=487495
+	  Thanks to Andrek
+	* Added DEFAULTGATEWAY support
+	* Added inventory of virtualization (Philippe Libat)
+	* Fixed a bug in SOAP Engine 
+	  https://sourceforge.net/tracker/?func=detail&atid=487492&aid=2787130&group_id=58373
+
+1.02 final
+	* Handling the trailing '/' in deploy feature and calling _end in more standard way (Ocsinventory.pm)
+	* Fix a typo (logging) in System.pm (OCS_OPT_LOGPATH) Thx to Remi Collet
+	* Fix: call to _accountinfo() in Inventory.pm whereas Update::AccountInfos not in the scope
+
+1.02 RC2
+	* Fix the problem of feeding cache when write_diff is OFF
+	* Fix the duplicate error in packages history (download)
+
+1.02 RC1
+	* As the dictionary and "all softs" are inventory cache dependent = INVENTORY_CACHE_REVALIDATE default => 7
+	* Fixed the DEVICEID checking
+	* Important fix in "on the fly deletion" in inventory cache
+	* Added fallback values for '??' (unix agents prior than 0.8)
+	* Added OCS_OPT_INVENTORY_CACHE_KEEP setting
+	* Inventory_cache deletion is handled "on the fly"
+	* Inventory cache clean now retry on fault
+	* Inventory cache clean is now off by default
+	* IPDISCOVER: Do not evaluate if mode is local
+	* Added LOCAL_FL to CURRENT_CONTEXT
+	* The default Ip(hardware.IPADDR) is now based on REMOTE_ADDR (or HTTP_X_FORWARDED_FOR)
+	* Added IS_TRUSTED test if INVENTORY_SESSION_ONLY
+	* Inventory_cache is now computed on row level
+	* Moved user agent update in prolog stage
+	* Added old_deviceid log
+	* Added "fallback" field's attribute to Map.pm
+	* Added OCS_OPT_COMPRESS_TRY_OTHERS setting
+	* Notify: Added IP address update event handling
+	* Added Notify.pm capacity
+	* Fix a bug in DATA_MAP: accountinfos is a "multi" section
+	* Added log when using compression different than raw ZLIB
+	* Added -path parameter to ipdiscover-util.pl (changes in GUI for FHS support)
+	* Added OCS_OPT_INVENTORY_SESSION_ONLY: An inventory is accepted only if it is required by server
+	* Added session (prolog=>post_inventory) Options: SESSION_VALIDITY_TIME, SESSION_CLEAN_TIME
+	* Added error 523
+	* Added OCS_OPT_* parameters checking to server starting
+	* Bug fix in inventory cache revalidate (lock fault)
+	* Added disable caches computation (group and inventory) feature (REVALIDATE* set to 0)
+	* Removed inventory cache checking for a section that has not changed since last inventory
+	* Added OCS_OPT_OPTIONS_NOT_OVERLOADED (configure engine to take its settings from file only)
+	* Higher server's verbosity
+	* Bug fix: Do not handle in Duplicates the "auto => 0" sections
+	* Bug fix: Replacement of a "one shot" computer generates an error  (QUALITY is NULL)
+	* Bug fix: do not close logfile if LOGLEVEL is off
+	* Added ocsinventory-log.pl sample and associated README
+	* A few improvements and fixes on web service
+	* Added groups.REVALIDATE_FROM field : groups.CREATE_TIME is now the real groups computation date
+	* Added a minimal system to load external methods in web service (OCS_OPT_WEB_SERVICE_PRIV_MODS_CONF)
+	* Added ipdiscover_delete_type_V1() to web service
+	* Added ipdiscover_create_type_V1() to web service
+	* Added ipdiscover_untag_V1() to web service
+	* Added ipdiscover_remove_V1() to web service
+	* Added ipdiscover_tag_V1() to web service
+	* Added get_ipdiscover_device() to web service
+	* Added OCS_OPT_WEB_SERVICE_RESULTS_LIMIT setting
+	* Added XML::Entities dependency on SOAP service (as SOAP::Lite may not decode CDATA)
+	* Web service upgrade ( bug fixes, and many improvements)
+	* New configuration system using Apache::Ocsinventory::Server::System::Config
+	* Groups are now computed using DB Slae if available
+	* Engine extensions : "Option" renamed to "Capacity"
+	* Changed module structure
+	* Code improvement for Inventory.pm
+	* Added model serial as auto duplicate criteria
+	* Added INVENTORY_WRITE_DIFF for lower load on DB backends and more afficient sql query cache
+	* Added Slave DB backend support (for read: soap engine...etc)
+	* PROLOG_FREQ specific parameter handling (computer, mass processing and group levels)
+	* DOWNLOAD* specific parameters handling (computer, mass processing and group levels)
+	* IPDISCOVER specific parameter handling (computer, mass processing and group levels)
+	* Computer's groups support (dynamic and static)
+	* blacklists of MAC and SERIAL are now handled from database
+	* Multiple ocs servers support (Backends)
+	* Trusted computers support (filter exceptions)
+	* GZIP compression support
+	* No compression support
+	* inventory cache handling improved

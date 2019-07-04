@@ -1,0 +1,26 @@
+In order to install OCS 2.4 the following requirement are needed :
+	- Mod_Perl
+	- Make
+	- GCC
+	- mysql-server
+	- apache2
+	- php
+	- php-mysql
+	- php-gd
+	- php-xml
+	- php-mbstring
+	- php-curl
+	- libxml-simple-perl
+	- libdbi-perl
+	- libdbd-mysql-perl
+	- libapache-dbi-perl
+	- libnet-ip-perl
+	- php-pclzip
+	- libarchive-zip-perl (providing Archive::Zip)
+	- libsoap-lite-perl (providing SOAP::Lite, plugin engine need it)
+	- libxml-simple-perl (providing XML:Entities)
+	- libnet-ip-perl (providing NET::IP)
+	- libapache-dbi-perl (providing Apache::DBI)
+	
+Run "setup.sh" and follow the instructions.
+If you get a error / warning because of a missing module, install it and retry.	
