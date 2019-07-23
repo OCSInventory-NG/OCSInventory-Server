@@ -1855,13 +1855,16 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		cp -f $ADM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
 
 		#Fix permissions on server side for plugin engine (perl / plugins) dir usually in etc/ocsinventory-server..
+		# In case admin server install ONLY
+		mkdir -p $OCS_COM_SRV_PLUGINS_CONFIG_DIR
+		mkdir -p $OCS_COM_SRV_PLUGINS_PERL_DIR
 		# Where are located OCS Communication server plugins configuration files
 		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_CONFIG_DIR
 		# Where are located OCS Communication server plugins perl files
 		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_PERL_DIR
 		if [ $? -ne 0 ]
 			then
-				echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
+				echo "*** ERROR: Unable to write ocsinventory server perl and plugin directories please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1
