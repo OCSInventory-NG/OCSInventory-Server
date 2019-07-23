@@ -768,6 +768,7 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		NET_IP=0
 		SOAP_LITE=0
 		ARCHIVE_ZIP=0
+		SWITCH=0
 
 		echo "Checking for DBI PERL module..."
 		echo "Checking for DBI PERL module" >> $SETUP_LOG
@@ -867,122 +868,29 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "Found that PERL module Archive::Zip is available."
 		fi
 
+		# Check for Switch
+		echo "Checking for Switch Perl module..."
+		echo "Checking for Switch Perl module" >> $SETUP_LOG
+		$PERL_BIN -mSwitch -e 'print "PERL module Switch is available\n"' >> $SETUP_LOG 2>&1
+		if [ $? -ne 0 ]
+			then
+				echo "*** ERROR: PERL module Switch is not installed !"
+				REQUIRED_PERL_MODULE_MISSING=1
+				SWITCH=1
+			else
+				echo "Found that PERL module Switch is available."
+		fi
+
 		if [ $REQUIRED_PERL_MODULE_MISSING -ne 0 ]
 			then
 				echo "*** ERROR: There is one or more required PERL modules missing on your computer !"
 				echo "Please, install missing PERL modules first."
 				echo " "
-				echo "OCS setup.sh can install perl module from packages for you"
-				echo "The script will use the native package from your operating system like apt or rpm"
 				echo -n "Do you wish to continue (y/[n])?"
+				echo "Note : we advise you to exit the setup and install the recommended modules before continuing, OCS Inventory won't be able to works without these modules"
 				read ligne
-				if [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
+				if [ "$ligne" = "n" ] || [ "$ligne" = "N" ]
 					then
-						case $UNIX_DISTRIBUTION in
-							"redhat")
-								echo "RedHat based automatic installation"
-								if [ $DBI -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-DBI"
-								fi
-								if [ $APACHE_DBI -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-Apache-DBI"
-								fi
-								if [ $DBD_MYSQL -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-DBD-MySQL"
-								fi
-								if [ $COMPRESS_ZLIB -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-Compress-Zlib"
-								fi
-								if [ $XML_SIMPLE -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-XML-Simple"
-								fi
-								if [ $NET_IP -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-Net-IP"
-								fi
-								if [ $SOAP_LITE -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-SOAP-Lite"
-								fi
-								if [ $ARCHIVE_ZIP -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-Archive-Zip"
-								fi
-
-								yum install $PACKAGE
-								if [ $? != 0 ]
-									then
-										echo "Installation aborted !"
-										echo "Installation script encounter problems to install packages !"
-										echo "One or more required PERL modules missing !" >> $SETUP_LOG
-										echo "Installation aborted" >> $SETUP_LOG
-										exit 1
-								fi
-								echo "All packages have been installed on this computer"
-							;;
-
-							"debian")
-								echo "Debian based automatic installation"
-								if [ $DBI -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libdbi-perl"
-								fi
-								if [ $APACHE_DBI -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libapache-dbi-perl"
-								fi
-								if [ $DBD_MYSQL -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libdbd-mysql-perl"
-								fi
-								if [ $COMPRESS_ZLIB -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libcompress-zlib-perl"
-								fi
-								if [ $XML_SIMPLE -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libxml-simple-perl"
-								fi
-								if [ $NET_IP -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libnet-ip-perl"
-								fi
-								if [ $SOAP_LITE -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libsoap-lite-perl"
-								fi
-								if [ $ARCHIVE_ZIP -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libarchive-zip-perl"
-								fi
-
-								apt-get update
-								apt-get install $PACKAGE
-								if [ $? -ne 0 ]
-									then
-										echo "Installation aborted !"
-										echo "Installation script encounter problems to install packages !"
-										echo "One or more required PERL modules missing !" >> $SETUP_LOG
-										echo "Installation aborted" >> $SETUP_LOG
-										exit 1
-								fi
-								echo "All packages have been installed on this computer"
-							;;
-
-							*)
-								echo "Installation aborted !"
-								echo "Installation script cannot find missing packages for your distribution"
-								echo "One or more required PERL modules missing !" >> $SETUP_LOG
-								echo "Installation aborted" >> $SETUP_LOG
-								exit 1
-							;;
-						esac
-					else
 						echo "Installation aborted !"
 						echo "Please, install missing PERL modules first."
 						echo "One or more required PERL modules missing !" >> $SETUP_LOG
@@ -1000,28 +908,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo "|         Checking for optional Perl Modules...            |"
 		echo "+----------------------------------------------------------+"
 		echo
-		echo "Checking for Apache2::SOAP PERL module..."
-		echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
-                $PERL_BIN -mSOAP::Transport::HTTP2 -e 'print "PERL module Apache2::SOAP is available\n"' >> $SETUP_LOG 2>&1
-                if [ $? -ne 0 ]
-                        then
-                                echo "PERL module Apache2::SOAP is available\n" >> $SETUP_LOG
-                                echo "*** Warning: PERL module Apache2::SOAP is not installed !"
-                                echo "This module is only required by OCS Inventory NG SOAP Web Service."
-                                echo -n "Do you wish to continue ([y]/n] ?"
-                                read ligne
-                                if [ -z "$ligne" ] || [ "$ligne" = "y" ]
-                                        then
-                                                echo "User choose to continue setup without PERL module SOAP::Apache2" >> $SETUP_LOG
-                                        else
-                                                echo
-                                                echo "Installation aborted !"
-                                                echo "User choose to abort installation !" >> $SETUP_LOG
-                                                exit 1
-                                fi
-                        else
-                                echo "Found that PERL module SOAP::Apache2 is available."
-                fi
 
 		echo "Checking for XML::Entities PERL module..."
 		echo "Checking for XML::Entities PERL module" >> $SETUP_LOG
@@ -1079,25 +965,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 						fi
 					else
 						echo "Found that PERL module Mojolicious::Lite is available."
-				fi
-
-				$PERL_BIN -mSwitch -e 'print "PERL module Switch is available\n"' >> $SETUP_LOG 2>&1
-				if [ $? -ne 0 ]
-					then
-						echo "*** ERROR: PERL module Switch is not installed !"
-						echo -n "Do you wish to continue (y/[n])?"
-						read ligne
-						if [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
-							then
-								echo "User choose to continue setup without PERL module Switch" >> $SETUP_LOG
-							else
-								echo
-								echo "Installation aborted !"
-								echo "User choose to abort installation !" >> $SETUP_LOG
-								exit 1
-						fi
-					else
-						echo "Found that PERL module Switch is available."
 				fi
 
 				$PERL_BIN -mPlack::Handler -e 'print "PERL module Plack::Handler is available\n"' >> $SETUP_LOG 2>&1
