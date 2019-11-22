@@ -4,5 +4,6 @@ PATH_TO_LOG_DIRECTORY/*.log {
 	daily
 	rotate 7
 	compress
+	delaycompress
 	missingok
 }
