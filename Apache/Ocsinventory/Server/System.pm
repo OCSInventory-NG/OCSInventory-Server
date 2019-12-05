@@ -146,6 +146,8 @@ sub _database_connect{
   my %params;
   my ($host, $database, $port, $user, $password);
   
+  my $env_mode_prefix = 'OCS_DB';
+
   if($mode eq 'write'){
     ($host, $database, $port, $user, $password) = ( $ENV{'OCS_DB_HOST'}, $ENV{'OCS_DB_NAME'}, $ENV{'OCS_DB_PORT'}, 
       $ENV{'OCS_DB_USER'}, $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_PWD') );
@@ -164,6 +166,7 @@ sub _database_connect{
       $port = $ENV{'OCS_DB_SL_PORT'}||'3306';
       $user = $ENV{'OCS_DB_SL_USER'};
       $password  = $Apache::Ocsinventory::CURRENT_CONTEXT{'APACHE_OBJECT'}->dir_config('OCS_DB_SL_PWD');
+      $env_mode_prefix .= '_SL';
     }
     else{
       $host = $ENV{'OCS_DB_HOST'};
@@ -183,8 +186,35 @@ sub _database_connect{
   # Optionnaly a mysql socket different than the client's built in
   $params{'mysql_socket'} = $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'} if $ENV{'OCS_OPT_DBI_MYSQL_SOCKET'};
 
+  my $mysql_ssl_mode = '';
+  if( defined($ENV{$env_mode_prefix.'_SSL_ENABLED'}) and $ENV{$env_mode_prefix.'_SSL_ENABLED'} == 1 )
+  {
+    if( defined($ENV{$env_mode_prefix.'_SSL_MODE'}) and $ENV{$env_mode_prefix.'_SSL_MODE'} eq 'SSL_MODE_PREFERRED' )
+    {
+        $mysql_ssl_mode = ';mysql_ssl=1;mysql_ssl_optional=1';
+    }
+    elsif( defined($ENV{$env_mode_prefix.'_SSL_MODE'}) and $ENV{$env_mode_prefix.'_SSL_MODE'} eq 'SSL_MODE_REQUIRED' )
+    {
+        $mysql_ssl_mode = ';mysql_ssl=1;mysql_ssl_verify_server_cert=0';
+    }
+    elsif( defined($ENV{$env_mode_prefix.'_SSL_MODE'}) and $ENV{$env_mode_prefix.'_SSL_MODE'} eq 'SSL_MODE_STRICT' )
+    {
+        $mysql_ssl_mode = ';mysql_ssl=1;mysql_ssl_verify_server_cert=1';
+    }
+    else
+    {
+        # SSL Is enabled but mode hasn't been provided. Let's put PREFERRED mode by default
+        $mysql_ssl_mode = ';mysql_ssl=1;mysql_ssl_optional=1';
+    }
+
+    if( defined( $ENV{$env_mode_prefix.'_SSL_CLIENT_KEY'} ) and defined( $ENV{$env_mode_prefix.'_SSL_CLIENT_CERT'} ) and defined( $ENV{$env_mode_prefix.'_SSL_CA_CERT'} ) )
+    {
+        $mysql_ssl_mode .= ';mysql_ssl_client_key='.$ENV{$env_mode_prefix.'_SSL_CLIENT_KEY'}.';mysql_ssl_client_cert='.$ENV{$env_mode_prefix.'_SSL_CLIENT_CERT'}.';mysql_ssl_ca_file='.$ENV{$env_mode_prefix.'_SSL_CA_CERT'};
+    }
+  }
+
   # Connection...
-  my $dbh = DBI->connect("DBI:mysql:database=$database;host=$host;port=$port", $user, $password, \%params);
+  my $dbh = DBI->connect("DBI:mysql:database=$database;host=$host;port=$port".$mysql_ssl_mode, $user, $password, \%params);
   unless($dbh) {
     &_log(521, 'database_connect', DBI->errstr);
     return undef;
