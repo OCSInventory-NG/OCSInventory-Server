@@ -23,6 +23,11 @@ sub api_database_connect{
     my $dbPort;
     my $dbUser;
     my $dbPwd;
+    my $dbSslEnabled;
+    my $dbSslClientCert;
+    my $dbSslClientKey;
+    my $dbSslCaCert;
+    my $dbSslMode;
 
     # Retrieve env var
     $dbHost = $ENV{'OCS_DB_HOST'};
@@ -31,8 +36,41 @@ sub api_database_connect{
     $dbUser = $ENV{'OCS_DB_USER'};
     $dbPwd  = $ENV{'OCS_DB_PWD'};
 
+    $dbSslEnabled       = $ENV{'OCS_DB_SSL_ENABLED'} || 0;
+    $dbSslClientKey     = $ENV{'OCS_DB_SSL_CLIENT_KEY'};
+    $dbSslClientCert    = $ENV{'OCS_DB_SSL_CLIENT_CERT'};
+    $dbSslCaCert        = $ENV{'OCS_DB_SSL_CA_CERT'};
+    $dbSslMode          = $ENV{'OCS_DB_SSL_MODE'} || 'SSL_MODE_PREFERRED';
+
+    my $sslMode = '';
+
+    if( $dbSslEnabled == 1 )
+    {
+        if( $dbSslMode eq 'SSL_MODE_PREFERRED' )
+        {
+            $sslMode = ';mysql_ssl=1;mysql_ssl_optional=1';
+        }
+        elsif( $dbSslMode eq 'SSL_MODE_REQUIRED' )
+        {
+            $sslMode = ';mysql_ssl=1;mysql_ssl_verify_server_cert=0';
+        }
+        elsif( $dbSslMode eq 'SSL_MODE_STRICT' )
+        {
+            $sslMode = ';mysql_ssl=1;mysql_ssl_verify_server_cert=1';
+        }
+        else
+        {
+            $sslMode = ';mysql_ssl=1;mysql_ssl_optional=1';
+        }
+    }
+
+    if( defined( $dbSslClientKey ) and defined( $dbSslClientCert ) and defined( $dbSslCaCert ) )
+    {
+        $sslMode .= ';mysql_ssl_client_key='.$dbSslClientKey.';mysql_ssl_client_cert='.$dbSslClientCert.';mysql_ssl_ca_file='.$dbSslCaCert;
+    }
+
     # Connection...
-    my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort", $dbUser, $dbPwd, {RaiseError => 1}) or die $DBI::errstr;
+    my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort".$sslMode, $dbUser, $dbPwd, {RaiseError => 1}) or die $DBI::errstr;
 
     return $dbh;
 
