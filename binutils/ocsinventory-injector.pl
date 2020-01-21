@@ -22,6 +22,8 @@ my $help;
 my $directory;
 my $file;
 my $url;
+my $sslmode;
+my $cafile;
 my $useragent;
 my $remove;
 my $verbose;
@@ -76,7 +78,15 @@ sub loadstdin {
 sub sendContent {
     my $content = shift;
 
-    my $ua = LWP::UserAgent->new;
+    my $ua = LWP::UserAgent->new(
+        protocols_allowed => ['http', 'https'],
+        timeout           => 10,
+        ssl_opts => { 
+            verify_hostname => $sslmode,
+            SSL_ca_file => $cafile
+        },
+    );
+
     $ua->agent($useragent);
     my $request = HTTP::Request->new( POST => $url );
     $request->header(
@@ -102,20 +112,22 @@ sub usage {
 
     print <<EOF;
 
-	DESCRIPTION:
-    	A command line tools to import .ocs files.
+    DESCRIPTION:
+        A command line tools to import .ocs files.
 
-	USAGE:
-	-h --help	: this menu
-	-d --directory	: load every .ocs files from a directory
-	-f --file\	: load a speficic file
-	-u --url	: ocsinventory backend URL, default is http://ocsinventory-ng/ocsinventory
-	--useragent	: HTTP user agent, default is OCS-NG_LOCAL_PL_v".VERSION."
-	-r --remove	: remove successfully injected files
-	-v --verbose	: verbose mode
-	--stdin		: read data from STDIN
+    USAGE:
+    -h --help	: this menu
+    -d --directory	: load every .ocs files from a directory
+    -f --file\	: load a speficic file
+    -u --url	: ocsinventory backend URL, default is http://ocsinventory-ng/ocsinventory
+    --sslmode   : 1 or 0, enable SSL inventory injection
+    --cafile    : path to certificate
+    --useragent	: HTTP user agent, default is OCS-NG_LOCAL_PL_v".VERSION."
+    -r --remove	: remove successfully injected files
+    -v --verbose	: verbose mode
+    --stdin		: read data from STDIN
 
-You can specify a --file or a --directory or STDIN. Current directory is the default
+    You can specify a --file or a --directory or STDIN. Current directory is the default
 
 EOF
     exit 1;
@@ -126,6 +138,8 @@ GetOptions(
     'd|directory=s'	=> \$directory,
     'f|file=s'		=> \$file,
     'u|url=s'		=> \$url,
+    'sslmode=s'     => \$sslmode,
+    'cafile=s'		=> \$cafile,
     'useragent=s'	=> \$useragent,
     'r|remove'		=> \$remove,
     'v|verbose'		=> \$verbose,
@@ -136,6 +150,8 @@ GetOptions(
 $url		= 'http://localhost/ocsinventory' unless $url;
 $useragent	= 'OCS-NG_INJECTOR_PL_v'.VERSION unless $useragent;
 $directory	= '.' unless $directory;
+$sslmode	= 0 unless $sslmode;
+$cafile	    = "cacert.pem" unless $cafile;
 ###
 
 $|=1;
