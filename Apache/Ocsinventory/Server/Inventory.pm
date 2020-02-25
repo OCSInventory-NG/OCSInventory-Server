@@ -52,6 +52,8 @@ use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Inventory::Update;
 use Apache::Ocsinventory::Server::Inventory::Filter;
 use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
+use Apache::Ocsinventory::Interface::SoftwareCategory;
+use Apache::Ocsinventory::Interface::AssetCategory;
 
 our %XML_PARSER_OPT = (
 	'ForceArray' => []
@@ -138,6 +140,9 @@ sub _post_inventory{
   my $deviceId = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+
+  set_category();
+  set_asset_category();
 
   &_generate_ocs_file();
   &kill_session( \%Apache::Ocsinventory::CURRENT_CONTEXT );
