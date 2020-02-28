@@ -449,7 +449,8 @@ our %DATA_MAP= (
       OPNAME => {},
       COUNTRY => {},
       SERIALNUMBER => {},
-      DEVICEID => {}
+      DEVICEID => {},
+      PHONENUMBER => {}
     }
   },
 
