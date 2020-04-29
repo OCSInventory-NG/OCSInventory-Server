@@ -37,6 +37,7 @@ our @EXPORT = qw /
   _get_info_software
   _verif_soft_exists
   _insert_software
+  _add_category
 /;
 
 sub _get_info_software {
@@ -82,6 +83,17 @@ sub _verif_soft_exists {
     return $id;
 }
 
+sub _add_category {
+    my ($name, $category) = @_;
+    my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+    my $sql;
+    my $result;
+
+    $sql = "UPDATE software_name SET CATEGORY_ID = ".$category." WHERE NAME = '".$name."'";
+    $result = $dbh->prepare($sql);
+    $result->execute;
+}
+
 sub _insert_software {
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
     my $sql;
@@ -117,6 +129,9 @@ sub _insert_software {
         # Get software Name ID if exists
         if(defined $name) {
             $arrayValue{NAME_ID} = _get_info_software($name, "software_name", "NAME");
+            if(defined $software->{CATEGORY}) {
+                _add_category($name, $software->{CATEGORY});
+            }
         }
         
         # Get software Publisher ID if exists

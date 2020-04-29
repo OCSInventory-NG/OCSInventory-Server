@@ -52,6 +52,7 @@ use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Inventory::Update;
 use Apache::Ocsinventory::Server::Inventory::Filter;
 use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
+use Apache::Ocsinventory::Server::Inventory::Software;
 use Apache::Ocsinventory::Interface::SoftwareCategory;
 use Apache::Ocsinventory::Interface::AssetCategory;
 
@@ -142,6 +143,7 @@ sub _post_inventory{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
   set_category();
+  &_insert_software();
   set_asset_category();
 
   &_generate_ocs_file();
