@@ -367,31 +367,6 @@ our %DATA_MAP= (
    }
   },
 
-  softwares => {
-    mask => 65536,
-    multi => 1,
-    auto => 1,
-    delOnReplace => 1,
-    sortBy => 'NAME',
-    writeDiff => 1,
-    cache => 1,
-    fields =>  {
-       PUBLISHER => {},
-       NAME => { cache => 1 },
-       VERSION => {},
-       FOLDER => {},
-       COMMENTS => {},
-       FILENAME => {},
-       FILESIZE => { fallback=>0 },
-       SOURCE => { fallback=>0 },
-       GUID => {},
-       LANGUAGE => {},
-       INSTALLDATE => {},
-       BITSWIDTH => {},
-       CATEGORY => {}
-    }
-  },
-
   virtualmachines => {
     mask => 131072,
     multi => 1,

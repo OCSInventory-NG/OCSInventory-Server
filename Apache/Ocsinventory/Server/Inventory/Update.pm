@@ -25,6 +25,7 @@ use Apache::Ocsinventory::Server::Inventory::Cache;
 use Apache::Ocsinventory::Server::Inventory::Update::Hardware;
 use Apache::Ocsinventory::Server::Inventory::Update::AccountInfos;
 
+use Apache::Ocsinventory::Server::Inventory::Software;
 use Apache::Ocsinventory::Interface::SoftwareCategory;
 use Apache::Ocsinventory::Interface::AssetCategory;
 use Apache::Ocsinventory::Interface::Saas;
@@ -46,6 +47,7 @@ sub _update_inventory{
 
   my $section;
 
+  &_insert_software();
   set_category();
   set_asset_category();  
   set_saas();
