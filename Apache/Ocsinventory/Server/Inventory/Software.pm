@@ -109,7 +109,7 @@ sub _add_category {
     my $sql;
     my @arg = ();
 
-    $sql = "UPDATE software_name SET CATEGORY_ID = ? WHERE NAME = ?";
+    $sql = "UPDATE software_name SET CATEGORY = ? WHERE NAME = ?";
     push @arg, $category;
     push @arg, $name;
     _prepare_sql($sql, @arg);
