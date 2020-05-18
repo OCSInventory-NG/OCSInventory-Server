@@ -207,23 +207,27 @@ sub execute_custom_request{
 # ATM : only on main hardware table
 sub format_query_for_computer_search{
 
-  my ($args_array) = @_;
+  my (@args_array) = @_;
 
   my $query_string = "SELECT ID from hardware WHERE";
   my @args;
   my $start = "";
   my $limit = "";
 
-  while(my($field_name, $searched_value) = each @args_array) {
-    if(lc($field_name) eq "limit"){
-      $limit = $searched_value;
-    }elsif (lc($field_name) eq "start"){
-      $start = $searched_value;
-    }else{
-      $field_name =~ tr/a-zA-Z//dc ;
-      $query_string .= " $field_name = ? AND";
-      push @args, $searched_value;
-    }
+
+  foreach my $hash_ref (@args_array) {
+      foreach (keys %{$hash_ref}) {
+        if(lc($_) eq "limit"){
+          $limit = ${$hash_ref}{$_};
+        }elsif (lc($_) eq "start"){
+          $start = ${$hash_ref}{$_};
+        }else{
+          $field_name = $_;
+          $field_name =~ tr/a-zA-Z//dc ;
+          $query_string .= " $field_name = ? AND";
+          push @args, ${$hash_ref}{$_};
+        }
+      }
   }
 
   $query_string = substr($query_string, 0, -3);
