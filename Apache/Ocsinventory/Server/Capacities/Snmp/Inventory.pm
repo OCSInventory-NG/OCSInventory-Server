@@ -98,50 +98,31 @@ sub _snmp_inventory{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}; 
 
-  my $snmp_devices = $result->{CONTENT}->{DEVICE};
-  
+  my $snmp_devices = $result->{CONTENT};
+
   #Getting data for the several snmp devices that we have in the xml
-  for( @$snmp_devices ){
-    my $snmpDeviceXml=$_;
+  foreach my $snmp_key (keys %{$snmp_devices}){
+    my @columns;
+    my @bind_num;
+    my @arguments;
+    my $i = 1;
 
-    #Getting context and ID in the snmp table for this device
-    my $snmpContext = &_snmp_context($snmpDeviceXml->{COMMON}->{SNMPDEVICEID});
-    
-    if ($snmpContext == 1) {
-      &_log(520,'snmp','context_error') if $ENV{'OCS_OPT_LOGLEVEL'};
-      return(1);
-    } 
-
-    my $snmpDatabaseId =  $snmpContext->{DATABASE_ID};
-
-    #We create an empty checksum for this device
-    $snmpDeviceXml->{COMMON}->{CHECKSUM} = 0;
-
-    # Call the _update_snmp_inventory_section for each section
-    for $section (@{$sectionsList}){
-      #We delete the snmp_ pattern to be in concordance with XML
-      $XmlSection = uc $section;
-      $XmlSection =~ s/SNMP_//g;
-
-      #Only if section exists in XML or if table is mandatory
-      if ($snmpDeviceXml->{$XmlSection} || $sectionsMeta->{$section}->{mandatory}) {
-        if(_update_snmp_inventory_section($snmpDeviceXml, $snmpContext, $section, $XmlSection, $sectionsMeta->{$section})){
-          return 1;
-        }
-      }
+    foreach my $snmp_infos (keys %{$snmp_devices->{$snmp_key}}) {
+      push @columns, $snmp_infos;
+      push @bind_num, '?';
+      push @arguments, $snmp_devices->{$snmp_key}->{$snmp_infos};
     }
 
-    #Call COMMON section update
-    if(&_snmp_common($snmpDeviceXml->{COMMON},$snmpDatabaseId,$agentDatabaseId)) {
-      return 1;
-    }
+    my $column = join ',', @columns;
+    my $args_prepare = join ',', @bind_num;
+    my $query = $dbh->prepare("INSERT INTO $snmp_key($column) VALUES($args_prepare)");
 
-    #Update the snmp_laststate table for this device if needed
-    if ( $snmpContext->{'LASTSTATE_UPDATE_VALUES'} ) { 
-      my $update_values = join(',', @{$snmpContext->{'LASTSTATE_UPDATE_VALUES'}});    
-      $dbh->do("UPDATE snmp_laststate SET $update_values WHERE SNMP_ID = $snmpDatabaseId");
-      $dbh->commit;
+    foreach my $value (@arguments) {
+        $query->bind_param($i, $value);
+        $i++;
     }
+    $query->execute; 
+    print Dumper($query);
   }
 }
 
