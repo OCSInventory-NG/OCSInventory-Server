@@ -22,6 +22,7 @@
 package Apache::Ocsinventory::Server::Capacities::Snmp::Inventory;
 
 use strict;
+use Data::Dumper;
 
 require Exporter;
 
@@ -105,24 +106,34 @@ sub _snmp_inventory{
     my @columns;
     my @bind_num;
     my @arguments;
+    my @update;
     my $i = 1;
 
     foreach my $snmp_infos (keys %{$snmp_devices->{$snmp_key}}) {
       push @columns, $snmp_infos;
       push @bind_num, '?';
       push @arguments, $snmp_devices->{$snmp_key}->{$snmp_infos};
+      push @update, $snmp_infos." = ?";
     }
 
     my $column = join ',', @columns;
     my $args_prepare = join ',', @bind_num;
-    my $query = $dbh->prepare("INSERT INTO $snmp_key($column) VALUES($args_prepare)");
+    my $update_prepare = join ',', @update;
+    
+    my $query = $dbh->prepare("INSERT INTO $snmp_key($column) VALUES($args_prepare) ON DUPLICATE KEY UPDATE $update_prepare");
 
     foreach my $value (@arguments) {
         $query->bind_param($i, $value);
         $i++;
     }
-    $query->execute; 
-    print Dumper($query);
+
+    foreach my $value (@arguments) {
+        $query->bind_param($i, $value);
+        $i++;
+    }
+
+    $query->execute;
+    
   }
 }
 
