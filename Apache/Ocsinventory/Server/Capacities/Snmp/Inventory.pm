@@ -22,7 +22,6 @@
 package Apache::Ocsinventory::Server::Capacities::Snmp::Inventory;
 
 use strict;
-use Data::Dumper;
 
 require Exporter;
 
