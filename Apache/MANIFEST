@@ -16,9 +16,7 @@ Ocsinventory/Interface/Snmp.pm
 Ocsinventory/Interface/Updates.pm
 Ocsinventory/Map.pm
 Ocsinventory/Plugins.pm
-Ocsinventory/Plugins/Apache.pm
 Ocsinventory/Plugins/Modules.pm
-Ocsinventory/SOAP.pm
 Ocsinventory/Server/Capacities/Datafilter.pm
 Ocsinventory/Server/Capacities/Download.pm
 Ocsinventory/Server/Capacities/Download/Inventory.pm
