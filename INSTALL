@@ -17,7 +17,6 @@ In order to install OCS 2.4 the following requirement are needed :
 	- libnet-ip-perl
 	- php-pclzip
 	- libarchive-zip-perl (providing Archive::Zip)
-	- libsoap-lite-perl (providing SOAP::Lite, plugin engine need it)
 	- libxml-simple-perl (providing XML:Entities)
 	- libnet-ip-perl (providing NET::IP)
 	- libapache-dbi-perl (providing Apache::DBI)

@@ -31,9 +31,7 @@ WriteMakefile(
 			'DBD::mysql'      => 2.9004, # no DBD::mysql can never be any fun.
 			'XML::Simple'     => 2.12,   # no XML::Simple can never be any fun.
 			'Net::IP'         => 1.21,   # no Net::IP can never be any fun.
-#			'SOAP::Lite'      => 0.66,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
-#			'XML::Entities'   => 0.02,   # no SOAP::Lite can never be any fun (required only for SOAP web service).
-		      },
+	},
 #    'EXE_FILES'         => ['binutils/ocsinventory-injector.pl'],
 #    'INSTALLSCRIPT'     => "/usr/bin",
 #    'INSTALLSITESCRIPT' => "/usr/bin",

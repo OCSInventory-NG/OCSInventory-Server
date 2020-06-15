@@ -751,7 +751,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		#	- Compress::Zlib 1.33 or higher
 		#	- XML::Simple 2.12 or higher
 		#	- Net::IP 1.21 or higher
-		#	- SOAP::Lite
 		#	- Archive::Zip
 		echo
 		echo "+----------------------------------------------------------+"
@@ -766,7 +765,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		COMPRESS_ZLIB=0
 		XML_SIMPLE=0
 		NET_IP=0
-		SOAP_LITE=0
 		ARCHIVE_ZIP=0
 
 		echo "Checking for DBI PERL module..."
@@ -841,19 +839,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 				echo "Found that PERL module Net::IP is available."
 		fi
 
-		# Check for SOAP::Lite
-		echo "Checking for SOAP::Lite Perl module..."
-		echo "Checking for SOAP::Lite Perl module" >> $SETUP_LOG
-		$PERL_BIN -mSOAP::Lite -e 'print "PERL module SOAP::Lite is available\n"' >> $SETUP_LOG 2>&1
-		if [ $? -ne 0 ]
-			then
-				echo "*** ERROR: PERL module SOAP::Lite is not installed !"
-				REQUIRED_PERL_MODULE_MISSING=1
-				SOAP_LITE=1
-			else
-				echo "Found that PERL module SOAP::Lite is available."
-		fi
-
 		# Check for Zip::Archive
 		echo "Checking for Archive::Zip Perl module..."
 		echo "Checking for Archive::Zip Perl module" >> $SETUP_LOG
@@ -905,10 +890,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 									then
 										PACKAGE="$PACKAGE perl-Net-IP"
 								fi
-								if [ $SOAP_LITE -eq 1 ]
-									then
-										PACKAGE="$PACKAGE perl-SOAP-Lite"
-								fi
 								if [ $ARCHIVE_ZIP -eq 1 ]
 									then
 										PACKAGE="$PACKAGE perl-Archive-Zip"
@@ -952,10 +933,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 									then
 										PACKAGE="$PACKAGE libnet-ip-perl"
 								fi
-								if [ $SOAP_LITE -eq 1 ]
-									then
-										PACKAGE="$PACKAGE libsoap-lite-perl"
-								fi
 								if [ $ARCHIVE_ZIP -eq 1 ]
 									then
 										PACKAGE="$PACKAGE libarchive-zip-perl"
@@ -989,60 +966,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 						echo "Installation aborted" >> $SETUP_LOG
 						exit 1
 				fi
-		fi
-
-		# Check for optional Perl Modules
-		#	- Apache2::SOAP, not required, used only in web service
-		#	- XML::Entities 0.02, not required, used only in web service
-		#
-		echo
-		echo "+----------------------------------------------------------+"
-		echo "|         Checking for optional Perl Modules...            |"
-		echo "+----------------------------------------------------------+"
-		echo
-		echo "Checking for Apache2::SOAP PERL module..."
-		echo "Checking for Apache2::SOAP PERL module" >> $SETUP_LOG
-                $PERL_BIN -mSOAP::Transport::HTTP2 -e 'print "PERL module Apache2::SOAP is available\n"' >> $SETUP_LOG 2>&1
-                if [ $? -ne 0 ]
-                        then
-                                echo "PERL module Apache2::SOAP is available\n" >> $SETUP_LOG
-                                echo "*** Warning: PERL module Apache2::SOAP is not installed !"
-                                echo "This module is only required by OCS Inventory NG SOAP Web Service."
-                                echo -n "Do you wish to continue ([y]/n] ?"
-                                read ligne
-                                if [ -z "$ligne" ] || [ "$ligne" = "y" ]
-                                        then
-                                                echo "User choose to continue setup without PERL module SOAP::Apache2" >> $SETUP_LOG
-                                        else
-                                                echo
-                                                echo "Installation aborted !"
-                                                echo "User choose to abort installation !" >> $SETUP_LOG
-                                                exit 1
-                                fi
-                        else
-                                echo "Found that PERL module SOAP::Apache2 is available."
-                fi
-
-		echo "Checking for XML::Entities PERL module..."
-		echo "Checking for XML::Entities PERL module" >> $SETUP_LOG
-		$PERL_BIN -mXML::Entities -e 'print "PERL module XML::Entities is available\n"' >> $SETUP_LOG 2>&1
-		if [ $? -ne 0 ]
-			then
-				echo "*** Warning: PERL module XML::Entities is not installed !"
-				echo "This module is only required by OCS Inventory NG SOAP Web Service."
-				echo -n "Do you wish to continue ([y]/n] ?"
-				read ligne
-				if [ -z "$ligne" ] || [ "$ligne" = "y" ]
-					then
-						echo "User choose to continue setup without PERL module XML::Entities" >> $SETUP_LOG
-					else
-						echo
-						echo "Installation aborted !"
-						echo "User choose to abort installation !" >> $SETUP_LOG
-						exit 1
-				fi
-			else
-				echo "Found that PERL module XML::Entities is available."
 		fi
 		echo
 
