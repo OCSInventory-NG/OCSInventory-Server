@@ -237,6 +237,7 @@ sub _ipdiscover_read_result{
   my $update_req;
   my $insert_req;
   my $request;
+  my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
   if(exists($result->{CONTENT}->{IPDISCOVER})){
     my $base = $result->{CONTENT}->{NETWORKS};
@@ -248,22 +249,63 @@ sub _ipdiscover_read_result{
         last;
       }    
     }
-    
-    # We insert the results (MAC/IP)
-    $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL, NAME=? WHERE MAC=?');
-    $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME) VALUES(?,?,?,?,?)');
-    
+
     $base = $result->{CONTENT}->{IPDISCOVER}->{H};
-    for(@$base){
-      unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
-        &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
-        next;
+
+    if( $ENV{'OCS_OPT_IPDISCOVER_LINK_TAG_NETWORK'} ) {
+      my $request_tag = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
+      my $tag = undef;
+
+      unless($request_tag->execute($DeviceID)){
+          &_log(519,'ipdiscover','computer tag error') if $ENV{'OCS_OPT_LOGLEVEL'};
+          return(1);
       }
-      $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});
-      unless($update_req->rows){
-        $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N});
+
+      my $row = $request_tag->fetchrow_hashref;
+
+      if (defined $row->{'TAG'}) {
+        $tag = $row->{'TAG'};
+      }
+
+      # We insert the results (MAC/IP)
+      for(@$base){
+        unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
+          &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
+          next;
+        }
+        my $request_verif = $dbh->prepare('SELECT TAG FROM netmap WHERE MAC=?');
+        $request_verif->execute($_->{M});
+        my $row_verif = $request_verif->fetchrow_hashref;
+
+        if (defined $row_verif->{'TAG'}) {
+          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL, NAME=? WHERE MAC=? AND TAG=?');
+          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M}, $tag);
+        } else {
+          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL, NAME=?, TAG=? WHERE MAC=?');
+          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $tag, $_->{M});
+        }
+        unless($update_req->rows){
+          $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME, TAG) VALUES(?,?,?,?,?,?)');
+          $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N}, $tag);
+        }
+      }
+    } else {
+      # We insert the results (MAC/IP)
+      $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NULL, NAME=? WHERE MAC=?');
+      $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME) VALUES(?,?,?,?,?)');
+
+      for(@$base){
+        unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
+          &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
+          next;
+        }
+        $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});
+        unless($update_req->rows){
+          $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N});
+        }
       }
     }
+
     $dbh->commit;
   }else{
     return 1;
