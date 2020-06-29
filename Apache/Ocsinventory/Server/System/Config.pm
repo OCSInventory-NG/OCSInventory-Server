@@ -299,6 +299,14 @@ our %CONFIG = (
     level => CANSKIP,
     filter => qr '^(1|0)$'
   },
+  IPDISCOVER_LINK_TAG_NETWORK => {
+    type => 'IVALUE',
+    default => 0,
+    unit => 'NA',
+    description => 'Link Ipdiscover network to computer TAG',
+    level => CANSKIP,
+    filter => qr '^(1|0)$'
+  },
   REGISTRY => {
     type => 'IVALUE',
     default => 1,
