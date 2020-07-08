@@ -62,12 +62,32 @@ sub _get_info_software {
     my $sql;
     my $valueResult;
     my $result;
+    my $resultVerif;
+    my $valueVerif = undef;
 
-    #Insert or Update value
+    # Verif if value exist
+    my @argVerif = ();
+    $sql = "SELECT ID FROM $table WHERE $column = ?";
+    push @argVerif, $value;
+    $resultVerif = _prepare_sql($sql, @argVerif);
+
+    while(my $row = $resultVerif->fetchrow_hashref()){
+        $valueVerif = $row->{ID};
+    }
+
     my @argInsert = ();
-    $sql = "INSERT INTO $table ($column) VALUES(?) ON DUPLICATE KEY UPDATE $column = ?";
-    push @argInsert, $value;
-    push @argInsert, $value;
+
+    if(!defined $valueVerif) {
+        # Insert if undef
+        $sql = "INSERT INTO $table ($column) VALUES(?)";
+        push @argInsert, $value;
+    } else {
+        # Update if already defined
+        $sql = "UPDATE $table SET $column = ? WHERE ID = ?";
+        push @argInsert, $value;
+        push @argInsert, $valueVerif;
+    }
+
     _prepare_sql($sql, @argInsert);
 
     # Get last Insert or Update ID
