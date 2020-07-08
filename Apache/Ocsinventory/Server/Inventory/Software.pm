@@ -81,11 +81,6 @@ sub _get_info_software {
         # Insert if undef
         $sql = "INSERT INTO $table ($column) VALUES(?)";
         push @argInsert, $value;
-    } else {
-        # Update if already defined
-        $sql = "UPDATE $table SET $column = ? WHERE ID = ?";
-        push @argInsert, $value;
-        push @argInsert, $valueVerif;
     }
 
     _prepare_sql($sql, @argInsert);
