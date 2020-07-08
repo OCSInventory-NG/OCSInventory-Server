@@ -142,8 +142,8 @@ sub _post_inventory{
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
-  &_insert_software();
   set_category();
+  &_insert_software();
   set_asset_category();
 
   &_generate_ocs_file();
