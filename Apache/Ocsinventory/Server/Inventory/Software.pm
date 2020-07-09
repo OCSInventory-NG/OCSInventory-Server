@@ -94,8 +94,8 @@ sub _insert_software_name {
         _prepare_sql($sql, @argInsert);
     }
 
-    if(defined $valueVerif) {
-        if($cat != $categoryVerif) {
+    if(defined $valueVerif && defined $cat) {
+        if((!defined $categoryVerif) || ($cat != $categoryVerif)) {
             my @arg = ();
             my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
             push @arg, $cat;
