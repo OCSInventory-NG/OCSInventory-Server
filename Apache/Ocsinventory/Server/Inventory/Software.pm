@@ -35,17 +35,18 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw /
   _get_info_software
-  _verif_soft_exists
+  _del_all_soft
   _insert_software
-  _add_category
   _prepare_sql
+  _insert_software_name
 /;
 
 sub _prepare_sql {
     my ($sql, @arguments) = @_;
-    my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
     my $query;
     my $i = 1;
+
+    my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
     $query = $dbh->prepare($sql);
     foreach my $value (@arguments) {
@@ -55,6 +56,65 @@ sub _prepare_sql {
     $query->execute; 
 
     return $query;   
+}
+
+sub _insert_software_name {
+    my ($name, $cat) = @_;
+    my $sql;
+    my $resultVerif;
+    my $valueVerif = undef;
+    my $categoryVerif = undef;
+    my $valueResult;
+    my $result;
+
+    # Verif if value exist
+    my @argVerif = ();
+    $sql = "SELECT ID, CATEGORY FROM software_name WHERE NAME = ?";
+    push @argVerif, $name;
+    $resultVerif = _prepare_sql($sql, @argVerif);
+
+    while(my $row = $resultVerif->fetchrow_hashref()){
+        $valueVerif = $row->{ID};
+        $categoryVerif = $row->{CATEGORY};
+    }
+
+    my @argInsert = ();
+
+    if(!defined $valueVerif) {
+        if(!defined $cat) {
+            # Insert if undef
+            $sql = "INSERT INTO software_name (NAME) VALUES(?)";
+            push @argInsert, $name;
+        } else {
+            # Insert if undef
+            $sql = "INSERT INTO software_name (NAME,CATEGORY) VALUES(?,?)";
+            push @argInsert, $name;
+            push @argInsert, $cat;
+        }
+        _prepare_sql($sql, @argInsert);
+    }
+
+    if(defined $valueVerif) {
+        if($cat != $categoryVerif) {
+            my @arg = ();
+            my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
+            push @arg, $cat;
+            push @arg, $valueVerif;
+            _prepare_sql($sqlUpdate, @arg);
+        }
+    }
+
+    # Get last Insert or Update ID
+    my @argSelect = ();
+    $sql = "SELECT ID FROM software_name WHERE NAME = ?";
+    push @argSelect, $name;
+    $result = _prepare_sql($sql, @argSelect);
+
+    while(my $row = $result->fetchrow_hashref()){
+        $valueResult = $row->{ID};
+    }
+
+    return $valueResult;
 }
 
 sub _get_info_software {
@@ -98,45 +158,28 @@ sub _get_info_software {
     return $valueResult;
 }
 
-sub _verif_soft_exists {
-    my %softValue = @_;
+sub _del_all_soft {
+    my ($hardware_id) = @_;
     my $sql;
     my @arg = ();
     my $result;
     my $id = 0;
 
-    $sql = "SELECT ID FROM software WHERE HARDWARE_ID = ? AND NAME_ID = ? AND PUBLISHER_ID = ? AND VERSION_ID = ?";
-    push @arg, $softValue{HARDWARE_ID};
-    push @arg, $softValue{NAME_ID};
-    push @arg, $softValue{PUBLISHER_ID};
-    push @arg, $softValue{VERSION_ID};
+    $sql = "DELETE FROM software WHERE HARDWARE_ID = ?";
+    push @arg, $hardware_id;
     $result = _prepare_sql($sql, @arg);
-
-    while(my $row = $result->fetchrow_hashref()){
-        $id = $row->{ID};
-    }
-
-    return $id;
-}
-
-sub _add_category {
-    my ($name, $category) = @_;
-    my $sql;
-    my @arg = ();
-
-    $sql = "UPDATE software_name SET CATEGORY = ? WHERE NAME = ?";
-    push @arg, $category;
-    push @arg, $name;
-    _prepare_sql($sql, @arg);
 }
 
 sub _insert_software {
     my $sql;
+    my $hardware_id = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
     my @arrayRef = ('HARDWARE_ID', 'NAME_ID', 
                     'PUBLISHER_ID', 'VERSION_ID', 
                     'FOLDER', 'COMMENTS', 'FILENAME', 
                     'FILESIZE', 'SOURCE', 'GUID', 
                     'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH');
+
+    _del_all_soft($hardware_id);
     
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
         my %arrayValue = (
@@ -162,10 +205,7 @@ sub _insert_software {
         
         # Get software Name ID if exists
         if(defined $name) {
-            $arrayValue{NAME_ID} = _get_info_software($name, "software_name", "NAME");
-            if(defined $software->{CATEGORY}) {
-                _add_category($name, $software->{CATEGORY});
-            }
+            $arrayValue{NAME_ID} = _insert_software_name($name, $software->{CATEGORY});
         }
         
         # Get software Publisher ID if exists
@@ -177,8 +217,6 @@ sub _insert_software {
         if(defined $version && $version ne '') {
             $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
         }
-  
-        my $verif = _verif_soft_exists(%arrayValue);
 
         my $arrayRefString = join ',', @arrayRef;
         my @arg = ();
@@ -188,20 +226,11 @@ sub _insert_software {
             push @arg, $arrayValue{$arrayKey};
         }  
   
-        if($verif == 0) {
-            $sql = "INSERT INTO software ($arrayRefString) VALUES(";
-            $sql .= (join ',', @bind_num).') ';
-            _prepare_sql($sql, @arg);
-        } else {
-            $sql = "UPDATE software SET ";
-            $sql .= join ',', @bind_update;
-            $sql .= " WHERE HARDWARE_ID = ? AND NAME_ID = ?
-            AND PUBLISHER_ID = ? AND VERSION_ID = ?";
-            push @arg, $arrayValue{HARDWARE_ID};
-            push @arg, $arrayValue{NAME_ID};
-            push @arg, $arrayValue{PUBLISHER_ID};
-            push @arg, $arrayValue{VERSION_ID};
-            _prepare_sql($sql, @arg);
-        }
+
+        $sql = "INSERT INTO software ($arrayRefString) VALUES(";
+        $sql .= (join ',', @bind_num).') ';
+        _prepare_sql($sql, @arg);
     }
 }
+
+1;
