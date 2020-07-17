@@ -1255,6 +1255,12 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		fi
 		echo
 
+		#Fix permissions on server side for plugin engine (perl / plugins) dir usually in etc/ocsinventory-server..
+		# Where are located OCS Communication server plugins configuration files
+		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_CONFIG_DIR
+		# Where are located OCS Communication server plugins perl files
+		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_PERL_DIR
+
 		echo
 		echo "+----------------------------------------------------------------------+"
 		echo "|     OK, Communication server plugins Perl directory created ;-)      |"
@@ -1777,11 +1783,6 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		echo "Writing communication server configuration to file $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE" >> $SETUP_LOG
 		cp -f $ADM_SERVER_APACHE_CONF_FILE.local $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE >> $SETUP_LOG 2>&1
 
-		#Fix permissions on server side for plugin engine (perl / plugins) dir usually in etc/ocsinventory-server..
-		# Where are located OCS Communication server plugins configuration files
-		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_CONFIG_DIR
-		# Where are located OCS Communication server plugins perl files
-		chown -R $APACHE_USER:$APACHE_GROUPE $OCS_COM_SRV_PLUGINS_PERL_DIR
 		if [ $? -ne 0 ]
 			then
 				echo "*** ERROR: Unable to write $APACHE_CONFIG_DIRECTORY/$ADM_SERVER_APACHE_CONF_FILE, please look at error in $SETUP_LOG and fix !"
