@@ -20,6 +20,7 @@ require Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch; # Get list o
 ## IPDiscover section
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover;
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork;
+require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag;
 
 ## SNMP section
 require Api::Ocsinventory::Restapi::Snmp::Get::SnmpId; # Get specific Snmp type informations
@@ -71,6 +72,13 @@ get '/v1/ipdiscover' => sub {
         my $limit = $c->param('limit');
 
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
+};
+
+get '/v1/ipdiscover/:tag' => sub {
+        my $c = shift;
+        my $tag = $c->stash('tag');
+
+        $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
 };
 
 get '/v1/ipdiscover/:network' => sub {
