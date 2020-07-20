@@ -100,7 +100,10 @@ get '/v1/snmps/typeList' => sub {
 get '/v1/snmp/:type' => sub {
         my $c = shift;
         my $type = $c->stash('type');
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($type));
+        my $start = $c->param('start');
+        my $limit = $c->param('limit');
+
+        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($type, $start, $limit));
 };
 
 get '/v1/snmp/:type/:id' => sub {
