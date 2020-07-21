@@ -20,6 +20,7 @@ sub get_computer {
     foreach my $computer ( @$computers ) {
         $$json_return{"$computer->{ID}"}{"hardware"} = $computer;
         $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, "");
+        $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_software_json("computer", $computer->{ID}, $json_return, "");
     }
 
     return encode_json($json_return);

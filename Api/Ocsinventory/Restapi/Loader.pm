@@ -68,8 +68,8 @@ get '/v1/computers/search' => sub {
 get '/v1/ipdiscover' => sub {
         my $c = shift;
 
-        my $start = $c->param('start');
-        my $limit = $c->param('limit');
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
 
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
 };
@@ -100,8 +100,8 @@ get '/v1/snmps/typeList' => sub {
 get '/v1/snmp/:type' => sub {
         my $c = shift;
         my $type = $c->stash('type');
-        my $start = $c->param('start');
-        my $limit = $c->param('limit');
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
 
         $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($type, $start, $limit));
 };

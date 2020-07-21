@@ -103,29 +103,50 @@ sub generate_item_datamap_json{
     while ( ($key, $value) = each %DATA_MAP )
     {
 
-      $map_type = "computer";
-      my $snmp_check = substr $key, 0, 4;
-      if($snmp_check eq "snmp"){
-        $map_type = "snmp";
-      }
+        $map_type = "computer";
+        my $snmp_check = substr $key, 0, 4;
+        if($snmp_check eq "snmp"){
+            $map_type = "snmp";
+        }
 
-      # IF specific map key provided
-      if($specific_map eq "" || $key eq $specific_map){
-          if($key ne "hardware" && $key ne "snmp"){
-              if( $map_type eq "snmp" && $item_type eq "snmp"){
-                  # SNMP query processing
-                  $query_data = get_item_table_informations($key, $computer_id, "SNMP_ID");
-                  $$json_string{"$computer_id"}{"$key"} = $query_data;
-              }elsif($map_type eq "computer" && $item_type eq "computer"){
-                  # COMPUTER query processing
-                  $query_data = get_item_table_informations($key, $computer_id, "HARDWARE_ID");
-                  $$json_string{"$computer_id"}{"$key"} = $query_data;
-              }
-          }
-
-      }
-
+        # IF specific map key provided
+        if($specific_map eq "" || $key eq $specific_map){
+            if($key ne "hardware" && $key ne "snmp"){
+                if( $map_type eq "snmp" && $item_type eq "snmp"){
+                    # SNMP query processing
+                    $query_data = get_item_table_informations($key, $computer_id, "SNMP_ID");
+                    $$json_string{"$computer_id"}{"$key"} = $query_data;
+                }elsif($map_type eq "computer" && $item_type eq "computer"){
+                    # COMPUTER query processing
+                    $query_data = get_item_table_informations($key, $computer_id, "HARDWARE_ID");
+                    $$json_string{"$computer_id"}{"$key"} = $query_data;
+                }
+            }
+        }
     }
+
+    return $json_string;
+
+}
+
+# Generate query based on software depending on computer id
+sub generate_item_software_json{
+
+    my ($item_type, $computer_id, $json_string, $specific_map) = @_;
+    my $query_data;
+    my $database = api_database_connect();
+
+    my $items = $database->selectall_arrayref(
+        "SELECT *, c.CATEGORY_NAME as CATEGORY, n.NAME, p.PUBLISHER, v.VERSION 
+        FROM software s LEFT JOIN software_name n ON s.NAME_ID = n.ID 
+        LEFT JOIN software_publisher p ON s.PUBLISHER_ID = p.ID 
+        LEFT JOIN software_version v ON s.VERSION_ID = v.ID 
+        LEFT JOIN software_categories c ON n.CATEGORY = c.ID 
+        WHERE HARDWARE_ID = $computer_id",
+        { Slice => {} }
+    );
+
+    $$json_string{"$computer_id"}{"sofwtares"} = $items;
 
     return $json_string;
 
