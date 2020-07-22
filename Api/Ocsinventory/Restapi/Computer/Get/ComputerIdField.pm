@@ -19,7 +19,11 @@ sub get_computer_field {
 
     foreach my $computer ( @$computers ) {
         $$json_return{"$computer->{ID}"}{"hardware"} = $computer;
-        $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, $field);
+        if($field eq "softwares") {
+            $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_software_json("computer", $computer->{ID}, $json_return, $field);
+        } else {
+            $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, $field);
+        }
     }
 
     return encode_json($json_return);

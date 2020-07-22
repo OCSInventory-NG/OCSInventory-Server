@@ -12,15 +12,12 @@ use Mojo::JSON qw(decode_json encode_json);
 
 sub get_snmp_id {
 
-    my ($id) = @_;
+    my ($type, $start, $limit) = @_;
 
-    my $snmps = Api::Ocsinventory::Restapi::ApiCommon::get_item_table_informations("snmp", "id", $id);
     my $json_return;
+    my $query = "SELECT * from $type ";
 
-    foreach my $snmp ( @$snmps ) {
-        $$json_return{"$snmp->{ID}"}{"snmp"} = $snmp;
-        $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("snmp", $snmp->{ID}, $json_return, "");
-    }
+    my $json_return = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, $start, $limit);
 
     return encode_json($json_return);
 }
