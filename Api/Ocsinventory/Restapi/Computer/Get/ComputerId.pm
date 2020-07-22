@@ -14,7 +14,7 @@ sub get_computer {
 
     my ($id) = @_;
 
-    my $computers = Api::Ocsinventory::Restapi::ApiCommon::get_item_table_informations("hardware", "id", $id);
+    my $computers = Api::Ocsinventory::Restapi::ApiCommon::get_item_table_informations("hardware", $id, "id");
     my $json_return;
 
     foreach my $computer ( @$computers ) {

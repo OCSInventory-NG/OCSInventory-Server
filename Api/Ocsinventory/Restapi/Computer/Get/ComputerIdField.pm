@@ -12,17 +12,17 @@ use Mojo::JSON qw(decode_json encode_json);
 
 sub get_computer_field {
 
-    my ($id, $field) = @_;
+    my ($id, $field, $where, $operator, $value) = @_;
 
-    my $computers = Api::Ocsinventory::Restapi::ApiCommon::get_item_table_informations("hardware", "id", $id);
+    my $computers = Api::Ocsinventory::Restapi::ApiCommon::get_item_table_informations("hardware", $id, "id");
     my $json_return;
 
     foreach my $computer ( @$computers ) {
         $$json_return{"$computer->{ID}"}{"hardware"} = $computer;
         if($field eq "softwares") {
-            $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_software_json("computer", $computer->{ID}, $json_return, $field);
+            $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_software_json("computer", $computer->{ID}, $json_return, $field, $where, $operator, $value);
         } else {
-            $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, $field);
+            $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, $field, $where, $operator, $value);
         }
     }
 
