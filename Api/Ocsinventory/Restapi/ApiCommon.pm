@@ -95,7 +95,7 @@ sub error_return{
 # Generate query based on datamap depending on computer id
 sub generate_item_datamap_json{
 
-    my ($item_type, $computer_id, $json_string, $specific_map) = @_;
+    my ($item_type, $computer_id, $json_string, $specific_map, $where, $operator, $values) = @_;
     my $map_type;
     my $query_data;
 
@@ -118,7 +118,7 @@ sub generate_item_datamap_json{
                     $$json_string{"$computer_id"}{"$key"} = $query_data;
                 }elsif($map_type eq "computer" && $item_type eq "computer"){
                     # COMPUTER query processing
-                    $query_data = get_item_table_informations($key, $computer_id, "HARDWARE_ID");
+                    $query_data = get_item_table_informations($key, $computer_id, "HARDWARE_ID", $where, $operator, $values);
                     $$json_string{"$computer_id"}{"$key"} = $query_data;
                 }
             }
@@ -132,21 +132,36 @@ sub generate_item_datamap_json{
 # Generate query based on software depending on computer id
 sub generate_item_software_json{
 
-    my ($item_type, $computer_id, $json_string, $specific_map) = @_;
+    my ($item_type, $computer_id, $json_string, $specific_map, $where, $operator, $value) = @_;
     my $query_data;
     my $database = api_database_connect();
+    my @args = ();
 
-    my $items = $database->selectall_arrayref(
-        "SELECT *, c.CATEGORY_NAME as CATEGORY, n.NAME, p.PUBLISHER, v.VERSION 
+    $query_data = "SELECT *, c.CATEGORY_NAME as CATEGORY, n.NAME, p.PUBLISHER, v.VERSION 
         FROM software s LEFT JOIN software_name n ON s.NAME_ID = n.ID 
         LEFT JOIN software_publisher p ON s.PUBLISHER_ID = p.ID 
         LEFT JOIN software_version v ON s.VERSION_ID = v.ID 
         LEFT JOIN software_categories c ON n.CATEGORY = c.ID 
-        WHERE HARDWARE_ID = $computer_id",
-        { Slice => {} }
+        WHERE HARDWARE_ID = ?";
+
+    @args = ($computer_id);
+
+    if($where ne "" && $operator ne "" && $value ne "") {
+        if($operator == "like" || $operator == "not like") {
+            $value = "%$value%";
+        }
+        $query_data .= " AND $where $operator ?";
+        
+        push @args, $value;
+    }
+
+    my $items = $database->selectall_arrayref(
+        $query_data,
+        { Slice => {} },
+        @args
     );
 
-    $$json_string{"$computer_id"}{"sofwtares"} = $items;
+    $$json_string{"$computer_id"}{"softwares"} = $items;
 
     return $json_string;
 
@@ -155,17 +170,32 @@ sub generate_item_software_json{
 # Return table item data
 sub get_item_table_informations{
 
-  my ($table_name, $condition, $ref_column) = @_;
-  my $database = api_database_connect();
+    my ($table_name, $condition, $ref_column, $where, $operator, $value) = @_;
+    my $database = api_database_connect();
+    my $query_data;
+    my @args = ();
 
-  my $items = $database->selectall_arrayref(
-      "select * from $table_name where $ref_column = $condition",
-      { Slice => {} }
-  );
+    $query_data = "SELECT * FROM $table_name WHERE $ref_column = ?";
+    push @args, $condition;
 
-  return $items;
+    if($where ne "" && $operator ne "" && $value ne "") {
+        if($operator == "like" || $operator == "not like") {
+            $value = "%$value%";
+        }
+        $query_data .= " AND $where $operator ?";
+        
+        push @args, $value;
+    }
 
+    my $items = $database->selectall_arrayref(
+        $query_data,
+        { Slice => {} },
+        @args
+    );
+
+    return $items;
 }
+
 
 # Get computers / snmp base informations
 sub get_item_main_table_informations{

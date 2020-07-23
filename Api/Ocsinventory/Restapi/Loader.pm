@@ -44,7 +44,12 @@ get '/v1/computer/:id/:field' => sub {
         my $c = shift;
         my $id = $c->stash('id');
         my $field = $c->stash('field');
-        $c->render(text => Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField::get_computer_field($id, $field));
+        
+        my $where = $c->param('where')|| "";
+        my $operator = $c->param('operator')|| "";
+        my $value = $c->param('value')|| "";
+
+        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField::get_computer_field($id, $field, $where, $operator, $value));
 };
 
 get '/v1/computers' => sub {
