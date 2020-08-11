@@ -220,7 +220,7 @@ sub _database_connect{
     return undef;
   }
   $dbh->do("SET NAMES 'utf8'") if($dbh && $ENV{'OCS_OPT_UNICODE_SUPPORT'});
-  $dbh->do("SET sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
+  $dbh->do("SET sql_mode='NO_ENGINE_SUBSTITUTION'");
   return $dbh;
 }
 
