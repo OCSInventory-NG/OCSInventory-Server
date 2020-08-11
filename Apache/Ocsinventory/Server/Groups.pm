@@ -62,7 +62,7 @@ sub _validate_groups_cache{
   # Test cache validity
   my $request = $dbh->prepare('
     SELECT g.HARDWARE_ID
-    FROM groups 
+    FROM `groups` 
     g LEFT OUTER JOIN locks l
     ON l.HARDWARE_ID=g.HARDWARE_ID
     WHERE UNIX_TIMESTAMP()-REVALIDATE_FROM > ?
@@ -74,7 +74,7 @@ sub _validate_groups_cache{
     # We lock it like a computer
     if( !&_lock($row->{'HARDWARE_ID'}) ){
       # Check if the group has already been computed
-      my $check_request = $dbh->prepare('SELECT HARDWARE_ID, (UNIX_TIMESTAMP()-REVALIDATE_FROM) AS OFF FROM groups WHERE UNIX_TIMESTAMP()-REVALIDATE_FROM > ? AND HARDWARE_ID=?'); 
+      my $check_request = $dbh->prepare('SELECT HARDWARE_ID, (UNIX_TIMESTAMP()-REVALIDATE_FROM) AS OFF FROM `groups` WHERE UNIX_TIMESTAMP()-REVALIDATE_FROM > ? AND HARDWARE_ID=?'); 
       $check_request->execute($ENV{'OCS_OPT_GROUPS_CACHE_REVALIDATE'}, $row->{'HARDWARE_ID'});
       if(!$check_request->rows()){
         &_unlock($row->{'HARDWARE_ID'});  
@@ -108,7 +108,7 @@ sub _build_group_cache{
   my $delete_cache = 'DELETE FROM groups_cache WHERE GROUP_ID=? AND STATIC=0';
 
   # Retrieving the group request. It must be a SELECT statement on ID(hardware)
-  my $get_request = $dbh->prepare('SELECT REQUEST,XMLDEF FROM groups WHERE HARDWARE_ID=?');
+  my $get_request = $dbh->prepare('SELECT REQUEST,XMLDEF FROM `groups` WHERE HARDWARE_ID=?');
   $get_request->execute( $group_id );
   my $row = $get_request->fetchrow_hashref();
   # legacy: one request per group
