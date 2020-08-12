@@ -1,0 +1,18 @@
+language: perl
+perl:
+  - "5.30"
+  - "5.28"
+  - "5.26"
+  - "5.20"
+
+before_script:
+  - cd Apache && cpan-install --deps && cd ..
+
+install:
+  - if find . -name "*.pm" -exec perl -Mstrict=subs -c {} \; | grep -i "error"; then exit 1; fi
+
+script: cd Apache && perl Makefile.PL && make install
+
+branches:
+  only:
+    - master
