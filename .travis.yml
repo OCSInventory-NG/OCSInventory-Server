@@ -5,12 +5,8 @@ perl:
   - "5.26"
   - "5.20"
 
-matrix:
-  include:
-    - perl: 5.26
-
 before_install:
-  - cpanm --quiet --installdeps --notest Apache/.
+  - cpanm --quiet --installdeps --notest .
 
 install:
   - if find . -name "*.pm" -exec perl -Mstrict=subs -c {} \; | grep -i "error"; then exit 1; fi
