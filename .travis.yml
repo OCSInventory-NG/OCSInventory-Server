@@ -5,7 +5,7 @@ perl:
   - "5.26"
   - "5.20"
 
-before_script:
+before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
   - build-perl
