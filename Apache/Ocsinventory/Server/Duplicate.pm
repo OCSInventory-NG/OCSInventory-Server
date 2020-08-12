@@ -52,6 +52,12 @@ sub _duplicate_main{
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   my $DeviceID = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
 
+  # workaround agent old_deviceid bug
+  if(!$result->{CONTENT}->{OLD_DEVICEID} and $result->{CONTENT}->{DOWNLOAD}->{HISTORY}->{OLD_DEVICEID})
+  {
+    $result->{CONTENT}->{OLD_DEVICEID} = $result->{CONTENT}->{DOWNLOAD}->{HISTORY}->{OLD_DEVICEID};
+  }
+
   # If the duplicate is specified
   if($result->{CONTENT}->{OLD_DEVICEID} and $result->{CONTENT}->{OLD_DEVICEID} ne $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'}){
     &_log(326,'duplicate',$result->{CONTENT}->{OLD_DEVICEID}) if $ENV{'OCS_OPT_LOGLEVEL'};
