@@ -10,15 +10,9 @@ matrix:
     - perl: 5.26
 
 before_install:
-  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-  - source ~/travis-perl-helpers/init
-  - build-perl
-  - perl -V
-  - build-dist
-  - cd $BUILD_DIR
+  - cpanm --quiet --installdeps --notest Apache/.
 
 install:
-  - cd Apache && cpan-install --deps && cd ..
   - if find . -name "*.pm" -exec perl -Mstrict=subs -c {} \; | grep -i "error"; then exit 1; fi
 
 script: cd Apache && perl Makefile.PL && make install
