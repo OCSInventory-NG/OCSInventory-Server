@@ -2,6 +2,8 @@
   <img src="https://cdn.ocsinventory-ng.org/common/banners/banner660px.png" height=300 width=660 alt="Banner">
 </p>
 
+[![Build Status](https://travis-ci.com/OCSInventory-NG/OCSInventory-Server.svg?branch=master)](https://travis-ci.com/OCSInventory-NG/OCSInventory-Server)
+
 <h1 align="center">OCS Inventory</h1>
 <p align="center">
   <b>Some Links:</b><br>
