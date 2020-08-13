@@ -1,0 +1,15 @@
+language: perl
+perl:
+  - "5.30"
+  - "5.28"
+  - "5.26"
+  - "5.20"
+
+before_install:
+  - cpanm --quiet --installdeps --notest .
+
+script: cd Apache && perl Makefile.PL && make install
+
+branches:
+  only:
+    - master
