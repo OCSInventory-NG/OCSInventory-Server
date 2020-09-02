@@ -151,6 +151,12 @@ echo
 echo "Checking for database server properties" >> $SETUP_LOG
 DB_CLIENT_MAJOR_VERSION=`eval mysql -V | cut -d' ' -f6 | cut -d'.' -f1` >> $SETUP_LOG 2>&1
 DB_CLIENT_MINOR_VERSION=`eval mysql -V | cut -d' ' -f6 | cut -d'.' -f2` >> $SETUP_LOG 2>&1
+
+if [ "$DB_CLIENT_MAJOR_VERSION" = "Linux" ]
+	then
+		DB_CLIENT_MAJOR_VERSION=`eval mysql -V | cut -d' ' -f4 | cut -d'.' -f1` >> $SETUP_LOG 2>&1
+		DB_CLIENT_MINOR_VERSION=`eval mysql -V | cut -d' ' -f4 | cut -d'.' -f2` >> $SETUP_LOG 2>&1
+fi
 echo "Your MySQL client seems to be part of MySQL version $DB_CLIENT_MAJOR_VERSION.$DB_CLIENT_MINOR_VERSION."
 echo "MySQL client distribution version $DB_CLIENT_MAJOR_VERSION.$DB_CLIENT_MINOR_VERSION." >> $SETUP_LOG
 
