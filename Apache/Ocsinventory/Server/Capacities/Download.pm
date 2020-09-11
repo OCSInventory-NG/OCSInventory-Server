@@ -254,12 +254,12 @@ sub download_prolog_resp{
 
     #We get packages for this computer 
     $pack_sql =  q {
-      SELECT ID, FILEID, INFO_LOC, PACK_LOC, CERT_PATH, CERT_FILE, SERVER_ID
-      FROM devices,download_enable 
-      WHERE HARDWARE_ID=? 
-      AND devices.IVALUE=download_enable.ID 
-      AND devices.NAME='DOWNLOAD'
-      AND (TVALUE IS NULL OR TVALUE='NOTIFIED')
+      SELECT e.ID, e.FILEID, e.INFO_LOC, e.PACK_LOC, e.CERT_PATH, e.CERT_FILE, e.SERVER_ID
+      FROM devices d, download_enable e 
+      WHERE d.HARDWARE_ID=? 
+      AND d.IVALUE=e.ID 
+      AND d.NAME='DOWNLOAD'
+      AND (d.TVALUE IS NULL OR d.TVALUE='NOTIFIED')
     };
 
       

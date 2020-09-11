@@ -224,12 +224,26 @@ sub _insert_software {
             push @bind_num, '?';
             push @bind_update, $arrayKey.' = ?';
             push @arg, $arrayValue{$arrayKey};
-        }  
-  
+        }
 
-        $sql = "INSERT INTO software ($arrayRefString) VALUES(";
-        $sql .= (join ',', @bind_num).') ';
-        _prepare_sql($sql, @arg);
+        my @arg_verif = ();
+        my $result_verif;
+        my $value_verif = undef;
+        my $sql_verif = "SELECT HARDWARE_ID FROM software WHERE HARDWARE_ID = ? AND NAME_ID = ? AND VERSION_ID = ?";
+        push @arg_verif, $arrayValue{HARDWARE_ID};
+        push @arg_verif, $arrayValue{NAME_ID};
+        push @arg_verif, $arrayValue{VERSION_ID};
+        $result_verif = _prepare_sql($sql_verif, @arg_verif);
+
+        while(my $row = $result_verif->fetchrow_hashref()){
+            $value_verif = $row->{HARDWARE_ID};
+        }
+
+        if(!defined $value_verif) {
+            $sql = "INSERT INTO software ($arrayRefString) VALUES(";
+            $sql .= (join ',', @bind_num).') ';
+            _prepare_sql($sql, @arg);
+        }
     }
 }
 
