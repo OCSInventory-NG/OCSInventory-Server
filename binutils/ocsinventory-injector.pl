@@ -28,7 +28,7 @@ my $useragent;
 my $remove;
 my $verbose;
 my $stdin;
-
+my $timeout;
 
 sub loadfile {
     $file = shift;
@@ -80,7 +80,7 @@ sub sendContent {
 
     my $ua = LWP::UserAgent->new(
         protocols_allowed => ['http', 'https'],
-        timeout           => 10,
+        timeout           => $timeout,
         ssl_opts => { 
             verify_hostname => $sslmode,
             SSL_ca_file => $cafile
@@ -125,6 +125,7 @@ sub usage {
     --useragent	: HTTP user agent, default is OCS-NG_LOCAL_PL_v".VERSION."
     -r --remove	: remove successfully injected files
     -v --verbose	: verbose mode
+    -t --timeout	: injector timeout value 
     --stdin		: read data from STDIN
 
     You can specify a --file or a --directory or STDIN. Current directory is the default
@@ -143,6 +144,7 @@ GetOptions(
     'useragent=s'	=> \$useragent,
     'r|remove'		=> \$remove,
     'v|verbose'		=> \$verbose,
+    't|timeout'		=> \$timeout,
     'stdin'		=> \$stdin,
 );
 
@@ -152,6 +154,7 @@ $useragent	= 'OCS-NG_INJECTOR_PL_v'.VERSION unless $useragent;
 $directory	= '.' unless $directory;
 $sslmode	= 0 unless $sslmode;
 $cafile	    = "cacert.pem" unless $cafile;
+$timeout	= 10 unless $timeout;
 ###
 
 $|=1;
