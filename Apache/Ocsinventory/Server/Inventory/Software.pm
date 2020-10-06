@@ -61,26 +61,23 @@ sub _prepare_sql {
 sub _insert_software_name {
     my ($name, $cat) = @_;
     my $sql;
-    my $resultVerif;
-    my $valueVerif = undef;
     my $categoryVerif = undef;
-    my $valueResult;
+    my $valueResult = undef;
     my $result;
 
     # Verif if value exist
     my @argVerif = ();
     $sql = "SELECT ID, CATEGORY FROM software_name WHERE NAME = ?";
     push @argVerif, $name;
-    $resultVerif = _prepare_sql($sql, @argVerif);
+    $result = _prepare_sql($sql, @argVerif);
 
-    while(my $row = $resultVerif->fetchrow_hashref()){
-        $valueVerif = $row->{ID};
+    while(my $row = $result->fetchrow_hashref()){
+        $valueResult = $row->{ID};
         $categoryVerif = $row->{CATEGORY};
     }
 
-    my @argInsert = ();
-
-    if(!defined $valueVerif) {
+    if(!defined $valueResult) {
+        my @argInsert = ();
         if(!defined $cat) {
             # Insert if undef
             $sql = "INSERT INTO software_name (NAME) VALUES(?)";
@@ -92,26 +89,26 @@ sub _insert_software_name {
             push @argInsert, $cat;
         }
         _prepare_sql($sql, @argInsert);
-    }
 
-    if(defined $valueVerif && defined $cat) {
-        if((!defined $categoryVerif) || ($cat != $categoryVerif)) {
-            my @arg = ();
-            my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
-            push @arg, $cat;
-            push @arg, $valueVerif;
-            _prepare_sql($sqlUpdate, @arg);
+        # Get last Insert or Update ID
+        my @argSelect = ();
+        $sql = "SELECT ID FROM software_name WHERE NAME = ?";
+        push @argSelect, $name;
+        $result = _prepare_sql($sql, @argSelect);
+
+        while(my $row = $result->fetchrow_hashref()){
+            $valueResult = $row->{ID};
         }
     }
 
-    # Get last Insert or Update ID
-    my @argSelect = ();
-    $sql = "SELECT ID FROM software_name WHERE NAME = ?";
-    push @argSelect, $name;
-    $result = _prepare_sql($sql, @argSelect);
-
-    while(my $row = $result->fetchrow_hashref()){
-        $valueResult = $row->{ID};
+    if(defined $cat) {
+        if((!defined $categoryVerif) || ($cat != $categoryVerif)) {
+            my @argUpdate = ();
+            my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
+            push @argUpdate, $cat;
+            push @argUpdate, $valueResult;
+            _prepare_sql($sqlUpdate, @argUpdate);
+        }
     }
 
     return $valueResult;
@@ -120,10 +117,9 @@ sub _insert_software_name {
 sub _get_info_software {
     my ($value, $table, $column) = @_;
     my $sql;
-    my $valueResult;
+    my $valueResult = undef;
     my $result;
     my $resultVerif;
-    my $valueVerif = undef;
 
     # Verif if value exist
     my @argVerif = ();
@@ -132,27 +128,27 @@ sub _get_info_software {
     $resultVerif = _prepare_sql($sql, @argVerif);
 
     while(my $row = $resultVerif->fetchrow_hashref()){
-        $valueVerif = $row->{ID};
+        $valueResult = $row->{ID};
     }
 
-    my @argInsert = ();
+    if(!defined $valueResult) {
+        my @argInsert = ();
 
-    if(!defined $valueVerif) {
         # Insert if undef
         $sql = "INSERT INTO $table ($column) VALUES(?)";
         push @argInsert, $value;
-    }
 
-    _prepare_sql($sql, @argInsert);
+        _prepare_sql($sql, @argInsert);
 
-    # Get last Insert or Update ID
-    my @argSelect = ();
-    $sql = "SELECT ID FROM $table WHERE $column = ?";
-    push @argSelect, $value;
-    $result = _prepare_sql($sql, @argSelect);
+        # Get last Insert or Update ID
+        my @argSelect = ();
+        $sql = "SELECT ID FROM $table WHERE $column = ?";
+        push @argSelect, $value;
+        $result = _prepare_sql($sql, @argSelect);
 
-    while(my $row = $result->fetchrow_hashref()){
-        $valueResult = $row->{ID};
+        while(my $row = $result->fetchrow_hashref()){
+            $valueResult = $row->{ID};
+        }
     }
 
     return $valueResult;
@@ -226,24 +222,9 @@ sub _insert_software {
             push @arg, $arrayValue{$arrayKey};
         }
 
-        my @arg_verif = ();
-        my $result_verif;
-        my $value_verif = undef;
-        my $sql_verif = "SELECT HARDWARE_ID FROM software WHERE HARDWARE_ID = ? AND NAME_ID = ? AND VERSION_ID = ?";
-        push @arg_verif, $arrayValue{HARDWARE_ID};
-        push @arg_verif, $arrayValue{NAME_ID};
-        push @arg_verif, $arrayValue{VERSION_ID};
-        $result_verif = _prepare_sql($sql_verif, @arg_verif);
-
-        while(my $row = $result_verif->fetchrow_hashref()){
-            $value_verif = $row->{HARDWARE_ID};
-        }
-
-        if(!defined $value_verif) {
-            $sql = "INSERT INTO software ($arrayRefString) VALUES(";
-            $sql .= (join ',', @bind_num).') ';
-            _prepare_sql($sql, @arg);
-        }
+        $sql = "INSERT INTO software ($arrayRefString) VALUES(";
+        $sql .= (join ',', @bind_num).') ';
+        _prepare_sql($sql, @arg);
     }
 }
 
