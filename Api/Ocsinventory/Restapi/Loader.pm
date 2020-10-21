@@ -20,7 +20,7 @@ require Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch; # Get list o
 ## IPDiscover section
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover;
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork;
-require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag;
+#require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag;
 
 ## SNMP section
 require Api::Ocsinventory::Restapi::Snmp::Get::SnmpId; # Get specific Snmp type informations
@@ -73,28 +73,28 @@ get '/v1/computers/search' => sub {
 get '/v1/ipdiscover' => sub {
         my $c = shift;
 
-        my $start = $c->param('start')||0;
-        my $limit = $c->param('limit')||0;
+        my $start = $c->param('start');
+        my $limit = $c->param('limit');
 
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
 };
 
-get '/v1/ipdiscover/:tag' => sub {
-        my $c = shift;
-        my $tag = $c->stash('tag');
+#get '/v1/ipdiscover/:tag' => sub {
+#        my $c = shift;
+#        my $tag = $c->stash('tag');
 
-        $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
-};
+#        $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
+#};
 
-get '/v1/ipdiscover/:network' => sub {
+get '/v1/ipdiscover/#network' => sub {
         my $c = shift;
 	# Debuggibg MH : Dump $c Mojo Object in /var/log/apache2/error.log
 #       warn "/v1/ipdiscover/:network : ".Dumper($c)."\n"; 
         my $network = $c->stash('network');
 	# QuickFix MH: donit know why a IPv4 10.20.30.40 is split as Mojo attrs: param=>10 format=20.30.40
-	$network .= ".".$c->stash('format');
+	#$network .= ".".$c->stash('format');
 	
-        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
+	$c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
 };
 
 get '/v1/snmps/typeList' => sub {
