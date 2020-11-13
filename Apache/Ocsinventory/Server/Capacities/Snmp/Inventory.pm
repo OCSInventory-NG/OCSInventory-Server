@@ -101,17 +101,17 @@ sub _snmp_inventory{
   my $snmp_devices = $result->{CONTENT};
 
   #Getting data for the several snmp devices that we have in the xml
-  foreach my $snmp_key (keys %{$snmp_devices}){
+  while (my ($key, $value) = each (%{$snmp_devices})) {
     my @columns;
     my @bind_num;
     my @arguments;
     my @update;
     my $i = 1;
 
-    foreach my $snmp_infos (keys %{$snmp_devices->{$snmp_key}}) {
+    foreach my $snmp_infos (keys %{$value}) {
       push @columns, $snmp_infos;
       push @bind_num, '?';
-      push @arguments, $snmp_devices->{$snmp_key}->{$snmp_infos};
+      push @arguments, $value->{$snmp_infos};
       push @update, $snmp_infos." = ?";
     }
 
@@ -119,20 +119,19 @@ sub _snmp_inventory{
     my $args_prepare = join ',', @bind_num;
     my $update_prepare = join ',', @update;
     
-    my $query = $dbh->prepare("INSERT INTO $snmp_key($column) VALUES($args_prepare) ON DUPLICATE KEY UPDATE $update_prepare");
+    my $query = $dbh->prepare("INSERT INTO $key($column) VALUES($args_prepare) ON DUPLICATE KEY UPDATE $update_prepare");
 
-    foreach my $value (@arguments) {
-        $query->bind_param($i, $value);
-        $i++;
+    foreach my $values (@arguments) {
+      $query->bind_param($i, $values);
+      $i++;
     }
 
-    foreach my $value (@arguments) {
-        $query->bind_param($i, $value);
-        $i++;
+    foreach my $values (@arguments) {
+      $query->bind_param($i, $values);
+      $i++;
     }
 
     $query->execute;
-    
   }
 }
 
