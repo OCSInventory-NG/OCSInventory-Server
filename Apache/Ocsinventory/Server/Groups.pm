@@ -190,7 +190,7 @@ sub _build_group_cache{
   }
 
 # Updating cache time
-  $dbh->do("UPDATE groups SET CREATE_TIME=UNIX_TIMESTAMP(), REVALIDATE_FROM=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
+  $dbh->do("UPDATE `groups` SET CREATE_TIME=UNIX_TIMESTAMP(), REVALIDATE_FROM=UNIX_TIMESTAMP()+? WHERE HARDWARE_ID=?", {}, $offset, $group_id);
   &_log(307,'groups', "revalidate_cache($group_id(".scalar @ids."))") if $ENV{'OCS_OPT_LOGLEVEL'};
 }
 1;
