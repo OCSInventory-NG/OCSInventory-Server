@@ -24,6 +24,8 @@ param (
     [string]$directory,
     [string]$file,
     [string]$url,
+    [string]$user,
+    [string]$pass,
     [switch]$ssl = $false,
     [switch]$remove = $false,
     [switch]$info = $false
@@ -46,6 +48,8 @@ function Get-InjectorHelper {
     -file	        : load a speficic file
     -url	        : ocsinventory backend URL
     -ssl                : enable SSL inventory injection
+    -user               : Basic auth username
+    -pass               : User password
     -remove	        : remove successfully injected files
     -info	        : verbose mode
     "
@@ -70,7 +74,15 @@ function Write-InfoLog($str) {
     .DESCRIPTION
         Take the file, retrieve its content and send it to the OCS Inventory server
 #>
-function Send-File($filePath){
+function Send-File{
+
+    Param(
+        [parameter(Mandatory=$true)]
+        [string] $filePath,
+        [parameter(Mandatory=$true)]
+        [hashtable] $headers
+    )
+    
     $fileContent = Get-Content($filePath)
     $fileName = Split-Path $filePath -leaf
 
@@ -87,27 +99,30 @@ function Send-File($filePath){
             }
         "
         [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Ssl3, [Net.SecurityProtocolType]::Tls, [Net.SecurityProtocolType]::Tls11, [Net.SecurityProtocolType]::Tls12
 
         $webRequestStatus = Invoke-WebRequest `
         -Uri $url `
         -ContentType "application/xml" `
         -Method POST `
         -Body $fileContent `
-        -UserAgent "OCS_POWERSHELL_INJECTOR_V2.8"
+        -UserAgent "OCS_POWERSHELL_INJECTOR_V2.8" `
+        -Headers $headers
     }else{
         $webRequestStatus = Invoke-WebRequest `
         -Uri $url `
         -ContentType "application/xml" `
         -Method POST `
         -Body $fileContent `
-        -UserAgent "OCS_POWERSHELL_INJECTOR_V2.8"
+        -UserAgent "OCS_POWERSHELL_INJECTOR_V2.8" `
+        -Headers $headers
     }
 
 
     if($webRequestStatus.StatusCode -eq 200){
         Write-InfoLog("Injecting file $fileName => OK")
     }else{
-        Write-InfoLog("Injecting file $fileName => ERROR, Check server logs")
+        Write-InfoLog("Injecting file $fileName => ERROR " + $webRequestStatus.StatusCode)
     }
 }
 
@@ -125,12 +140,31 @@ if($url.isPresent -eq $false){
     Exit
 }
 
+# Manage Auth
+if($user.isPresent -eq $true -And $password.isPresent -eq $true){
+    Write-InfoLog("Auth required, setting headers...")
+
+    $pair = "$($user):$($pass)"
+    $encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
+    $basicAuthValue = "Basic $encodedCreds"
+
+    $headers = @{
+        Authorization = $basicAuthValue
+        "Cache-Control" = "no-cache"
+    }
+}else{
+    $headers = @{
+        "Cache-Control" = "no-cache"
+    }
+}
+
 $pathOk = $false
 
 # File inject management
 if($file -And (Test-Path -Path $file) -eq $true){
     $pathOk = $true
-    Send-File($file);
+    Send-File $file $headers
+    Exit
 }
 
 # Directory inject management
@@ -138,9 +172,10 @@ if ($directory -And (Test-Path -Path $directory) -eq $true) {
     Write-InfoLog("Injecting files present in the directory=> $directory")
     Get-ChildItem $directory -Filter *.ocs | 
     Foreach-Object {
-        Send-File($_.FullName)
+        Send-File $_.FullName $headers
     }
     $pathOk = $true
+    Exit
 }
 
 # Path not working
