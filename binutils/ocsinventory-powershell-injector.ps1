@@ -141,16 +141,17 @@ if($url.isPresent -eq $false){
 }
 
 # Manage Auth
-if($user.isPresent -eq $true -And $password.isPresent -eq $true){
+if(-not ([string]::IsNullOrEmpty($user)) -And -not ([string]::IsNullOrEmpty($pass))){
     Write-InfoLog("Auth required, setting headers...")
 
     $pair = "$($user):$($pass)"
     $encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
     $basicAuthValue = "Basic $encodedCreds"
 
+    Write-InfoLog("Auth basic : $encodedCreds")
+
     $headers = @{
-        Authorization = $basicAuthValue
-        "Cache-Control" = "no-cache"
+        "Authorization" = $basicAuthValue; "Cache-Control" = "no-cache"
     }
 }else{
     $headers = @{
