@@ -149,6 +149,8 @@ sub _ipdiscover_main{
   my $current_context = shift;
 
   return if $current_context->{'LOCAL_FL'};
+
+  return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
   
   my $DeviceID = $current_context->{'DATABASE_ID'};
   my $dbh = $current_context->{'DBI_HANDLE'};
