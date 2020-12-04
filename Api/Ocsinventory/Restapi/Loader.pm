@@ -79,21 +79,18 @@ get '/v1/ipdiscover' => sub {
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
 };
 
-get '/v1/ipdiscover/:tag' => sub {
+get '/v1/ipdiscover/tag/:tag' => sub {
         my $c = shift;
         my $tag = $c->stash('tag');
 
         $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
 };
 
-get '/v1/ipdiscover/:network' => sub {
+get '/v1/ipdiscover/network/#network' => sub {
         my $c = shift;
-	# Debuggibg MH : Dump $c Mojo Object in /var/log/apache2/error.log
-#       warn "/v1/ipdiscover/:network : ".Dumper($c)."\n"; 
+
         my $network = $c->stash('network');
-	# QuickFix MH: donit know why a IPv4 10.20.30.40 is split as Mojo attrs: param=>10 format=20.30.40
-	$network .= ".".$c->stash('format');
-	
+        	
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
 };
 
