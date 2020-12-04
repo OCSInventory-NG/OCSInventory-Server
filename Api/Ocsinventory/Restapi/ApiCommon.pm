@@ -70,7 +70,7 @@ sub api_database_connect{
     }
 
     # Connection...
-    my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort".$sslMode, $dbUser, $dbPwd, {RaiseError => 1}) or die $DBI::errstr;
+    my $dbh = DBI->connect( "DBI:mysql:database=$dbName;host=$dbHost;port=$dbPort".$sslMode, $dbUser, $dbPwd, {RaiseError => 1, mysql_enable_utf8 => 1}) or die $DBI::errstr;
 
     return $dbh;
 
