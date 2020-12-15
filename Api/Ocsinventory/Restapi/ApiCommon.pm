@@ -167,6 +167,38 @@ sub generate_item_software_json{
 
 }
 
+# Generate query based on all softwares, optionaly filter by software name
+sub generate_item_all_softwares_json{
+
+    my ($limit, $start, $soft) = @_;
+    my $query;
+    my $database = api_database_connect();
+    my @args = ();
+
+    $query = "SELECT DISTINCT sn.NAME,sv.VERSION
+    	FROM software AS soft
+	LEFT JOIN software_name AS sn ON sn.id=soft.NAME_ID
+	LEFT JOIN software_version AS sv ON sv.id=soft.VERSION_ID";
+
+    # Only find softwares starting by $soft
+    if($soft ne "") {
+	$query .= " WHERE sn.NAME LIKE ?";
+	@args = ("$soft%");
+    }
+
+    $query .= " LIMIT $limit OFFSET $start";
+
+    print STDERR "$query \n";
+    my $items = $database->selectall_arrayref(
+        $query,
+        { Slice => {} },
+        @args
+    );
+
+    return $items;
+
+}
+
 # Return table item data
 sub get_item_table_informations{
 
