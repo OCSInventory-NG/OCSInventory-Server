@@ -17,6 +17,9 @@ require Api::Ocsinventory::Restapi::Computer::Get::Computers; # Get list of Comp
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersListId; # Get list of Computers ID
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch; # Get list of ID depending on search
 
+## Software section
+require Api::Ocsinventory::Restapi::Software::Get::Softwares; # Get list of softwares
+
 ## IPDiscover section
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover;
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork;
@@ -68,6 +71,17 @@ get '/v1/computers/search' => sub {
         my $params_hash = $c->req->params->to_hash;
 
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch::get_computers_search($params_hash));
+};
+
+get '/v1/softwares' => sub {
+        my $c = shift;
+       my $id = $c->stash('id');
+
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
+        my $soft = $c->param('soft')||'';
+
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Software::Get::Softwares::get_softwares($limit, $start, $soft));
 };
 
 get '/v1/ipdiscover' => sub {
