@@ -94,7 +94,10 @@ sub _init_map{
       $field_index++;      
     }
     # Build the "DBI->prepare" sql insert string 
-    $fields_string = join ',', ('HARDWARE_ID', @{$sectionsMeta->{$section}->{field_arrayref}});
+    for (@{$sectionsMeta->{$section}->{field_arrayref}}) {
+      s/^(.*)$/\`$1\`/;
+    }
+    $fields_string = join ',', ('`HARDWARE_ID`', @{$sectionsMeta->{$section}->{field_arrayref}});
     $sectionsMeta->{$section}->{sql_insert_string} = "INSERT INTO $section($fields_string) VALUES(";
     for(0..@{$sectionsMeta->{$section}->{field_arrayref}}){
       push @bind_num, '?';
