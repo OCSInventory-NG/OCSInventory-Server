@@ -367,6 +367,14 @@ our %DATA_MAP= (
    }
   },
 
+  software => {
+    mask => 0,
+    multi => 1,
+    auto => 1,
+    delOnReplace => 1,
+    fields =>  {}
+  },
+
   virtualmachines => {
     mask => 131072,
     multi => 1,
