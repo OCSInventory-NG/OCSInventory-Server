@@ -131,14 +131,22 @@ sub _get_bind_values{
         $bind_value = $refXml->{$field}
       }
       else{
-        if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
-          $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
-          &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+        my $fieldMod = $field;
+        $fieldMod =~ s/^`(.*)`$/$1/;
+        if(defined($refXml->{$fieldMod})){
+          $bind_value = $refXml->{$fieldMod}
         }
         else{
-          &_log( 000, 'generic-fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
-          $bind_value = '';
+          if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
+            $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
+            &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+          }
+          else{
+            &_log( 000, 'generic-fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+            $bind_value = '';
+          }
         }
+        
       }
     }
 
