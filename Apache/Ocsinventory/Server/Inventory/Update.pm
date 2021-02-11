@@ -48,7 +48,11 @@ sub _update_inventory{
   my $section;
 
   set_category();
-  &_insert_software();
+
+  if(&_insert_software()) {
+    return 1;
+  }
+
   set_asset_category();  
   set_saas();
 

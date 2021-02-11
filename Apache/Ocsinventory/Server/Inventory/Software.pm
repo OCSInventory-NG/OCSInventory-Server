@@ -53,7 +53,7 @@ sub _prepare_sql {
         $query->bind_param($i, $value);
         $i++;
     }
-    $query->execute; 
+    $query->execute or return undef;
 
     return $query;   
 }
@@ -70,6 +70,7 @@ sub _insert_software_name {
     $sql = "SELECT ID, CATEGORY FROM software_name WHERE NAME = ?";
     push @argVerif, $name;
     $result = _prepare_sql($sql, @argVerif);
+    if(!defined $result) { return undef; }
 
     while(my $row = $result->fetchrow_hashref()){
         $valueResult = $row->{ID};
@@ -88,13 +89,15 @@ sub _insert_software_name {
             push @argInsert, $name;
             push @argInsert, $cat;
         }
-        _prepare_sql($sql, @argInsert);
+        $result = _prepare_sql($sql, @argInsert);
+        if(!defined $result) { return undef; }
 
         # Get last Insert or Update ID
         my @argSelect = ();
         $sql = "SELECT ID FROM software_name WHERE NAME = ?";
         push @argSelect, $name;
         $result = _prepare_sql($sql, @argSelect);
+        if(!defined $result) { return undef; }
 
         while(my $row = $result->fetchrow_hashref()){
             $valueResult = $row->{ID};
@@ -107,7 +110,8 @@ sub _insert_software_name {
             my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
             push @argUpdate, $cat;
             push @argUpdate, $valueResult;
-            _prepare_sql($sqlUpdate, @argUpdate);
+            $result = _prepare_sql($sqlUpdate, @argUpdate);
+            if(!defined $result) { return undef; }
         }
     }
 
@@ -126,6 +130,7 @@ sub _get_info_software {
     $sql = "SELECT ID FROM $table WHERE $column = ?";
     push @argVerif, $value;
     $resultVerif = _prepare_sql($sql, @argVerif);
+    if(!defined $resultVerif) { return undef; }
 
     while(my $row = $resultVerif->fetchrow_hashref()){
         $valueResult = $row->{ID};
@@ -138,13 +143,15 @@ sub _get_info_software {
         $sql = "INSERT INTO $table ($column) VALUES(?)";
         push @argInsert, $value;
 
-        _prepare_sql($sql, @argInsert);
+        $result = _prepare_sql($sql, @argInsert);
+        if(!defined $result) { return undef; }
 
         # Get last Insert or Update ID
         my @argSelect = ();
         $sql = "SELECT ID FROM $table WHERE $column = ?";
         push @argSelect, $value;
         $result = _prepare_sql($sql, @argSelect);
+        if(!defined $result) { return undef; }
 
         while(my $row = $result->fetchrow_hashref()){
             $valueResult = $row->{ID};
@@ -159,11 +166,13 @@ sub _del_all_soft {
     my $sql;
     my @arg = ();
     my $result;
-    my $id = 0;
 
     $sql = "DELETE FROM software WHERE HARDWARE_ID = ?";
     push @arg, $hardware_id;
     $result = _prepare_sql($sql, @arg);
+    if(!defined $result) { return 1; }
+
+    return 0;
 }
 
 sub _insert_software {
@@ -175,8 +184,8 @@ sub _insert_software {
                     'FILESIZE', 'SOURCE', 'GUID', 
                     'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH');
 
-    _del_all_soft($hardware_id);
-    
+    if(_del_all_soft($hardware_id)) { return 1; }
+
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
         my %arrayValue = (
             "HARDWARE_ID"   => $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'},
@@ -202,16 +211,19 @@ sub _insert_software {
         # Get software Name ID if exists
         if(defined $name) {
             $arrayValue{NAME_ID} = _insert_software_name($name, $software->{CATEGORY});
+            if(!defined $arrayValue{NAME_ID}) { return 1; }
         }
         
         # Get software Publisher ID if exists
         if(defined $publisher && $publisher ne '') {
             $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
+            if(!defined $arrayValue{PUBLISHER_ID}) { return 1; }
         }
 
         # Get software Version ID if exists
         if(defined $version && $version ne '') {
             $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
+            if(!defined $arrayValue{VERSION_ID}) { return 1; }
         }
 
         my $arrayRefString = join ',', @arrayRef;
@@ -224,8 +236,11 @@ sub _insert_software {
 
         $sql = "INSERT INTO software ($arrayRefString) VALUES(";
         $sql .= (join ',', @bind_num).') ';
-        _prepare_sql($sql, @arg);
+        my $result = _prepare_sql($sql, @arg);
+        if(!defined $result) { return 1; }
     }
+
+    return 0;
 }
 
 1;
