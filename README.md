@@ -53,7 +53,7 @@ git clone https://github.com/OCSInventory-NG/OCSInventory-ocsreports.git ocsrepo
 
 For more informations, please follow the OCS Inventory documentation :
 
-http://wiki.ocsinventory-ng.org/02.Basic-documentation/Setting-up-a-OCS-Inventory-Server/
+http://wiki.ocsinventory-ng.org/03.Basic-documentation/Setting-up-a-OCS-Inventory-Server/
 
 ## Contributing
 
