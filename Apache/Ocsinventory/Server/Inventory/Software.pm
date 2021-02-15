@@ -28,6 +28,7 @@ use Apache::Ocsinventory::Interface::Internals;
 use strict;
 use warnings;
 use Switch;
+use POSIX qw(strftime);
 
 require Exporter;
 
@@ -187,6 +188,14 @@ sub _insert_software {
     if(_del_all_soft($hardware_id)) { return 1; }
 
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
+
+        # Check install date format
+        if($software->{INSTALLDATE} =~ /^\d{4}\/\d\d\/\d\d$/ || $software->{INSTALLDATE} =~ /[1-9]{1}[0-9]{3}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/) {
+            # Do nothing
+        } else {
+            $software->{INSTALLDATE} = strftime "%Y/%m/%d", localtime;
+        }
+
         my %arrayValue = (
             "HARDWARE_ID"   => $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'},
             "NAME_ID"       => 1,
