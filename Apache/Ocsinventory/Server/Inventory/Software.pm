@@ -41,6 +41,7 @@ our @EXPORT = qw /
   _prepare_sql
   _insert_software_categories_link
   _del_category_soft
+  _trim_value
 /;
 
 sub _prepare_sql {
@@ -153,6 +154,14 @@ sub _del_category_soft {
     return 0;
 }
 
+sub _trim_value {
+    my ($toTrim) = @_;
+
+    $toTrim =~ s/^\s+|\s+$//g;
+
+    return $toTrim;
+}
+
 sub _insert_software {
     my $sql;
     my $hardware_id = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
@@ -200,13 +209,15 @@ sub _insert_software {
         }
         
         # Get software Publisher ID if exists
-        if(defined $publisher && $publisher ne '') {
+        my $trimPublisher = _trim_value($publisher);
+        if(defined $publisher && $trimPublisher ne '') {
             $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
             if(!defined $arrayValue{PUBLISHER_ID}) { return 1; }
         }
 
         # Get software Version ID if exists
-        if(defined $version && $version ne '') {
+        my $trimVersion = _trim_value($version);
+        if(defined $version && $trimVersion ne '') {
             $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
             if(!defined $arrayValue{VERSION_ID}) { return 1; }
         }
