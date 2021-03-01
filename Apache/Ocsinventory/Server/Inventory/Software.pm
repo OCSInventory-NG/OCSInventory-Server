@@ -28,6 +28,7 @@ use Apache::Ocsinventory::Interface::Internals;
 use strict;
 use warnings;
 use Switch;
+use POSIX qw(strftime);
 
 require Exporter;
 
@@ -38,7 +39,9 @@ our @EXPORT = qw /
   _del_all_soft
   _insert_software
   _prepare_sql
-  _insert_software_name
+  _insert_software_categories_link
+  _del_category_soft
+  _trim_value
 /;
 
 sub _prepare_sql {
@@ -53,69 +56,29 @@ sub _prepare_sql {
         $query->bind_param($i, $value);
         $i++;
     }
-    $query->execute or return undef;
+    $query->execute or return undef; 
 
     return $query;   
 }
 
-sub _insert_software_name {
-    my ($name, $cat) = @_;
+sub _insert_software_categories_link {
+    my ($name, $publisher, $version, $category) = @_;
     my $sql;
-    my $categoryVerif = undef;
-    my $valueResult = undef;
     my $result;
 
-    # Verif if value exist
-    my @argVerif = ();
-    $sql = "SELECT ID, CATEGORY FROM software_name WHERE NAME = ?";
-    push @argVerif, $name;
-    $result = _prepare_sql($sql, @argVerif);
+    my @argInsert = ();
+
+    # Insert if undef
+    $sql = "INSERT INTO software_categories_link (NAME_ID, PUBLISHER_ID, VERSION_ID, CATEGORY_ID) VALUES(?,?,?,?)";
+    push @argInsert, $name;
+    push @argInsert, $publisher;
+    push @argInsert, $version;
+    push @argInsert, $category;
+
+    $result = _prepare_sql($sql, @argInsert);
     if(!defined $result) { return undef; }
 
-    while(my $row = $result->fetchrow_hashref()){
-        $valueResult = $row->{ID};
-        $categoryVerif = $row->{CATEGORY};
-    }
-
-    if(!defined $valueResult) {
-        my @argInsert = ();
-        if(!defined $cat) {
-            # Insert if undef
-            $sql = "INSERT INTO software_name (NAME) VALUES(?)";
-            push @argInsert, $name;
-        } else {
-            # Insert if undef
-            $sql = "INSERT INTO software_name (NAME,CATEGORY) VALUES(?,?)";
-            push @argInsert, $name;
-            push @argInsert, $cat;
-        }
-        $result = _prepare_sql($sql, @argInsert);
-        if(!defined $result) { return undef; }
-
-        # Get last Insert or Update ID
-        my @argSelect = ();
-        $sql = "SELECT ID FROM software_name WHERE NAME = ?";
-        push @argSelect, $name;
-        $result = _prepare_sql($sql, @argSelect);
-        if(!defined $result) { return undef; }
-
-        while(my $row = $result->fetchrow_hashref()){
-            $valueResult = $row->{ID};
-        }
-    }
-
-    if(defined $cat) {
-        if((!defined $categoryVerif) || ($cat != $categoryVerif)) {
-            my @argUpdate = ();
-            my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
-            push @argUpdate, $cat;
-            push @argUpdate, $valueResult;
-            $result = _prepare_sql($sqlUpdate, @argUpdate);
-            if(!defined $result) { return undef; }
-        }
-    }
-
-    return $valueResult;
+    return $result;
 }
 
 sub _get_info_software {
@@ -175,6 +138,30 @@ sub _del_all_soft {
     return 0;
 }
 
+sub _del_category_soft {
+    my ($name, $publisher, $version) = @_;
+    my $sql;
+    my @arg = ();
+    my $result;
+
+    $sql = "DELETE FROM software_categories_link WHERE NAME_ID = ? AND PUBLISHER_ID = ? AND VERSION_ID = ?";
+    push @arg, $name;
+    push @arg, $publisher;
+    push @arg, $version;
+    $result = _prepare_sql($sql, @arg);
+    if(!defined $result) { return 1; }
+
+    return 0;
+}
+
+sub _trim_value {
+    my ($toTrim) = @_;
+
+    $toTrim =~ s/^\s+|\s+$//g;
+
+    return $toTrim;
+}
+
 sub _insert_software {
     my $sql;
     my $hardware_id = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
@@ -187,6 +174,12 @@ sub _insert_software {
     if(_del_all_soft($hardware_id)) { return 1; }
 
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
+
+        # Check install date format
+        if($software->{INSTALLDATE} !~ /^\d{4}\/\d\d\/\d\d$/ || $software->{INSTALLDATE} !~ /[1-9]{1}[0-9]{3}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/) {
+            $software->{INSTALLDATE} = strftime "%Y/%m/%d", localtime;
+        }
+
         my %arrayValue = (
             "HARDWARE_ID"   => $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'},
             "NAME_ID"       => 1,
@@ -205,23 +198,26 @@ sub _insert_software {
         my $name = $software->{NAME};
         my $publisher = $software->{PUBLISHER};
         my $version = $software->{VERSION};
+        my $category = $software->{CATEGORY};
         my @bind_num;
         my @bind_update;
         
         # Get software Name ID if exists
         if(defined $name) {
-            $arrayValue{NAME_ID} = _insert_software_name($name, $software->{CATEGORY});
+            $arrayValue{NAME_ID} = _get_info_software($name, "software_name", "NAME");
             if(!defined $arrayValue{NAME_ID}) { return 1; }
         }
         
         # Get software Publisher ID if exists
-        if(defined $publisher && $publisher ne '') {
+        my $trimPublisher = _trim_value($publisher);
+        if(defined $publisher && $trimPublisher ne '') {
             $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
             if(!defined $arrayValue{PUBLISHER_ID}) { return 1; }
         }
 
         # Get software Version ID if exists
-        if(defined $version && $version ne '') {
+        my $trimVersion = _trim_value($version);
+        if(defined $version && $trimVersion ne '') {
             $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
             if(!defined $arrayValue{VERSION_ID}) { return 1; }
         }
@@ -238,6 +234,15 @@ sub _insert_software {
         $sql .= (join ',', @bind_num).') ';
         my $result = _prepare_sql($sql, @arg);
         if(!defined $result) { return 1; }
+
+        # Delete software from software categories link
+        if(_del_category_soft($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID})) { return 1; }
+
+        # Insert in software categories link table
+        if(defined $category) {
+            my $result_category = _insert_software_categories_link($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID}, $category);
+            if(!defined $result_category) { return 1; }
+        }
     }
 
     return 0;
