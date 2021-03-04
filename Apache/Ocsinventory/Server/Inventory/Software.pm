@@ -209,17 +209,21 @@ sub _insert_software {
         }
         
         # Get software Publisher ID if exists
-        my $trimPublisher = _trim_value($publisher);
-        if(defined $publisher && $trimPublisher ne '') {
-            $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
-            if(!defined $arrayValue{PUBLISHER_ID}) { return 1; }
+        if(defined $publisher) {
+            my $trimPublisher = _trim_value($publisher);
+            if($trimPublisher ne '') {
+                $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
+                if(!defined $arrayValue{PUBLISHER_ID}) { return 1; }
+            }
         }
 
         # Get software Version ID if exists
-        my $trimVersion = _trim_value($version);
-        if(defined $version && $trimVersion ne '') {
-            $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
-            if(!defined $arrayValue{VERSION_ID}) { return 1; }
+        if(defined $version) {
+            my $trimVersion = _trim_value($version);
+            if($trimVersion ne '') {
+                $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
+                if(!defined $arrayValue{VERSION_ID}) { return 1; }
+            }
         }
 
         my $arrayRefString = join ',', @arrayRef;
