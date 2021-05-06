@@ -137,12 +137,16 @@ sub generate_item_software_json{
     my $database = api_database_connect();
     my @args = ();
 
-    $query_data = "SELECT *, c.CATEGORY_NAME as CATEGORY, n.NAME, p.PUBLISHER, v.VERSION 
-        FROM software s LEFT JOIN software_name n ON s.NAME_ID = n.ID 
-        LEFT JOIN software_publisher p ON s.PUBLISHER_ID = p.ID 
-        LEFT JOIN software_version v ON s.VERSION_ID = v.ID 
-        LEFT JOIN software_categories c ON n.CATEGORY = c.ID 
-        WHERE HARDWARE_ID = ?";
+    $query_data = "SELECT s.ID, s.HARDWARE_ID, 
+                n.NAME, p.PUBLISHER, v.VERSION, 
+                s.FOLDER, s.COMMENTS, s.FILENAME, 
+                s.FILESIZE, s.SOURCE, s.GUID, s.LANGUAGE, 
+                s.INSTALLDATE, s.BITSWIDTH
+                FROM software s
+                LEFT JOIN software_name n ON s.NAME_ID = n.ID
+                LEFT JOIN software_publisher p ON s.PUBLISHER_ID = p.ID
+                LEFT JOIN software_version v ON s.VERSION_ID = v.ID
+                WHERE HARDWARE_ID = ?";
 
     @args = ($computer_id);
 
@@ -161,7 +165,7 @@ sub generate_item_software_json{
         @args
     );
 
-    $$json_string{"$computer_id"}{"softwares"} = $items;
+    $$json_string{"$computer_id"}{"$specific_map"} = $items;
 
     return $json_string;
 
@@ -175,10 +179,11 @@ sub generate_item_all_softwares_json{
     my $database = api_database_connect();
     my @args = ();
 
-    $query = "SELECT DISTINCT sn.NAME,sv.VERSION
-    	FROM software AS soft
-	LEFT JOIN software_name AS sn ON sn.id=soft.NAME_ID
-	LEFT JOIN software_version AS sv ON sv.id=soft.VERSION_ID";
+    $query = "SELECT sn.NAME,sp.PUBLISHER,sv.VERSION
+    	FROM software_link AS soft
+        LEFT JOIN software_name AS sn ON sn.id=soft.NAME_ID
+        LEFT JOIN software_version AS sv ON sv.id=soft.VERSION_ID
+        LEFT JOIN software_publisher AS sp ON sp.id=soft.PUBLISHER_ID";
 
     # Only find softwares starting by $soft
     if($soft ne "") {
