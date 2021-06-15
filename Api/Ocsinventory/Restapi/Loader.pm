@@ -95,7 +95,7 @@ get '/v1/ipdiscover' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
 };
 
 get '/v1/ipdiscover/tag/:tag' => sub {
@@ -110,7 +110,7 @@ get '/v1/ipdiscover/network/#network' => sub {
 
         my $network = $c->stash('network');
         	
-        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
 };
 
 get '/v1/snmps/typeList' => sub {

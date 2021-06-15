@@ -19,7 +19,7 @@ sub get_ipdiscovers{
     my $json_return;
     my $query = "SELECT NETID FROM `netmap` GROUP BY NETID";
 
-    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, $start, $limit);
+    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "");
 
     return encode_json($netmaps);
 }
