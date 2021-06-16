@@ -17,8 +17,9 @@ sub get_ipdiscover_network{
     my $database = Api::Ocsinventory::Restapi::ApiCommon::api_database_connect();
 
     my $query = "SELECT * FROM `netmap` WHERE NETID = ? ";
-    my @args = ($network);
     
+    my @args = ($network);
+
     my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
 
     return encode_json($netmaps);
