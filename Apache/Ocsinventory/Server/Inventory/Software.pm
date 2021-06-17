@@ -176,7 +176,7 @@ sub _insert_software {
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
 
         # Check install date format
-        if(!defined $software->{INSTALLDATE} || ($software->{INSTALLDATE} !~ /^\d{4}\/\d\d\/\d\d$/ && $software->{INSTALLDATE} !~ /[1-9]{1}[0-9]{3}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/)) {
+        if($software->{INSTALLDATE} !~ /^\d{4}\/\d\d\/\d\d/ && $software->{INSTALLDATE} !~ /[1-9]{1}[0-9]{3}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/) {
             $software->{INSTALLDATE} = strftime "%Y/%m/%d", localtime;
         }
 
