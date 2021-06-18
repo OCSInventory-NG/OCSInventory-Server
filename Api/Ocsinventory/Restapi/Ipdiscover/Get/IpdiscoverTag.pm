@@ -21,7 +21,7 @@ sub get_ipdiscover_tag{
 
     my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
 
-    return encode_json($json_return);
+    return encode_json($netmaps);
 }
 
 1;
