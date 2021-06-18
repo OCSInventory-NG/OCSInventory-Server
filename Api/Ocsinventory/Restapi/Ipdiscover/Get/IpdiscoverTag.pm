@@ -13,15 +13,15 @@ use Mojo::JSON qw(decode_json encode_json);
 sub get_ipdiscover_tag{
 
     my ($tag) = @_;
-    my $json_return;
+
     my $database = Api::Ocsinventory::Restapi::ApiCommon::api_database_connect();
 
-    my $json_return = $database->selectall_arrayref(
-        "SELECT * from netmap WHERE TAG = '$tag'",
-        { Slice => {} }
-    );
+    my $query = "SELECT * from `netmap` WHERE TAG = ?";
+    my @args = ($tag);
 
-    return encode_json($json_return);
+    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
+
+    return encode_json($netmaps);
 }
 
 1;
