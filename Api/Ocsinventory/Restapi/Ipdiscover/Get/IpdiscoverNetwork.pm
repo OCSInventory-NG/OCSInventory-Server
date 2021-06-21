@@ -8,7 +8,7 @@ This function return a IPDiscover object from network
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_ipdiscover_network{
 
@@ -22,7 +22,7 @@ sub get_ipdiscover_network{
 
     my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
 
-    return encode_json($netmaps);
+    return to_json($netmaps);
 }
 
 1;
