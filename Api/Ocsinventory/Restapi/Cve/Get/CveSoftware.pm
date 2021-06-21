@@ -2,7 +2,7 @@ package Api::Ocsinventory::Restapi::Cve::Get::CveSoftware;
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_cve_software {
 
@@ -24,7 +24,7 @@ sub get_cve_software {
 
     my $query = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($sql, $start, $limit);
 
-    return encode_json($query);
+    return to_json($query);
 }
 
 1;
