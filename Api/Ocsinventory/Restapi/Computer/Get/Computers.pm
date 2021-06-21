@@ -10,7 +10,7 @@ Params: start, limit
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_computers {
 
@@ -24,7 +24,7 @@ sub get_computers {
         $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, "");
     }
 
-    return encode_json($json_return);
+    return to_json($json_return);
 }
 
 1;

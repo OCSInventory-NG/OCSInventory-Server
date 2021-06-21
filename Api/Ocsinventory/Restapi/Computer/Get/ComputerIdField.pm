@@ -8,7 +8,7 @@ This function return a computer field from his ID and field
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_computer_field {
 
@@ -26,7 +26,7 @@ sub get_computer_field {
         }
     }
 
-    return encode_json($json_return);
+    return to_json($json_return);
 }
 
 1;
