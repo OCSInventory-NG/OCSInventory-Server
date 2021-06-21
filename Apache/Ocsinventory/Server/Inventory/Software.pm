@@ -169,7 +169,7 @@ sub _insert_software {
                     'PUBLISHER_ID', 'VERSION_ID', 
                     'FOLDER', 'COMMENTS', 'FILENAME', 
                     'FILESIZE', 'SOURCE', 'GUID', 
-                    'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH');
+                    'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH', 'ARCHITECTURE');
 
     if(_del_all_soft($hardware_id)) { return 1; }
 
@@ -193,7 +193,8 @@ sub _insert_software {
             "GUID"          => $software->{GUID} // "",
             "LANGUAGE"      => $software->{LANGUAGE} // "",
             "INSTALLDATE"   => $software->{INSTALLDATE},
-            "BITSWIDTH"     => $software->{BITSWIDTH} // 0
+            "BITSWIDTH"     => $software->{BITSWIDTH} // 0,
+            "ARCHITECTURE"  => $software->{ARCHITECTURE} // ""
         );
         my $name = $software->{NAME};
         my $publisher = $software->{PUBLISHER};
