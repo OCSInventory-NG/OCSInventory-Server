@@ -8,7 +8,7 @@ This function return a IPDiscover object from tag
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_ipdiscover_tag{
 
@@ -21,7 +21,7 @@ sub get_ipdiscover_tag{
 
     my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
 
-    return encode_json($netmaps);
+    return to_json($netmaps);
 }
 
 1;

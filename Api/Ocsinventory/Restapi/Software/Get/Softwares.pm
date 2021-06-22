@@ -10,7 +10,7 @@ Params: start, limit
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_softwares {
 
@@ -19,7 +19,7 @@ sub get_softwares {
 
     my $softwares = Api::Ocsinventory::Restapi::ApiCommon::generate_item_all_softwares_json($limit, $start, $soft);
 
-    return encode_json($softwares);
+    return to_json($softwares);
 }
 
 1;

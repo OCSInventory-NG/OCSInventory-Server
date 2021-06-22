@@ -8,7 +8,7 @@ This function return a snmp field from his ID and field
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_snmp_field {
 
@@ -21,7 +21,7 @@ sub get_snmp_field {
         { Slice => {} }
     );
 
-    return encode_json($snmps);
+    return to_json($snmps);
 }
 
 1;
