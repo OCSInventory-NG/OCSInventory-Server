@@ -142,7 +142,7 @@ sub set_category{
 
             $regex = regex($regex);
 
-            if(( $os eq 'ALL' ) || ( $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/$os/ )){
+            if(defined($os) && ($os eq 'ALL' || $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/$os/)){
               if (defined $softName) {
                 if ($softName =~ $regex) {
                   if( ( defined $sign ) && ( $sign ne '' )){
