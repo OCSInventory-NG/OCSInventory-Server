@@ -181,7 +181,7 @@ sub snmp_prolog_resp{
 
       if (@snmp) {
         #Getting snmp communities
-        $select_communities_req = $dbh->prepare('SELECT VERSION,NAME,USERNAME,AUTHKEY,AUTHPASSWD FROM snmp_communities');
+        $select_communities_req = $dbh->prepare('SELECT VERSION,NAME,USERNAME,AUTHKEY,AUTHPASSWD,AUTHPROTO,PRIVPROTO FROM snmp_communities');
         $select_communities_req->execute();
 
         while(my $row = $select_communities_req->fetchrow_hashref){
@@ -196,6 +196,8 @@ sub snmp_prolog_resp{
               'USERNAME'=> $community->{'USERNAME'}?$community->{'USERNAME'}:'',
               'AUTHKEY' => $community->{'AUTHKEY'}?$community->{'AUTHKEY'}:'',
               'AUTHPASSWD' => $community->{'AUTHPASSWD'}?$community->{'AUTHPASSWD'}:'',
+              'AUTHPROTO' => $community->{'AUTHPROTO'}?$community->{'AUTHPROTO'}:'',
+              'PRIVPROTO' => $community->{'PRIVPROTO'}?$community->{'PRIVPROTO'}:'',
               'TYPE' => 'COMMUNITY',
             };
           }
