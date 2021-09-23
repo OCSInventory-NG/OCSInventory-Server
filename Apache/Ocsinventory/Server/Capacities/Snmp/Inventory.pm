@@ -98,6 +98,11 @@ sub _snmp_inventory{
   my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}; 
 
   my $snmp_devices = $result->{CONTENT};
+
+  #Getting data for the several snmp devices that we have in the xml
+  while (my ($key, $value) = each (%{$snmp_devices})) {
+    clean_snmp_table($key);
+  }
   
   #Getting data for the several snmp devices that we have in the xml
   while (my ($key, $value) = each (%{$snmp_devices})) {
@@ -109,6 +114,15 @@ sub _snmp_inventory{
       insert_snmp_inventory($key, $value);
     }
   }
+}
+
+sub clean_snmp_table {
+  my ($key) = @_;
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
+
+  # First delete table info
+  my $query_drop = $dbh->prepare("DELETE FROM $key");
+  $query_drop->execute;
 }
 
 sub insert_snmp_inventory{
@@ -124,19 +138,12 @@ sub insert_snmp_inventory{
     push @columns, $snmp_infos;
     push @bind_num, '?';
     push @arguments, $value->{$snmp_infos};
-    push @update, $snmp_infos." = ?";
   }
 
   my $column = join ',', @columns;
   my $args_prepare = join ',', @bind_num;
-  my $update_prepare = join ',', @update;
 
-  my $query = $dbh->prepare("INSERT INTO $key($column) VALUES($args_prepare) ON DUPLICATE KEY UPDATE $update_prepare");
-
-  foreach my $values (@arguments) {
-    $query->bind_param($i, $values);
-    $i++;
-  }
+  my $query = $dbh->prepare("INSERT INTO $key($column) VALUES($args_prepare)");
 
   foreach my $values (@arguments) {
     $query->bind_param($i, $values);
