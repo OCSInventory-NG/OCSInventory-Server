@@ -94,7 +94,10 @@ sub _init_map{
       $field_index++;      
     }
     # Build the "DBI->prepare" sql insert string 
-    $fields_string = join ',', ('HARDWARE_ID', @{$sectionsMeta->{$section}->{field_arrayref}});
+    for (@{$sectionsMeta->{$section}->{field_arrayref}}) {
+      s/^(.*)$/\`$1\`/;
+    }
+    $fields_string = join ',', ('`HARDWARE_ID`', @{$sectionsMeta->{$section}->{field_arrayref}});
     $sectionsMeta->{$section}->{sql_insert_string} = "INSERT INTO $section($fields_string) VALUES(";
     for(0..@{$sectionsMeta->{$section}->{field_arrayref}}){
       push @bind_num, '?';
@@ -128,14 +131,22 @@ sub _get_bind_values{
         $bind_value = $refXml->{$field}
       }
       else{
-        if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
-          $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
-          &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+        my $fieldMod = $field;
+        $fieldMod =~ s/^`(.*)`$/$1/;
+        if(defined($refXml->{$fieldMod})){
+          $bind_value = $refXml->{$fieldMod}
         }
         else{
-          &_log( 000, 'generic-fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
-          $bind_value = '';
+          if( defined $sectionMeta->{fields}->{$field}->{fallback} ){
+            $bind_value = $sectionMeta->{fields}->{$field}->{fallback};
+            &_log( 000, 'fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+          }
+          else{
+            &_log( 000, 'generic-fallback', "$field:".$sectionMeta->{fields}->{$field}->{fallback}) if $ENV{'OCS_OPT_LOGLEVEL'}>1;
+            $bind_value = '';
+          }
         }
+        
       }
     }
 

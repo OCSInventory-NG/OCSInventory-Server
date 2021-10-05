@@ -17,6 +17,9 @@ require Api::Ocsinventory::Restapi::Computer::Get::Computers; # Get list of Comp
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersListId; # Get list of Computers ID
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch; # Get list of ID depending on search
 
+## Software section
+require Api::Ocsinventory::Restapi::Software::Get::Softwares; # Get list of softwares
+
 ## IPDiscover section
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover;
 require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork;
@@ -26,6 +29,11 @@ require Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag;
 require Api::Ocsinventory::Restapi::Snmp::Get::SnmpId; # Get specific Snmp type informations
 require Api::Ocsinventory::Restapi::Snmp::Get::SnmpIdField; # Get specific information by id of Snmp type
 require Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId; # Get list of Snmp Type
+
+## CVE section
+require Api::Ocsinventory::Restapi::Cve::Get::CveCvss;
+require Api::Ocsinventory::Restapi::Cve::Get::CveSoftware;
+require Api::Ocsinventory::Restapi::Cve::Get::CveComputer;
 
 ## Routes
 
@@ -70,31 +78,39 @@ get '/v1/computers/search' => sub {
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch::get_computers_search($params_hash));
 };
 
+get '/v1/softwares' => sub {
+        my $c = shift;
+       my $id = $c->stash('id');
+
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
+        my $soft = $c->param('soft')||'';
+
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Software::Get::Softwares::get_softwares($limit, $start, $soft));
+};
+
 get '/v1/ipdiscover' => sub {
         my $c = shift;
 
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Ipdiscover::Get::Ipdiscover::get_ipdiscovers($start, $limit));
 };
 
-get '/v1/ipdiscover/:tag' => sub {
+get '/v1/ipdiscover/tag/:tag' => sub {
         my $c = shift;
         my $tag = $c->stash('tag');
 
         $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
 };
 
-get '/v1/ipdiscover/:network' => sub {
+get '/v1/ipdiscover/network/#network' => sub {
         my $c = shift;
-	# Debuggibg MH : Dump $c Mojo Object in /var/log/apache2/error.log
-#       warn "/v1/ipdiscover/:network : ".Dumper($c)."\n"; 
+
         my $network = $c->stash('network');
-	# QuickFix MH: donit know why a IPv4 10.20.30.40 is split as Mojo attrs: param=>10 format=20.30.40
-	$network .= ".".$c->stash('format');
-	
-        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
+        	
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverNetwork::get_ipdiscover_network($network));
 };
 
 get '/v1/snmps/typeList' => sub {
@@ -116,6 +132,33 @@ get '/v1/snmp/:type/:id' => sub {
         my $type = $c->stash('type');
         my $id = $c->stash('id');
         $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpIdField::get_snmp_field($type, $id));
+};
+
+get '/v1/cve/cvss' => sub {
+        my $c = shift;
+
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
+
+        $c->render(json => Api::Ocsinventory::Restapi::Cve::Get::CveCvss::get_cve_cvss($start, $limit));
+};
+
+get '/v1/cve/software' => sub {
+        my $c = shift;
+
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
+
+        $c->render(json => Api::Ocsinventory::Restapi::Cve::Get::CveSoftware::get_cve_software($start, $limit));
+};
+
+get '/v1/cve/computer' => sub {
+        my $c = shift;
+
+        my $start = $c->param('start')||0;
+        my $limit = $c->param('limit')||0;
+
+        $c->render(json => Api::Ocsinventory::Restapi::Cve::Get::CveComputer::get_cve_computer($start, $limit));
 };
 
 app->start;

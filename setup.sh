@@ -69,6 +69,8 @@ ADM_SERVER_PACKAGES_ALIAS="/download"
 # Administration default snmp directory and Apache alias
 ADM_SERVER_VAR_SNMP_DIR="snmp"
 ADM_SERVER_SNMP_ALIAS="/snmp"
+# Administration console tmp files dir
+ADM_SERVER_VAR_TMP_DIR="tmp_dir"
 # Administration console log files dir
 ADM_SERVER_VAR_LOGS_DIR="logs"
 # Administration console scripts log files dir
@@ -1696,6 +1698,40 @@ if [ -z "$ligne" ] || [ "$ligne" = "y" ] || [ "$ligne" = "Y" ]
 		if [ $? -ne 0 ]
 			then
 				echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_LOGS_DIR, please look at error in $SETUP_LOG and fix !"
+				echo
+				echo "Installation aborted !"
+				exit 1
+		fi
+
+		# Create tmp files directory
+		echo "Creating Administration server temporary files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR."
+		echo "Creating Administration server temporary files directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR" >> $SETUP_LOG
+		mkdir -p $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR >> $SETUP_LOG 2>&1
+		if [ $? != 0 ]
+			then
+				echo "*** ERROR: Unable to create $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR, please look at error in $SETUP_LOG and fix !"
+				echo
+				echo "Installation aborted !"
+				exit 1
+		fi
+
+		echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR."
+		echo "Fixing permissions on directory $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR" >> $SETUP_LOG
+		# Set log files area owned by root, group Apache
+		chown -R root:$APACHE_GROUP $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR >> $SETUP_LOG 2>&1
+		if [ $? -ne 0 ]
+			then
+				echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR, please look at error in $SETUP_LOG and fix !"
+				echo
+				echo "Installation aborted !"
+				exit 1
+		fi
+
+		# Set log files area writable by root and Apache group only
+		chmod -R g+w,o-w $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR >> $SETUP_LOG 2>&1
+		if [ $? -ne 0 ]
+			then
+				echo "*** ERROR: Unable to set permissions on $ADM_SERVER_VAR_DIR/$ADM_SERVER_VAR_TMP_DIR, please look at error in $SETUP_LOG and fix !"
 				echo
 				echo "Installation aborted !"
 				exit 1

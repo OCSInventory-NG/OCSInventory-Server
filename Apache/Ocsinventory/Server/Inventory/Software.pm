@@ -28,6 +28,7 @@ use Apache::Ocsinventory::Interface::Internals;
 use strict;
 use warnings;
 use Switch;
+use POSIX qw(strftime);
 
 require Exporter;
 
@@ -38,7 +39,9 @@ our @EXPORT = qw /
   _del_all_soft
   _insert_software
   _prepare_sql
-  _insert_software_name
+  _insert_software_categories_link
+  _del_category_soft
+  _trim_value
 /;
 
 sub _prepare_sql {
@@ -53,106 +56,69 @@ sub _prepare_sql {
         $query->bind_param($i, $value);
         $i++;
     }
-    $query->execute; 
+    $query->execute or return undef; 
 
     return $query;   
 }
 
-sub _insert_software_name {
-    my ($name, $cat) = @_;
+sub _insert_software_categories_link {
+    my ($name, $publisher, $version, $category) = @_;
     my $sql;
-    my $resultVerif;
-    my $valueVerif = undef;
-    my $categoryVerif = undef;
-    my $valueResult;
     my $result;
-
-    # Verif if value exist
-    my @argVerif = ();
-    $sql = "SELECT ID, CATEGORY FROM software_name WHERE NAME = ?";
-    push @argVerif, $name;
-    $resultVerif = _prepare_sql($sql, @argVerif);
-
-    while(my $row = $resultVerif->fetchrow_hashref()){
-        $valueVerif = $row->{ID};
-        $categoryVerif = $row->{CATEGORY};
-    }
 
     my @argInsert = ();
 
-    if(!defined $valueVerif) {
-        if(!defined $cat) {
-            # Insert if undef
-            $sql = "INSERT INTO software_name (NAME) VALUES(?)";
-            push @argInsert, $name;
-        } else {
-            # Insert if undef
-            $sql = "INSERT INTO software_name (NAME,CATEGORY) VALUES(?,?)";
-            push @argInsert, $name;
-            push @argInsert, $cat;
-        }
-        _prepare_sql($sql, @argInsert);
-    }
+    # Insert if undef
+    $sql = "INSERT INTO software_categories_link (NAME_ID, PUBLISHER_ID, VERSION_ID, CATEGORY_ID) VALUES(?,?,?,?)";
+    push @argInsert, $name;
+    push @argInsert, $publisher;
+    push @argInsert, $version;
+    push @argInsert, $category;
 
-    if(defined $valueVerif && defined $cat) {
-        if((!defined $categoryVerif) || ($cat != $categoryVerif)) {
-            my @arg = ();
-            my $sqlUpdate = "UPDATE software_name SET CATEGORY = ? WHERE ID = ?";
-            push @arg, $cat;
-            push @arg, $valueVerif;
-            _prepare_sql($sqlUpdate, @arg);
-        }
-    }
+    $result = _prepare_sql($sql, @argInsert);
+    if(!defined $result) { return undef; }
 
-    # Get last Insert or Update ID
-    my @argSelect = ();
-    $sql = "SELECT ID FROM software_name WHERE NAME = ?";
-    push @argSelect, $name;
-    $result = _prepare_sql($sql, @argSelect);
-
-    while(my $row = $result->fetchrow_hashref()){
-        $valueResult = $row->{ID};
-    }
-
-    return $valueResult;
+    return $result;
 }
 
 sub _get_info_software {
     my ($value, $table, $column) = @_;
     my $sql;
-    my $valueResult;
+    my $valueResult = undef;
     my $result;
     my $resultVerif;
-    my $valueVerif = undef;
 
     # Verif if value exist
     my @argVerif = ();
     $sql = "SELECT ID FROM $table WHERE $column = ?";
     push @argVerif, $value;
     $resultVerif = _prepare_sql($sql, @argVerif);
+    if(!defined $resultVerif) { return undef; }
 
     while(my $row = $resultVerif->fetchrow_hashref()){
-        $valueVerif = $row->{ID};
+        $valueResult = $row->{ID};
     }
 
-    my @argInsert = ();
+    if(!defined $valueResult) {
+        my @argInsert = ();
 
-    if(!defined $valueVerif) {
         # Insert if undef
         $sql = "INSERT INTO $table ($column) VALUES(?)";
         push @argInsert, $value;
-    }
 
-    _prepare_sql($sql, @argInsert);
+        $result = _prepare_sql($sql, @argInsert);
+        if(!defined $result) { return undef; }
 
-    # Get last Insert or Update ID
-    my @argSelect = ();
-    $sql = "SELECT ID FROM $table WHERE $column = ?";
-    push @argSelect, $value;
-    $result = _prepare_sql($sql, @argSelect);
+        # Get last Insert or Update ID
+        my @argSelect = ();
+        $sql = "SELECT ID FROM $table WHERE $column = ?";
+        push @argSelect, $value;
+        $result = _prepare_sql($sql, @argSelect);
+        if(!defined $result) { return undef; }
 
-    while(my $row = $result->fetchrow_hashref()){
-        $valueResult = $row->{ID};
+        while(my $row = $result->fetchrow_hashref()){
+            $valueResult = $row->{ID};
+        }
     }
 
     return $valueResult;
@@ -163,11 +129,37 @@ sub _del_all_soft {
     my $sql;
     my @arg = ();
     my $result;
-    my $id = 0;
 
     $sql = "DELETE FROM software WHERE HARDWARE_ID = ?";
     push @arg, $hardware_id;
     $result = _prepare_sql($sql, @arg);
+    if(!defined $result) { return 1; }
+
+    return 0;
+}
+
+sub _del_category_soft {
+    my ($name, $publisher, $version) = @_;
+    my $sql;
+    my @arg = ();
+    my $result;
+
+    $sql = "DELETE FROM software_categories_link WHERE NAME_ID = ? AND PUBLISHER_ID = ? AND VERSION_ID = ?";
+    push @arg, $name;
+    push @arg, $publisher;
+    push @arg, $version;
+    $result = _prepare_sql($sql, @arg);
+    if(!defined $result) { return 1; }
+
+    return 0;
+}
+
+sub _trim_value {
+    my ($toTrim) = @_;
+
+    $toTrim =~ s/^\s+|\s+$//g;
+
+    return $toTrim;
 }
 
 sub _insert_software {
@@ -177,11 +169,17 @@ sub _insert_software {
                     'PUBLISHER_ID', 'VERSION_ID', 
                     'FOLDER', 'COMMENTS', 'FILENAME', 
                     'FILESIZE', 'SOURCE', 'GUID', 
-                    'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH');
+                    'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH', 'ARCHITECTURE');
 
-    _del_all_soft($hardware_id);
-    
+    if(_del_all_soft($hardware_id)) { return 1; }
+
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
+
+        # Check install date format
+        if(!defined $software->{INSTALLDATE} || $software->{INSTALLDATE} !~ /^\d{4}\/\d\d\/\d\d/ && $software->{INSTALLDATE} !~ /[1-9]{1}[0-9]{3}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/) {
+            $software->{INSTALLDATE} = strftime "%Y/%m/%d", localtime;
+        }
+
         my %arrayValue = (
             "HARDWARE_ID"   => $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'},
             "NAME_ID"       => 1,
@@ -195,27 +193,38 @@ sub _insert_software {
             "GUID"          => $software->{GUID} // "",
             "LANGUAGE"      => $software->{LANGUAGE} // "",
             "INSTALLDATE"   => $software->{INSTALLDATE},
-            "BITSWIDTH"     => $software->{BITSWIDTH} // 0
+            "BITSWIDTH"     => $software->{BITSWIDTH} // 0,
+            "ARCHITECTURE"  => $software->{ARCHITECTURE} // ""
         );
         my $name = $software->{NAME};
         my $publisher = $software->{PUBLISHER};
         my $version = $software->{VERSION};
+        my $category = $software->{CATEGORY};
         my @bind_num;
         my @bind_update;
         
         # Get software Name ID if exists
         if(defined $name) {
-            $arrayValue{NAME_ID} = _insert_software_name($name, $software->{CATEGORY});
+            $arrayValue{NAME_ID} = _get_info_software($name, "software_name", "NAME");
+            if(!defined $arrayValue{NAME_ID}) { return 1; }
         }
         
         # Get software Publisher ID if exists
-        if(defined $publisher && $publisher ne '') {
-            $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
+        if(defined $publisher) {
+            my $trimPublisher = _trim_value($publisher);
+            if($trimPublisher ne '') {
+                $arrayValue{PUBLISHER_ID} = _get_info_software($publisher, "software_publisher", "PUBLISHER");
+                if(!defined $arrayValue{PUBLISHER_ID}) { return 1; }
+            }
         }
 
         # Get software Version ID if exists
-        if(defined $version && $version ne '') {
-            $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
+        if(defined $version) {
+            my $trimVersion = _trim_value($version);
+            if($trimVersion ne '') {
+                $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
+                if(!defined $arrayValue{VERSION_ID}) { return 1; }
+            }
         }
 
         my $arrayRefString = join ',', @arrayRef;
@@ -226,25 +235,22 @@ sub _insert_software {
             push @arg, $arrayValue{$arrayKey};
         }
 
-        my @arg_verif = ();
-        my $result_verif;
-        my $value_verif = undef;
-        my $sql_verif = "SELECT HARDWARE_ID FROM software WHERE HARDWARE_ID = ? AND NAME_ID = ? AND VERSION_ID = ?";
-        push @arg_verif, $arrayValue{HARDWARE_ID};
-        push @arg_verif, $arrayValue{NAME_ID};
-        push @arg_verif, $arrayValue{VERSION_ID};
-        $result_verif = _prepare_sql($sql_verif, @arg_verif);
+        $sql = "INSERT INTO software ($arrayRefString) VALUES(";
+        $sql .= (join ',', @bind_num).') ';
+        my $result = _prepare_sql($sql, @arg);
+        if(!defined $result) { return 1; }
 
-        while(my $row = $result_verif->fetchrow_hashref()){
-            $value_verif = $row->{HARDWARE_ID};
-        }
+        # Delete software from software categories link
+        if(_del_category_soft($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID})) { return 1; }
 
-        if(!defined $value_verif) {
-            $sql = "INSERT INTO software ($arrayRefString) VALUES(";
-            $sql .= (join ',', @bind_num).') ';
-            _prepare_sql($sql, @arg);
+        # Insert in software categories link table
+        if(defined $category) {
+            my $result_category = _insert_software_categories_link($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID}, $category);
+            if(!defined $result_category) { return 1; }
         }
     }
+
+    return 0;
 }
 
 1;

@@ -10,7 +10,7 @@ Params: table.fieldname = value
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_computers_search {
 
@@ -20,7 +20,7 @@ sub get_computers_search {
 
     my $query = Api::Ocsinventory::Restapi::ApiCommon::format_query_for_computer_search($url_params);
 
-    return encode_json($query);
+    return to_json($query);
 }
 
 1;

@@ -10,7 +10,7 @@ Params: start, limit
 
 # Common sub for api
 use Api::Ocsinventory::Restapi::ApiCommon;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw(to_json);
 
 sub get_computers_id {
 
@@ -21,7 +21,7 @@ sub get_computers_id {
         { Slice => {} }
     );
 
-    return encode_json($computers);
+    return to_json($computers);
 }
 
 1;

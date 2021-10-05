@@ -42,6 +42,12 @@ my $list;
 my $xml;
 my $cache;
 my $path;
+#Launch IpDiscover
+my $isNet;
+my $scantype;
+my $tag;
+
+my @networks = ();
 #Default values for database connection
 #
 my $dbhost = 'localhost';
@@ -96,6 +102,17 @@ for $option (@ARGV){
     die "Invalid address => [IP/MASK]. Abort...\n" unless $1=~/^(\d{1,3}(?:\.\d{1,3}){3})\/(.+)$/;
     $iptarget = $1;
     $masktarget = $2;
+  }elsif($option=~/-network=(\S+)/){
+    die "Invalid address => [IP/MASK]. Abort...\n" unless $1=~/^(\d{1,3}(?:\.\d{1,3}){3})\/(.+)$/;
+    push(@networks, "$1/$2");
+    $isNet = 1;
+  }elsif($option=~/-scantype=(\S+)/){
+    if ($1 ne "ping" and $1 ne "nmap"){
+      die "Invalid address => [IP/MASK]. Abort...\n";
+    }
+    $scantype = $1;
+  }elsif($option=~/-tag=(\S+)/){
+    $tag = $1;
   }else{
     print <<EOF;
 Usage :
@@ -112,6 +129,10 @@ Usage :
 -u=xxxx user (default ocs)
 -h=xxxx host (default localhost)
 -s=xxxx socket (default from default mysql configuration)
+#SCAN OPTION
+-network=X.X.X.X/X (ex: 10.1.1.1/20)-> subnet to scan
+-scantype=xxxx (ping or nmap) tool to scan (default nmap)
+-tag=xxxx  add this if the Ipdiscover have a TAG (default tag is NULL)
 
 EOF
     die "Invalid options. Abort..\n";
@@ -191,6 +212,101 @@ if($auto){
   }
   system ("rm -f ipdiscover-analyze.*");
   print "Done.\n";
+  exit(0);
+}
+
+#############
+# SERVER SCAN
+#############
+#
+if ($isNet){
+  print "\n########################\n";
+  print "Starting scan of subnets\n";
+  print "########################\n\n";
+  #Set default scan type to nmap
+  if (!$scantype){
+    $scantype = "nmap";
+  }
+
+  my $ips;
+  my $ip;
+  my $macAddr;
+  my $name;
+  my $str;
+
+  for $ips (@networks){
+    #get subnet and mask
+    my ($subnet, $mask) = split(/\//, $ips); 
+    $mask = _bintoascii($mask) if($mask=~/^\d\d$/);
+
+    $dbh->do('DELETE FROM netmap WHERE NETID = ?', {}, $subnet);
+
+    if ($scantype eq "nmap"){ #Scan with nmap
+      $str = `nmap -sn $ips`;
+      #get all values
+      while ($str =~ /Nmap scan report for (\S+) ?(\((\S+)\))?(\n^.*\n^MAC Address: (\S+))?/gm) {
+        if ($3) {
+          $ip = $3;
+          $name = $1;
+        } else {
+          $ip = $1;
+          undef $name;
+        }
+
+        if ($5) {
+          $macAddr = $5;
+        } else {
+          $macAddr = $ip;
+        }
+
+        #Trim results
+        $ip =~ s/\s+//g;
+        $macAddr =~ s/\s+//g;
+        $name =~ s/\s+//g;
+        $mask =~ s/\s+//g;
+
+        print "Adding $ip\n";
+
+        #bdd insertion
+        if ($name && $tag){
+          $dbh->do('INSERT IGNORE INTO netmap(IP,MAC,MASK,NETID,NAME,TAG) VALUES(?,?,?,?,?,?)', {}, $ip, $macAddr, $mask, $subnet, $name, $tag); 
+        }elsif ($name) {
+          $dbh->do('INSERT IGNORE INTO netmap(IP,MAC,MASK,NETID,NAME) VALUES(?,?,?,?,?)', {}, $ip, $macAddr, $mask, $subnet, $name); 
+        }elsif ($tag){
+          $dbh->do('INSERT IGNORE INTO netmap(IP,MAC,MASK,NETID,TAG) VALUES(?,?,?,?,?)', {}, $ip, $macAddr, $mask, $subnet, $tag); 
+        }else{
+          $dbh->do('INSERT IGNORE INTO netmap(IP,MAC,MASK,NETID) VALUES(?,?,?,?)', {}, $ip, $macAddr, $mask, $subnet);
+        }
+      }
+    } elsif ($scantype eq "ping") { #scan with fping
+      $_ = `fping -v`;
+
+      if (/^fping:/){
+        foreach (`fping -g --quiet -a $ips`){
+          $ip = $macAddr = $_;
+
+          #Trim results
+          $ip =~ s/\s+//g;
+          $macAddr =~ s/\s+//g;
+          $mask =~ s/\s+//g;
+
+          print "Adding $ip\n";
+
+          #bdd insertion
+          if ($tag){
+            $dbh->do('INSERT IGNORE INTO netmap(IP,MAC,MASK,NETID,TAG) VALUES(?,?,?,?,?)', {}, $ip, $macAddr, $mask, $subnet, $tag); 
+          }else{
+            $dbh->do('INSERT IGNORE INTO netmap(IP,MAC,MASK,NETID) VALUES(?,?,?,?) ', {}, $ip, $macAddr, $mask, $subnet);
+          }
+        }
+      } else {
+        die "Please install fping to use ping for scanning or use -scantype=nmap.\n";
+      }
+    }
+  }
+  print "\n#########################\n";
+  print "Finishing scan of subnets\n";
+  print "#########################\n\n";
   exit(0);
 }
 
