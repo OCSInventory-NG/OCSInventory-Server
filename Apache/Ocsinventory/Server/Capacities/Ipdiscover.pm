@@ -280,30 +280,30 @@ sub _ipdiscover_read_result{
         my $row_verif = $request_verif->fetchrow_hashref;
 
         if (defined $row_verif->{'TAG'}) {
-          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=? WHERE MAC=? AND TAG=?');
-          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M}, $tag);
+          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=? WHERE MAC=? AND TAG=?');
+          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $DeviceID, $_->{M}, $tag);
         } else {
-          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, TAG=? WHERE MAC=?');
-          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $tag, $_->{M});
+          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=?, TAG=? WHERE MAC=?');
+          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $DeviceID, $tag, $_->{M});
         }
         unless($update_req->rows){
-          $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME, TAG) VALUES(?,?,?,?,?,?)');
-          $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N}, $tag);
+          $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME, TAG, HARDWARE_ID) VALUES(?,?,?,?,?,?,?)');
+          $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N}, $tag, $DeviceID);
         }
       }
     } else {
       # We insert the results (MAC/IP)
-      $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=? WHERE MAC=?');
-      $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME) VALUES(?,?,?,?,?)');
+      $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=? WHERE MAC=?');
+      $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME, HARDWARE_ID) VALUES(?,?,?,?,?,?)');
 
       for(@$base){
         unless($_->{I}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ and $_->{M}=~/.{2}(?::.{2}){5}/){
           &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
           next;
         }
-        $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $_->{M});
+        $update_req->execute($_->{I}, $mask, $subnet, $_->{N},$DeviceID, $_->{M});
         unless($update_req->rows){
-          $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N});
+          $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N},$DeviceID);
         }
       }
     }
