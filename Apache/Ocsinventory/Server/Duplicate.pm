@@ -266,6 +266,7 @@ sub _duplicate_replace{
   for (keys(%DATA_MAP)){
     next if !$DATA_MAP{$_}->{delOnReplace} || !$DATA_MAP{$_}->{auto} || $DATA_MAP{$_}->{capacities};
     unless($dbh->do("DELETE FROM $_ WHERE HARDWARE_ID=?", {}, $device)){
+      &_log(301,'duplicate',"error to delete hardware_id from $_") if $ENV{'OCS_OPT_LOGLEVEL'};
       &_unlock($device);
       return(1);
     }
@@ -273,7 +274,8 @@ sub _duplicate_replace{
 
   # Trace duplicate if needed
   if($ENV{'OCS_OPT_TRACE_DELETED'}){
-    unless(  $dbh->do('INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NULL,?,?)', {} , $device,$DeviceID)){
+    unless(  $dbh->do('INSERT INTO deleted_equiv(DATE,DELETED,EQUIVALENT) VALUES(NOW(),?,?)', {} , $device,$DeviceID)){
+      &_log(302,'duplicate',"error on trace deleted") if $ENV{'OCS_OPT_LOGLEVEL'};
       &_unlock($device);
       return(1);
     }
