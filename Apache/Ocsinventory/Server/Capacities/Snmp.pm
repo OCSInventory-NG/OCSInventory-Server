@@ -158,7 +158,7 @@ sub snmp_prolog_resp{
       }
 
       #Getting snmp types
-      $select_snmp_type_req = $dbh->prepare('SELECT t.TYPE_NAME, t.CONDITION_OID, t.CONDITION_VALUE, t.TABLE_TYPE_NAME, l.LABEL_NAME, c.OID FROM snmp_types t LEFT JOIN snmp_configs c ON t.ID = c.TYPE_ID LEFT JOIN snmp_labels l ON l.ID = c.LABEL_ID');
+      $select_snmp_type_req = $dbh->prepare('SELECT t.TYPE_NAME, tc.CONDITION_OID, tc.CONDITION_VALUE, t.TABLE_TYPE_NAME, l.LABEL_NAME, c.OID FROM snmp_types t LEFT JOIN snmp_configs c ON t.ID = c.TYPE_ID LEFT JOIN snmp_labels l ON l.ID = c.LABEL_ID LEFT JOIN snmp_types_conditions tc ON tc.TYPE_ID = t.ID');
       $select_snmp_type_req->execute();
 
       while(my $row = $select_snmp_type_req->fetchrow_hashref){
@@ -181,7 +181,7 @@ sub snmp_prolog_resp{
 
       if (@snmp) {
         #Getting snmp communities
-        $select_communities_req = $dbh->prepare('SELECT VERSION,NAME,USERNAME,AUTHKEY,AUTHPASSWD FROM snmp_communities');
+        $select_communities_req = $dbh->prepare('SELECT VERSION,NAME,USERNAME,AUTHPASSWD,LEVEL,AUTHPROTO,PRIVPASSWD,PRIVPROTO FROM snmp_communities');
         $select_communities_req->execute();
 
         while(my $row = $select_communities_req->fetchrow_hashref){
@@ -194,8 +194,11 @@ sub snmp_prolog_resp{
               'VERSION' => $community->{'VERSION'}?$community->{'VERSION'}:'',
               'NAME' => $community->{'NAME'}?$community->{'NAME'}:'',
               'USERNAME'=> $community->{'USERNAME'}?$community->{'USERNAME'}:'',
-              'AUTHKEY' => $community->{'AUTHKEY'}?$community->{'AUTHKEY'}:'',
               'AUTHPASSWD' => $community->{'AUTHPASSWD'}?$community->{'AUTHPASSWD'}:'',
+              'LEVEL'=> $community->{'LEVEL'}?$community->{'LEVEL'}:'',
+              'AUTHPROTO' => $community->{'AUTHPROTO'}?$community->{'AUTHPROTO'}:'',
+              'PRIVPASSWD' => $community->{'PRIVPASSWD'}?$community->{'PRIVPASSWD'}:'',
+              'PRIVPROTO' => $community->{'PRIVPROTO'}?$community->{'PRIVPROTO'}:'',
               'TYPE' => 'COMMUNITY',
             };
           }
