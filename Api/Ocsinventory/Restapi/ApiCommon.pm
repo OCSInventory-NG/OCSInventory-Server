@@ -287,7 +287,7 @@ sub execute_custom_request{
       $sth->execute();
     }
 
-    return $sth->fetchall_arrayref();
+    return $sth->selectall_arrayref();
 
 }
 
