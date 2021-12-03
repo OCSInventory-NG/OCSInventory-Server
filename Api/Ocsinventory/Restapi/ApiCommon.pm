@@ -279,15 +279,13 @@ sub execute_custom_request{
         $query .= "LIMIT $limit OFFSET $start";
     }
 
-    my $sth = $database->prepare($query);
+    $items = $database->selectall_arrayref(
+            $query,
+            { Slice => {} },
+            @args
+        );
 
-    if(@args ne ""){
-      $sth->execute( @args );
-    }else{
-      $sth->execute();
-    }
-
-    return $sth->selectall_arrayref();
+    return $items;
 
 }
 
