@@ -57,7 +57,7 @@ get '/v1/computer/:id/:field' => sub {
         my $operator = $c->param('operator')|| "";
         my $value = $c->param('value')|| "";
 
-        $c->render(json => Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField::get_computer_field($id, $field, $where, $operator, $value));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField::get_computer_field($id, $field, $where, $operator, $value));
 };
 
 get '/v1/computers' => sub {
@@ -102,7 +102,7 @@ get '/v1/ipdiscover/tag/:tag' => sub {
         my $c = shift;
         my $tag = $c->stash('tag');
 
-        $c->render(json => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Ipdiscover::Get::IpdiscoverTag::get_ipdiscover_tag($tag));
 };
 
 get '/v1/ipdiscover/network/#network' => sub {
@@ -115,7 +115,7 @@ get '/v1/ipdiscover/network/#network' => sub {
 
 get '/v1/snmps/typeList' => sub {
         my $c = shift;
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId::get_snmps_id());
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId::get_snmps_id());
 };
 
 get '/v1/snmp/:type' => sub {
@@ -124,14 +124,14 @@ get '/v1/snmp/:type' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($type, $start, $limit));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Snmp::Get::SnmpId::get_snmp_id($type, $start, $limit));
 };
 
 get '/v1/snmp/:type/:id' => sub {
         my $c = shift;
         my $type = $c->stash('type');
         my $id = $c->stash('id');
-        $c->render(json => Api::Ocsinventory::Restapi::Snmp::Get::SnmpIdField::get_snmp_field($type, $id));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Snmp::Get::SnmpIdField::get_snmp_field($type, $id));
 };
 
 get '/v1/cve/cvss' => sub {
@@ -140,7 +140,7 @@ get '/v1/cve/cvss' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Cve::Get::CveCvss::get_cve_cvss($start, $limit));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Cve::Get::CveCvss::get_cve_cvss($start, $limit));
 };
 
 get '/v1/cve/software' => sub {
@@ -149,7 +149,7 @@ get '/v1/cve/software' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Cve::Get::CveSoftware::get_cve_software($start, $limit));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Cve::Get::CveSoftware::get_cve_software($start, $limit));
 };
 
 get '/v1/cve/computer' => sub {
@@ -158,7 +158,7 @@ get '/v1/cve/computer' => sub {
         my $start = $c->param('start')||0;
         my $limit = $c->param('limit')||0;
 
-        $c->render(json => Api::Ocsinventory::Restapi::Cve::Get::CveComputer::get_cve_computer($start, $limit));
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Cve::Get::CveComputer::get_cve_computer($start, $limit));
 };
 
 app->start;
