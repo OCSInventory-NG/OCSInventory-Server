@@ -126,15 +126,22 @@ sub _get_info_software {
 
 sub _del_all_soft {
     my ($hardware_id) = @_;
+    my $sqlSoftwareIds;
     my $sql;
     my @arg = ();
     my $result;
+    my $resultDelete;
 
-    $sql = "DELETE FROM software WHERE HARDWARE_ID = ?";
+    $sqlSoftwareIds = "SELECT ID FROM software WHERE HARDWARE_ID = ?";
+
     push @arg, $hardware_id;
-    $result = _prepare_sql($sql, @arg);
+    $result = _prepare_sql($sqlSoftwareIds, @arg);
     if(!defined $result) { return 1; }
 
+    $sql = "DELETE FROM software WHERE ID = ?";
+    while(my $row = $result->fetchrow_array()){
+      $resultDelete = _prepare_sql($sql, $row);
+    }
     return 0;
 }
 
