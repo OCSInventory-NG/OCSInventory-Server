@@ -95,7 +95,7 @@ sub regex{
     my ($regex) = @_;
 
     if(($regex !~ m/\?/) && ($regex !~ m/\*/)){
-      $regex = "\^".$regex."\$";
+      $regex = $regex;
     }
     if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) eq '*')){
       $regex = $regex =~ s/\*//gr;
@@ -144,7 +144,7 @@ sub set_category{
 
             if(defined($os) && ($os eq 'ALL' || $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/$os/)){
               if (defined $softName) {
-                if ($softName =~ $regex) {
+                if ($softName =~ $regex || $softName eq $regex) {
                   if( ( defined $sign ) && ( $sign ne '' )){
                       switch ($sign) {
                         case "EQUAL" {
