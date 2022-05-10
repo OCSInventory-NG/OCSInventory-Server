@@ -95,7 +95,7 @@ sub regex{
     my ($regex) = @_;
 
     if(($regex !~ m/\?/) && ($regex !~ m/\*/)){
-      $regex = "\^".$regex."\$";
+      $regex = "\^".$regex;
     }
     if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) eq '*')){
       $regex = $regex =~ s/\*//gr;
@@ -173,12 +173,12 @@ sub set_category{
                         }
                       }
                   }
-  		            if ( (defined $publisher) && ( $publisher ne '' ) && ( $sign eq '' ) ) {
+  		            if ( (defined $publisher) && ( $publisher ne '' ) && ((!defined $sign) || ($sign eq '')) ) {
                       my $softPublisher = $soft->{PUBLISHER};
                       if ( (defined $softPublisher) && ($publisher eq $softPublisher) ) {
                           $soft_cat = $cat->{ID};
                       }
-                  } if( ($publisher eq '') && ($sign eq '')) {
+                  } if( ((!defined $sign) && (!defined $publisher)) || (($publisher eq '') && ($sign eq ''))) {
                       $soft_cat = $cat->{ID};
                   }
                 }
