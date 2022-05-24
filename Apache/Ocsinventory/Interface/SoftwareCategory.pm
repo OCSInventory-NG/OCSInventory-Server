@@ -37,6 +37,7 @@ our @EXPORT = qw /
   _get_category_software
   _compare
   _regex
+  _remove_special_char
   set_category
 /;
 
@@ -95,7 +96,7 @@ sub regex{
     my ($regex) = @_;
 
     if(($regex !~ m/\?/) && ($regex !~ m/\*/)){
-      $regex = "\^".$regex;
+      $regex = "\^".$regex."\$";
     }
     if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) eq '*')){
       $regex = $regex =~ s/\*//gr;
@@ -113,6 +114,45 @@ sub regex{
     }
 
     return $regex;
+}
+
+# Removed special characters that could break the regex
+sub remove_special_char{
+    my ($string) = @_;
+
+    if(($string =~ m/\(/)){
+      $string = $string =~ s/\(//gr;
+    }
+
+    if(($string =~ m/\)/)){
+      $string = $string =~ s/\)//gr;
+    }
+
+    if(($string =~ m/\[/)){
+      $string = $string =~ s/\[//gr;
+    }
+
+    if(($string =~ m/\]/)){
+      $string = $string =~ s/\]//gr;
+    }
+
+    if(($string =~ m/\{/)){
+      $string = $string =~ s/\{//gr;
+    }
+
+    if(($string =~ m/\}/)){
+      $string = $string =~ s/\}//gr;
+    }
+
+    if(($string =~ m/\|/)){
+      $string = $string =~ s/\|//gr;
+    }
+
+    if(($string =~ m/\+/)){
+      $string = $string =~ s/\+//gr;
+    }
+
+    return $string;
 }
 
 sub set_category{
@@ -140,10 +180,14 @@ sub set_category{
             my $minV;
             my $majV;
 
+            $regex = remove_special_char($regex);
             $regex = regex($regex);
 
             if(defined($os) && ($os eq 'ALL' || $Apache::Ocsinventory::CURRENT_CONTEXT{'USER_AGENT'} =~ m/$os/)){
               if (defined $softName) {
+                
+                $softName = remove_special_char($softName);
+
                 if ($softName =~ $regex) {
                   if( ( defined $sign ) && ( $sign ne '' )){
                       switch ($sign) {
