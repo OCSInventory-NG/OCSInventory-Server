@@ -90,7 +90,7 @@ our %DATA_MAP= (
   },
 
   bios =>  {
-   mask => 2,
+   mask => 0,
    multi => 0,
    auto => 1,
    delOnReplace => 1,
