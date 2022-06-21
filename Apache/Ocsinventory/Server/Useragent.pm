@@ -75,14 +75,19 @@ sub useragent_prolog_read{
   my $current_context=shift;
   my $stop = 1;  #We stop PROLOG by default
   my $srvver = $Apache::Ocsinventory::VERSION;
+  my $srvver_major = $Apache::Ocsinventory::MAJOR_VERSION;
+  my $srvver_minor = $Apache::Ocsinventory::MINOR_VERSION;
 
   my $useragent= &_get_useragent; 
 
   if (grep /^($useragent->{'NAME'})$/, keys %ocsagents) {
      $useragent->{'VERSION'} =~ s/(\d)\.(\d)(.*)/$1\.$2/g;
+     my @useragent_version = split /\./, $useragent->{'VERSION'};
+     my $useragent_major_version = $useragent_version[0];
+     my $useragent_minor_version = $useragent_version[1];
 
      unless ($ocsagents{$useragent->{NAME}}) { #If no version specifed in hash
-       if ($useragent->{'VERSION'} <= $srvver) {
+       if ($useragent_major_version < $srvver_major  || ($useragent_major_version == $srvver_major && $useragent_minor_version <= $srvver_minor)) {
          $stop=0;
        }
      } elsif ($useragent->{'VERSION'} >= $ocsagents{$useragent->{'NAME'}}[0] && $useragent->{'VERSION'} <= $ocsagents{$useragent->{'NAME'}}[1]) { #For old windows agent versions compatibility
