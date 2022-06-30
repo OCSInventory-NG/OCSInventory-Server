@@ -176,10 +176,10 @@ sub _duplicate_detect{
 
   # ...and one MAC of this machine
   for(@{$result->{CONTENT}->{NETWORKS}}){
-    $request = $dbh->prepare('SELECT HARDWARE_ID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=? AND HARDWARE_ID<>?');
-    $request->execute($_->{MACADDR}, $DeviceID);
-    while($row = $request->fetchrow_hashref()){
-      if(!&_already_in_array($row->{'MACADDR'}, \@bad_mac)){
+    if(!&_already_in_array($row->{'MACADDR'}, \@bad_mac)){
+      $request = $dbh->prepare('SELECT HARDWARE_ID,DESCRIPTION,MACADDR FROM networks WHERE MACADDR=? AND HARDWARE_ID<>?');
+      $request->execute($_->{MACADDR}, $DeviceID);
+      while($row = $request->fetchrow_hashref()){
         $exist->{$row->{'HARDWARE_ID'}}->{'MACADDRESS'}++;
       }
     }
