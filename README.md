@@ -26,7 +26,9 @@ This functionality’s main goal is to complete the data retrieved from the IP D
 
 <h2 align="center">Deployment</h2>
 <p align='justify'>
-OCS Inventory NG includes the packet deployment functionality to be sure that all of the softwares environments which are on the network are the same. From the central management server, you can send the packets which will be downloaded with HTTP/HTTPS and launched by the agent on client’s computer. The OCS deployment is configured to make the packets less impactable on the network. OCS is used as a deployment tool on IT stock of more 100 000 devices.
+OCS Inventory NG includes the packet deployment functionality to be sure that all of the softwares environments which are on the network are the same. From the central management server, you can send the packets which will be downloaded with HTTP/HTTPS and launched by the agent on client’s computer. 
+The OCS deployment is configured to make the packets less impactable on the network.
+OCS is used as a deployment tool on IT stock of more 100 000 devices.
 </p>
 <br />
 
