@@ -26,9 +26,9 @@ param (
     [string]$url,
     [string]$user,
     [string]$pass,
-    [switch]$ssl = $false,
-    [switch]$remove = $false,
-    [switch]$info = $false
+    [switch]$ssl,
+    [switch]$remove,
+    [switch]$info
 )
 
 <#
@@ -82,7 +82,7 @@ function Send-File{
         [parameter(Mandatory=$true)]
         [hashtable] $headers
     )
-    
+
     $fileContent = Get-Content($filePath)
     $fileName = Split-Path $filePath -leaf
 
@@ -171,7 +171,7 @@ if($file -And (Test-Path -Path $file) -eq $true){
 # Directory inject management
 if ($directory -And (Test-Path -Path $directory) -eq $true) {
     Write-InfoLog("Injecting files present in the directory=> $directory")
-    Get-ChildItem $directory -Filter *.ocs | 
+    Get-ChildItem $directory -Filter *.ocs |
     Foreach-Object {
         Send-File $_.FullName $headers
     }

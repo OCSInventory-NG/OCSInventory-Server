@@ -640,7 +640,7 @@ our %DATA_MAP= (
     }
   },
 
-  snmp_switchs => {
+  snmp_switches => {
     mask => 4,
     multi => 1,
     auto => 1,
@@ -1086,7 +1086,7 @@ our %DATA_MAP= (
       TRAYS => {},
       CARTRIDGES => {},
       NETWORKS => {},
-      SWITCHS => {},
+      SWITCHES => {},
       BLADES => {},
       STORAGES => {},
       DRIVES => {},

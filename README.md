@@ -2,13 +2,11 @@
   <img src="https://cdn.ocsinventory-ng.org/common/banners/banner660px.png" height=300 width=660 alt="Banner">
 </p>
 
-[![Build Status](https://travis-ci.com/OCSInventory-NG/OCSInventory-Server.svg?branch=master)](https://travis-ci.com/OCSInventory-NG/OCSInventory-Server)
-
 <h1 align="center">OCS Inventory</h1>
 <p align="center">
   <b>Some Links:</b><br>
   <a href="http://ask.ocsinventory-ng.org">Ask question</a> |
-  <a href="#COMMING_SOON_STAY_CONNECTED">Installation</a> |
+  <a href="#COMING_SOON_STAY_CONNECTED">Installation</a> |
   <a href="https://www.ocsinventory-ng.org/?utm_source=github-ocs">Website</a> |
   <a href="https://www.ocsinventory-ng.org/en/#ocs-pro-en">OCS Professional</a>
 </p>
@@ -18,8 +16,6 @@ OCS (Open Computers and Software Inventory Next Generation) is an assets managem
 Since 2001, OCS Inventory NG has been looking for making software and hardware more powerful.
 OCS Inventory NG asks its agents to know the software and hardware composition of every computer or server.
 </p>
-
-
 
 
 <h2 align="center">Assets management</h2>
@@ -38,7 +34,7 @@ OCS Inventory NG includes the packet deployment functionality to be sure that al
 
 For the requirements, please follow the OCS Inventory documentation :
 
-http://wiki.ocsinventory-ng.org/01.Prerequisites/Libraries-version/
+<http://wiki.ocsinventory-ng.org/01.Prerequisites/Libraries-version/>
 
 ## Installation
 To install OCSInventory server simply run the setup script
@@ -53,7 +49,7 @@ git clone https://github.com/OCSInventory-NG/OCSInventory-ocsreports.git ocsrepo
 
 For more informations, please follow the OCS Inventory documentation :
 
-http://wiki.ocsinventory-ng.org/03.Basic-documentation/Setting-up-a-OCS-Inventory-Server/
+<http://wiki.ocsinventory-ng.org/03.Basic-documentation/Setting-up-a-OCS-Inventory-Server/>
 
 ## Contributing
 
