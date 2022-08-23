@@ -1,7 +1,0 @@
-Results of shfmt linter (version 3.3.1)
-See documentation on https://nvuillam.github.io/mega-linter/descriptors/bash_shfmt/
------------------------------------------------
-
-✅ [SUCCESS] binutils/create-release-tarball.sh
-✅ [SUCCESS] binutils/docker-download.sh
-✅ [SUCCESS] setup.sh

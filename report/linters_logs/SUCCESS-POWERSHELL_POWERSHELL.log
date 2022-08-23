@@ -1,6 +1,0 @@
-Results of powershell linter (version 7.1.5)
-See documentation on https://nvuillam.github.io/mega-linter/descriptors/powershell_powershell/
------------------------------------------------
-
-✅ [SUCCESS] .powershell-psscriptanalyzer.psd1
-✅ [SUCCESS] binutils/ocsinventory-powershell-injector.ps1

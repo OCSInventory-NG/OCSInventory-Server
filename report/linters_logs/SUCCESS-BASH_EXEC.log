@@ -1,7 +1,0 @@
-Results of bash-exec linter (version 5.1.0)
-See documentation on https://nvuillam.github.io/mega-linter/descriptors/bash_bash_exec/
------------------------------------------------
-
-✅ [SUCCESS] binutils/create-release-tarball.sh
-✅ [SUCCESS] binutils/docker-download.sh
-✅ [SUCCESS] setup.sh
