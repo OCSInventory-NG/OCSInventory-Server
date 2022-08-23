@@ -1,0 +1,9 @@
+Results of markdown-link-check linter (version 0.0.0)
+See documentation on https://nvuillam.github.io/mega-linter/descriptors/markdown_markdown_link_check/
+-----------------------------------------------
+
+✅ [SUCCESS] .github/Contributing.md
+✅ [SUCCESS] .github/ISSUE_TEMPLATE.md
+✅ [SUCCESS] .github/PULL_REQUEST_TEMPLATE.md
+✅ [SUCCESS] Api/Ocsinventory/Restapi/README.md
+✅ [SUCCESS] README.md
