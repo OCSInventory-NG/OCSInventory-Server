@@ -86,7 +86,7 @@ sub useragent_prolog_read{
      my $useragent_major_version = $useragent_version[0];
      my $useragent_minor_version = $useragent_version[1];
 
-     unless ($ocsagents{$useragent->{NAME}}) { #If no version specifed in hash
+     unless ($ocsagents{$useragent->{NAME}}) { #If no version specified in hash
        if ($useragent_major_version < $srvver_major  || ($useragent_major_version == $srvver_major && $useragent_minor_version <= $srvver_minor)) {
          $stop=0;
        }

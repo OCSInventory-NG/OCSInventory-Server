@@ -6,17 +6,13 @@
     "version": "1.0.0"
   },
   "host": "ocsinventory.server",
-  "schemes": [
-    "https"
-  ],
+  "schemes": ["https"],
   "basePath": "/v1",
-  "produces": [
-    "application/json"
-  ],
+  "produces": ["application/json"],
   "paths": {
     "/computer/{id}": {
       "get": {
-        "x-mojo-controller": {"controller": "Computer", "action": "test"},
+        "x-mojo-controller": { "controller": "Computer", "action": "test" },
         "summary": "Get One computer information",
         "description": "Return Computer object with all information\n",
         "parameters": [
@@ -29,9 +25,7 @@
             "format": "int"
           }
         ],
-        "tags": [
-          "Computers"
-        ],
+        "tags": ["Computers"],
         "responses": {
           "200": {
             "description": "An Computer object",

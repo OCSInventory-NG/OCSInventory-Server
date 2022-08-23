@@ -2,13 +2,11 @@
   <img src="https://cdn.ocsinventory-ng.org/common/banners/banner660px.png" height=300 width=660 alt="Banner">
 </p>
 
-[![Build Status](https://travis-ci.com/OCSInventory-NG/OCSInventory-Server.svg?branch=master)](https://travis-ci.com/OCSInventory-NG/OCSInventory-Server)
-
 <h1 align="center">OCS Inventory</h1>
 <p align="center">
   <b>Some Links:</b><br>
   <a href="http://ask.ocsinventory-ng.org">Ask question</a> |
-  <a href="#COMMING_SOON_STAY_CONNECTED">Installation</a> |
+  <a href="#COMING_SOON_STAY_CONNECTED">Installation</a> |
   <a href="https://www.ocsinventory-ng.org/?utm_source=github-ocs">Website</a> |
   <a href="https://www.ocsinventory-ng.org/en/#ocs-pro-en">OCS Professional</a>
 </p>
@@ -20,8 +18,6 @@ OCS Inventory NG asks its agents to know the software and hardware composition o
 </p>
 
 
-
-
 <h2 align="center">Assets management</h2>
 <p align='justify'>
 Since 2001, OCS Inventory NG has been looking for making software and hardware more powerful. OCS Inventory NG asks its agents to know the software and hardware composition of every computer or server. OCS Inventory also ask to discover network’s elements which can’t receive an agent. Since the version 2.0, OCS Inventory NG take in charge the SNMP scans functionality.
@@ -30,7 +26,9 @@ This functionality’s main goal is to complete the data retrieved from the IP D
 
 <h2 align="center">Deployment</h2>
 <p align='justify'>
-OCS Inventory NG includes the packet deployment functionality to be sure that all of the softwares environments which are on the network are the same. From the central management server, you can send the packets which will be downloaded with HTTP/HTTPS and launched by the agent on client’s computer. The OCS deployment is configured to make the packets less impactable on the network. OCS is used as a deployment tool on IT stock of more 100 000 devices.
+OCS Inventory NG includes the packet deployment functionality to be sure that all of the softwares environments which are on the network are the same. From the central management server, you can send the packets which will be downloaded with HTTP/HTTPS and launched by the agent on client’s computer.
+The OCS deployment is configured to make the packets less impactable on the network.
+OCS is used as a deployment tool on IT stock of more 100 000 devices.
 </p>
 <br />
 
@@ -38,7 +36,7 @@ OCS Inventory NG includes the packet deployment functionality to be sure that al
 
 For the requirements, please follow the OCS Inventory documentation :
 
-http://wiki.ocsinventory-ng.org/01.Prerequisites/Libraries-version/
+<http://wiki.ocsinventory-ng.org/01.Prerequisites/Libraries-version/>
 
 ## Installation
 To install OCSInventory server simply run the setup script
@@ -53,7 +51,7 @@ git clone https://github.com/OCSInventory-NG/OCSInventory-ocsreports.git ocsrepo
 
 For more informations, please follow the OCS Inventory documentation :
 
-http://wiki.ocsinventory-ng.org/03.Basic-documentation/Setting-up-a-OCS-Inventory-Server/
+<http://wiki.ocsinventory-ng.org/03.Basic-documentation/Setting-up-a-OCS-Inventory-Server/>
 
 ## Contributing
 

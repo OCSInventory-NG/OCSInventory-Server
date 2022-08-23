@@ -14,7 +14,7 @@ WEB_REPO=https://github.com/OCSInventory-NG/OCSInventory-OCSReports.git
 # Composer path
 COMPOSER_PATH=/usr/bin/composer
 
-# If no branch is supplied exit 
+# If no branch is supplied exit
 if [ -z $BRANCH ]; then
 	echo "Please set a source branch (first argument)"
 	exit 1
@@ -27,7 +27,7 @@ fi
 echo "$COMPOSER_PATH"
 # Check if composer bin is available, otherwise exit and display an error
 if [ ! -f $COMPOSER_PATH ]; then
-	echo "Error retreving composer executable. Please verify if composer is intalled or the COMPOSER_PATH configuration at the begining of the file (Currently used COMPOSER_PATH = $COMPOSER_PATH)"
+	echo "Error retreving composer executable. Please verify if composer is intalled or the COMPOSER_PATH configuration at the beginning of the file (Currently used COMPOSER_PATH = $COMPOSER_PATH)"
 	exit 1
 fi
 

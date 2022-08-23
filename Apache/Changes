@@ -102,7 +102,7 @@ Revision history for Apache::Ocsinventory
         * Add a new field "SYSTEM" for snmp_blades, snmp_firewalls and snmp_loadbalancer tables in Map.pm
         * Add new tables for SNMP computers data in Map.pm
         * Add a new table "snmp_switchinfos" in Map.pm
-        * snmp_switchs table is "multi" now in Map.pm
+        * snmp_switches table is "multi" now in Map.pm
         * Add the copy of the snmp_com.txt file in setup.sh to set default SNMP "public" community if this file does not exists
         * Fix various mistakes and missing fields for snmp tables in Map.pm
         * Add the new Apache configuration for SNMP communities reference file (snmp_com.txt) in setup.sh and ocsinventory-reports.conf
@@ -117,7 +117,7 @@ Revision history for Apache::Ocsinventory
         * Feel the SNMP_ID filed in snmp_accountinfo when a new SNMP device coming
         * Feel the TAG field in the snmp_accountinfo while inventory for SNMP devices
         * Add STATUS and ERRORSTATE fields for snmp_printers table
-        * Map.pm: snmp_networksconnected and snmp_switchs are now auto => 0 due to the special treatments associated to this tables
+        * Map.pm: snmp_networksconnected and snmp_switches are now auto => 0 due to the special treatments associated to this tables
         * Don't take care of identified network devices for SNMP scans in Snmp.pm. This devices will be scanned using SNMP too
         * Add the MAC address in the PROLOG response in Snmp.pm
         * Use of _get_snmp_parser_ForceArray subroutine to get sections for the 'ForceArray' in Snmp.pm
