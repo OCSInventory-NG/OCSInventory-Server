@@ -267,6 +267,30 @@ sub get_item_main_table_informations{
 
 }
 
+# Get last updated computers data
+sub get_last_updated_computers{
+
+    my ($timestamp, $item_type) = @_;
+    my $items;
+
+    my $database = api_database_connect();
+
+    $item_type = "hardware";
+    # if timestamp was not provided by user, defaults to current datetime - 1 day
+    if ($timestamp eq 0) {
+        $timestamp = time - 86400;
+    }
+
+    # get all computers updated since timestamp
+    $items = $database->selectall_arrayref(
+        "SELECT * FROM $item_type WHERE LASTDATE > FROM_UNIXTIME($timestamp)",
+        { Slice => {} }
+    );
+
+    return $items;
+
+}
+
 sub execute_custom_request{
 
     my ($query, $start, $limit, @args) = @_;
