@@ -1,0 +1,24 @@
+---
+name: New issue
+
+on:
+  issues:
+    types: 
+      - opened
+
+jobs:
+  chatmsg:
+    runs-on: ubuntu-latest
+    name: Issue chat message
+    steps:
+      - name: Rocket.Chat Notification
+        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
+        if: always()
+        with:
+          type: ${{ job.status }}
+          job_name: ${{ format('*New issue {0}* => {1}', github.event.issue.number, github.event.issue.title) }}
+          mention: 'here'
+          mention_if: 'failure'
+          channel: ${{ secrets.ROCKET_CHAT_ISSUE_CHAN }}
+          url: ${{ secrets.ROCKET_CHAT_ISSUE_HOOK }}
+

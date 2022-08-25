@@ -1,0 +1,24 @@
+---
+name: New pull request
+
+on:
+  pull_request:
+    types: 
+      - opened
+
+jobs:
+  chatmsg:
+    runs-on: ubuntu-latest
+    name: PR chat message
+    steps:
+      - name: Rocket.Chat Notification
+        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
+        if: always()
+        with:
+          type: ${{ job.status }}
+          job_name: ${{ format('*New pull request {0}* => {1}', github.event.pull_request.number, github.event.pull_request.title) }}
+          mention: 'here'
+          mention_if: 'failure'
+          channel: ${{ secrets.ROCKET_CHAT_PR_CHAN }}
+          url: ${{ secrets.ROCKET_CHAT_PR_HOOK }}
+
