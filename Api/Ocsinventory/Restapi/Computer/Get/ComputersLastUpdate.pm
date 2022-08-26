@@ -17,7 +17,17 @@ sub get_computers_last_update {
     my ($timestamp) = @_;
     my $json_return;
 
-    my $computers = Api::Ocsinventory::Restapi::ApiCommon::get_last_updated_computers($timestamp, "computer");
+    my $database = Api::Ocsinventory::Restapi::ApiCommon::api_database_connect();
+    # if timestamp was not provided by user, defaults to current datetime - 1 day
+    if ($timestamp eq 0) {
+        $timestamp = time - 86400;
+    }
+
+    # get all computers updated since timestamp
+    $computers = $database->selectall_arrayref(
+        "SELECT ID FROM hardware WHERE LASTDATE > FROM_UNIXTIME($timestamp)",
+        { Slice => {} }
+    );
 
     return to_json($computers);
 }
