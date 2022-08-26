@@ -3,7 +3,7 @@ name: New pull request
 
 on:
   pull_request:
-    types: 
+    types:
       - opened
 
 jobs:
@@ -17,8 +17,7 @@ jobs:
         with:
           type: ${{ job.status }}
           job_name: ${{ format('*New pull request {0}* => {1}', github.event.pull_request.number, github.event.pull_request.title) }}
-          mention: 'here'
-          mention_if: 'failure'
+          mention: "here"
+          mention_if: "failure"
           channel: ${{ secrets.ROCKET_CHAT_PR_CHAN }}
           url: ${{ secrets.ROCKET_CHAT_PR_HOOK }}
-
