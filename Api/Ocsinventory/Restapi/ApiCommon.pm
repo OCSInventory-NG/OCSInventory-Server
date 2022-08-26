@@ -283,7 +283,7 @@ sub get_last_updated_computers{
 
     # get all computers updated since timestamp
     $items = $database->selectall_arrayref(
-        "SELECT * FROM $item_type WHERE LASTDATE > FROM_UNIXTIME($timestamp)",
+        "SELECT ID FROM $item_type WHERE LASTDATE > FROM_UNIXTIME($timestamp)",
         { Slice => {} }
     );
 

@@ -19,12 +19,7 @@ sub get_computers_last_update {
 
     my $computers = Api::Ocsinventory::Restapi::ApiCommon::get_last_updated_computers($timestamp, "computer");
 
-    foreach my $computer ( @$computers ) {
-        $$json_return{"$computer->{ID}"}{"hardware"} = $computer;
-        $json_return = Api::Ocsinventory::Restapi::ApiCommon::generate_item_datamap_json("computer", $computer->{ID}, $json_return, "");
-    }
-
-    return to_json($json_return);
+    return to_json($computers);
 }
 
 1;
