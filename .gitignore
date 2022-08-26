@@ -3,3 +3,5 @@
 # add ocsreports directory
 ocsreports/
 report/
+
+megalinter-reports/
