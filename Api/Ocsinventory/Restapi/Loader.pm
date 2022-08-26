@@ -16,6 +16,7 @@ require Api::Ocsinventory::Restapi::Computer::Get::ComputerIdField; # Get specif
 require Api::Ocsinventory::Restapi::Computer::Get::Computers; # Get list of Computers
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersListId; # Get list of Computers ID
 require Api::Ocsinventory::Restapi::Computer::Get::ComputersSearch; # Get list of ID depending on search
+require Api::Ocsinventory::Restapi::Computer::Get::ComputersLastUpdate; # Get list of computers udpated since specific date
 
 ## Software section
 require Api::Ocsinventory::Restapi::Software::Get::Softwares; # Get list of softwares
@@ -68,6 +69,20 @@ get '/v1/computers' => sub {
         my $limit = $c->param('limit')||0;
 
         $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Computer::Get::Computers::get_computers($limit, $start));
+};
+
+get '/v1/computers/lastupdate/:timestamp' => sub {
+        my $c = shift;
+        my $timestamp = $c->param('timestamp') || 0;
+
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Computer::Get::ComputersLastUpdate::get_computers_last_update($timestamp));
+};
+
+get '/v1/computers/lastupdate' => sub {
+        my $c = shift;
+        my $timestamp = 0;
+
+        $c->render(format => 'json', text => Api::Ocsinventory::Restapi::Computer::Get::ComputersLastUpdate::get_computers_last_update($timestamp));
 };
 
 get '/v1/computers/search' => sub {
