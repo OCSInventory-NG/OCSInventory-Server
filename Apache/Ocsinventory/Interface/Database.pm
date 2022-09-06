@@ -58,7 +58,7 @@ sub database_connect{
     $dbName = $ENV{'OCS_DB_SL_NAME'}||'ocsweb';
     $dbPort = $ENV{'OCS_DB_SL_PORT'}||'3306';
     $dbUser = $ENV{'OCS_DB_SL_USER'};
-    $dbPwd  = $Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_SL_PWD');
+    $dbPwd  = $ENV{'OCS_DB_SL_PWD'};
     $env_mode_prefix .= '_SL';
   }
   else{
@@ -66,7 +66,7 @@ sub database_connect{
     $dbName = $ENV{'OCS_DB_NAME'}||'ocsweb';
     $dbPort = $ENV{'OCS_DB_PORT'}||'3306';
     $dbUser = $ENV{'OCS_DB_USER'};
-    $dbPwd  = $Apache::Ocsinventory::SOAP::apache_req->dir_config('OCS_DB_PWD');
+    $dbPwd  = $ENV{'OCS_DB_PWD'};
   }
 
   # Optionnaly a mysql socket different than the client's built in
