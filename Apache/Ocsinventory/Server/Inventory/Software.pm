@@ -57,7 +57,8 @@ sub _prepare_sql {
         $query->bind_param($i, $value);
         $i++;
     }
-    $query->execute or return undef; 
+
+    $query->execute or return undef;
 
     return $query;   
 }
@@ -284,14 +285,12 @@ sub _insert_software {
 
             if(!defined $result) { return 1; }
 
-            $sql = "SELECT LAST_INSERT_ID()";
-            $result = _prepare_sql($sql, undef);
+            # Verify if the software already exists on DB
+            my $softIdInsert = _verif_software_exists($arrayValue{HARDWARE_ID}, $arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID});
 
-            if(!defined $result) { return 1; }
+            if(!defined $softIdInsert) { return 1; }
 
-            while(my $row = $result->fetchrow_array()) {
-                push @softIdAlreadyExists, $row;
-            }
+            push @softIdAlreadyExists, $softIdInsert;
         }
 
         # Check if software already in the correct software category
@@ -315,7 +314,7 @@ sub _insert_software {
         $sql .= (join ',', @softIdAlreadyExists).")";
         push @arg, $hardware_id;
 
-        my $result = _prepare_sql($sql, @arg);;
+        my $result = _prepare_sql($sql, @arg);
 
         if(!defined $result) { return 1; }
     }
