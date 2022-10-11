@@ -36,12 +36,13 @@ our @ISA = qw /Exporter/;
 
 our @EXPORT = qw /
   _get_info_software
-  _del_all_soft
   _insert_software
   _prepare_sql
   _insert_software_categories_link
   _del_category_soft
   _trim_value
+  _verif_software_exists
+  _verif_software_already_in_cat
 /;
 
 sub _prepare_sql {
@@ -56,7 +57,8 @@ sub _prepare_sql {
         $query->bind_param($i, $value);
         $i++;
     }
-    $query->execute or return undef; 
+
+    $query->execute or return undef;
 
     return $query;   
 }
@@ -124,18 +126,50 @@ sub _get_info_software {
     return $valueResult;
 }
 
-sub _del_all_soft {
-    my ($hardware_id) = @_;
+sub _verif_software_exists {
+    my ($hardware_id, $name, $publisher, $version) = @_;
     my $sql;
     my @arg = ();
     my $result;
+    my $id;
 
-    $sql = "DELETE FROM software WHERE HARDWARE_ID = ?";
+    $sql = "SELECT ID FROM software WHERE HARDWARE_ID = ? AND NAME_ID = ? AND PUBLISHER_ID = ? AND VERSION_ID = ?";
     push @arg, $hardware_id;
+    push @arg, $name;
+    push @arg, $publisher;
+    push @arg, $version;
+
     $result = _prepare_sql($sql, @arg);
     if(!defined $result) { return 1; }
 
-    return 0;
+    while(my $row = $result->fetchrow_hashref()){
+        $id = $row->{ID};
+    }
+
+    return $id;
+}
+
+sub _verif_software_already_in_cat {
+    my ($name, $publisher, $version, $category) = @_;
+    my $sql;
+    my @arg = ();
+    my $result;
+    my $id;
+
+    $sql = "SELECT ID FROM software_categories_link WHERE CATEGORY_ID = ? AND NAME_ID = ? AND PUBLISHER_ID = ? AND VERSION_ID = ?";
+    push @arg, $category;
+    push @arg, $name;
+    push @arg, $publisher;
+    push @arg, $version;
+
+    $result = _prepare_sql($sql, @arg);
+    if(!defined $result) { return 1; }
+
+    while(my $row = $result->fetchrow_hashref()){
+        $id = $row->{ID};
+    }
+
+    return $id;
 }
 
 sub _del_category_soft {
@@ -149,6 +183,7 @@ sub _del_category_soft {
     push @arg, $publisher;
     push @arg, $version;
     $result = _prepare_sql($sql, @arg);
+
     if(!defined $result) { return 1; }
 
     return 0;
@@ -170,8 +205,7 @@ sub _insert_software {
                     'FOLDER', 'COMMENTS', 'FILENAME', 
                     'FILESIZE', 'SOURCE', 'GUID', 
                     'LANGUAGE', 'INSTALLDATE', 'BITSWIDTH', 'ARCHITECTURE');
-
-    if(_del_all_soft($hardware_id)) { return 1; }
+    my @softIdAlreadyExists;
 
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
 
@@ -196,6 +230,7 @@ sub _insert_software {
             "BITSWIDTH"     => $software->{BITSWIDTH} // 0,
             "ARCHITECTURE"  => $software->{ARCHITECTURE} // ""
         );
+
         my $name = $software->{NAME};
         my $publisher = $software->{PUBLISHER};
         my $version = $software->{VERSION};
@@ -227,27 +262,61 @@ sub _insert_software {
             }
         }
 
-        my $arrayRefString = join ',', @arrayRef;
+        # Verify if the software already exists on DB
+        my $softId = _verif_software_exists($arrayValue{HARDWARE_ID}, $arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID});
+
+        # If return id : save the id in array
+        # If return undef : insert the software and save the id in array 
+        if(defined $softId) { 
+            push @softIdAlreadyExists, $softId; 
+        } else {
+            my $arrayRefString = join ',', @arrayRef;
+            my @arg = ();
+
+            foreach my $arrayKey(@arrayRef) {
+                push @bind_num, '?';
+                push @bind_update, $arrayKey.' = ?';
+                push @arg, $arrayValue{$arrayKey};
+            }
+
+            $sql = "INSERT INTO software ($arrayRefString) VALUES(";
+            $sql .= (join ',', @bind_num).') ';
+            my $result = _prepare_sql($sql, @arg);
+
+            if(!defined $result) { return 1; }
+
+            # Verify if the software already exists on DB
+            my $softIdInsert = _verif_software_exists($arrayValue{HARDWARE_ID}, $arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID});
+
+            if(!defined $softIdInsert) { return 1; }
+
+            push @softIdAlreadyExists, $softIdInsert;
+        }
+
+        # Check if software already in the correct software category
+        # If return id : skip
+        # If return undef : delete and insert
+        if(defined $category && $category != 0) {
+            my $softIdInCat = _verif_software_already_in_cat($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID}, $category);
+            if(!defined $softIdInCat) {
+                # Delete software from software categories link
+                if(_del_category_soft($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID})) { return 1; }
+                # Insert software in software categories link
+                if(!_insert_software_categories_link($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID}, $category)) { return 1; }
+            }
+        }
+    }
+
+    # Delete all softwares who are not in softIdAlreadyExists with this hardware_id
+    if(@softIdAlreadyExists && defined $hardware_id) {
         my @arg = ();
-        foreach my $arrayKey(@arrayRef) {
-            push @bind_num, '?';
-            push @bind_update, $arrayKey.' = ?';
-            push @arg, $arrayValue{$arrayKey};
-        }
+        $sql = "DELETE FROM software WHERE HARDWARE_ID = ? AND ID NOT IN (";
+        $sql .= (join ',', @softIdAlreadyExists).")";
+        push @arg, $hardware_id;
 
-        $sql = "INSERT INTO software ($arrayRefString) VALUES(";
-        $sql .= (join ',', @bind_num).') ';
         my $result = _prepare_sql($sql, @arg);
+
         if(!defined $result) { return 1; }
-
-        # Delete software from software categories link
-        if(_del_category_soft($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID})) { return 1; }
-
-        # Insert in software categories link table
-        if(defined $category) {
-            my $result_category = _insert_software_categories_link($arrayValue{NAME_ID}, $arrayValue{PUBLISHER_ID}, $arrayValue{VERSION_ID}, $category);
-            if(!defined $result_category) { return 1; }
-        }
     }
 
     return 0;
