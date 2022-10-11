@@ -144,6 +144,64 @@ sub insert_snmp_inventory{
   }
 
   $query->execute;
+
+  # Create first SNMP accountinfo entry
+  my $reconciliation_field;
+  my $reconciliation_value;
+
+  # Retrieve the reconciliation field
+  my $queryConfig = $dbh->prepare("SELECT l.LABEL_NAME as LABEL_NAME FROM `snmp_configs` c LEFT JOIN `snmp_types` t ON t.ID = c.TYPE_ID LEFT JOIN `snmp_labels` l ON l.ID = c.LABEL_ID WHERE t.TABLE_TYPE_NAME = ? AND c.RECONCILIATION = 'Yes'");
+  
+  unless($queryConfig->execute($key)){
+    &_log(519,'snmp','get reconciliation field error') if $ENV{'OCS_OPT_LOGLEVEL'};
+    return(1);
+  }
+
+  my $resultConfig = $queryConfig;
+
+  if(!defined $resultConfig) { return 1; }
+
+  my $rowConfig = $resultConfig->fetchrow_hashref;
+
+  if(defined $rowConfig->{LABEL_NAME}) {
+    $reconciliation_field = $rowConfig->{LABEL_NAME};
+  }
+
+  # Check if row already exists on snmp_accountinfo
+  if(defined $reconciliation_field) {
+    my $queryCheck = $dbh->prepare("SELECT ID FROM `snmp_accountinfo` WHERE SNMP_TYPE = ? AND SNMP_RECONCILIATION_FIELD = ? AND SNMP_RECONCILIATION_VALUE = ?");
+    $queryCheck->bind_param(1, $key);
+    $queryCheck->bind_param(2, $reconciliation_field);
+    $queryCheck->bind_param(3, $value->{$reconciliation_field});
+
+    my $id;
+
+    unless($queryCheck->execute){
+      &_log(519,'snmp','check if snmp_accountinfo field exists error') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return(1);
+    }
+
+    my $resultCheck = $queryCheck;
+
+    if(!defined $resultCheck) { return 1; }
+
+    my $rowCheck = $resultCheck->fetchrow_hashref;
+
+    if(defined $rowCheck->{ID}) {
+      $id = $rowCheck->{ID};
+    }
+
+    # If id is undefined insert row in snmp_accountinfo
+    if(!defined $id) {
+      my $queryInsert = $dbh->prepare("INSERT INTO `snmp_accountinfo`(SNMP_TYPE, SNMP_RECONCILIATION_FIELD, SNMP_RECONCILIATION_VALUE) VALUES(?,?,?)");
+      $queryInsert->bind_param(1, $key);
+      $queryInsert->bind_param(2, $reconciliation_field);
+      $queryInsert->bind_param(3, $value->{$reconciliation_field});
+
+      my $resultInsert = $queryInsert->execute or return undef;
+      if(!defined $resultInsert) { return 1; }
+    }
+  }
 }
 
 sub _update_snmp_inventory_section{
