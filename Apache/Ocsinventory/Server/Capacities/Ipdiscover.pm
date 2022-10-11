@@ -61,6 +61,7 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
 
 sub _ipdiscover_prolog_resp{
 
+  &_log(1001,'ipdiscover','checking if is enabled') if $ENV{'OCS_OPT_LOGLEVEL'};
   return unless $ENV{'OCS_OPT_IPDISCOVER'};
   
   my $current_context = shift;
@@ -71,6 +72,7 @@ sub _ipdiscover_prolog_resp{
   
   my ($ua, $os, $v);
 
+  &_log(1001,'ipdiscover','checking if parameters are OK') if $ENV{'OCS_OPT_LOGLEVEL'};
   return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
 
   my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
@@ -78,6 +80,7 @@ sub _ipdiscover_prolog_resp{
   my $groupsParams  = $current_context->{'PARAMS_G'};
   my $ipdiscoverLatency;
   
+  &_log(1001,'ipdiscover','checking if computer is able to be elected') if $ENV{'OCS_OPT_LOGLEVEL'};
   return if !defined($behaviour) or $behaviour == IPD_NEVER;
 
   if($lanToDiscover){
@@ -133,6 +136,7 @@ sub _ipdiscover_prolog_resp{
     &_set_http_header('Connection', 'close', $current_context->{'APACHE_OBJECT'});
     return 1;
   }else{
+    &_log(1001,'ipdiscover','no lan detected for discovery') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 0;
   }
 }
@@ -144,12 +148,14 @@ sub _ipdiscover_main{
   my $subnet;
   my $remove;
 
+  &_log(1001,'ipdiscover','checking if is enabled') if $ENV{'OCS_OPT_LOGLEVEL'};
   return unless $ENV{'OCS_OPT_IPDISCOVER'};
   
   my $current_context = shift;
 
   return if $current_context->{'LOCAL_FL'};
 
+  &_log(1001,'ipdiscover','checking if parameters are OK') if $ENV{'OCS_OPT_LOGLEVEL'};
   return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
   
   my $DeviceID = $current_context->{'DATABASE_ID'};
@@ -166,12 +172,16 @@ sub _ipdiscover_main{
     'OCS-NG_WINDOWS_AGENT',
   );
 
+  &_log(1001,'ipdiscover','processing') if $ENV{'OCS_OPT_LOGLEVEL'};
+
   #IVALUE = 0 means that computer will not ever be elected
   if( defined($behaviour) && $behaviour == IPD_NEVER ){
+    &_log(1001,'ipdiscover','this computer will not ever be elected due to his configuration') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 0;
   }
   
   # We can use groups to prevent some computers to be elected
+  &_log(1001,'ipdiscover','checking if ipdiscover group capabilities are enabled') if $ENV{'OCS_OPT_LOGLEVEL'};
   if( $ENV{'OCS_OPT_ENABLE_GROUPS'} && $ENV{'OCS_OPT_IPDISCOVER_USE_GROUPS'} ){
     for(keys(%$groupsParams)){
       return 0 if defined($$groupsParams{$_}->{'IPDISCOVER'}->{'IVALUE'}) 
@@ -192,6 +202,7 @@ sub _ipdiscover_main{
   }else{
     my $useragent = &_get_useragent();
 
+    &_log(1001,'ipdiscover','checking user agent') if $ENV{'OCS_OPT_LOGLEVEL'};
     unless (grep /^($useragent->{'NAME'})$/, @ipdiscover_agents){
       return 0;
     }
