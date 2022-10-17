@@ -193,7 +193,6 @@ sub generate_item_all_softwares_json{
 
     $query .= " LIMIT $limit OFFSET $start";
 
-    print STDERR "$query \n";
     my $items = $database->selectall_arrayref(
         $query,
         { Slice => {} },
