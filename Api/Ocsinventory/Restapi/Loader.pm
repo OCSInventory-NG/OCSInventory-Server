@@ -35,6 +35,8 @@ require Api::Ocsinventory::Restapi::Snmp::Get::SnmpListId; # Get list of Snmp Ty
 require Api::Ocsinventory::Restapi::Cve::Get::CveCvss;
 require Api::Ocsinventory::Restapi::Cve::Get::CveSoftware;
 require Api::Ocsinventory::Restapi::Cve::Get::CveComputer;
+require Api::Ocsinventory::Restapi::Cve::Get::CveComputersList;
+require Api::Ocsinventory::Restapi::Cve::Get::CveHistory;
 
 ## Routes
 
@@ -175,5 +177,18 @@ get '/v1/cve/computer' => sub {
 
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Cve::Get::CveComputer::get_cve_computer($start, $limit));
 };
+
+get '/v1/cve/computerslist' => sub {
+        my $c = shift;
+
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Cve::Get::CveComputersList::get_cve_computers_list());
+};
+
+get '/v1/cve/history' => sub {
+        my $c = shift;
+
+        $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Cve::Get::CveHistory::get_cve_history());
+};
+
 
 app->start;
