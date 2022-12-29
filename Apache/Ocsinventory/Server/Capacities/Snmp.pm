@@ -84,6 +84,9 @@ sub snmp_prolog_resp{
   my @mibs;
   my @snmp_rework;
 
+  my $behaviour = undef;
+  my $lanToDiscover = undef;
+
   #Verify if SNMP is enable for this computer or in config
   my $snmpSwitch = &_get_snmp_switch($current_context);
   return unless $snmpSwitch;
@@ -95,10 +98,14 @@ sub snmp_prolog_resp{
   my @snmp;
 
   my $dbh = $current_context->{'DBI_HANDLE'};
-  my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
-  my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
-  my $groupsParams  = $current_context->{'PARAMS_G'};
 
+  if(defined $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'}) {
+    $behaviour = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+  }
+
+  if(defined $behaviour && $behaviour == 2) {
+    $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
+  }
 
   #Only if communication is https 
   if ($current_context->{'APACHE_OBJECT'}->subprocess_env('https')) {
@@ -135,12 +142,12 @@ sub snmp_prolog_resp{
       }
 
       #If the computer is Ipdicover elected 
-      if ($behaviour == 1 || $behaviour == 2) {
-
+      if (defined $behaviour && $behaviour == 2) {
+        
         #Getting non inventoried network devices for the agent subnet 
         $select_ip_req=$dbh->prepare('SELECT IP,MAC FROM netmap WHERE NETID=? AND mac NOT IN (SELECT DISTINCT(macaddr) FROM networks WHERE macaddr IS NOT NULL AND IPSUBNET=?)');
         $select_ip_req->execute($lanToDiscover,$lanToDiscover);
-
+        
         while(my $row = $select_ip_req->fetchrow_hashref){
           push @devicesToScan,$row;
         }
@@ -154,7 +161,7 @@ sub snmp_prolog_resp{
               'TYPE' => 'DEVICE',
             };
           }
-	}
+	      }
       }
 
       #Getting snmp types
