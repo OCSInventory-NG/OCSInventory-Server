@@ -31,7 +31,7 @@ sub api_database_connect{
 
     # Retrieve env var
     $dbHost = $ENV{'OCS_DB_HOST'};
-    $dbName = $ENV{'OCS_DB_NAME'}||'ocsweb';
+    $dbName = $ENV{'OCS_DB_LOCAL'}||$ENV{'OCS_DB_NAME'}||'ocsweb';
     $dbPort = $ENV{'OCS_DB_PORT'}||'3306';
     $dbUser = $ENV{'OCS_DB_USER'};
     $dbPwd  = $ENV{'OCS_DB_PWD'};
