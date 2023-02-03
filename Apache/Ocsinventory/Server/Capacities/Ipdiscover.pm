@@ -23,6 +23,7 @@ package Apache::Ocsinventory::Server::Capacities::Ipdiscover;
 
 use strict;
 
+
 BEGIN{
   if($ENV{'OCS_MODPERL_VERSION'} == 1){
     require Apache::Ocsinventory::Server::Modperl1;
@@ -73,10 +74,17 @@ sub _ipdiscover_prolog_resp{
   my ($ua, $os, $v);
 
   &_log(1001,'ipdiscover','checking if parameters are OK') if $ENV{'OCS_OPT_LOGLEVEL'};
-  return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
 
-  my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
-  my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+  my $behaviour = undef;
+  my $lanToDiscover = undef;
+    # checking if we have a value for IPDISCOVER (IVALUE and TVALUE)
+  if(defined $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'}) {
+    $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
+  }
+  if(defined $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'}) {
+    $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+  }
+ 
   my $groupsParams  = $current_context->{'PARAMS_G'};
   my $ipdiscoverLatency;
   
@@ -156,13 +164,23 @@ sub _ipdiscover_main{
   return if $current_context->{'LOCAL_FL'};
 
   &_log(1001,'ipdiscover','checking if parameters are OK') if $ENV{'OCS_OPT_LOGLEVEL'};
-  return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
+  # return unless (ref $current_context->{'PARAMS'}{'IPDISCOVER'} eq ref {}); # Not a HASH reference
   
   my $DeviceID = $current_context->{'DATABASE_ID'};
   my $dbh = $current_context->{'DBI_HANDLE'};
   my $result = $current_context->{'XML_ENTRY'};
-  my $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
-  my $behaviour     = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+
+  my $behaviour = undef;
+  my $lanToDiscover = undef;
+
+  # checking if we have a value for IPDISCOVER (IVALUE and TVALUE)
+  if(defined $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'}) {
+    $lanToDiscover = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'TVALUE'};
+  }
+  if(defined $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'}) {
+    $behaviour = $current_context->{'PARAMS'}{'IPDISCOVER'}->{'IVALUE'};
+  }
+
   my $groupsParams  = $current_context->{'PARAMS_G'};
 
   #Special array to define agents that could be automatic ipdscover elected
@@ -175,7 +193,7 @@ sub _ipdiscover_main{
   &_log(1001,'ipdiscover','processing') if $ENV{'OCS_OPT_LOGLEVEL'};
 
   #IVALUE = 0 means that computer will not ever be elected
-  if( defined($behaviour) && $behaviour == IPD_NEVER ){
+  if(defined($behaviour) && $behaviour == IPD_NEVER ){
     &_log(1001,'ipdiscover','this computer will not ever be elected due to his configuration') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 0;
   }
@@ -206,7 +224,7 @@ sub _ipdiscover_main{
     unless (grep /^($useragent->{'NAME'})$/, @ipdiscover_agents){
       return 0;
     }
-    
+    ## AUTO ELECTION PROCESS ##
     # Get quality and fidelity
     $request = $dbh->prepare('SELECT QUALITY,FIDELITY FROM hardware WHERE ID=?');
     $request->execute($DeviceID);
