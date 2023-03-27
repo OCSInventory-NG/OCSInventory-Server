@@ -189,7 +189,7 @@ sub build_computers_xml_special_section {
   }
   elsif($section eq 'dico_soft'){
     my @tmp;
-    my $sth = get_sth('SELECT DISTINCT dico_soft.FORMATTED AS FORMAT FROM softwares,dico_soft WHERE HARDWARE_ID=? AND EXTRACTED=NAME', $id);
+    my $sth = get_sth('SELECT DISTINCT d.`FORMATTED` AS FORMAT FROM `software` s JOIN `software_name` n ON (n.`ID` = s.`NAME_ID`) JOIN `dico_soft` d ON (d.`EXTRACTED` = n.`NAME`) WHERE s.`HARDWARE_ID`=?', $id);
     while( my $row = $sth->fetchrow_hashref() ){
       push @tmp, $row->{FORMAT};
     }
