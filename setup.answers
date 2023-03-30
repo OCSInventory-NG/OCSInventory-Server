@@ -1,0 +1,69 @@
+## Which host run database server
+#DB_SERVER_HOST="${DB_SERVER_HOST:-localhost}"
+## On which port run database server
+#DB_SERVER_PORT="${DB_SERVER_PORT:-3306}"
+## Database server credentials
+#DB_SERVER_USER="${DB_SERVER_USER:-ocs}"
+#DB_SERVER_PWD="${DB_SERVER_PWD:-ocs}"
+## Where is Apache daemon binary (if empty, will try to find it)
+#APACHE_BIN="${APACHE_BIN:-}"
+## Where is Apache configuration file (if empty, will try to find it)
+#APACHE_CONFIG_FILE="${APACHE_CONFIG_FILE:-}"
+## Where is Apache includes configuration directory (if emty, will try to find it)
+#APACHE_CONFIG_DIRECTORY="${APACHE_CONFIG_DIRECTORY:-}"
+## Which user is running Apache web server (if empty, will try to find it)
+#APACHE_USER="${APACHE_USER:-}"
+## Which group is running Apache web server (if empty, will try to find it)
+#APACHE_GROUP="${APACHE_GROUP:-}"
+## Where is Apache document root directory (if empty, will try to find it)
+#APACHE_ROOT_DOCUMENT="${APACHE_ROOT_DOCUMENT:-}"
+## Which version of mod_perl is apache using,  1 for <= 1.999_21 and 2 for >= 1.999_22 (if empty, user will be asked for)
+#APACHE_MOD_PERL_VERSION="${APACHE_MOD_PERL_VERSION:-}"
+## Where are located OCS Communication server log files
+#OCS_COM_SRV_LOG="${OCS_COM_SRV_LOG:-/var/log/ocsinventory-server}"
+## Where are located OCS Communication server plugins configuration files
+#OCS_COM_SRV_PLUGINS_CONFIG_DIR="${OCS_COM_SRV_PLUGINS_CONFIG_DIR:-/etc/ocsinventory-server/plugins}"
+## Where are located OCS Communication server plugins perl files
+#OCS_COM_SRV_PLUGINS_PERL_DIR="${OCS_COM_SRV_PLUGINS_PERL_DIR:-/etc/ocsinventory-server/perl}"
+## Where is located perl interpreter
+#PERL_BIN=${PERL_BIN:-$(which perl 2>/dev/null)}
+## Where is located make utility
+#MAKE=${MAKE:-$(which make 2>/dev/null)}
+## Where is located logrotate configuration directory
+#LOGROTATE_CONF_DIR="${LOGROTATE_CONF_DIR:-/etc/logrotate.d}"
+## Where is located newsyslog.conf
+#NEWSYSLOG_CONF_FILE="${NEWSYSLOG_CONF_FILE:-/etc/newsyslog.conf}"
+## Where to store setup logs
+#SETUP_LOG=${SETUP_LOG:-$(pwd)/ocs_server_setup.log}
+## Communication Server Apache configuration file
+#COM_SERVER_APACHE_CONF_FILE="${COM_SERVER_APACHE_CONF_FILE:-ocsinventory-server.conf}"
+## Rest API configuration file
+#API_REST_APACHE_CONF_FILE="${API_REST_APACHE_CONF_FILE:-ocsinventory-restapi.conf}"
+## Communication Server logrotate configuration file
+#COM_SERVER_LOGROTATE_CONF_FILE="${COM_SERVER_LOGROTATE_CONF_FILE:-ocsinventory-server}"
+## Administration Console Apache configuration file
+#ADM_SERVER_APACHE_CONF_FILE="${ADM_SERVER_APACHE_CONF_FILE:-ocsinventory-reports.conf}"
+## Administration console read only files directory
+#ADM_SERVER_STATIC_DIR="${ADM_SERVER_STATIC_DIR:-/usr/share/ocsinventory-reports}"
+#ADM_SERVER_STATIC_REPORTS_DIR="${ADM_SERVER_STATIC_REPORTS_DIR:-ocsreports}"
+#ADM_SERVER_REPORTS_ALIAS="${ADM_SERVER_REPORTS_ALIAS:-/ocsreports}"
+## Administration console read/write files dir
+#ADM_SERVER_VAR_DIR="${ADM_SERVER_VAR_DIR:-/var/lib/ocsinventory-reports}"
+## Administration default packages directory and Apache alias
+#ADM_SERVER_VAR_PACKAGES_DIR="${ADM_SERVER_VAR_PACKAGES_DIR:-download}"
+#ADM_SERVER_PACKAGES_ALIAS="${ADM_SERVER_PACKAGES_ALIAS:-/download}"
+## Administration default snmp directory and Apache alias
+#ADM_SERVER_VAR_SNMP_DIR="${ADM_SERVER_VAR_SNMP_DIR:-snmp}"
+#ADM_SERVER_SNMP_ALIAS="${ADM_SERVER_SNMP_ALIAS:-/snmp}"
+## Administration console tmp files dir
+#ADM_SERVER_VAR_TMP_DIR="${ADM_SERVER_VAR_TMP_DIR:-tmp_dir}"
+## Administration console log files dir
+#ADM_SERVER_VAR_LOGS_DIR="${ADM_SERVER_VAR_LOGS_DIR:-logs}"
+## Administration console scripts log files dir
+#ADM_SERVER_VAR_SCRIPTS_LOGS_DIR="${ADM_SERVER_VAR_SCRIPTS_LOGS_DIR:-scripts}"
+## Administration console default ipdsicover-util.pl cache dir
+#ADM_SERVER_VAR_IPD_DIR="${ADM_SERVER_VAR_IPD_DIR:-ipd}"
+## OS or linux distribution from automatic detection
+#UNIX_DISTRIBUTION="${UNIX_DISTRIBUTION:-}"
+## Default install directory for rest api
+#REST_API_DIRECTORY="${REST_API_DIRECTORY:-}"
