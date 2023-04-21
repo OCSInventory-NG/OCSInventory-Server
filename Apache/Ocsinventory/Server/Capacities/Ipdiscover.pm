@@ -23,7 +23,6 @@ package Apache::Ocsinventory::Server::Capacities::Ipdiscover;
 
 use strict;
 
-
 BEGIN{
   if($ENV{'OCS_MODPERL_VERSION'} == 1){
     require Apache::Ocsinventory::Server::Modperl1;
@@ -131,12 +130,34 @@ sub _ipdiscover_prolog_resp{
       unless( $ipdiscoverLatency ){
         $ipdiscoverLatency = $ENV{'OCS_OPT_IPDISCOVER_LATENCY'}?$ENV{'OCS_OPT_IPDISCOVER_LATENCY'}:100;
       }
+
+      # SCAN_TYPE_IPDISCOVER
+      # hierarchy is: general config < group config < device config, we get the general config first then override it with group config and device config
+      # this ensures that we always have a value for each option
+
+      # getting general config
+      my $scan_type_ipdiscover = $ENV{'OCS_OPT_SCAN_TYPE_IPDISCOVER'}?$ENV{'OCS_OPT_SCAN_TYPE_IPDISCOVER'}:0;
+
+      # getting group config
+      for(keys(%$groupsParams)){
+        if(defined($$groupsParams{$_}->{'SCAN_TYPE_IPDISCOVER'}->{'TVALUE'})){
+          $scan_type_ipdiscover = $$groupsParams{$_}->{'SCAN_TYPE_IPDISCOVER'}->{'TVALUE'};
+        }
+      }
+
+      # getting device config
+      if(defined($current_context->{'PARAMS'}{'SCAN_TYPE_IPDISCOVER'}->{'IVALUE'})){
+        $scan_type_ipdiscover = $current_context->{'PARAMS'}{'SCAN_TYPE_IPDISCOVER'}->{'TVALUE'};
+      }
+
+
             
       push @{$$resp{'OPTION'}}, { 
             'NAME' => [ 'IPDISCOVER' ], 
             'PARAM' => { 
               'IPDISC_LAT' => $ipdiscoverLatency,
-              'content' => $lanToDiscover
+              'content' => $lanToDiscover,
+              'SCAN_TYPE_IPDISCOVER' => $scan_type_ipdiscover
             } 
       };
     }

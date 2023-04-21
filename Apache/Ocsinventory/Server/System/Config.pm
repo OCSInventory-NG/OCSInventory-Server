@@ -459,6 +459,14 @@ our %CONFIG = (
     level => IMPORTANT,
     filter => qr '^(1|0)$'
   },
+  SCAN_TYPE_IPDISCOVER => {
+    type => 'TVALUE',
+    default => 'ICMP',
+    unit => 'NA',
+    description => 'Scan method used for IpDiscover scans performed by agents (nmap, ICMP, ARP scan)',
+    level => IMPORTANT,
+    filter => qr '^(NAMP|ICMP|ARPSCAN)$'
+  },
 );
 
 sub get_settings{
