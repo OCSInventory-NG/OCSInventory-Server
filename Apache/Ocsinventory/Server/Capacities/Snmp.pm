@@ -232,73 +232,22 @@ sub snmp_prolog_resp{
           }
         }
 
+      my $groupsParams  = $current_context->{'PARAMS_G'};
+      my $scan_type_snmp = assign_config('SCAN_TYPE_SNMP', 'OCS_OPT_SCAN_TYPE_SNMP', $groupsParams, $current_context);
+      my $scan_arp_bandwidth = assign_config('SCAN_ARP_BANDWIDTH', 'OCS_OPT_SCAN_ARP_BANDWIDTH', $groupsParams, $current_context);
 
-        # getting network scans options from config (either general config, group config or device config)
-        # hierarchy is: general config < group config < device config, we get the general config first then override it with group config and device config
-        # this ensures that we always have a value for each option
+      push @snmp,{
+        # add TYPE to avoid warnings when receiving on the agent
+        'TYPE' => 'OPTION',
+        'SCAN_TYPE_SNMP' => $scan_type_snmp,
+        'SCAN_ARP_BANDWIDTH' => $scan_arp_bandwidth,
+      };
 
-        # general snmp options
-        my $network_scan_default_conf = $dbh->prepare('SELECT * FROM config WHERE NAME LIKE "SCAN_%"');
-        $network_scan_default_conf->execute();
-        while (my $row = $network_scan_default_conf->fetchrow_hashref) {
-          push @snmp,{
-            'NAME' => $row->{'NAME'}?$row->{'NAME'}:'',
-            'IVALUE' => $row->{'IVALUE'}?$row->{'IVALUE'}:'',
-            'TVALUE' => $row->{'TVALUE'}?$row->{'TVALUE'}:'',
-            'TYPE' => 'OPTION',
-          };
-        }
-
-      
-        # group snmp options - retrieve all the groups the device is in then check if there is a specific config for each group
-        my $group = $dbh->prepare('SELECT * FROM groups_cache WHERE HARDWARE_ID = ?');
-        $group->execute($current_context->{'DATABASE_ID'});
-        my $group_results = $group->fetchall_arrayref({});
-        if (scalar(@$group_results) > 0) {
-          foreach my $group (@$group_results) {
-            my $group_device_conf = $dbh->prepare('SELECT * FROM devices WHERE HARDWARE_ID = ? AND NAME LIKE "SCAN_%"');
-            $group_device_conf->execute($group->{'GROUP_ID'});
-            my $group_device_conf_results = $group_device_conf->fetchall_arrayref({});
-            # if there is a specific config for the group, we look at the default config and override the options that are customized
-            if (scalar(@$group_device_conf_results) > 0) {
-              foreach my $row (@$group_device_conf_results) {
-                # compare the name of the option with the name of the option in the default config 
-                # if the name is the same, we override the default value with the group value
-                foreach my $option (@snmp) {
-                  if ($option->{'NAME'} eq $row->{'NAME'}) {
-                    $option->{'IVALUE'} = $row->{'IVALUE'}?$row->{'IVALUE'}:'';
-                    $option->{'TVALUE'} = $row->{'TVALUE'}?$row->{'TVALUE'}:'';
-                  }
-                
-                }
-              }
-            }
-          }
-        }
-
-        # device snmp options
-        my $device_conf = $dbh->prepare('SELECT * FROM devices WHERE HARDWARE_ID = ? AND NAME LIKE "SCAN_%"');
-        $device_conf->execute($current_context->{'DATABASE_ID'});
-        my $device_conf_results = $device_conf->fetchall_arrayref({});
-        # if there is a specific config for the device, we override the default config
-        if (scalar(@$device_conf_results) > 0) {
-          foreach my $row (@$device_conf_results) {
-            # compare the name of the option with the name of the option in the default config 
-            # if the name is the same, we override the default value with the device value
-            foreach my $option (@snmp) {
-              if ($option->{'NAME'} eq $row->{'NAME'}) {
-                $option->{'IVALUE'} = $row->{'IVALUE'}?$row->{'IVALUE'}:'';
-                $option->{'TVALUE'} = $row->{'TVALUE'}?$row->{'TVALUE'}:'';
-              }
-            }
-          }
-        } 
-
-        #Final XML
-        push @{ $resp->{'OPTION'} },{
-          'NAME' => ['SNMP'],
-          'PARAM' => \@snmp,
-        };
+      #Final XML
+      push @{ $resp->{'OPTION'} },{
+        'NAME' => ['SNMP'],
+        'PARAM' => \@snmp,
+      };
 
       } 
 
@@ -371,6 +320,27 @@ sub _get_snmp_switch {
 
   return ($snmpSwitch);
 }
+
+sub assign_config {
+    my ($param, $env_default, $group_config, $device_config) = @_;
+    # general config
+    my $value = $ENV{$env_default} || 0;
+
+    # group config
+    for my $group (keys %$group_config){
+        if(defined($group_config->{$group}->{$param}->{'TVALUE'})){
+            $value = $group_config->{$group}->{$param}->{'TVALUE'};
+        }
+    }
+
+    # device config
+    if(defined($device_config->{'PARAMS'}{$param}->{'IVALUE'})){
+        $value = $device_config->{'PARAMS'}{$param}->{'TVALUE'};
+    }
+
+    return $value;
+}
+
 
 1;
 
