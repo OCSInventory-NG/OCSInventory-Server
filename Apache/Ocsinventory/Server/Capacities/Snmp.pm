@@ -42,8 +42,10 @@ BEGIN{
 # These are the core modules you must include in addition
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Communication::Session;
 use Apache::Ocsinventory::Server::Constants;
 
+use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Data;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Inventory;
 
@@ -273,6 +275,9 @@ sub snmp_handler{
 
   #We get snmp tables references from Map.pm 
   &_init_snmp_map( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
+
+  &_generate_ocs_file_snmp( \%SNMP_SECTIONS, \@SNMP_SECTIONS, $current_context->{'DATABASE_ID'})
+  &kill_session( \%Apache::Ocsinventory::CURRENT_CONTEXT );
 
   #Inventory incoming
   &_log(100,'snmp','inventory incoming') if $ENV{'OCS_OPT_LOGLEVEL'};

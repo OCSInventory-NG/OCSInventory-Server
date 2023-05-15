@@ -219,6 +219,14 @@ our %CONFIG = (
     level => IMPORTANT,
     filter => qr '^(1|0)$'
   },
+  GENERATE_OCS_FILES_SNMP => { 
+    type => 'IVALUE',
+    default => 0,
+    unit => 'NA',
+    description => 'Generate SNMP files',
+    level => IMPORTANT,
+    filter => qr '^(1|0)$'
+  }, 
   OCS_FILES_OVERWRITE => { 
     type => 'IVALUE',
     default => 0,
