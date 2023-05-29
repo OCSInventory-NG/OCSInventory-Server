@@ -131,33 +131,17 @@ sub _ipdiscover_prolog_resp{
         $ipdiscoverLatency = $ENV{'OCS_OPT_IPDISCOVER_LATENCY'}?$ENV{'OCS_OPT_IPDISCOVER_LATENCY'}:100;
       }
 
-      # SCAN_TYPE_IPDISCOVER
-      # hierarchy is: general config < group config < device config, we get the general config first then override it with group config and device config
-      # this ensures that we always have a value for each option
-
-      # getting general config
-      my $scan_type_ipdiscover = $ENV{'OCS_OPT_SCAN_TYPE_IPDISCOVER'}?$ENV{'OCS_OPT_SCAN_TYPE_IPDISCOVER'}:0;
-
-      # getting group config
-      for(keys(%$groupsParams)){
-        if(defined($$groupsParams{$_}->{'SCAN_TYPE_IPDISCOVER'}->{'TVALUE'})){
-          $scan_type_ipdiscover = $$groupsParams{$_}->{'SCAN_TYPE_IPDISCOVER'}->{'TVALUE'};
-        }
-      }
-
-      # getting device config
-      if(defined($current_context->{'PARAMS'}{'SCAN_TYPE_IPDISCOVER'}->{'IVALUE'})){
-        $scan_type_ipdiscover = $current_context->{'PARAMS'}{'SCAN_TYPE_IPDISCOVER'}->{'TVALUE'};
-      }
-
-
+      # SCAN_TYPE_IPDISCOVER & SCAN_ARP_BANDWIDTH
+      my $scan_type_ipdiscover = assign_config('SCAN_TYPE_IPDISCOVER', 'OCS_OPT_SCAN_TYPE_IPDISCOVER', $groupsParams, $current_context);
+      my $scan_arp_bandwidth = assign_config('SCAN_ARP_BANDWIDTH', 'OCS_OPT_SCAN_ARP_BANDWIDTH', $groupsParams, $current_context);
             
       push @{$$resp{'OPTION'}}, { 
             'NAME' => [ 'IPDISCOVER' ], 
             'PARAM' => { 
               'IPDISC_LAT' => $ipdiscoverLatency,
               'content' => $lanToDiscover,
-              'SCAN_TYPE_IPDISCOVER' => $scan_type_ipdiscover
+              'SCAN_TYPE_IPDISCOVER' => $scan_type_ipdiscover,
+              'SCAN_ARP_BANDWIDTH' => $scan_arp_bandwidth
             } 
       };
     }
@@ -479,4 +463,29 @@ sub _ipdiscover_evaluate{
   }
   return 0;
 }
+
+# hierarchy is: general config < group config < device config, we get the general config first then override it with group config and device config
+# this ensures that we always have a value for each option
+sub assign_config {
+    my ($param, $env_default, $group_config, $device_config) = @_;
+    # general config
+    my $value = $ENV{$env_default} || 0;
+
+    # group config
+    for my $group (keys %$group_config){
+        if(defined($group_config->{$group}->{$param}->{'TVALUE'})){
+            $value = $group_config->{$group}->{$param}->{'TVALUE'};
+        }
+    }
+
+    # device config
+    if(defined($device_config->{'PARAMS'}{$param}->{'IVALUE'})){
+        $value = $device_config->{'PARAMS'}{$param}->{'TVALUE'};
+    }
+
+    return $value;
+}
+
+
+
 1;
