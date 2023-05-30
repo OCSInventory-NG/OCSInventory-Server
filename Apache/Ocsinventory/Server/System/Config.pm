@@ -219,6 +219,14 @@ our %CONFIG = (
     level => IMPORTANT,
     filter => qr '^(1|0)$'
   },
+  GENERATE_OCS_FILES_SNMP => { 
+    type => 'IVALUE',
+    default => 0,
+    unit => 'NA',
+    description => 'Generate SNMP files',
+    level => IMPORTANT,
+    filter => qr '^(1|0)$'
+  }, 
   OCS_FILES_OVERWRITE => { 
     type => 'IVALUE',
     default => 0,
@@ -458,6 +466,30 @@ our %CONFIG = (
     description => 'Configure engine to update snmp inventory regarding to snmp_laststate table (lower DB backend load)',
     level => IMPORTANT,
     filter => qr '^(1|0)$'
+  },
+  SCAN_TYPE_SNMP => {
+    type => 'TVALUE',
+    default => 'ICMP',
+    unit => 'NA',
+    description => 'Scan method used for SNMP scans performed by agents (nmap, ICMP, ARP scan)',
+    level => IMPORTANT,
+    filter => qr '^(NMAP|ICMP|ARPSCAN)$'
+  },
+  SCAN_ARP_BANDWIDTH => {
+    type => 'IVALUE',
+    default => 256,
+    unit => 'NA',
+    description => 'bandwidth used by ARP scan (in Kbps)',
+    level => IMPORTANT,
+    filter => qr '^(\d+)$'
+  },
+  SCAN_TYPE_IPDISCOVER => {
+    type => 'TVALUE',
+    default => 'ICMP',
+    unit => 'NA',
+    description => 'Scan method used for IpDiscover scans performed by agents (nmap, ICMP, ARP scan)',
+    level => IMPORTANT,
+    filter => qr '^(NMAP|ICMP|ARPSCAN)$'
   },
 );
 

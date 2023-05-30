@@ -42,8 +42,10 @@ BEGIN{
 # These are the core modules you must include in addition
 use Apache::Ocsinventory::Server::System;
 use Apache::Ocsinventory::Server::Communication;
+use Apache::Ocsinventory::Server::Communication::Session;
 use Apache::Ocsinventory::Server::Constants;
 
+use Apache::Ocsinventory::Server::Inventory::Export;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Data;
 use Apache::Ocsinventory::Server::Capacities::Snmp::Inventory;
 
@@ -231,12 +233,24 @@ sub snmp_prolog_resp{
             };
           }
         }
-	
-        #Final XML
-        push @{ $resp->{'OPTION'} },{
-          'NAME' => ['SNMP'],
-          'PARAM' => \@snmp,
-        };
+
+      my $groupsParams  = $current_context->{'PARAMS_G'};
+      my $scan_type_snmp = assign_config('SCAN_TYPE_SNMP', 'OCS_OPT_SCAN_TYPE_SNMP', $groupsParams, $current_context);
+      my $scan_arp_bandwidth = assign_config('SCAN_ARP_BANDWIDTH', 'OCS_OPT_SCAN_ARP_BANDWIDTH', $groupsParams, $current_context);
+
+      push @snmp,{
+        # add TYPE to avoid warnings when receiving on the agent
+        'TYPE' => 'OPTION',
+        'SCAN_TYPE_SNMP' => $scan_type_snmp,
+        'SCAN_ARP_BANDWIDTH' => $scan_arp_bandwidth,
+      };
+
+      #Final XML
+      push @{ $resp->{'OPTION'} },{
+        'NAME' => ['SNMP'],
+        'PARAM' => \@snmp,
+      };
+
       } 
 
     } else { &_log(104,'snmp',"error: agent must have a deviceid in database !!") if $ENV{'OCS_OPT_LOGLEVEL'}; }
@@ -261,6 +275,9 @@ sub snmp_handler{
 
   #We get snmp tables references from Map.pm 
   &_init_snmp_map( \%SNMP_SECTIONS, \@SNMP_SECTIONS );
+
+  &_generate_ocs_file_snmp( \%SNMP_SECTIONS, \@SNMP_SECTIONS, $current_context->{'DATABASE_ID'})
+  &kill_session( \%Apache::Ocsinventory::CURRENT_CONTEXT );
 
   #Inventory incoming
   &_log(100,'snmp','inventory incoming') if $ENV{'OCS_OPT_LOGLEVEL'};
@@ -308,6 +325,27 @@ sub _get_snmp_switch {
 
   return ($snmpSwitch);
 }
+
+sub assign_config {
+    my ($param, $env_default, $group_config, $device_config) = @_;
+    # general config
+    my $value = $ENV{$env_default} || 0;
+
+    # group config
+    for my $group (keys %$group_config){
+        if(defined($group_config->{$group}->{$param}->{'TVALUE'})){
+            $value = $group_config->{$group}->{$param}->{'TVALUE'};
+        }
+    }
+
+    # device config
+    if(defined($device_config->{'PARAMS'}{$param}->{'IVALUE'})){
+        $value = $device_config->{'PARAMS'}{$param}->{'TVALUE'};
+    }
+
+    return $value;
+}
+
 
 1;
 

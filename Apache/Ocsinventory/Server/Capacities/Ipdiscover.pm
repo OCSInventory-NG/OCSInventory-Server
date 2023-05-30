@@ -23,7 +23,6 @@ package Apache::Ocsinventory::Server::Capacities::Ipdiscover;
 
 use strict;
 
-
 BEGIN{
   if($ENV{'OCS_MODPERL_VERSION'} == 1){
     require Apache::Ocsinventory::Server::Modperl1;
@@ -131,12 +130,18 @@ sub _ipdiscover_prolog_resp{
       unless( $ipdiscoverLatency ){
         $ipdiscoverLatency = $ENV{'OCS_OPT_IPDISCOVER_LATENCY'}?$ENV{'OCS_OPT_IPDISCOVER_LATENCY'}:100;
       }
+
+      # SCAN_TYPE_IPDISCOVER & SCAN_ARP_BANDWIDTH
+      my $scan_type_ipdiscover = assign_config('SCAN_TYPE_IPDISCOVER', 'OCS_OPT_SCAN_TYPE_IPDISCOVER', $groupsParams, $current_context);
+      my $scan_arp_bandwidth = assign_config('SCAN_ARP_BANDWIDTH', 'OCS_OPT_SCAN_ARP_BANDWIDTH', $groupsParams, $current_context);
             
       push @{$$resp{'OPTION'}}, { 
             'NAME' => [ 'IPDISCOVER' ], 
             'PARAM' => { 
               'IPDISC_LAT' => $ipdiscoverLatency,
-              'content' => $lanToDiscover
+              'content' => $lanToDiscover,
+              'SCAN_TYPE_IPDISCOVER' => $scan_type_ipdiscover,
+              'SCAN_ARP_BANDWIDTH' => $scan_arp_bandwidth
             } 
       };
     }
@@ -458,4 +463,29 @@ sub _ipdiscover_evaluate{
   }
   return 0;
 }
+
+# hierarchy is: general config < group config < device config, we get the general config first then override it with group config and device config
+# this ensures that we always have a value for each option
+sub assign_config {
+    my ($param, $env_default, $group_config, $device_config) = @_;
+    # general config
+    my $value = $ENV{$env_default} || 0;
+
+    # group config
+    for my $group (keys %$group_config){
+        if(defined($group_config->{$group}->{$param}->{'TVALUE'})){
+            $value = $group_config->{$group}->{$param}->{'TVALUE'};
+        }
+    }
+
+    # device config
+    if(defined($device_config->{'PARAMS'}{$param}->{'IVALUE'})){
+        $value = $device_config->{'PARAMS'}{$param}->{'TVALUE'};
+    }
+
+    return $value;
+}
+
+
+
 1;
