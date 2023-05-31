@@ -40,6 +40,7 @@ our @EXPORT = qw /
   _remove_special_char
   set_category
   _clean_software_version
+  _trim_value
 /;
 
 {   no strict 'refs';
@@ -156,8 +157,21 @@ sub remove_special_char{
     return $string;
 }
 
+sub trim_value {
+    my ($toTrim) = @_;
+
+    $toTrim =~ s/^\s+|\s+$//g;
+
+    return $toTrim;
+}
+
 sub clean_software_version {
     my ($version) = @_;
+
+    # Remove int: if it found
+    if(substr($version, 1, 1) eq ':') {
+        $version = substr($version, 2);
+    }
 
     $version =~ s/[\$#@~!&*()\[\];,:?^\-\+`a-zA-Z\\\/].*//g;
 
@@ -197,9 +211,15 @@ sub set_category{
               if (defined $softName) {
                 
                 $softName = remove_special_char($softName);
-                $softVersion = clean_software_version($softVersion);
-                $version = clean_software_version($version);
 
+                if(defined $softVersion && trim_value($softVersion) ne '') {
+                  $softVersion = clean_software_version($softVersion);
+                }
+                
+                if(defined $version) {
+                  $version = clean_software_version($version);
+                }
+                
                 if ($softName =~ $regex) {
                   if( ( defined $sign ) && ( $sign ne '' )){
                       switch ($sign) {
