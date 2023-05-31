@@ -43,6 +43,8 @@ our @EXPORT = qw /
   _trim_value
   _verif_software_exists
   _verif_software_already_in_cat
+  _clean_software_version
+  _get_info_software_version
 /;
 
 sub _prepare_sql {
@@ -107,6 +109,66 @@ sub _get_info_software {
         # Insert if undef
         $sql = "INSERT INTO $table ($column) VALUES(?)";
         push @argInsert, $value;
+
+        $result = _prepare_sql($sql, @argInsert);
+        if(!defined $result) { return undef; }
+
+        # Get last Insert or Update ID
+        my @argSelect = ();
+        $sql = "SELECT ID FROM $table WHERE $column = ?";
+        push @argSelect, $value;
+        $result = _prepare_sql($sql, @argSelect);
+        if(!defined $result) { return undef; }
+
+        while(my $row = $result->fetchrow_hashref()){
+            $valueResult = $row->{ID};
+        }
+    }
+
+    return $valueResult;
+}
+
+sub _get_info_software_version {
+    my ($value, $prettyValue, $table, $column, $column2) = @_;
+    my $sql;
+    my $valueResult = undef;
+    my $prettyValueResult = undef;
+    my $result;
+    my $resultVerif;
+    my $resultUpdate;
+
+    # Verif if value exist
+    my @argVerif = ();
+    $sql = "SELECT ID, PRETTY_VERSION FROM $table WHERE $column = ?";
+    push @argVerif, $value;
+    $resultVerif = _prepare_sql($sql, @argVerif);
+    if(!defined $resultVerif) { return undef; }
+
+    while(my $row = $resultVerif->fetchrow_hashref()){
+        $valueResult = $row->{ID};
+        $prettyValueResult = $row->{PRETTY_VERSION};
+    }
+
+    # The update query is only at the first inventory after added PRETTY_VERSION column
+    if(defined $valueResult && !defined $prettyValueResult) {
+        my @argUpdate = ();
+
+        # Update version with pretty version
+        $sql = "UPDATE $table SET $column2 = ? WHERE ID = ?";
+        push @argUpdate, $prettyValue;
+        push @argUpdate, $valueResult;
+
+        $resultUpdate = _prepare_sql($sql, @argUpdate);
+        if(!defined $resultUpdate) { return undef; }
+    }
+
+    if(!defined $valueResult) {
+        my @argInsert = ();
+
+        # Insert if undef
+        $sql = "INSERT INTO $table ($column,$column2) VALUES(?,?)";
+        push @argInsert, $value;
+        push @argInsert, $prettyValue;
 
         $result = _prepare_sql($sql, @argInsert);
         if(!defined $result) { return undef; }
@@ -197,6 +259,14 @@ sub _trim_value {
     return $toTrim;
 }
 
+sub _clean_software_version {
+    my ($version) = @_;
+
+    $version =~ s/[\$#@~!&*()\[\];,:?^\-\+`a-zA-Z\\\/].*//g;
+
+    return $version;
+}
+
 sub _insert_software {
     my $sql;
     my $hardware_id = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
@@ -257,7 +327,8 @@ sub _insert_software {
         if(defined $version) {
             my $trimVersion = _trim_value($version);
             if($trimVersion ne '') {
-                $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
+                my $prettyVersion = _clean_software_version($version);
+                $arrayValue{VERSION_ID} = _get_info_software_version($version, $prettyVersion, "software_version", "VERSION", "PRETTY_VERSION");
                 if(!defined $arrayValue{VERSION_ID}) { return 1; }
             }
         }
