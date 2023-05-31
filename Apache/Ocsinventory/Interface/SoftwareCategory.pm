@@ -39,6 +39,7 @@ our @EXPORT = qw /
   _regex
   _remove_special_char
   set_category
+  _clean_software_version
 /;
 
 {   no strict 'refs';
@@ -155,6 +156,14 @@ sub remove_special_char{
     return $string;
 }
 
+sub clean_software_version {
+    my ($version) = @_;
+
+    $version =~ s/[\$#@~!&*()\[\];,:?^\-\+`a-zA-Z\\\/].*//g;
+
+    return $version;
+}
+
 sub set_category{
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
@@ -176,6 +185,7 @@ sub set_category{
             my $publisher = $cat->{PUBLISHER};
             my $os = $cat->{OS};
             my $softName = $soft->{NAME};
+            my $softVersion = $soft->{VERSION};
             my $response;
             my $minV;
             my $majV;
@@ -187,13 +197,15 @@ sub set_category{
               if (defined $softName) {
                 
                 $softName = remove_special_char($softName);
+                $softVersion = clean_software_version($softVersion);
+                $version = clean_software_version($version);
 
                 if ($softName =~ $regex) {
                   if( ( defined $sign ) && ( $sign ne '' )){
                       switch ($sign) {
                         case "EQUAL" {
                             $minV = $version =~ s/\.//gr;
-                            $majV = $soft->{VERSION} =~ s/\.//gr;
+                            $majV = $softVersion =~ s/\.//gr;
                             $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
                             if( defined $response) {
                                 $soft_cat = $cat->{ID};
@@ -201,7 +213,7 @@ sub set_category{
                         }
                         case "LESS" {
                             $minV = $version =~ s/\.//gr;
-                            $majV = $soft->{VERSION} =~ s/\.//gr;
+                            $majV = $softVersion =~ s/\.//gr;
                             $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
                             if( defined $response) {
                                 $soft_cat = $cat->{ID};
@@ -209,7 +221,7 @@ sub set_category{
                         }
                         case "MORE" {
                             $minV = $version =~ s/\.//gr;
-                            $majV = $soft->{VERSION} =~ s/\.//gr;
+                            $majV = $softVersion =~ s/\.//gr;
                             $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
                             if( defined $response) {
                                 $soft_cat = $cat->{ID};
