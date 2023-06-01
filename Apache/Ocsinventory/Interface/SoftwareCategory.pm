@@ -169,11 +169,11 @@ sub clean_software_version {
     my ($version) = @_;
 
     # Remove int: if it found
-    if(substr($version, 1, 1) eq ':') {
+    if(length($version) >= 2 && substr($version, 1, 1) eq ':') {
         $version = substr($version, 2);
     }
 
-    $version =~ s/[\$#@~!&*()\[\];,:?^\-\+`a-zA-Z\\\/].*//g;
+    $version =~ s/[\$#@~!&*()\[\];,:?^\-\+\_`a-zA-Z\\\/].*//g;
 
     return $version;
 }
