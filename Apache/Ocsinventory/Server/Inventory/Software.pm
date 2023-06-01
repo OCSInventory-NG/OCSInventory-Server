@@ -287,7 +287,7 @@ sub _clean_software_version {
 
     $version =~ s/[\$#@~!&*()\[\];,:?^\-\+\_`a-zA-Z\\\/].*//g;
 
-    if(_trim_value($version) eq '') {
+    if(_trim_value($version) eq '' || $version eq '0') {
         $version = "Unavailable";
     }
 
