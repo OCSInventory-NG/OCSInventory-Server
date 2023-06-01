@@ -224,27 +224,90 @@ sub set_category{
                   if( ( defined $sign ) && ( $sign ne '' )){
                       switch ($sign) {
                         case "EQUAL" {
-                            $minV = $version =~ s/\.//gr;
-                            $majV = $softVersion =~ s/\.//gr;
-                            $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                            if( defined $response) {
-                                $soft_cat = $cat->{ID};
+                            my @catVersions = split /\./, $version;
+                            my @softVersions = split /\./, $softVersion;
+
+                            # First compare major version
+                            $response = compare('equal', $catVersions[0], $publisher, $softVersions[0], $soft->{PUBLISHER});
+
+                            # Next, compare minor version
+                            if(defined $response && defined $catVersions[1]) {
+                              $softVersions[1] = defined $softVersions[1] ? $softVersions[1] : '0';
+                              $response = compare('equal', $catVersions[1], $publisher, $softVersions[1], $soft->{PUBLISHER});
+                            }
+
+                            # Then, compare patch version
+                            if(defined $response && defined $catVersions[2]) {
+                              $softVersions[2] = defined $softVersions[2] ? $softVersions[2] : '0';
+                              $response = compare('equal', $catVersions[2], $publisher, $softVersions[2], $soft->{PUBLISHER});
+                            }
+
+                            # To finish, compare build version
+                            if(defined $response && defined $catVersions[3]) {
+                              $softVersions[3] = defined $softVersions[3] ? $softVersions[3] : '0';
+                              $response = compare('equal', $catVersions[3], $publisher, $softVersions[3], $soft->{PUBLISHER});
+                            }
+
+                            if(defined $response) {
+                              $soft_cat = $cat->{ID};
                             }
                         }
                         case "LESS" {
-                            $minV = $version =~ s/\.//gr;
-                            $majV = $softVersion =~ s/\.//gr;
-                            $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                            if( defined $response) {
-                                $soft_cat = $cat->{ID};
+                            my @catVersions = split /\./, $version;
+                            my @softVersions = split /\./, $softVersion;
+
+                            # First compare major version
+                            $response = compare('less', $catVersions[0], $publisher, $softVersions[0], $soft->{PUBLISHER});
+
+                            # Next, compare minor version only if major are equal
+                            if(defined $response && defined $catVersions[1] && $catVersions[0] == $softVersions[0]) {
+                              $softVersions[1] = defined $softVersions[1] ? $softVersions[1] : '0';
+                              $response = compare('less', $catVersions[1], $publisher, $softVersions[1], $soft->{PUBLISHER});
+                            }
+
+                            # Then, compare patch version only if major and minor are equal
+                            if(defined $response && defined $catVersions[2] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1]) {
+                              $softVersions[2] = defined $softVersions[2] ? $softVersions[2] : '0';
+                              $response = compare('less', $catVersions[2], $publisher, $softVersions[2], $soft->{PUBLISHER});
+                            }
+
+                            # To finish, compare build version
+                            if(defined $response && defined $catVersions[3] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1] && $catVersions[2] == $softVersions[2]) {
+                              $softVersions[3] = defined $softVersions[3] ? $softVersions[3] : '0';
+                              $response = compare('less', $catVersions[3], $publisher, $softVersions[3], $soft->{PUBLISHER});
+                            }
+
+                            if(defined $response) {
+                              $soft_cat = $cat->{ID};
                             }
                         }
                         case "MORE" {
-                            $minV = $version =~ s/\.//gr;
-                            $majV = $softVersion =~ s/\.//gr;
-                            $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                            if( defined $response) {
-                                $soft_cat = $cat->{ID};
+                            my @catVersions = split /\./, $version;
+                            my @softVersions = split /\./, $softVersion;
+
+                            # First compare major version
+                            $response = compare('bigger', $catVersions[0], $publisher, $softVersions[0], $soft->{PUBLISHER});
+
+                            # Next, compare minor version only if major are equal
+                            if(defined $response && defined $catVersions[1] && $catVersions[0] == $softVersions[0]) {
+                              $softVersions[1] = defined $softVersions[1] ? $softVersions[1] : '0';
+                              $response = compare('bigger', $catVersions[1], $publisher, $softVersions[1], $soft->{PUBLISHER});
+                            }
+
+                            # Then, compare patch version only if major and minor are equal
+                            if(defined $response && defined $catVersions[2] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1]) {
+                              $softVersions[2] = defined $softVersions[2] ? $softVersions[2] : '0';
+                              $response = compare('bigger', $catVersions[2], $publisher, $softVersions[2], $soft->{PUBLISHER});
+                            }
+
+                            # To finish, compare build version
+                            if(defined $response && defined $catVersions[3] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1] && $catVersions[2] == $softVersions[2]) {
+                              $softVersions[3] = defined $softVersions[3] ? $softVersions[3] : '0';
+                              $response = compare('bigger', $catVersions[3], $publisher, $softVersions[3], $soft->{PUBLISHER});
+                            }
+
+                            if(defined $response) {
+                              $soft_cat = $cat->{ID};
                             }
                         }
                       }
