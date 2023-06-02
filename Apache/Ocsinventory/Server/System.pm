@@ -240,30 +240,48 @@ sub _check_deviceid{
 }
 
 sub _lock{
-   my $device = shift;
-   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} || shift;
-  
-  if($dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NOW())', {} , $device, $$ )){
-    $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 
-      if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
-    return(0);
-  }else{
-    if( $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ){
-      if( $dbh->do( 'SELECT * FROM locks  WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', 
-        {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'} ) != '0E0' ) {                      
+  my $device = shift;
+  my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'} || shift;
+
+  # Check if HARDWARE_ID already in locks to prevent duplicate entry error
+  my $request = $dbh->prepare('SELECT `HARDWARE_ID` FROM `locks` WHERE `HARDWARE_ID` = ?');
+  $request->bind_param(1, $device);
+  $request->execute;
+
+  my $resultVerif = undef;
+
+  while(my $row = $request->fetchrow_hashref()) {
+    $resultVerif = $row->{HARDWARE_ID};
+  }
+
+  if(!defined $resultVerif) {
+    my $insertRequest = $dbh->do('INSERT INTO locks(HARDWARE_ID, ID, SINCE) VALUES(?,?,NOW())', {} , $device, $$);
+
+    if($insertRequest) {
+      $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1 if $device eq ${Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'}};
+      return 0;
+    } else {
+      &_log(516,'lock', 'failed') if $ENV{'OCS_OPT_LOGLEVEL'};
+    } 
+  } else {
+    if($ENV{'OCS_OPT_LOCK_REUSE_TIME'}) {
+      my $selectRequest = $dbh->do('SELECT * FROM locks WHERE HARDWARE_ID=? AND (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(SINCE))>?', {}, $device, $ENV{'OCS_OPT_LOCK_REUSE_TIME'});
+
+      if($selectRequest != "0E0") {
         &_log(516,'lock', 'reuse_lock') if $ENV{'OCS_OPT_LOGLEVEL'};
-        if( $dbh->do('UPDATE locks SET ID=? WHERE HARDWARE_ID=?', {}, $$, $device) ){
+        my $updateRequest = $dbh->do('UPDATE locks SET ID=? WHERE HARDWARE_ID=?', {}, $$, $device);
+
+        if($updateRequest) {
           $Apache::Ocsinventory::CURRENT_CONTEXT{'LOCK_FL'} = 1;
           return 0;
-        }
-        else{
+        } else {
           &_log(516,'lock', 'failed') if $ENV{'OCS_OPT_LOGLEVEL'};
-          return 1;
         }
       }
     }
-    return 1;
   }
+
+  return 1;
 }
 
 

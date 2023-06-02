@@ -35,7 +35,7 @@ our @EXPORT = qw /
   kill_session
 /;
 
-sub start_session{
+sub start_session {
   my $current_context = shift;
   my $dbh = $current_context->{DBI_HANDLE};
   my $deviceId = $current_context->{DEVICEID}; 
@@ -43,43 +43,61 @@ sub start_session{
   clean_sessions( $current_context );
   
   # Trying to start session
-  if( !$dbh->do( 'INSERT INTO prolog_conntrack(DEVICEID,PID,TIMESTAMP) VALUES(?,?,UNIX_TIMESTAMP())', {}, $deviceId, $$) ){
-    &_log(525,'session', 'failed') if $ENV{'OCS_OPT_LOGLEVEL'};
+  if( !$dbh->do('INSERT INTO prolog_conntrack(DEVICEID,PID,TIMESTAMP) VALUES(?,?,UNIX_TIMESTAMP())', {}, $deviceId, $$)){
+    &_log(525, 'session', 'failed') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 0;
   }
-  &_log(311,'session', 'started') if $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(311, 'session', 'started') if $ENV{'OCS_OPT_LOGLEVEL'};
   return 1;
 }
 
-sub clean_sessions{
+sub clean_sessions {
   my $current_context = shift;
   my $dbh = $current_context->{DBI_HANDLE};
-  
-  # To avoid race conditions
-  if( !$dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('SESSION',?,'CLEAN')", {}, $$) ){
-    &_log(315,'session',"already handled") if $ENV{'OCS_OPT_LOGLEVEL'};
+
+  # Check if entry already in engine_mutex to prevent duplicate entry error
+  my $request = $dbh->prepare('SELECT `NAME` FROM `engine_mutex` WHERE `NAME` = "SESSION" AND `TAG` = "CLEAN"');
+  $request->execute;
+
+  my $resultVerif = undef;
+
+  while(my $row = $request->fetchrow_hashref()) {
+    $resultVerif = $row->{NAME};
+  }
+
+  if(defined $resultVerif) {
+    &_log(315, "session", "already handled") if $ENV{'OCS_OPT_LOGLEVEL'};
     return;
+  } else {
+    $dbh->do("INSERT INTO engine_mutex(NAME, PID, TAG) VALUES('SESSION',?,'CLEAN')", {}, $$);
   }
   
   # We have to make it every SESSION_CLEAN_TIME seconds
-  my $check_clean = $dbh->prepare('SELECT UNIX_TIMESTAMP()-IVALUE AS IVALUE FROM engine_persistent WHERE NAME="SESSION_CLEAN_DATE"');
+  my $check_clean = $dbh->prepare('SELECT UNIX_TIMESTAMP()-IVALUE AS IVALUE FROM engine_persistent WHERE NAME = "SESSION_CLEAN_DATE"');
+
   if($check_clean->execute() && $check_clean->rows()){
     my $row = $check_clean->fetchrow_hashref();
-    if($row->{IVALUE}< $ENV{OCS_OPT_SESSION_CLEAN_TIME} ){
-      $dbh->do('DELETE FROM engine_mutex WHERE PID=? AND NAME="SESSION" AND TAG="CLEAN"', {}, $$ );
+
+    if($row->{IVALUE} < $ENV{OCS_OPT_SESSION_CLEAN_TIME}){
+      $dbh->do('DELETE FROM engine_mutex WHERE PID = ? AND NAME = "SESSION" AND TAG = "CLEAN"', {}, $$);
       return;
     }
   }
-  &_log(314,'session', "clean(check)") if $ENV{'OCS_OPT_LOGLEVEL'};
+
+  &_log(314, "session", "clean(check)") if $ENV{'OCS_OPT_LOGLEVEL'};
+
   # Delete old sessions
-  $dbh->do('INSERT INTO engine_persistent(NAME,IVALUE) VALUES("SESSION_CLEAN_DATE", UNIX_TIMESTAMP())')
-    if($dbh->do('UPDATE engine_persistent SET IVALUE=UNIX_TIMESTAMP() WHERE NAME="SESSION_CLEAN_DATE"')==0E0);
+  my $updateRequest = $dbh->do('UPDATE engine_persistent SET IVALUE=UNIX_TIMESTAMP() WHERE NAME="SESSION_CLEAN_DATE"');
+
+  if($updateRequest == 0E0) {
+    $dbh->do('INSERT INTO engine_persistent(NAME, IVALUE) VALUES("SESSION_CLEAN_DATE", UNIX_TIMESTAMP())');
+  }
     
-  my $cleaned = $dbh->do('DELETE FROM prolog_conntrack WHERE UNIX_TIMESTAMP()-TIMESTAMP>?', {}, $ENV{OCS_OPT_SESSION_CLEAN_TIME} );
+  my $cleaned = $dbh->do('DELETE FROM prolog_conntrack WHERE UNIX_TIMESTAMP()-TIMESTAMP > ?', {}, $ENV{OCS_OPT_SESSION_CLEAN_TIME});
   
-  $dbh->do('DELETE FROM engine_mutex WHERE PID=? AND NAME="SESSION" AND TAG="CLEAN"', {}, $$ );
+  $dbh->do('DELETE FROM engine_mutex WHERE PID = ? AND NAME = "SESSION" AND TAG = "CLEAN"', {}, $$);
   
-  &_log(316,'session', "clean($cleaned)") if $cleaned && ($cleaned!=0E0) && $ENV{'OCS_OPT_LOGLEVEL'};
+  &_log(316, "session", "clean($cleaned)") if $cleaned && ($cleaned != 0E0) && $ENV{'OCS_OPT_LOGLEVEL'};
 }
 
 sub check_session {
@@ -108,21 +126,20 @@ sub check_session {
   }
 }
 
-sub kill_session{
+sub kill_session {
   my $current_context = shift;
   my $dbh = $current_context->{DBI_HANDLE};
   my $deviceId = $current_context->{DEVICEID};
   
-  my $code = $dbh->do('DELETE FROM prolog_conntrack WHERE DEVICEID=?', {}, $deviceId);
-  if(!$code){
-    &_log(527,'session', 'error') if $ENV{'OCS_OPT_LOGLEVEL'};
+  my $code = $dbh->do('DELETE FROM prolog_conntrack WHERE DEVICEID = ?', {}, $deviceId);
+
+  if(!$code) {
+    &_log(527, 'session', 'error') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 0;
-  }
-  elsif( $code != 0E0 ){
-    &_log(320,'session', 'end') if $ENV{'OCS_OPT_LOGLEVEL'};
+  } elsif( $code != 0E0 ) {
+    &_log(320, 'session', 'end') if $ENV{'OCS_OPT_LOGLEVEL'};
     return 1;
-  }
-  else{
+  } else {
     return 0;
   }
 }

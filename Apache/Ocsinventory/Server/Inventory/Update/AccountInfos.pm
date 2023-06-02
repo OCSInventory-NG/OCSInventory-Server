@@ -53,32 +53,38 @@ sub _accountinfo{
   my ($row, $request, $accountkey, @accountFields);
   @accountFields = _get_account_fields();
 
-  # The default behavior of the server is to ignore TAG changes from the
-  # agent
-  if(
-  $ENV{OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT}
-  ||
-  !$Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'}
-  ||
-  $lost
-  ){
-  # writing (if new id, but duplicate, it will be erased at the end of the execution)
-    $dbh->do('INSERT INTO accountinfo(HARDWARE_ID) VALUES(?)', {}, $hardwareId);
-# Now, we know what are the account info name fields
-# We can insert the client's data. This data will be kept only one time, in the first inventory
+  # The default behavior of the server is to ignore TAG changes from the agent
+  if($ENV{OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT} || !$Apache::Ocsinventory::CURRENT_CONTEXT{'EXIST_FL'} || $lost){
+    # Check if HARDWARE_ID already in accountinfo to prevent duplicate entry error
+    $request = $dbh->prepare('SELECT `HARDWARE_ID` FROM `accountinfo` WHERE `HARDWARE_ID` = ?');
+    $request->bind_param(1, $hardwareId);
+    $request->execute;
+
+    my $resultVerif = undef;
+
+    while($row = $request->fetchrow_hashref()) {
+      $resultVerif = $row->{HARDWARE_ID};
+    }
+
+    if(!defined $resultVerif) {
+      # writing (if new id, but duplicate, it will be erased at the end of the execution)
+      $dbh->do('INSERT INTO accountinfo(HARDWARE_ID) VALUES(?)', {}, $hardwareId);
+    }
+    
+    # Now, we know what are the account info name fields
+    # We can insert the client's data. This data will be kept only one time, in the first inventory
     if( exists ($result->{CONTENT}->{ACCOUNTINFO}) ){
       for $accountkey (@accountFields){
         my $array = $result->{CONTENT}->{ACCOUNTINFO};
         for(@$array){
           if($_->{KEYNAME} eq $accountkey){
             if(!$dbh->do('UPDATE accountinfo SET '.$accountkey."=".$dbh->quote($_->{KEYVALUE}).' WHERE HARDWARE_ID='.$hardwareId)){
-  	      return 1;
-	    }
-	  }
+  	          return 1;
+	          }
+	        }
         }
       }
-    }
-    else{
+    } else {
       &_log(528,'accountinfos','missing') if $ENV{'OCS_OPT_LOGLEVEL'};
     }
   }
