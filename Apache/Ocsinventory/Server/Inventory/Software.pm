@@ -43,6 +43,9 @@ our @EXPORT = qw /
   _trim_value
   _verif_software_exists
   _verif_software_already_in_cat
+  _clean_software_version
+  _get_info_software_version
+  _split_version_number
 /;
 
 sub _prepare_sql {
@@ -107,6 +110,83 @@ sub _get_info_software {
         # Insert if undef
         $sql = "INSERT INTO $table ($column) VALUES(?)";
         push @argInsert, $value;
+
+        $result = _prepare_sql($sql, @argInsert);
+        if(!defined $result) { return undef; }
+
+        # Get last Insert or Update ID
+        my @argSelect = ();
+        $sql = "SELECT ID FROM $table WHERE $column = ?";
+        push @argSelect, $value;
+        $result = _prepare_sql($sql, @argSelect);
+        if(!defined $result) { return undef; }
+
+        while(my $row = $result->fetchrow_hashref()){
+            $valueResult = $row->{ID};
+        }
+    }
+
+    return $valueResult;
+}
+
+sub _get_info_software_version {
+    my ($value, $prettyValue, $table, $column, $column2) = @_;
+    my $sql;
+    my $valueResult = undef;
+    my $prettyValueResult = undef;
+    my $result;
+    my $resultVerif;
+    my $resultUpdate;
+
+    # Split pretty version number (default set it to 0)
+    my %splitVersion = (
+        "MAJOR" => 0,
+        "MINOR" => 0,
+        "PATCH" => 0
+    );
+
+    # Verif if value exist
+    my @argVerif = ();
+    $sql = "SELECT ID, PRETTYVERSION FROM $table WHERE $column = ?";
+    push @argVerif, $value;
+    $resultVerif = _prepare_sql($sql, @argVerif);
+    if(!defined $resultVerif) { return undef; }
+
+    while(my $row = $resultVerif->fetchrow_hashref()){
+        $valueResult = $row->{ID};
+        $prettyValueResult = $row->{PRETTYVERSION};
+    }
+
+    if(defined $prettyValue && $prettyValue ne "Unavailable") {
+        %splitVersion = _split_version_number($prettyValue);
+    }
+
+    # The update query is only at the first inventory after added PRETTYVERSION column
+    if(defined $valueResult && !defined $prettyValueResult) {
+        my @argUpdate = ();
+
+        # Update version with pretty version
+        $sql = "UPDATE $table SET PRETTYVERSION = ?, MAJOR = ?, MINOR = ?, PATCH = ? WHERE ID = ?";
+        push @argUpdate, $prettyValue;
+        push @argUpdate, $splitVersion{MAJOR};
+        push @argUpdate, $splitVersion{MINOR};
+        push @argUpdate, $splitVersion{PATCH};
+        push @argUpdate, $valueResult;
+
+        $resultUpdate = _prepare_sql($sql, @argUpdate);
+        if(!defined $resultUpdate) { return undef; }
+    }
+
+    if(!defined $valueResult) {
+        my @argInsert = ();
+
+        # Insert if undef
+        $sql = "INSERT INTO $table ($column,PRETTYVERSION,MAJOR,MINOR,PATCH) VALUES(?,?,?,?,?)";
+        push @argInsert, $value;
+        push @argInsert, $prettyValue;
+        push @argInsert, $splitVersion{MAJOR};
+        push @argInsert, $splitVersion{MINOR};
+        push @argInsert, $splitVersion{PATCH};
 
         $result = _prepare_sql($sql, @argInsert);
         if(!defined $result) { return undef; }
@@ -197,6 +277,37 @@ sub _trim_value {
     return $toTrim;
 }
 
+sub _clean_software_version {
+    my ($version) = @_;
+
+    # Remove int: if it found
+    if(length($version) >= 2 && substr($version, 1, 1) eq ':') {
+        $version = substr($version, 2);
+    }
+
+    $version =~ s/[\$#@~!&*()\[\];,:?^\-\+\_`a-zA-Z\\\/].*//g;
+
+    if(_trim_value($version) eq '' || $version eq '0') {
+        $version = "Unavailable";
+    }
+
+    return $version;
+}
+
+sub _split_version_number {
+    my ($prettyVersion) = @_;
+
+    my @versions = split /\./, $prettyVersion;
+
+    my %splitVersion = (
+        "MAJOR" => defined $versions[0] ? $versions[0] : 0,
+        "MINOR" => defined $versions[1] ? $versions[1] : 0,
+        "PATCH" => defined $versions[2] ? $versions[2] : 0,
+    );
+
+    return %splitVersion;
+}
+
 sub _insert_software {
     my $sql;
     my $hardware_id = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
@@ -257,7 +368,8 @@ sub _insert_software {
         if(defined $version) {
             my $trimVersion = _trim_value($version);
             if($trimVersion ne '') {
-                $arrayValue{VERSION_ID} = _get_info_software($version, "software_version", "VERSION");
+                my $prettyVersion = _clean_software_version($version);
+                $arrayValue{VERSION_ID} = _get_info_software_version($version, $prettyVersion, "software_version", "VERSION", "PRETTYVERSION");
                 if(!defined $arrayValue{VERSION_ID}) { return 1; }
             }
         }

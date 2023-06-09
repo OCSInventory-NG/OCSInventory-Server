@@ -39,6 +39,8 @@ our @EXPORT = qw /
   _regex
   _remove_special_char
   set_category
+  _clean_software_version
+  _trim_value
 /;
 
 {   no strict 'refs';
@@ -155,6 +157,27 @@ sub remove_special_char{
     return $string;
 }
 
+sub trim_value {
+    my ($toTrim) = @_;
+
+    $toTrim =~ s/^\s+|\s+$//g;
+
+    return $toTrim;
+}
+
+sub clean_software_version {
+    my ($version) = @_;
+
+    # Remove int: if it found
+    if(length($version) >= 2 && substr($version, 1, 1) eq ':') {
+        $version = substr($version, 2);
+    }
+
+    $version =~ s/[\$#@~!&*()\[\];,:?^\-\+\_`a-zA-Z\\\/].*//g;
+
+    return $version;
+}
+
 sub set_category{
     my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
 
@@ -176,6 +199,7 @@ sub set_category{
             my $publisher = $cat->{PUBLISHER};
             my $os = $cat->{OS};
             my $softName = $soft->{NAME};
+            my $softVersion = $soft->{VERSION};
             my $response;
             my $minV;
             my $majV;
@@ -188,31 +212,102 @@ sub set_category{
                 
                 $softName = remove_special_char($softName);
 
+                if(defined $softVersion && trim_value($softVersion) ne '') {
+                  $softVersion = clean_software_version($softVersion);
+                }
+                
+                if(defined $version) {
+                  $version = clean_software_version($version);
+                }
+                
                 if ($softName =~ $regex) {
                   if( ( defined $sign ) && ( $sign ne '' )){
                       switch ($sign) {
                         case "EQUAL" {
-                            $minV = $version =~ s/\.//gr;
-                            $majV = $soft->{VERSION} =~ s/\.//gr;
-                            $response = compare('equal',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                            if( defined $response) {
-                                $soft_cat = $cat->{ID};
+                            my @catVersions = split /\./, $version;
+                            my @softVersions = split /\./, $softVersion;
+
+                            # First compare major version
+                            $response = compare('equal', $catVersions[0], $publisher, $softVersions[0], $soft->{PUBLISHER});
+
+                            # Next, compare minor version
+                            if(defined $response && defined $catVersions[1]) {
+                              $softVersions[1] = defined $softVersions[1] ? $softVersions[1] : '0';
+                              $response = compare('equal', $catVersions[1], $publisher, $softVersions[1], $soft->{PUBLISHER});
+                            }
+
+                            # Then, compare patch version
+                            if(defined $response && defined $catVersions[2]) {
+                              $softVersions[2] = defined $softVersions[2] ? $softVersions[2] : '0';
+                              $response = compare('equal', $catVersions[2], $publisher, $softVersions[2], $soft->{PUBLISHER});
+                            }
+
+                            # To finish, compare build version
+                            if(defined $response && defined $catVersions[3]) {
+                              $softVersions[3] = defined $softVersions[3] ? $softVersions[3] : '0';
+                              $response = compare('equal', $catVersions[3], $publisher, $softVersions[3], $soft->{PUBLISHER});
+                            }
+
+                            if(defined $response) {
+                              $soft_cat = $cat->{ID};
                             }
                         }
                         case "LESS" {
-                            $minV = $version =~ s/\.//gr;
-                            $majV = $soft->{VERSION} =~ s/\.//gr;
-                            $response = compare('less',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                            if( defined $response) {
-                                $soft_cat = $cat->{ID};
+                            my @catVersions = split /\./, $version;
+                            my @softVersions = split /\./, $softVersion;
+
+                            # First compare major version
+                            $response = compare('less', $catVersions[0], $publisher, $softVersions[0], $soft->{PUBLISHER});
+
+                            # Next, compare minor version only if major are equal
+                            if(defined $response && defined $catVersions[1] && $catVersions[0] == $softVersions[0]) {
+                              $softVersions[1] = defined $softVersions[1] ? $softVersions[1] : '0';
+                              $response = compare('less', $catVersions[1], $publisher, $softVersions[1], $soft->{PUBLISHER});
+                            }
+
+                            # Then, compare patch version only if major and minor are equal
+                            if(defined $response && defined $catVersions[2] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1]) {
+                              $softVersions[2] = defined $softVersions[2] ? $softVersions[2] : '0';
+                              $response = compare('less', $catVersions[2], $publisher, $softVersions[2], $soft->{PUBLISHER});
+                            }
+
+                            # To finish, compare build version
+                            if(defined $response && defined $catVersions[3] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1] && $catVersions[2] == $softVersions[2]) {
+                              $softVersions[3] = defined $softVersions[3] ? $softVersions[3] : '0';
+                              $response = compare('less', $catVersions[3], $publisher, $softVersions[3], $soft->{PUBLISHER});
+                            }
+
+                            if(defined $response) {
+                              $soft_cat = $cat->{ID};
                             }
                         }
                         case "MORE" {
-                            $minV = $version =~ s/\.//gr;
-                            $majV = $soft->{VERSION} =~ s/\.//gr;
-                            $response = compare('bigger',$minV,$publisher,$majV,$soft->{PUBLISHER});
-                            if( defined $response) {
-                                $soft_cat = $cat->{ID};
+                            my @catVersions = split /\./, $version;
+                            my @softVersions = split /\./, $softVersion;
+
+                            # First compare major version
+                            $response = compare('bigger', $catVersions[0], $publisher, $softVersions[0], $soft->{PUBLISHER});
+
+                            # Next, compare minor version only if major are equal
+                            if(defined $response && defined $catVersions[1] && $catVersions[0] == $softVersions[0]) {
+                              $softVersions[1] = defined $softVersions[1] ? $softVersions[1] : '0';
+                              $response = compare('bigger', $catVersions[1], $publisher, $softVersions[1], $soft->{PUBLISHER});
+                            }
+
+                            # Then, compare patch version only if major and minor are equal
+                            if(defined $response && defined $catVersions[2] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1]) {
+                              $softVersions[2] = defined $softVersions[2] ? $softVersions[2] : '0';
+                              $response = compare('bigger', $catVersions[2], $publisher, $softVersions[2], $soft->{PUBLISHER});
+                            }
+
+                            # To finish, compare build version
+                            if(defined $response && defined $catVersions[3] && $catVersions[0] == $softVersions[0] && $catVersions[1] == $softVersions[1] && $catVersions[2] == $softVersions[2]) {
+                              $softVersions[3] = defined $softVersions[3] ? $softVersions[3] : '0';
+                              $response = compare('bigger', $catVersions[3], $publisher, $softVersions[3], $soft->{PUBLISHER});
+                            }
+
+                            if(defined $response) {
+                              $soft_cat = $cat->{ID};
                             }
                         }
                       }
