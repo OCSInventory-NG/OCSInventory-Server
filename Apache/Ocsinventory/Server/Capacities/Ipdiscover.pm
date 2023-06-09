@@ -309,16 +309,16 @@ sub _ipdiscover_read_result{
           &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
           next;
         }
-        my $request_verif = $dbh->prepare('SELECT TAG FROM netmap WHERE MAC=?');
-        $request_verif->execute($_->{M});
+        my $request_verif = $dbh->prepare('SELECT TAG FROM netmap WHERE MAC=? AND IP=?');
+        $request_verif->execute($_->{M}, $_->{I});
         my $row_verif = $request_verif->fetchrow_hashref;
 
         if (defined $row_verif->{'TAG'}) {
-          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=? WHERE MAC=? AND TAG=?');
-          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $DeviceID, $_->{M}, $tag);
+          $update_req = $dbh->prepare('UPDATE netmap SET MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=? WHERE MAC=? AND TAG=? AND IP=?');
+          $update_req->execute($mask, $subnet, $_->{N}, $DeviceID, $_->{M}, $tag, $_->{I});
         } else {
-          $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=?, TAG=? WHERE MAC=?');
-          $update_req->execute($_->{I}, $mask, $subnet, $_->{N}, $DeviceID, $tag, $_->{M});
+          $update_req = $dbh->prepare('UPDATE netmap SET MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=?, TAG=? WHERE MAC=? AND IP=?');
+          $update_req->execute($mask, $subnet, $_->{N}, $DeviceID, $tag, $_->{M}, $_->{I});
         }
         unless($update_req->rows){
           $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME, TAG, HARDWARE_ID) VALUES(?,?,?,?,?,?,?)');
@@ -327,7 +327,7 @@ sub _ipdiscover_read_result{
       }
     } else {
       # We insert the results (MAC/IP)
-      $update_req = $dbh->prepare('UPDATE netmap SET IP=?,MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=? WHERE MAC=?');
+      $update_req = $dbh->prepare('UPDATE netmap SET MASK=?,NETID=?,DATE=NOW(), NAME=?, HARDWARE_ID=? WHERE MAC=? AND IP=?');
       $insert_req = $dbh->prepare('INSERT INTO netmap(IP, MAC, MASK, NETID, NAME, HARDWARE_ID) VALUES(?,?,?,?,?,?)');
 
       for(@$base){
@@ -335,7 +335,7 @@ sub _ipdiscover_read_result{
           &_log(1003,'ipdiscover','bad_result') if $ENV{'OCS_OPT_LOGLEVEL'};
           next;
         }
-        $update_req->execute($_->{I}, $mask, $subnet, $_->{N},$DeviceID, $_->{M});
+        $update_req->execute($mask, $subnet, $_->{N},$DeviceID, $_->{M}, $_->{I});
         unless($update_req->rows){
           $insert_req->execute($_->{I}, $_->{M}, $mask, $subnet, $_->{N},$DeviceID);
         }
