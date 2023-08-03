@@ -182,6 +182,7 @@ sub download_prolog_resp{
 
       my $verif_affected = 'SELECT TVALUE FROM devices WHERE HARDWARE_ID=? AND IVALUE=? AND NAME="DOWNLOAD"';
       my $trace_event = 'INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES(?,"DOWNLOAD",?,NULL)';
+      my $trace_event_forced = 'INSERT INTO devices(HARDWARE_ID,NAME,IVALUE,TVALUE) VALUES(?,"DOWNLOAD_FORCE",?,"1")';
 
       $pack_req = $dbh->prepare( $pack_sql );
             
@@ -194,11 +195,29 @@ sub download_prolog_resp{
         #We get packages affected to the group which contain postcmd command
         &get_postcmd_packages($dbh, $_, \@postcmd_packages);
 
+        #We get packages marked as forced affeted to the group
+        &get_forced_packages($dbh, $hardware_id, \@forced_packages);
+
         while( $pack_row = $pack_req->fetchrow_hashref ){
           my $fileid = $pack_row->{'FILEID'};
-          my ($schedule, $scheduled_package, $postcmd, $postcmd_package);
+          my ($schedule, $scheduled_package, $postcmd, $postcmd_package, $forced);
 
-          if( (grep /^$fileid$/, @history) or (grep /^$fileid$/, @dont_repeat)){
+          #We check if package is marcked as forced
+          if ( grep /^$fileid$/, @forced_packages ) {
+            $forced = 1; 
+          } else {
+            $forced = 0;
+          }
+
+          if($forced == 0)
+          {
+            if(grep /^$fileid$/, @history)
+            {
+              next;
+            }
+          }
+
+          if(grep /^$fileid$/, @dont_repeat){
             next;
           }
 
@@ -215,6 +234,10 @@ sub download_prolog_resp{
               }
             }
             else{
+              if ($forced == 1)
+              {
+                $dbh->do($trace_event_forced, {}, $hardware_id, $pack_row->{'IVALUE'});
+              }
               $dbh->do($trace_event, {}, $hardware_id, $pack_row->{'IVALUE'})
             }
           }
@@ -244,7 +267,7 @@ sub download_prolog_resp{
             'CERT_FILE'  => $pack_row->{'CERT_FILE'}?$pack_row->{'CERT_FILE'}:'INSTALL_PATH',
             'SCHEDULE'   => $schedule?$schedule:'',
             'POSTCMD'    => $postcmd?$postcmd:'',
-            'FORCE'      => 0 
+            'FORCE'      => $forced 
           };
 
           push @dont_repeat, $fileid;
