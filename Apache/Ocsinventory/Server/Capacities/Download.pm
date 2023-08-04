@@ -196,7 +196,7 @@ sub download_prolog_resp{
         &get_postcmd_packages($dbh, $_, \@postcmd_packages);
 
         #We get packages marked as forced affeted to the group
-        &get_forced_packages($dbh, $hardware_id, \@forced_packages);
+        &get_forced_packages($dbh, $_, \@forced_packages);
 
         while( $pack_row = $pack_req->fetchrow_hashref ){
           my $fileid = $pack_row->{'FILEID'};
