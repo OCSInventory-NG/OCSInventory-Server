@@ -22,6 +22,7 @@
 package Apache::Ocsinventory::Server::Groups;
 
 use strict;
+use HTML::Entities;
 
 BEGIN{
   if($ENV{'OCS_MODPERL_VERSION'} == 1){
@@ -111,6 +112,7 @@ sub _build_group_cache{
   my $get_request = $dbh->prepare('SELECT REQUEST,XMLDEF FROM `groups` WHERE HARDWARE_ID=?');
   $get_request->execute( $group_id );
   my $row = $get_request->fetchrow_hashref();
+  $row = encode_entities($row);
   # legacy: one request per group
   if($row->{'REQUEST'} ne '' and $row->{'REQUEST'} ne 'NULL' ){
     my $group_request = $dbh_sl->prepare( $row->{'REQUEST'} );
