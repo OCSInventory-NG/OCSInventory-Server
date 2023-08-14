@@ -111,6 +111,11 @@ sub _build_group_cache{
   my $get_request = $dbh->prepare('SELECT REQUEST,XMLDEF FROM `groups` WHERE HARDWARE_ID=?');
   $get_request->execute( $group_id );
   my $row = $get_request->fetchrow_hashref();
+  
+  # XMLDEF can contain < and >, we need to encode them but leave the xml tags untouched to avoid malformed xml
+  $row->{'XMLDEF'} =~ s/ < / &lt; /g;
+  $row->{'XMLDEF'} =~ s/ > / &gt; /g;
+
   # legacy: one request per group
   if($row->{'REQUEST'} ne '' and $row->{'REQUEST'} ne 'NULL' ){
     my $group_request = $dbh_sl->prepare( $row->{'REQUEST'} );
