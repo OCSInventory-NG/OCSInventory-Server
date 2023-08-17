@@ -315,7 +315,7 @@ sub _insert_software {
                     'PUBLISHER_ID', 'VERSION_ID', 
                     'FOLDER', 'COMMENTS', 'FILENAME', 
                     'FILESIZE', 'SOURCE', 'GUID', 
-                    'LANGUAGE', 'INSTALLDATE', 'INSTALLMETHOD' 'BITSWIDTH', 'ARCHITECTURE');
+                    'LANGUAGE', 'INSTALLDATE', 'INSTALLMETHOD', 'BITSWIDTH', 'ARCHITECTURE');
     my @softIdAlreadyExists;
 
     foreach my $software (@{$Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}->{CONTENT}->{SOFTWARES}}) {
