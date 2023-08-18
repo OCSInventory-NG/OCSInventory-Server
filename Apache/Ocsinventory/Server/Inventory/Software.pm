@@ -312,7 +312,7 @@ sub _insert_software {
     my $sql;
     my $hardware_id = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
     my @arrayRef = ('HARDWARE_ID', 'NAME_ID', 
-                    'PUBLISHER_ID', 'VERSION_ID', 
+                    'PUBLISHER_ID', 'VERSION_ID', 'LASTUPDATE', 'UPDATETYPE', 
                     'FOLDER', 'COMMENTS', 'FILENAME', 
                     'FILESIZE', 'SOURCE', 'GUID', 
                     'LANGUAGE', 'INSTALLDATE', 'INSTALLMETHOD', 'BITSWIDTH', 'ARCHITECTURE');
@@ -330,6 +330,8 @@ sub _insert_software {
             "NAME_ID"       => 1,
             "PUBLISHER_ID"  => 1,
             "VERSION_ID"    => 1, 
+            "LASTUPDATE"    => $software->{LASTUPDATE} // "",
+            "UPDATETYPE"    => $software->{UPDATETYPE} // "",
             "FOLDER"        => $software->{FOLDER} // "",
             "COMMENTS"      => $software->{COMMENTS} // "",
             "FILENAME"      => $software->{FILENAME} // "",
@@ -338,7 +340,7 @@ sub _insert_software {
             "GUID"          => $software->{GUID} // "",
             "LANGUAGE"      => $software->{LANGUAGE} // "",
             "INSTALLDATE"   => $software->{INSTALLDATE},
-            "INSTALLMETHOD"   => $software->{INSTALLMETHOD} // "",
+            "INSTALLMETHOD" => $software->{INSTALLMETHOD} // "",
             "BITSWIDTH"     => $software->{BITSWIDTH} // 0,
             "ARCHITECTURE"  => $software->{ARCHITECTURE} // ""
         );
