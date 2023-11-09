@@ -94,9 +94,9 @@ sub update_history_diff{
   
   my @existing_packages;
 
-  my $query = $dbh->prepare('SELECT FILEID FROM download_available WHERE HARDWARE_ID=?');
+  my $query = $dbh->prepare('SELECT FILEID FROM download_available WHERE DELETED=0');
 
-  if( $query->execute($hardwareId) ){
+  if( $query->execute() ){
     while( my $row = $query->fetchrow_hashref ){
       push @existing_packages, $row->{FILEID};
     }
