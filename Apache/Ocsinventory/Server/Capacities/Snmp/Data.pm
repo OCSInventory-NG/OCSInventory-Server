@@ -93,21 +93,35 @@ sub _init_snmp_map{
       $field_index++;      
     }
     # Build the "DBI->prepare" sql insert string 
-    $fields_string = join ',', ('SNMP_ID', @{$sectionsMeta->{$section}->{field_arrayref}});
-    $sectionsMeta->{$section}->{sql_insert_string} = "INSERT INTO $section($fields_string) VALUES(";
-    for(0..@{$sectionsMeta->{$section}->{field_arrayref}}){
-      push @bind_num, '?';
-    }
+  for my $section (@$sectionsList) {
+      my $fields_string = join ',', ('SNMP_ID', @{$sectionsMeta->{$section}->{field_arrayref}});
+      
+      # Build the "DBI->prepare" sql insert string
+      $sectionsMeta->{$section}->{sql_insert_string} = "
+          MERGE INTO $section USING dual ON ($section.SNMP_ID = ? AND $section.ID = ?)
+          WHEN MATCHED THEN
+              UPDATE SET $fields_string = VALUES($fields_string)
+          WHEN NOT MATCHED THEN
+              INSERT ($fields_string) VALUES (?)
+          WHEN NOT MATCHED BY SOURCE THEN
+              DELETE;
+      ";
+    # $fields_string = join ',', ('SNMP_ID', @{$sectionsMeta->{$section}->{field_arrayref}});
+    # $sectionsMeta->{$section}->{sql_insert_string} = "INSERT INTO $section($fields_string) VALUES(";
+    # for(0..@{$sectionsMeta->{$section}->{field_arrayref}}){
+    #   push @bind_num, '?';
+    # }
     
-    $sectionsMeta->{$section}->{sql_insert_string}.= (join ',', @bind_num).')';
-    @bind_num = ();
+    # $sectionsMeta->{$section}->{sql_insert_string}.= (join ',', @bind_num).')';
+    # @bind_num = ();
     # Build the "DBI->prepare" sql select string 
     $sectionsMeta->{$section}->{sql_select_string} = "SELECT ID,$fields_string FROM $section 
-      WHERE SNMP_ID=? ORDER BY ".$DATA_MAP{$section}->{sortBy};
-    # Build the "DBI->prepare" sql deletion string 
-    $sectionsMeta->{$section}->{sql_delete_string} = "DELETE FROM $section WHERE SNMP_ID=? AND ID=?";
-    # to avoid many "keys"
-    push @$sectionsList, $section;
+    #   WHERE SNMP_ID=? ORDER BY ".$DATA_MAP{$section}->{sortBy};
+    # # Build the "DBI->prepare" sql deletion string 
+    # $sectionsMeta->{$section}->{sql_delete_string} = "DELETE FROM $section WHERE SNMP_ID=? AND ID=?";
+    # # to avoid many "keys"
+    # push @$sectionsList, $section;
+  }
   }
   }
 }
