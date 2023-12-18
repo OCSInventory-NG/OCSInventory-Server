@@ -92,6 +92,16 @@ sub update_history_diff{
 
   my @alreadyhandled;
   
+  my @existing_packages;
+
+  my $query = $dbh->prepare('SELECT FILEID FROM download_available WHERE DELETED=0');
+
+  if( $query->execute() ){
+    while( my $row = $query->fetchrow_hashref ){
+      push @existing_packages, $row->{FILEID};
+    }
+  }
+
   for my $l_xml (@$fromXml){
     my $found = 0;
     for my $i_db (0..(@{$fromDb}-1)){
@@ -105,8 +115,14 @@ sub update_history_diff{
       }
     }
     if(!$found){
-      $dbh->do( 'INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)', {}, $hardwareId, $l_xml )
-        unless grep /\Q$l_xml\E/, @alreadyhandled; 
+      for my $fileid (@existing_packages)
+      {
+        if($fileid eq $l_xml)
+        {
+          $dbh->do( 'INSERT INTO download_history(HARDWARE_ID, PKG_ID) VALUE(?,?)', {}, $hardwareId, $l_xml )
+            unless grep /\Q$l_xml\E/, @alreadyhandled; 
+        }
+      }
     }
     push @alreadyhandled, $l_xml;
   }
