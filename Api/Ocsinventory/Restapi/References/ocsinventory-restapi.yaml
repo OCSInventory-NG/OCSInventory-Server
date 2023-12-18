@@ -1,0 +1,532 @@
+openapi: '3.0.2'
+# Basic infos
+info:
+  title: OCS Inventory Rest API
+  version: '1.0'
+servers:
+  - url: https://ocsinventory-api/ocsapi/v1
+# Auth definition
+components:
+  securitySchemes:
+    basicAuth:    
+      type: http
+      scheme: basic
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            description: Authorization token configured in Apache2 host
+            type: string
+  schemas:
+    listOfID:
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int32
+          example: 1942
+    computersList:
+      type: object
+      description: In this case batteries and bios are inventory sections defined in Map.pm file
+      properties:
+        "{computer_id}":
+          type: object
+          properties:
+            accountinfo:
+              type: array
+              items:
+                type: object
+                properties:
+                  HARDWARE_ID:
+                    type: integer
+                    format: int32
+                    example: 16
+                  TAG:
+                    type: string
+                    example: DEV-MACHINE
+            batteries:
+              type: array
+              items:
+                type: string
+                format: nullable
+            bios:
+              type: array
+              items:
+                type: object
+                properties:
+                  ASSETTAG:
+                    type: string
+                    example: ""
+                  BDATE:
+                    type: string
+                    example: 04/16/2021
+                  BMANUFACTURER:
+                    type: string
+                    example: Dell Inc.
+                  BVERSION:
+                    type: string
+                    example: 2.5.1
+                  HARDWARE_ID:
+                    type: integer
+                    format: int32
+                    example: 16
+                  MMANUFACTURER:
+                    type: string
+                    example: Dell Inc.
+                  MMODEL:
+                    type: string
+                    example: 045M96
+                  MSN:
+                    type: string
+                    example: ""
+                  SMANUFACTURER:
+                    type: string
+                    example: ""
+                  SMODEL:
+                    type: string
+                    example: PowerEdge R340
+                  SSN:
+                    type: string
+                    example: ""
+                  TYPE:
+                    type: string
+                    example: Rack Mount Chassis
+    computerDetail:
+      type: object
+      properties:
+        "{computer_id}":
+          type: object
+          properties:
+            bios:
+              type: array
+              items:
+                type: object
+                properties:
+                  ASSETTAG:
+                    type: string
+                    example: ""
+                  BDATE:
+                    type: string
+                    example: 04/16/2021
+                  BMANUFACTURER:
+                    type: string
+                    example: Dell Inc.
+                  BVERSION:
+                    type: string
+                    example: 2.5.1
+                  HARDWARE_ID:
+                    type: integer
+                    format: int32
+                    example: 16
+                  MMANUFACTURER:
+                    type: string
+                    example: Dell Inc.
+                  MMODEL:
+                    type: string
+                    example: 045M96
+                  MSN:
+                    type: string
+                    example: ""
+                  SMANUFACTURER:
+                    type: string
+                    example: ""
+                  SMODEL:
+                    type: string
+                    example: PowerEdge R340
+                  SSN:
+                    type: string
+                    example: ""
+                  TYPE:
+                    type: string
+                    example: Rack Mount Chassis
+    softwaresList:
+      type: array
+      items:
+        type: object
+        properties:
+          NAME:
+            type: string
+            example: 7-Zip 16.02
+          PUBLISHER:
+            type: string
+            example: Igor Pavlov
+          VERSION:
+            type: string
+            example: "16.02"
+    SNMPType:
+      type: array
+      items:
+        type: object
+        properties:
+          ID:
+            type: integer
+            format: int32
+            example: 13
+          TABLE_TYPE_NAME:
+            type: string
+            example: snmp_default
+          TYPE_NAME:
+            type: string
+            example: Default
+    SNMPDetail:
+      type: array
+      items:
+        type: object
+        properties:
+          DefaultAddressIP:
+            type: string
+            example: 127.0.0.1
+          DefaultDescription:
+            type: string
+            example: This is a description
+          DefaultGateway:
+            type: string
+            example: 172.18.25.254
+          DefaultLocation:
+            type: string
+            example: Here
+          DefaultMacAddress:
+            type: string
+            format: nullable
+          DefaultName:
+            type: string
+            example: My Equipment
+          DefaultUptime:
+            type: string
+            format: nullable
+          ID:
+            type: integer
+            format: int32
+            example: 1
+          LASTDATE:
+            type: string
+            format: date-time
+            example: 2023-06-08 12:22:18
+    ipdiscoverList:
+      type: array
+      items:
+        type: object
+        properties:
+          NETID:
+            type: string
+            example: 172.18.25.0
+    ipdiscoverNetdevices:
+      type: array
+      items:
+        type: object
+        properties:
+          DATE:
+            type: string
+            format: date-time
+            example: 2023-06-08 12:15:08
+          HARDWARE_ID:
+            type: integer
+            format: int32
+            example: 16
+          IP:
+            type: string
+            example: 172.18.25.254
+          MAC:
+            type: string
+            example: 00:0d:b9:51:fc:aa
+          MASK:
+            type: string
+            example: 255.255.255.0
+          NAME:
+            type: string
+            example: "-"
+          NETID:
+            type: string
+            example: 172.18.25.0
+          TAG:
+            type: string
+            example: DEV-MACHINE
+security:
+  - basicAuth: []
+# API Path
+paths:
+  /computers/listID:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: Start offset of the query
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit offset of the query
+      summary: Get a ID list of all computers in the OCS database
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/listOfID'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /computers/lastupdate/{timestamp}:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: timestamp
+          schema:
+            type: integer
+          description: Timestamp of the number of days to count down from the current date. Optional.
+          required: true
+      summary: Get a ID list of computers update during the provided timestamp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/listOfID'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /computers:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: Start offset of the query
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit offset of the query
+      summary: Get a list of computers with its detail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/computersList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /computer/{id}:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: ID of the computer in OCS database
+          required: true
+      summary: Get a computer by its ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/computersList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /computer/{id}/{sections}:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: ID of the computer in OCS database
+          required: true
+        - in: path
+          name: sections
+          schema:
+            type: string
+          description: Name of the requested section (i.e -> bios, software, etc..)
+          required: true
+        - in: query
+          name: where
+          schema:
+            type: string
+          description: Search on a specific column of the specific section.
+        - in: query
+          name: operator
+          schema:
+            type: string
+          description: Search operator (like, not like, =, !=, <, >, <=, >=). Mandatory if where parameter is set.
+      summary: Get sections informations of a specific computer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/computerDetail'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /softwares:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: Start offset of the query
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit offset of the query
+        - in: query
+          name: soft
+          schema:
+            type: string
+          description: Name of the software you want to search (optional)
+      summary: Get software list from database
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/softwaresList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /snmps/typeList:
+    get:
+      security:
+        - basicAuth: []
+      summary: Get a SNMP type list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SNMPType'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /snmp/{snmp_type}:
+    get:
+      security:
+        - basicAuth: []
+      summary: Get snmp device list of a specific snmp type 
+      parameters:
+        - in: path
+          name: snmp_type
+          schema:
+            type: string
+          description: Name of the snmp type you want to list
+          required: true
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: Start offset of the query
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit offset of the query
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SNMPDetail'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /snmp/{snmp_type}/{id}:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: snmp_type
+          schema:
+            type: string
+          description: Name of the snmp type you want to list
+          required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: Identifiant en base de données de l'équipement
+          required: true
+      summary: Get a device from a snmp type with its ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SNMPDetail'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /ipdiscover:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: Start offset of the query
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit offset of the query
+      summary: List IPDiscover network list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ipdiscoverList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /ipdiscover/network/{netid}:
+    get:
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: netid
+          schema:
+            type: integer
+          description: Start offset of the query
+          required: true
+      summary: Get list of network devices scanned on one network
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ipdiscoverNetdevices'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
