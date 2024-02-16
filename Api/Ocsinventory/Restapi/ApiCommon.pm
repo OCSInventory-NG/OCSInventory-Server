@@ -307,6 +307,10 @@ sub format_query_for_computer_search{
           $limit = ${$hash_ref}{$_};
         }elsif (lc($_) eq "start"){
           $start = ${$hash_ref}{$_};
+        }elsif (${$hash_ref}{$_} eq "null"){
+          $field_name = $_;
+          $field_name =~ tr/a-zA-Z//dc ;
+          $query_string .= " $field_name IS NULL AND";
         }else{
           $field_name = $_;
           $field_name =~ tr/a-zA-Z//dc ;
