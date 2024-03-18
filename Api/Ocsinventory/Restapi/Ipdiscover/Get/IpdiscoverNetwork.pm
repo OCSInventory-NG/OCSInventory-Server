@@ -20,7 +20,7 @@ sub get_ipdiscover_network{
     
     my @args = ($network);
 
-    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
+    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", "", @args);
 
     return to_json($netmaps);
 }
