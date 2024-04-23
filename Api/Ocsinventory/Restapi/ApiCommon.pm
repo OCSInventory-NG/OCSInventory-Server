@@ -269,9 +269,13 @@ sub get_item_main_table_informations{
 
 sub execute_custom_request{
 
-    my ($query, $start, $limit, @args) = @_;
+    my ($query, $start, $limit, $orderby, @args) = @_;
 
     my $database = api_database_connect();
+
+    if($orderby ne "") {
+        $query .= $orderby;
+    }
 
     if($start ne "" && $limit ne ""){
         $start =~ s/\D//g;
@@ -299,7 +303,7 @@ sub format_query_for_computer_search{
   my @args;
   my $start = "";
   my $limit = "";
-
+  my $orderby = "";
 
   foreach my $hash_ref (@args_array) {
       foreach (keys %{$hash_ref}) {
@@ -307,6 +311,11 @@ sub format_query_for_computer_search{
           $limit = ${$hash_ref}{$_};
         }elsif (lc($_) eq "start"){
           $start = ${$hash_ref}{$_};
+        }elsif (lc($_) eq "orderby"){
+            my ($field, $order) = split /;/, ${$hash_ref}{$_};
+            $field =~ tr/a-zA-Z//dc ;
+            $order =~ tr/a-zA-Z//dc ;
+            $orderby = " ORDER BY $field $order ";
         }elsif (${$hash_ref}{$_} eq "null"){
           $field_name = $_;
           $field_name =~ tr/a-zA-Z//dc ;
@@ -320,9 +329,13 @@ sub format_query_for_computer_search{
       }
   }
 
+  # Exclude group from the result
+  $query_string .= " deviceid <> ? AND";
+  push @args, "_SYSTEMGROUP_";
+
   $query_string = substr($query_string, 0, -3);
 
-  return execute_custom_request($query_string, $start, $limit, @args);
+  return execute_custom_request($query_string, $start, $limit, $orderby, @args);
 
 }
 

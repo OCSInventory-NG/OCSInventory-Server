@@ -19,7 +19,7 @@ sub get_ipdiscover_tag{
     my $query = "SELECT * from `netmap` WHERE TAG = ?";
     my @args = ($tag);
 
-    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", @args);
+    my $netmaps = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, "", "", "", @args);
 
     return to_json($netmaps);
 }
