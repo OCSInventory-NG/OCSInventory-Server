@@ -50,8 +50,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
   'HANDLER_PRE_INVENTORY' => undef,
   'HANDLER_POST_INVENTORY' => \&_ipdiscover_main,
-  'REQUEST_NAME' => undef,
-  'HANDLER_REQUEST' => undef,
+  'REQUEST_NAME' => 'IPDISCOVER',
+  'HANDLER_REQUEST' => \&ipd_handler,
   'HANDLER_DUPLICATE' => undef,
   'TYPE' => OPTION_TYPE_SYNC,
   'XML_PARSER_OPT' => {
@@ -486,6 +486,74 @@ sub assign_config {
     return $value;
 }
 
+
+sub ipd_handler {
+    my $current_context = shift;
+    my $dbh = $current_context->{'DBI_HANDLE'};
+    my $result = $current_context->{'XML_ENTRY'};
+    my $DeviceID = $current_context->{'DATABASE_ID'};
+
+    &_log(1007,'ipdiscover','processing IpDiscover data') if $ENV{'OCS_OPT_LOGLEVEL'};
+
+    if (exists($result->{CONTENT}->{IPDISCOVER})) {
+        my $ipd_data = $result->{CONTENT}->{IPDISCOVER}->{H};
+        my $subnets = $result->{CONTENT}->{SUBNETS}->{S};
+
+        # ensure that we have an array of subnets
+        $subnets = [$subnets] unless ref($subnets) eq 'ARRAY';
+
+        foreach my $subnet_entry (@$subnets) {
+            my $mask = cidr_to_netmask($subnet_entry);
+            my ($netid) = split('/', $subnet_entry);
+
+            # delete entries for this netod
+            my $delete_req = $dbh->prepare('DELETE FROM netmap WHERE NETID=?');
+            $delete_req->execute($netid);
+
+
+            foreach my $ipd_entry (@$ipd_data) {
+                my $ip = $ipd_entry->{I};
+                my $mac = $ipd_entry->{M} // $ip;
+                my $hostname = $ipd_entry->{N};
+                my $tag = $ipd_entry->{T};
+                
+
+                if (ip_belongs_to_subnet($ip, $subnet_entry)) {
+                    insert_netmap($dbh, $ip, $mac, $mask, $netid, $hostname, $tag, $DeviceID);
+                }
+            }
+        }
+    }
+
+    &_log(1008,'ipdiscover','IpDiscover data processed') if $ENV{'OCS_OPT_LOGLEVEL'};
+
+    return 'APACHE_OK';
+}
+
+
+sub cidr_to_netmask {
+    my $cidr = shift;
+    my $bits = (split('/', $cidr))[1];
+    my $mask = unpack("N", pack("B32", '1' x $bits . '0' x (32 - $bits)));
+    return join '.', unpack "C4", pack "N", $mask;
+}
+
+use Net::IP;
+sub ip_belongs_to_subnet {
+    my ($ip, $subnet) = @_;
+    my $ip_obj = new Net::IP($ip) or die Net::IP::Error();
+    my $subnet_obj = new Net::IP($subnet) or die Net::IP::Error();
+
+    return $subnet_obj->overlaps($ip_obj) == $IP_B_IN_A_OVERLAP;
+}
+
+sub insert_netmap {
+    my ($dbh, $ip, $mac, $mask, $netid, $hostname, $tag, $DeviceID) = @_;
+
+    # insert ignore
+    my $insert_req = $dbh->prepare('INSERT IGNORE INTO netmap(IP, MAC, MASK, NETID, NAME, HARDWARE_ID, TAG) VALUES(?,?,?,?,?,?,?)');
+    $insert_req->execute($ip, $mac, $mask, $netid, $hostname, $DeviceID, $tag);
+}
 
 
 1;
