@@ -467,6 +467,14 @@ our %CONFIG = (
     level => IMPORTANT,
     filter => qr '^(1|0)$'
   },
+  SNMP_LINK_TAG => {
+    type => 'IVALUE',
+    default => 0,
+    unit => 'NA',
+    description => 'Link SNMP device to computer TAG',
+    level => IMPORTANT,
+    filter => qr '^(1|0)$'
+  },
   SCAN_TYPE_SNMP => {
     type => 'TVALUE',
     default => 'ICMP',

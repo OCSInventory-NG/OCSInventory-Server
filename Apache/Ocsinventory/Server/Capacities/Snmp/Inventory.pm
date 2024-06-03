@@ -191,15 +191,46 @@ sub insert_snmp_inventory{
       $id = $rowCheck->{ID};
     }
 
-    # If id is undefined insert row in snmp_accountinfo
-    if(!defined $id) {
-      my $queryInsert = $dbh->prepare("INSERT INTO `snmp_accountinfo`(SNMP_TYPE, SNMP_RECONCILIATION_FIELD, SNMP_RECONCILIATION_VALUE) VALUES(?,?,?)");
-      $queryInsert->bind_param(1, $key);
-      $queryInsert->bind_param(2, $reconciliation_field);
-      $queryInsert->bind_param(3, $value->{$reconciliation_field});
+    # handle SNMP_LINK_TAG enabled : assign the computer's TAG to the SNMP equipment 
+    my $computerTag;
+    my $result = $Apache::Ocsinventory::CURRENT_CONTEXT{'XML_ENTRY'}; 
+    my $deviceid = $result->{DEVICEID};
+    if ($ENV{'OCS_OPT_SNMP_LINK_TAG'}) {
+      $computerTag = $dbh->prepare("SELECT TAG FROM accountinfo WHERE HARDWARE_ID = (SELECT ID FROM hardware WHERE DEVICEID = ?)");
+      $computerTag->bind_param(1, $deviceid);
+      $computerTag->execute;
+      $computerTag = $computerTag->fetchrow_hashref;
 
-      my $resultInsert = $queryInsert->execute or return undef;
-      if(!defined $resultInsert) { return 1; }
+      # if no accountinfo entry for this equipment
+      if (!defined $id) {
+        my $queryInsert = $dbh->prepare("INSERT INTO `snmp_accountinfo`(SNMP_TYPE, SNMP_RECONCILIATION_FIELD, SNMP_RECONCILIATION_VALUE, TAG) VALUES(?, ?, ?, ?)");
+        $queryInsert->bind_param(1, $key);
+        $queryInsert->bind_param(2, $reconciliation_field);
+        $queryInsert->bind_param(3, $value->{$reconciliation_field});
+        $queryInsert->bind_param(4, $computerTag->{TAG});
+
+        my $resultInsert = $queryInsert->execute or return undef;
+        if(!defined $resultInsert) { return 1; }
+      } else {
+        my $queryUpdate = $dbh->prepare("UPDATE `snmp_accountinfo` SET TAG = ? WHERE ID = ?");
+        $queryUpdate->bind_param(1, $computerTag->{TAG});
+        $queryUpdate->bind_param(2, $id);
+
+        my $resultUpdate = $queryUpdate->execute or return undef;
+        if(!defined $resultUpdate) { return 1; }
+      }
+
+    } else {
+      # no accountinfo entry and no link tag
+      if(!defined $id) {
+        my $queryInsert = $dbh->prepare("INSERT INTO `snmp_accountinfo`(SNMP_TYPE, SNMP_RECONCILIATION_FIELD, SNMP_RECONCILIATION_VALUE, TAG) VALUES(?, ?, ?)");
+        $queryInsert->bind_param(1, $key);
+        $queryInsert->bind_param(2, $reconciliation_field);
+        $queryInsert->bind_param(3, $value->{$reconciliation_field});
+
+        my $resultInsert = $queryInsert->execute or return undef;
+        if(!defined $resultInsert) { return 1; }
+      }
     }
   }
 }
