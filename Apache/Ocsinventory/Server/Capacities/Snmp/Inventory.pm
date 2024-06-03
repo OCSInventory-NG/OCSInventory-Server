@@ -213,7 +213,6 @@ sub insert_snmp_inventory{
         if(!defined $resultInsert) { return 1; }
       } else {
         my $queryUpdate = $dbh->prepare("UPDATE `snmp_accountinfo` SET TAG = ? WHERE ID = ?");
-        print Dumper($computerTag->{TAG});
         $queryUpdate->bind_param(1, $computerTag->{TAG});
         $queryUpdate->bind_param(2, $id);
 
