@@ -446,17 +446,16 @@ our %DATA_MAP= (
     writeDiff => 1,
     cache => 0,
     fields => {
-      LOCATION => {},
-      MANUFACTURER => {},
-      MANUFACTUREDATE => {},
-      SERIALNUMBER => {},
-      NAME => {},
       CHEMISTRY => {},
+      CYCLES => {},
+      DESCRIPTION => {},
       DESIGNCAPACITY => {},
       DESIGNVOLTAGE => {},
-      SBDSVERSION => {},
-      MAXERROR => {},
-      OEMSPECIFIC => {}
+      ESTIMATEDCHARGEREMAINING => {},
+      MANUFACTURER => {},
+      NAME => {},
+      SERIALNUMBER => {},
+      STATUS => {}
     }
   },
 
