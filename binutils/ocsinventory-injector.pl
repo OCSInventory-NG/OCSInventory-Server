@@ -16,6 +16,7 @@ use LWP::UserAgent;
 use XML::Simple;
 use Compress::Zlib;
 use Getopt::Long;
+use MIME::Base64;
 use constant VERSION => 3;
 use strict;
 my $help;
@@ -29,6 +30,9 @@ my $remove;
 my $verbose;
 my $stdin;
 my $timeout;
+my $username;
+my $password;
+my $encoded_credentials;
 
 sub loadfile {
     $file = shift;
@@ -91,8 +95,16 @@ sub sendContent {
     my $request = HTTP::Request->new( POST => $url );
     $request->header(
         'Pragma' => 'no-cache',
-        'Content-type', 'Application/x-compress'
+        'Content-type' => 'Application/x-compress'
     );
+
+    if ($encoded_credentials) {
+        $request->header('Authorization' => "Basic $encoded_credentials");
+    } elsif ($username && $password) {
+        my $encoded = encode_base64("$username:$password");
+        $request->header('Authorization' => "Basic $encoded");
+    }
+
     $request->content("$content");
     my $res = $ua->request($request);
 
@@ -127,6 +139,9 @@ sub usage {
     -v --verbose	: verbose mode
     -t --timeout	: injector timeout value 
     --stdin		: read data from STDIN
+    --username  : username for basic auth
+    --password  : password for basic auth
+    --credentials : base64 encoded username:password for basic auth
 
     You can specify a --file or a --directory or STDIN. Current directory is the default
 
@@ -146,6 +161,9 @@ GetOptions(
     'v|verbose'		=> \$verbose,
     't|timeout'		=> \$timeout,
     'stdin'		=> \$stdin,
+    'username=s'   => \$username,
+    'password=s'   => \$password,
+    'credentials=s'=> \$encoded_credentials,
 );
 
 # Default values
