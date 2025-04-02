@@ -50,8 +50,8 @@ push @{$Apache::Ocsinventory::OPTIONS_STRUCTURE},{
   'HANDLER_PROLOG_RESP' => \&_ipdiscover_prolog_resp,
   'HANDLER_PRE_INVENTORY' => undef,
   'HANDLER_POST_INVENTORY' => \&_ipdiscover_main,
-  'REQUEST_NAME' => 'IPDISCOVER',
-  'HANDLER_REQUEST' => \&ipd_handler,
+  'REQUEST_NAME' => undef,
+  'HANDLER_REQUEST' => undef,
   'HANDLER_DUPLICATE' => undef,
   'TYPE' => OPTION_TYPE_SYNC,
   'XML_PARSER_OPT' => {
@@ -236,7 +236,7 @@ sub _ipdiscover_main{
 
     if($row = $request->fetchrow_hashref){
       if( ($row->{'FIDELITY'} > 2 and $row->{'QUALITY'} != 0) || $ENV{'OCS_OPT_IPDISCOVER_NO_POSTPONE'} ){
-        $subnet = &_ipdiscover_find_iface($result, $current_context->{'DBI_HANDLE'});
+        $subnet = &_ipdiscover_find_iface($result, $current_context->{'DBI_HANDLE'}, $DeviceID);
         if(!$subnet){
           return &_ipdiscover_evaluate($result, $row->{'FIDELITY'}, $row->{'QUALITY'}, $dbh, $DeviceID);
         }elsif($subnet =~ /^(\d{1,3}(?:\.\d{1,3}){3})$/){
@@ -371,6 +371,7 @@ sub _ipdiscover_find_iface{
   my $base = $result->{CONTENT}->{NETWORKS};
   
   my $dbh = shift;
+  my $DeviceID = shift;
   
   my $request;
   my @worth;
@@ -389,11 +390,32 @@ sub _ipdiscover_find_iface{
     }
 
     # Looking for a need of ipdiscover
-    $request = $dbh->prepare('SELECT HARDWARE_ID FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
-    $request->execute($_->{IPSUBNET});
-    if($request->rows < $ENV{'OCS_OPT_IPDISCOVER'}){
-      $request->finish;
-      return $_->{IPSUBNET};
+    my $request_tag = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
+    my $tag = undef;
+
+    unless($request_tag->execute($DeviceID)){
+	&_log(519,'ipdiscover','_ipdiscover_find_iface: ERROR cannot find tag on this machine') if $ENV{'OCS_OPT_LOGLEVEL'};
+	return(1);
+    }
+
+    my $row = $request_tag->fetchrow_hashref;
+
+    if (defined $row->{'TAG'}) {
+	&_log(519,'ipdiscover','_ipdiscover_find_iface: TAG DEFINED on machine id: '.$DeviceID.' subnet: '.$_->{IPSUBNET}.' MASK: '.$_->{IPMASK}) if $ENV{'OCS_OPT_LOGLEVEL'};
+	$tag = $row->{'TAG'};
+	$request = $dbh->prepare('SELECT devices.HARDWARE_ID FROM devices INNER JOIN accountinfo ON accountinfo.HARDWARE_ID = devices.HARDWARE_ID WHERE TVALUE=? AND accountinfo.TAG=? AND NAME="IPDISCOVER"');
+	$request->execute($_->{IPSUBNET},$tag);
+    }
+    else{
+      &_log(519,'ipdiscover','_ipdiscover_find_iface: NO TAG DEFINED on machine id: '.$DeviceID.' subnet: '.$_->{IPSUBNET}.' MASK: '.$_->{IPMASK}) if $ENV{'OCS_OPT_LOGLEVEL'};
+      $request = $dbh->prepare('SELECT HARDWARE_ID FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
+      $request->execute($_->{IPSUBNET});
+    }
+    
+    &_log(519,'ipdiscover','_ipdiscover_find_iface: Nb machines elected on this network: '.$_->{IPSUBNET}.' ----> '.$request->rows.' machines') if $ENV{'OCS_OPT_LOGLEVEL'}; 
+   
+    if($request->rows < $ENV{'OCS_OPT_IPDISCOVER'}){ 
+      $request->finish; return $_->{IPSUBNET};
     }
     $request->finish;
     
@@ -421,13 +443,36 @@ sub _ipdiscover_evaluate{
   
   for(@$base){
     if(defined($_->{IPSUBNET}) and $_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/ ){
+      my $request_tag = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
+      my $tag = undef;
 
-      $request = $dbh->prepare('
-      SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST 
-      FROM hardware h,devices d 
-      WHERE d.HARDWARE_ID=h.ID AND d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER"');
-      $request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN);
+      unless($request_tag->execute($DeviceID)){
+        &_log(519,'ipdiscover','_ipdiscover_evaluate: Error cannot find tag on machine') if $ENV{'OCS_OPT_LOGLEVEL'};
+        return(1);
+      }
 
+      my $row = $request_tag->fetchrow_hashref;
+
+      if (defined $row->{'TAG'}) {
+        &_log(519,'ipdiscover','_ipdiscover_evaluate: TAG defined to evaluate machine id: '.$DeviceID.' network: '.$_->{IPSUBNET}) if $ENV{'OCS_OPT_LOGLEVEL'};
+        $tag = $row->{'TAG'};
+        $request = $dbh->prepare('
+           SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST 
+      	   FROM hardware h
+	   INNER JOIN accountinfo ON accountinfo.HARDWARE_ID = h.ID
+	   INNER JOIN devices d ON d.HARDWARE_ID = h.ID
+	   WHERE d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER" AND accountinfo.TAG=?');
+	  
+	$request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN, $tag);
+      }      
+      else{
+        $request = $dbh->prepare('
+             SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST 
+             FROM hardware h,devices d 
+             WHERE d.HARDWARE_ID=h.ID AND d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER"');
+        $request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN);
+      }
+ 
       while($row = $request->fetchrow_hashref){
         # If we find an ipdiscover that is older than IP_MAX_ALIVE, we replace it with the current
         if( (($time - $row->{'LAST'}) > $max_age) and $max_age){
@@ -485,75 +530,5 @@ sub assign_config {
 
     return $value;
 }
-
-
-sub ipd_handler {
-    my $current_context = shift;
-    my $dbh = $current_context->{'DBI_HANDLE'};
-    my $result = $current_context->{'XML_ENTRY'};
-    my $DeviceID = $current_context->{'DATABASE_ID'};
-
-    &_log(1007,'ipdiscover','processing IpDiscover data') if $ENV{'OCS_OPT_LOGLEVEL'};
-
-    if (exists($result->{CONTENT}->{IPDISCOVER})) {
-        my $ipd_data = $result->{CONTENT}->{IPDISCOVER}->{H};
-        my $subnets = $result->{CONTENT}->{SUBNETS}->{S};
-
-        # ensure that we have an array of subnets
-        $subnets = [$subnets] unless ref($subnets) eq 'ARRAY';
-
-        foreach my $subnet_entry (@$subnets) {
-            my $mask = cidr_to_netmask($subnet_entry);
-            my ($netid) = split('/', $subnet_entry);
-
-            # delete entries for this netod
-            my $delete_req = $dbh->prepare('DELETE FROM netmap WHERE NETID=?');
-            $delete_req->execute($netid);
-
-
-            foreach my $ipd_entry (@$ipd_data) {
-                my $ip = $ipd_entry->{I};
-                my $mac = $ipd_entry->{M} // $ip;
-                my $hostname = $ipd_entry->{N};
-                my $tag = $ipd_entry->{T};
-                
-
-                if (ip_belongs_to_subnet($ip, $subnet_entry)) {
-                    insert_netmap($dbh, $ip, $mac, $mask, $netid, $hostname, $tag, $DeviceID);
-                }
-            }
-        }
-    }
-
-    &_log(1008,'ipdiscover','IpDiscover data processed') if $ENV{'OCS_OPT_LOGLEVEL'};
-
-    return 'APACHE_OK';
-}
-
-
-sub cidr_to_netmask {
-    my $cidr = shift;
-    my $bits = (split('/', $cidr))[1];
-    my $mask = unpack("N", pack("B32", '1' x $bits . '0' x (32 - $bits)));
-    return join '.', unpack "C4", pack "N", $mask;
-}
-
-use Net::IP;
-sub ip_belongs_to_subnet {
-    my ($ip, $subnet) = @_;
-    my $ip_obj = new Net::IP($ip) or die Net::IP::Error();
-    my $subnet_obj = new Net::IP($subnet) or die Net::IP::Error();
-
-    return $subnet_obj->overlaps($ip_obj) == $IP_B_IN_A_OVERLAP;
-}
-
-sub insert_netmap {
-    my ($dbh, $ip, $mac, $mask, $netid, $hostname, $tag, $DeviceID) = @_;
-
-    # insert ignore
-    my $insert_req = $dbh->prepare('INSERT IGNORE INTO netmap(IP, MAC, MASK, NETID, NAME, HARDWARE_ID, TAG) VALUES(?,?,?,?,?,?,?)');
-    $insert_req->execute($ip, $mac, $mask, $netid, $hostname, $DeviceID, $tag);
-}
-
 
 1;
