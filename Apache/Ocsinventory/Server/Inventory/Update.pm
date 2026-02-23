@@ -31,6 +31,7 @@ use Apache::Ocsinventory::Interface::AssetCategory;
 use Apache::Ocsinventory::Interface::Saas;
 
 use strict;
+use Encode;
 
 require Exporter;
 
@@ -112,49 +113,107 @@ sub _update_inventory_section{
     my $refXml = $result->{CONTENT}->{uc $section};
     my $sth = $dbh->prepare($sectionMeta->{sql_select_string});
     $sth->execute($deviceId) or return 1;
-    while(my @row = $sth->fetchrow_array){
-      push @fromDb, [ @row ];
-    }	  
-    for my $line (@$refXml){
-      &_get_bind_values($line, $sectionMeta, \@bind_values);
-      push @fromXml, [ @bind_values ];
+
+    while(my $row = $sth->fetchrow_hashref){
+      next unless defined $row->{'ID'};
+      # at same order of _get_bind_values
+      my @values;
+      for my $field ( @{ $sectionMeta->{field_arrayref} } ){
+        my $value;
+        if(defined $row->{$field}){
+          $value = $row->{$field};
+        }
+        else{
+          my $fieldMod = $field;
+          $fieldMod =~ s/^`(.*)`$/$1/;
+          if(defined $row->{$fieldMod}){
+            $value = $row->{$fieldMod};
+          }
+        }
+        push @values, $value;
+      }
+      push @fromDb, { 'ID' => $row->{ID}, 'VALUES' => [ @values ] };
+    }
+
+    if($sectionMeta->{multi}){
+      for my $line (@$refXml){
+        &_get_bind_values($line, $sectionMeta, \@bind_values);
+        push @fromXml, { 'VALUES' => [ @bind_values ] };
+        @bind_values = ();
+      }
+    }
+    else{
+      &_get_bind_values($refXml, $sectionMeta, \@bind_values);
+      push @fromXml, { 'VALUES' => [ @bind_values ] };
       @bind_values = ();
     }
-    #TODO: Sorting XML entries, to compare more quickly with DB elements
+
     my $new=0;
     my $del=0;
-    for my $l_xml (@fromXml){
+    for my $lineXml (@fromXml){
       my $found = 0;
-      for my $i_db (0..$#fromDb){
-        next unless $fromDb[$i_db];
-        my @line = @{$fromDb[$i_db]};
-        my $comp_xml = join '', @$l_xml;
-        my $comp_db = join '', @line[2..$#line];
-        if( $comp_db eq $comp_xml ){
+      for my $lineDb (@fromDb){
+        next unless defined $lineDb;
+
+        next unless ($#{ $lineXml->{VALUES} } == $#{ $lineDb->{VALUES} });
+
+        my $eq = undef;
+        for my $n (0..$#{ $lineDb->{VALUES} }){
+          my $valueXml = $lineXml->{VALUES}[$n] // '';
+          my $valueDb = $lineDb->{VALUES}[$n] // '';
+          my $valueXmlRE;
+          my $valueDbRE;
+
+          if($valueXml eq $valueDb){
+            # xml value is equal db value
+          }
+          elsif(($valueXml eq '') && (($valueDb eq '0') || ($valueDb eq '0000-00-00'))){
+            # xml value is empty, at database may be 0 or 0000-00-00
+          }
+          elsif(($valueXml =~ '^[0-9]+\.[0-9]+$') && ($valueDb =~ '^[0-9]+$') && (int($valueXml + 0.5) == $valueDb)){
+            # xml value is float, db value is int, round compare
+          }
+          elsif(encode_utf8($valueXml) eq $valueDb){
+            # may need encode xml to match db utf8
+          }
+          elsif(
+            (($valueDbRE = $valueDb) =~ s/^([0-9]+)-0*([0-9]+)-0*([0-9]+)$/$1-$2-$3/) &&
+            (($valueXmlRE = $valueXml) =~ s/^([0-9]+)[\/-]0*([0-9]+)[\/-]0*([0-9]+)( [0-9]+:[0-9]+(:[0-9]+)?)?$/$1-$2-$3/) &&
+            ($valueDbRE eq $valueXmlRE)
+            ){
+            # db value is date yyyy-mm-dd, xml value may be yyyy-m-d, yyyy/m/d, yyyy/m/d hh:nn, yyyy/m/d hh:nn:ss
+          }
+          else{
+            # not equal
+            $eq = 0;
+            last;
+          }
+          $eq = 1 if !defined($eq);
+        }
+
+        if($eq){
           $found = 1;
           # The value has been found, we have to delete it from the db list
           # (elements remaining will be deleted)
-          delete $fromDb[$i_db];
+          $lineDb = undef;
           last;
         }
       }
       if(!$found){
         $new++;
-        $dbh->do( $sectionMeta->{sql_insert_string}, {}, $deviceId, @$l_xml ) or return 1;
+        $dbh->do( $sectionMeta->{sql_insert_string}, {}, $deviceId, @{ $lineXml->{VALUES} } ) or return 1;
         if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} ){
-          &_cache( 'add', $section, $sectionMeta, $l_xml );
+          &_cache( 'add', $section, $sectionMeta, $lineXml->{VALUES} );
         }
       }
     }
     # Now we have to delete from DB elements that still remain in fromDb
-    for (@fromDb){
-      next if !defined (${$_}[0]);
+    for my $lineDb (@fromDb){
+      next unless defined $lineDb;
       $del++;
-      $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, ${$_}[0]) or return 1;
-      my @ldb = @$_;
-      @ldb = @ldb[ 2..$#ldb ];
+      $dbh->do( $sectionMeta->{sql_delete_string}, {}, $deviceId, $lineDb->{ID}) or return 1;
       if( $ENV{OCS_OPT_INVENTORY_CACHE_ENABLED} && $sectionMeta->{cache} && !$ENV{OCS_OPT_INVENTORY_CACHE_KEEP}){
-        &_cache( 'del', $section, $sectionMeta, \@ldb );
+        &_cache( 'del', $section, $sectionMeta, $lineDb->{VALUES} );
       }
     }
     if( $new||$del ){
