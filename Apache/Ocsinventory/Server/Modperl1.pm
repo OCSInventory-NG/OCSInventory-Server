@@ -73,8 +73,15 @@ sub _set_http_content_type{
 
 sub _get_http_header{
   my ($header, $r) = @_;
-  return $r->headers_in->{$header};
+  my $value = $r->headers_in->{$header};
+  return unless defined $value;
+
+  $value =~ s/[\x00-\x08\x0B\x0C\x0E-\x1F]//g;
+  return "Invalid_agent" if $value =~ /[<>"';]/;
+
+  return $value;
 }
+
 sub _send_http_headers{
   my $r = shift;
   $r->send_http_header;
