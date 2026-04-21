@@ -39,18 +39,6 @@ require Api::Ocsinventory::Restapi::Cve::Get::CveComputersList;
 require Api::Ocsinventory::Restapi::Cve::Get::CveHistory;
 
 ## Routes
-under sub {
-        my $c = shift;
-
-        return 1 if $ENV{'OCS_API_TRUST_APACHE_AUTH'};
-
-        my $remote_address = $c->tx->remote_address || $ENV{'REMOTE_ADDR'} || '';
-        return 1 if $remote_address eq '127.0.0.1' || $remote_address eq '::1';
-
-        $c->render(status => 403, json => { error => 'Forbidden' });
-        return undef;
-};
-
 get '/v1/computers/listID' => sub {
         my $c = shift;
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Computer::Get::ComputersListId::get_computers_id());
