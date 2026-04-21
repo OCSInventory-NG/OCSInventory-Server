@@ -41,42 +41,82 @@ sub _hardware{
   my $deviceId = $Apache::Ocsinventory::CURRENT_CONTEXT{'DATABASE_ID'};
   my $dbh = $Apache::Ocsinventory::CURRENT_CONTEXT{'DBI_HANDLE'};
   # We replace all data but quality and fidelity. The last come becomes the last date.
-  my $userid = '';	
-  $userid = "USERID=".$dbh->quote($base->{USERID})."," if( $base->{USERID}!~/(system|localsystem)/i );
+  my $userid = '';
+  my @userid_value;
+  if( $base->{USERID}!~/(system|localsystem)/i ) {
+    $userid = "USERID=?,";
+    push @userid_value, $base->{USERID};
+  }
 
   my $ipAddress = &_get_default_iface();
 
-  $dbh->do("UPDATE hardware SET USERAGENT=".$dbh->quote($ua).", 
-	LASTDATE=".((defined($base->{LASTDATE})&&($base->{LASTDATE} ne "1970-01-01"))?$dbh->quote($base->{LASTDATE}):"NOW()").", 
+  my $checksum = _unsigned_int($base->{CHECKSUM}, CHECKSUM_MAX_VALUE);
+  my $processors = _unsigned_int($base->{PROCESSORS}, 0);
+  my $processorn = _unsigned_int($base->{PROCESSORN}, 0);
+  my $memory = _unsigned_int($base->{MEMORY}, 0);
+  my $swap = _unsigned_int($base->{SWAP}, 0);
+  my $type = _unsigned_int($base->{TYPE}, 0);
+
+  $dbh->do("UPDATE hardware SET USERAGENT=?,
+	LASTDATE=".((defined($base->{LASTDATE})&&($base->{LASTDATE} ne "1970-01-01"))?"?":"NOW()").",
 	LASTCOME=NOW(),
-	CHECKSUM=(".(defined($base->{CHECKSUM})?$base->{CHECKSUM}:CHECKSUM_MAX_VALUE)."|CHECKSUM|1),
-	NAME=".$dbh->quote($base->{NAME}).", 
-	WORKGROUP=".$dbh->quote($base->{WORKGROUP}).",
-	USERDOMAIN=".$dbh->quote($base->{USERDOMAIN}).",
-	OSNAME=".$dbh->quote($base->{OSNAME}).",
-	OSVERSION=".$dbh->quote($base->{OSVERSION}).",
-	OSCOMMENTS=".$dbh->quote($base->{OSCOMMENTS}).",
-	PROCESSORT=".$dbh->quote($base->{PROCESSORT}).", 
-	PROCESSORS=".(defined($base->{PROCESSORS})?$base->{PROCESSORS}:0).", 
-	PROCESSORN=".(defined($base->{PROCESSORN})?$base->{PROCESSORN}:0).", 
-	MEMORY=".(defined($base->{MEMORY})?$base->{MEMORY}:0).",
-	SWAP=".(defined($base->{SWAP})?$base->{SWAP}:0).",
-	IPADDR=".$dbh->quote($ipAddress).",
-	DNS=".$dbh->quote($base->{DNS}).",
-	DEFAULTGATEWAY=".$dbh->quote($base->{DEFAULTGATEWAY}).",
+	CHECKSUM=(?|CHECKSUM|1),
+	NAME=?,
+	WORKGROUP=?,
+	USERDOMAIN=?,
+	OSNAME=?,
+	OSVERSION=?,
+	OSCOMMENTS=?,
+	PROCESSORT=?,
+	PROCESSORS=?,
+	PROCESSORN=?,
+	MEMORY=?,
+	SWAP=?,
+	IPADDR=?,
+	DNS=?,
+	DEFAULTGATEWAY=?,
 	ETIME=NULL,
 	$userid
-	TYPE=".(defined($base->{TYPE})?$base->{TYPE}:0).",
-	DESCRIPTION=".$dbh->quote($base->{DESCRIPTION}).",
-	WINCOMPANY=".$dbh->quote($base->{WINCOMPANY}).",
-	WINOWNER=".$dbh->quote($base->{WINOWNER}).",
-	WINPRODID=".$dbh->quote($base->{WINPRODID}).",
-	WINPRODKEY=".$dbh->quote($base->{WINPRODKEY}).",
-	IPSRC=".$dbh->quote($Apache::Ocsinventory::CURRENT_CONTEXT{IPADDRESS}).",
-	UUID=".$dbh->quote($base->{UUID}).",
-	ARCH=".$dbh->quote($base->{ARCH}).",
-	CATEGORY_ID=".$dbh->quote($base->{CATEGORY_ID})."
-	 WHERE ID=".$deviceId)
+	TYPE=?,
+	DESCRIPTION=?,
+	WINCOMPANY=?,
+	WINOWNER=?,
+	WINPRODID=?,
+	WINPRODKEY=?,
+	IPSRC=?,
+	UUID=?,
+	ARCH=?,
+	CATEGORY_ID=?
+	 WHERE ID=?", {},
+    $ua,
+    ((defined($base->{LASTDATE})&&($base->{LASTDATE} ne "1970-01-01"))?($base->{LASTDATE}):()),
+    $checksum,
+    $base->{NAME},
+    $base->{WORKGROUP},
+    $base->{USERDOMAIN},
+    $base->{OSNAME},
+    $base->{OSVERSION},
+    $base->{OSCOMMENTS},
+    $base->{PROCESSORT},
+    $processors,
+    $processorn,
+    $memory,
+    $swap,
+    $ipAddress,
+    $base->{DNS},
+    $base->{DEFAULTGATEWAY},
+    @userid_value,
+    $type,
+    $base->{DESCRIPTION},
+    $base->{WINCOMPANY},
+    $base->{WINOWNER},
+    $base->{WINPRODID},
+    $base->{WINPRODKEY},
+    $Apache::Ocsinventory::CURRENT_CONTEXT{IPADDRESS},
+    $base->{UUID},
+    $base->{ARCH},
+    $base->{CATEGORY_ID},
+    $deviceId)
   or return(1);
 
   #We feed cache tables associated to hardware fields
@@ -104,4 +144,12 @@ sub _get_default_iface{
   }
   return $Apache::Ocsinventory::CURRENT_CONTEXT{XML_ENTRY}->{CONTENT}->{HARDWARE}->{IPADDR};
 }
+
+sub _unsigned_int {
+  my ($value, $default) = @_;
+
+  return $default unless defined($value) && $value =~ /\A\d+\z/;
+  return int($value);
+}
+
 1;

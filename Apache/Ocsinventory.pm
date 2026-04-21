@@ -94,7 +94,8 @@ sub handler{
     'PARAMS'  => undef,
     'PARAMS_G'  => undef,
     'MEMBER_OF'  => undef,
-    'IPADDRESS'  => $ENV{'HTTP_X_FORWARDED_FOR'}?$ENV{'HTTP_X_FORWARDED_FOR'}:$ENV{'REMOTE_ADDR'},
+    'REMOTE_ADDR'  => $ENV{'REMOTE_ADDR'},
+    'IPADDRESS'  => _client_ip_address(),
     'USER_AGENT'  => undef,
     'LOCAL_FL' => undef
   );
@@ -288,7 +289,7 @@ sub _init{
   }
 
   for my $ipreg (@TRUSTED_IP){
-      if($CURRENT_CONTEXT{'IPADDRESS'}=~/^$ipreg$/){
+      if($CURRENT_CONTEXT{'REMOTE_ADDR'}=~/^$ipreg$/){
         &_log(310,'handler','trusted_computer') if $ENV{'OCS_OPT_LOGLEVEL'};
         $CURRENT_CONTEXT{'IS_TRUSTED'} = 1;
       }
@@ -329,36 +330,50 @@ sub _init{
 sub verif_xml{
 
   my ($query) = @_;
-  my $key;
-  my $exp;
-  my $exp2;
 
-  for(%{$query->{CONTENT}}){
-    if(ref($_) ne 'ARRAY'){
-      $key = $_;
-      if(ref($query->{CONTENT}->{$key}) eq 'ARRAY'){
-        for(@{$query->{CONTENT}->{$key}}){
-          for(%{$_}){
-            $exp = $_;
-            $exp2 = $exp =~ s/ //gr;
-            if($exp2 =~ m/=\(/ && $exp2 =~ m/\)/){
-              $_ = 1;
-            }
-          }
-        }
-      } if(ref($query->{CONTENT}->{$key}) eq 'HASH'){
-        for(%{$query->{CONTENT}->{$key}}){
-          $exp = $_;
-          $exp2 = $exp =~ s/ //gr;
-          if($exp2 =~ m/=\(/ && $exp2 =~ m/\)/){
-            $_ = 1;
-          }
-        }
-      }
-    }
-  }
+  _verif_xml_value($query->{CONTENT}) if ref($query->{CONTENT});
 
   return $query;
+}
+
+sub _verif_xml_value {
+  my ($value) = @_;
+
+  if(ref($value) eq 'HASH'){
+    for my $key (keys %{$value}){
+      if(ref($value->{$key})){
+        _verif_xml_value($value->{$key});
+      }else{
+        _verif_xml_value(\$value->{$key});
+      }
+    }
+  } elsif(ref($value) eq 'ARRAY'){
+    for my $entry (@{$value}){
+      if(ref($entry)){
+        _verif_xml_value($entry);
+      }else{
+        _verif_xml_value(\$entry);
+      }
+    }
+  } elsif(ref($value) eq 'SCALAR'){
+    ${$value} = 1 if _looks_like_sql_expression(${$value});
+  }
+}
+
+sub _looks_like_sql_expression {
+  my ($value) = @_;
+
+  return 0 unless defined($value);
+
+  my $expression = $value =~ s/\s+//gr;
+  return 1 if $expression =~ m/=\(.*\)/;
+  return 1 if $expression =~ m/\b(?:if|sleep|benchmark)\(.*\)/i;
+
+  return 0;
+}
+
+sub _client_ip_address {
+  return $ENV{'REMOTE_ADDR'};
 }
 
 1;
