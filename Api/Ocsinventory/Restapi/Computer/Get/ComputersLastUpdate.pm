@@ -22,11 +22,13 @@ sub get_computers_last_update {
     if ($timestamp eq 0) {
         $timestamp = time - 86400;
     }
+    $timestamp = Api::Ocsinventory::Restapi::ApiCommon::_unsigned_int($timestamp, 0);
 
     # get all computers updated since timestamp
     $computers = $database->selectall_arrayref(
-        "SELECT ID FROM hardware WHERE LASTDATE > FROM_UNIXTIME($timestamp)",
-        { Slice => {} }
+        "SELECT ID FROM hardware WHERE LASTDATE > FROM_UNIXTIME(?)",
+        { Slice => {} },
+        $timestamp
     );
 
     return to_json($computers);

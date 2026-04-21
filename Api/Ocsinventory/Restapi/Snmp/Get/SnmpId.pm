@@ -15,6 +15,8 @@ sub get_snmp_id {
     my ($type, $start, $limit) = @_;
 
     my $json_return;
+    return to_json([]) unless Api::Ocsinventory::Restapi::ApiCommon::_is_valid_snmp_table($type);
+
     my $query = "SELECT * from $type ";
 
     my $json_return = Api::Ocsinventory::Restapi::ApiCommon::execute_custom_request($query, $start, $limit);
