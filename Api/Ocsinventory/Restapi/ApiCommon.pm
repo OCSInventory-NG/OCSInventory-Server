@@ -365,7 +365,11 @@ sub _is_valid_table {
 sub _is_valid_snmp_table {
     my ($table_name) = @_;
 
-    return _is_valid_table($table_name) && $table_name =~ /\Asnmp/ ? 1 : 0;
+    return 0 unless defined($table_name) && $table_name =~ /\A[A-Za-z_][A-Za-z0-9_]*\z/;
+    return 1 if $table_name eq 'snmp';
+    return 1 if $table_name =~ /\Asnmp_[A-Za-z0-9_]+\z/;
+
+    return 0;
 }
 
 sub _is_valid_column {
