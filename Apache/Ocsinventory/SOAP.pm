@@ -46,6 +46,31 @@ BEGIN{
 sub handler {
 	our $apache_req = $_[0];	
 	return APACHE_FORBIDDEN unless $ENV{OCS_OPT_WEB_SERVICE_ENABLED};
+	return APACHE_FORBIDDEN unless _is_authenticated_soap_request($apache_req);
 	$server->handler(@_);
+}
+
+sub _is_authenticated_soap_request {
+	my $apache_req = shift;
+	my $user;
+	my $auth_type;
+
+	if($apache_req && $apache_req->can('user')) {
+		$user = $apache_req->user;
+		return 1 if defined($user) && $user ne '';
+	}
+
+	if($apache_req && $apache_req->can('auth_type')) {
+		$auth_type = $apache_req->auth_type;
+	}
+
+	if($apache_req && $apache_req->can('subprocess_env')) {
+		my $env = $apache_req->subprocess_env;
+		$user = $env->{'REMOTE_USER'} if $env;
+		$auth_type = $env->{'AUTH_TYPE'} if $env && !defined($auth_type);
+		return 1 if defined($user) && $user ne '' && defined($auth_type) && $auth_type ne '';
+	}
+
+	return 0;
 }
 1;
