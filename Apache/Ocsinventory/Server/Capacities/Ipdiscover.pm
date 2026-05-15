@@ -382,44 +382,50 @@ sub _ipdiscover_find_iface{
         if($_->{IPMASK}=~/^(?:255\.){2}|^0x(?:ff){2}/){
           if($_->{IPSUBNET}=~/^(\d{1,3}(?:\.\d{1,3}){3})$/){
   
-    # check ignored subnet
-    $request = $dbh->prepare('SELECT SUBNET FROM blacklist_subnet WHERE SUBNET=?');
-    $request->execute($_->{IPSUBNET});
-    if($request->rows > 0){
-      next;
-    }
+            # check ignored subnet
+            $request = $dbh->prepare('SELECT SUBNET FROM blacklist_subnet WHERE SUBNET=?');
+            $request->execute($_->{IPSUBNET});
 
-    # Looking for a need of ipdiscover
-    my $request_tag = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
-    my $tag = undef;
+            if($request->rows > 0){
+              next;
+            }
 
-    unless($request_tag->execute($DeviceID)){
-	&_log(519,'ipdiscover','_ipdiscover_find_iface: ERROR cannot find tag on this machine') if $ENV{'OCS_OPT_LOGLEVEL'};
-	return(1);
-    }
+            # Looking for a need of ipdiscover
+            my $request_tag = $dbh->prepare('SELECT TAG FROM accountinfo WHERE HARDWARE_ID=?');
+            my $tag = undef;
 
-    my $row = $request_tag->fetchrow_hashref;
+            unless($request_tag->execute($DeviceID)){
+              &_log(519,'ipdiscover','_ipdiscover_find_iface: ERROR cannot find tag on this machine') if $ENV{'OCS_OPT_LOGLEVEL'};
+              return(1);
+            }
 
-    if (defined $row->{'TAG'}) {
-	&_log(519,'ipdiscover','_ipdiscover_find_iface: TAG DEFINED on machine id: '.$DeviceID.' subnet: '.$_->{IPSUBNET}.' MASK: '.$_->{IPMASK}) if $ENV{'OCS_OPT_LOGLEVEL'};
-	$tag = $row->{'TAG'};
-	$request = $dbh->prepare('SELECT devices.HARDWARE_ID FROM devices INNER JOIN accountinfo ON accountinfo.HARDWARE_ID = devices.HARDWARE_ID WHERE TVALUE=? AND accountinfo.TAG=? AND NAME="IPDISCOVER"');
-	$request->execute($_->{IPSUBNET},$tag);
+            my $row = $request_tag->fetchrow_hashref;
+
+            if ($ENV{'OCS_OPT_IPDISCOVER_LINK_TAG_NETWORK'} && defined $row->{'TAG'}) {
+              &_log(519,'ipdiscover','_ipdiscover_find_iface: TAG DEFINED on machine id: '.$DeviceID.' subnet: '.$_->{IPSUBNET}.' MASK: '.$_->{IPMASK}) if $ENV{'OCS_OPT_LOGLEVEL'};
+              $tag = $row->{'TAG'};
+              $request = $dbh->prepare('SELECT devices.HARDWARE_ID FROM devices INNER JOIN accountinfo ON accountinfo.HARDWARE_ID = devices.HARDWARE_ID WHERE TVALUE=? AND accountinfo.TAG=? AND NAME="IPDISCOVER"');
+              $request->execute($_->{IPSUBNET},$tag);
+
+              &_log(519,'ipdiscover','_ipdiscover_find_iface: Nb machines elected on this network / TAG: '.$_->{IPSUBNET}.' / '.$tag.' ----> '.$request->rows.' machines') if $ENV{'OCS_OPT_LOGLEVEL'}; 
+            }
+            else {
+              &_log(519,'ipdiscover','_ipdiscover_find_iface: NO TAG DEFINED on machine id: '.$DeviceID.' or OCS_OPT_IPDISCOVER_LINK_TAG_NETWORK is disabled, subnet: '.$_->{IPSUBNET}.' MASK: '.$_->{IPMASK}) if $ENV{'OCS_OPT_LOGLEVEL'};
+              $request = $dbh->prepare('SELECT HARDWARE_ID FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
+              $request->execute($_->{IPSUBNET});
+
+              &_log(519,'ipdiscover','_ipdiscover_find_iface: Nb machines elected on this network: '.$_->{IPSUBNET}.' ----> '.$request->rows.' machines') if $ENV{'OCS_OPT_LOGLEVEL'}; 
+            }
+
+            if($request->rows < $ENV{'OCS_OPT_IPDISCOVER'}){
+              $request->finish; return $_->{IPSUBNET};
+            }
+            $request->finish;
+
+          }
+        }
+      }
     }
-    else{
-      &_log(519,'ipdiscover','_ipdiscover_find_iface: NO TAG DEFINED on machine id: '.$DeviceID.' subnet: '.$_->{IPSUBNET}.' MASK: '.$_->{IPMASK}) if $ENV{'OCS_OPT_LOGLEVEL'};
-      $request = $dbh->prepare('SELECT HARDWARE_ID FROM devices WHERE TVALUE=? AND NAME="IPDISCOVER"');
-      $request->execute($_->{IPSUBNET});
-    }
-    
-    &_log(519,'ipdiscover','_ipdiscover_find_iface: Nb machines elected on this network: '.$_->{IPSUBNET}.' ----> '.$request->rows.' machines') if $ENV{'OCS_OPT_LOGLEVEL'}; 
-   
-    if($request->rows < $ENV{'OCS_OPT_IPDISCOVER'}){ 
-      $request->finish; return $_->{IPSUBNET};
-    }
-    $request->finish;
-    
-    }}}}  
     # Looking for ipdiscover older than ipdiscover_max_value
     # and compare current computer with actual ipdiscover
   }
@@ -453,23 +459,25 @@ sub _ipdiscover_evaluate{
 
       my $row = $request_tag->fetchrow_hashref;
 
-      if (defined $row->{'TAG'}) {
+      if ($ENV{'OCS_OPT_IPDISCOVER_LINK_TAG_NETWORK'} && defined $row->{'TAG'}) {
         &_log(519,'ipdiscover','_ipdiscover_evaluate: TAG defined to evaluate machine id: '.$DeviceID.' network: '.$_->{IPSUBNET}) if $ENV{'OCS_OPT_LOGLEVEL'};
         $tag = $row->{'TAG'};
-        $request = $dbh->prepare('
-           SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST 
-      	   FROM hardware h
-	   INNER JOIN accountinfo ON accountinfo.HARDWARE_ID = h.ID
-	   INNER JOIN devices d ON d.HARDWARE_ID = h.ID
-	   WHERE d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER" AND accountinfo.TAG=?');
-	  
-	$request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN, $tag);
+        $request = $dbh->prepare(
+          'SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST
+          FROM hardware h
+          INNER JOIN accountinfo ON accountinfo.HARDWARE_ID = h.ID
+          INNER JOIN devices d ON d.HARDWARE_ID = h.ID
+          WHERE d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER" AND accountinfo.TAG=?'
+        );
+
+        $request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN, $tag);
       }      
       else{
-        $request = $dbh->prepare('
-             SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST 
-             FROM hardware h,devices d 
-             WHERE d.HARDWARE_ID=h.ID AND d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER"');
+        $request = $dbh->prepare(
+          'SELECT h.ID AS ID, h.QUALITY AS QUALITY, UNIX_TIMESTAMP(h.LASTDATE) AS LAST
+          FROM hardware h,devices d
+          WHERE d.HARDWARE_ID=h.ID AND d.TVALUE=? AND h.ID<>? AND d.IVALUE<>? AND d.NAME="IPDISCOVER"'
+        );
         $request->execute($_->{IPSUBNET}, $DeviceID, IPD_MAN);
       }
  
@@ -503,7 +511,7 @@ sub _ipdiscover_evaluate{
         }
       }
     }else{
-        next;
+      next;
     }
   }
   return 0;
