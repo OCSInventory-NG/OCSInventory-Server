@@ -103,12 +103,14 @@ sub _snmp_inventory{
   while (my ($key, $value) = each (%{$snmp_devices})) {
     if(ref $value eq 'ARRAY') {
       while (my ($keybis, $valuebis) = each (@{$value})) {
-        insert_snmp_inventory($key, $valuebis);
+        return 1 if insert_snmp_inventory($key, $valuebis);
       }
     } else {
-      insert_snmp_inventory($key, $value);
+      return 1 if insert_snmp_inventory($key, $value);
     }
   }
+
+  return 0;
 }
 
 sub insert_snmp_inventory{
@@ -119,19 +121,32 @@ sub insert_snmp_inventory{
   my @arguments;
   my @update;
   my $i = 1;
+  my $valid_columns = _get_snmp_inventory_columns($dbh, $key);
+
+  unless($valid_columns) {
+    &_log(519,'snmp','invalid snmp inventory table') if $ENV{'OCS_OPT_LOGLEVEL'};
+    return(1);
+  }
 
   foreach my $snmp_infos (keys %{$value}) {
-    push @columns, $snmp_infos;
+    unless(_is_valid_snmp_identifier($snmp_infos) && $valid_columns->{$snmp_infos}) {
+      &_log(519,'snmp','invalid snmp inventory column') if $ENV{'OCS_OPT_LOGLEVEL'};
+      return(1);
+    }
+
+    push @columns, _quote_snmp_identifier($snmp_infos);
     push @bind_num, '?';
     push @arguments, $value->{$snmp_infos};
-    push @update, $snmp_infos." = ?";
+    push @update, _quote_snmp_identifier($snmp_infos)." = ?";
   }
+
+  return(1) unless @columns;
 
   my $column = join ',', @columns;
   my $args_prepare = join ',', @bind_num;
   my $update_prepare = join ',', @update;
 
-  my $query = $dbh->prepare("INSERT INTO $key($column) VALUES($args_prepare) ON DUPLICATE KEY UPDATE $update_prepare");
+  my $query = $dbh->prepare("INSERT INTO "._quote_snmp_identifier($key)."($column) VALUES($args_prepare) ON DUPLICATE KEY UPDATE $update_prepare");
 
   foreach my $values (@arguments) {
     $query->bind_param($i, $values);
@@ -233,6 +248,44 @@ sub insert_snmp_inventory{
       }
     }
   }
+}
+
+sub _get_snmp_inventory_columns {
+  my ($dbh, $table_name) = @_;
+
+  return undef unless _is_valid_snmp_identifier($table_name);
+  return undef unless $table_name =~ /\Asnmp_[A-Za-z0-9_]+\z/;
+
+  my $queryColumns = $dbh->prepare("SELECT l.LABEL_NAME as LABEL_NAME FROM `snmp_types` t LEFT JOIN `snmp_configs` c ON c.TYPE_ID = t.ID LEFT JOIN `snmp_labels` l ON l.ID = c.LABEL_ID WHERE t.TABLE_TYPE_NAME = ?");
+
+  unless($queryColumns->execute($table_name)){
+    &_log(519,'snmp','get snmp inventory columns error') if $ENV{'OCS_OPT_LOGLEVEL'};
+    return undef;
+  }
+
+  my %valid_columns;
+
+  while(my $row = $queryColumns->fetchrow_hashref) {
+    next unless defined $row->{LABEL_NAME};
+    next unless _is_valid_snmp_identifier($row->{LABEL_NAME});
+    $valid_columns{$row->{LABEL_NAME}} = 1;
+  }
+
+  return undef unless keys %valid_columns;
+  return \%valid_columns;
+}
+
+sub _is_valid_snmp_identifier {
+  my ($identifier) = @_;
+
+  return 0 unless defined($identifier);
+  return $identifier =~ /\A[A-Za-z_][A-Za-z0-9_]*\z/ ? 1 : 0;
+}
+
+sub _quote_snmp_identifier {
+  my ($identifier) = @_;
+
+  return '`'.$identifier.'`';
 }
 
 sub _update_snmp_inventory_section{

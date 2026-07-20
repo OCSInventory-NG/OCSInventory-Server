@@ -6,7 +6,6 @@ package Api::Ocsinventory::Restapi::ApiCommon;
 
 # External imports
 use DBI;
-use Switch;
 use Mojo::JSON qw(decode_json encode_json);
 
 # Basics use for Common Sub
@@ -14,6 +13,23 @@ use Apache::Ocsinventory::Map;
 use Apache::Ocsinventory::Server::Constants;
 use Apache::Ocsinventory::Interface::Database;
 use Apache::Ocsinventory::Interface::Internals;
+
+my %SOFTWARE_FILTER_COLUMNS = (
+    id => 's.ID',
+    hardware_id => 's.HARDWARE_ID',
+    name => 'n.NAME',
+    publisher => 'p.PUBLISHER',
+    version => 'v.VERSION',
+    folder => 's.FOLDER',
+    comments => 's.COMMENTS',
+    filename => 's.FILENAME',
+    filesize => 's.FILESIZE',
+    source => 's.SOURCE',
+    guid => 's.GUID',
+    language => 's.LANGUAGE',
+    installdate => 's.INSTALLDATE',
+    bitswidth => 's.BITSWIDTH',
+);
 
 # Connect api to ocs database
 sub api_database_connect{
@@ -81,14 +97,17 @@ sub error_return{
 
   my ($err_code) = @_;
 
-  # Switch depending on the error code
-	switch ($err_code) {
-		case 001		{ print "Arguments missing" }
-		case 002		{ print "Arguments not valid" }
-		case 003		{ print "Function arguments not valid ..." }
-		case 004		{ print "Arguments ..." }
-		else		{ print "Unknown error" }
-	}
+  if($err_code == 001){
+    print "Arguments missing";
+  }elsif($err_code == 002){
+    print "Arguments not valid";
+  }elsif($err_code == 003){
+    print "Function arguments not valid ...";
+  }elsif($err_code == 004){
+    print "Arguments ...";
+  }else{
+    print "Unknown error";
+  }
 
 }
 
@@ -151,10 +170,14 @@ sub generate_item_software_json{
     @args = ($computer_id);
 
     if($where ne "" && $operator ne "" && $value ne "") {
-        if($operator == "like" || $operator == "not like") {
+        my $where_column = _software_filter_column($where);
+        my $sql_operator = _sql_operator($operator);
+        return [] unless defined($where_column) && defined($sql_operator);
+
+        if($sql_operator eq "LIKE" || $sql_operator eq "NOT LIKE") {
             $value = "%$value%";
         }
-        $query_data .= " AND $where $operator ?";
+        $query_data .= " AND $where_column $sql_operator ?";
         
         push @args, $value;
     }
@@ -187,11 +210,11 @@ sub generate_item_all_softwares_json{
 
     # Only find softwares starting by $soft
     if($soft ne "") {
-	$query .= " WHERE sn.NAME LIKE ?";
-	@args = ("$soft%");
+        $query .= " WHERE sn.NAME LIKE ?";
+        @args = ("$soft%");
     }
 
-    $query .= " LIMIT $limit OFFSET $start";
+    $query .= _limit_offset_clause($limit, $start);
 
     my $items = $database->selectall_arrayref(
         $query,
@@ -211,14 +234,20 @@ sub get_item_table_informations{
     my $query_data;
     my @args = ();
 
+    return [] unless _is_valid_table($table_name);
+    return [] unless _is_valid_column($table_name, $ref_column);
+
     $query_data = "SELECT * FROM $table_name WHERE $ref_column = ?";
     push @args, $condition;
 
     if($where ne "" && $operator ne "" && $value ne "") {
-        if($operator == "like" || $operator == "not like") {
+        my $sql_operator = _sql_operator($operator);
+        return [] unless defined($sql_operator) && _is_valid_column($table_name, $where);
+
+        if($sql_operator eq "LIKE" || $sql_operator eq "NOT LIKE") {
             $value = "%$value%";
         }
-        $query_data .= " AND $where $operator ?";
+        $query_data .= " AND $where $sql_operator ?";
         
         push @args, $value;
     }
@@ -249,8 +278,8 @@ sub get_item_main_table_informations{
         return error_return(003);
     }
 
-    $start =~ s/\D//g;
-    $limit =~ s/\D//g;
+    $start = _unsigned_int($start, 0);
+    $limit = _unsigned_int($limit, 0);
 
     if($limit > 0 && $start >= 0){
         $items = $database->selectall_arrayref(
@@ -278,9 +307,7 @@ sub execute_custom_request{
     }
 
     if($start ne "" && $limit ne ""){
-        $start =~ s/\D//g;
-        $limit =~ s/\D//g;
-        $query .= "LIMIT $limit OFFSET $start";
+        $query .= _limit_offset_clause($limit, $start);
     }
 
     $items = $database->selectall_arrayref(
@@ -291,6 +318,76 @@ sub execute_custom_request{
 
     return $items;
 
+}
+
+sub _unsigned_int {
+    my ($value, $default) = @_;
+
+    return $default unless defined($value) && $value =~ /\A\d+\z/;
+    return int($value);
+}
+
+sub _limit_offset_clause {
+    my ($limit, $start) = @_;
+
+    $limit = _unsigned_int($limit, 0);
+    $start = _unsigned_int($start, 0);
+
+    return " LIMIT $limit OFFSET $start";
+}
+
+sub _sql_operator {
+    my ($operator) = @_;
+
+    return undef unless defined($operator);
+    $operator = lc($operator);
+    $operator =~ s/\A\s+|\s+\z//g;
+
+    return '=' if $operator eq '=';
+    return '!=' if $operator eq '!=' || $operator eq '<>';
+    return '<' if $operator eq '<';
+    return '>' if $operator eq '>';
+    return '<=' if $operator eq '<=';
+    return '>=' if $operator eq '>=';
+    return 'LIKE' if $operator eq 'like';
+    return 'NOT LIKE' if $operator eq 'not like';
+
+    return undef;
+}
+
+sub _is_valid_table {
+    my ($table_name) = @_;
+
+    return 0 unless defined($table_name) && $table_name =~ /\A[A-Za-z_][A-Za-z0-9_]*\z/;
+    return exists($Apache::Ocsinventory::Map::DATA_MAP{$table_name}) ? 1 : 0;
+}
+
+sub _is_valid_snmp_table {
+    my ($table_name) = @_;
+
+    return 0 unless defined($table_name) && $table_name =~ /\A[A-Za-z_][A-Za-z0-9_]*\z/;
+    return 1 if $table_name eq 'snmp';
+    return 1 if $table_name =~ /\Asnmp_[A-Za-z0-9_]+\z/;
+
+    return 0;
+}
+
+sub _is_valid_column {
+    my ($table_name, $column) = @_;
+
+    return 0 unless _is_valid_table($table_name);
+    return 0 unless defined($column) && $column =~ /\A[A-Za-z_][A-Za-z0-9_]*\z/;
+    return 1 if lc($column) eq 'id';
+    return 1 if uc($column) eq 'HARDWARE_ID';
+    return 1 if uc($column) eq 'SNMP_ID';
+    return exists($Apache::Ocsinventory::Map::DATA_MAP{$table_name}->{fields}->{uc($column)}) ? 1 : 0;
+}
+
+sub _software_filter_column {
+    my ($column) = @_;
+
+    return undef unless defined($column);
+    return $SOFTWARE_FILTER_COLUMNS{lc($column)};
 }
 
 # Format search depending on url parmeters

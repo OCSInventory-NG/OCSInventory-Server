@@ -22,6 +22,7 @@
 package Apache::Ocsinventory::Server::Inventory::Export;
 
 use strict;
+use File::Basename qw/basename/;
 
 require Exporter;
 
@@ -34,7 +35,7 @@ use Apache::Ocsinventory::Server::System qw / :server /;
 sub _generate_ocs_file{
   return if !$ENV{'OCS_OPT_GENERATE_OCS_FILES'};
   my $ocs_path = $ENV{'OCS_OPT_OCS_FILES_PATH'};
-  my $ocs_file_name = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
+  my $ocs_file_name = _safe_ocs_file_name($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'});
   my $ocs_file = $ocs_path.'/'.$ocs_file_name.'.ocs';
   my $format;
   my $v=1;
@@ -47,7 +48,7 @@ sub _generate_ocs_file{
     }
   }
   
-  if( !open FILE, ">$ocs_file" ){
+  if( !open FILE, '>', $ocs_file ){
     &_log(520,'postinventory',"$ocs_file: $!") if $ENV{'OCS_OPT_LOGLEVEL'};
   }
   else{
@@ -69,7 +70,7 @@ sub _generate_ocs_file{
 sub _generate_ocs_file_snmp{
   return if !$ENV{'OCS_OPT_GENERATE_OCS_FILES_SNMP'};
   my $ocs_path = $ENV{'OCS_OPT_OCS_FILES_PATH'};
-  my $ocs_file_name = $Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'};
+  my $ocs_file_name = _safe_ocs_file_name($Apache::Ocsinventory::CURRENT_CONTEXT{'DEVICEID'});
   my $ocs_file = $ocs_path.'/'.$ocs_file_name.'-SNMP.ocs';
   my $format;
   my $v=1;
@@ -82,7 +83,7 @@ sub _generate_ocs_file_snmp{
     }
   }
   
-  if( !open FILE, ">$ocs_file" ){
+  if( !open FILE, '>', $ocs_file ){
     &_log(520,'postinventory',"$ocs_file: $!") if $ENV{'OCS_OPT_LOGLEVEL'};
   }
   else{
@@ -100,4 +101,16 @@ sub _generate_ocs_file_snmp{
   }
   return;
 }
+
+sub _safe_ocs_file_name{
+  my $deviceid = shift;
+
+  $deviceid = 'UNKNOWN' unless defined($deviceid) && $deviceid ne '';
+  $deviceid = basename($deviceid);
+  $deviceid =~ s/[^A-Za-z0-9._-]/_/g;
+  $deviceid = 'UNKNOWN' if $deviceid eq '' || $deviceid eq '.' || $deviceid eq '..';
+
+  return $deviceid;
+}
+
 1;

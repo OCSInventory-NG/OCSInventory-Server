@@ -39,7 +39,6 @@ require Api::Ocsinventory::Restapi::Cve::Get::CveComputersList;
 require Api::Ocsinventory::Restapi::Cve::Get::CveHistory;
 
 ## Routes
-
 get '/v1/computers/listID' => sub {
         my $c = shift;
         $c->render(format => 'json', text  => Api::Ocsinventory::Restapi::Computer::Get::ComputersListId::get_computers_id());
