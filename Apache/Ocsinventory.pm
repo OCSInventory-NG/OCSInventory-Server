@@ -39,10 +39,10 @@ BEGIN{
   }
 }
 
-$Apache::Ocsinventory::VERSION = '2.12.4';
+$Apache::Ocsinventory::VERSION = '2.12.5';
 $Apache::Ocsinventory::MAJOR_VERSION = '2';
 $Apache::Ocsinventory::MINOR_VERSION = '12';
-$Apache::Ocsinventory::BUILD_VERSION = '890';
+$Apache::Ocsinventory::BUILD_VERSION = '900';
 $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 
 # Ocs modules
