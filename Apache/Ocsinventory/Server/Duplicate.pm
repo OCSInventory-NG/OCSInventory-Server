@@ -236,17 +236,25 @@ sub _duplicate_replace{
   my $userid = $row->{'USERID'};
   $request->finish;
   
-  # Current userid or previous one ? 
+  # Current userid or previous one ?
   if( $result->{CONTENT}->{HARDWARE}->{USERID}!~/system|localsystem/i ){
      $userid = $result->{CONTENT}->{HARDWARE}->{USERID};
   }
+
+  my $submitted_checksum = $result->{CONTENT}->{HARDWARE}->{CHECKSUM};
+  $submitted_checksum = CHECKSUM_MAX_VALUE
+    unless defined($submitted_checksum) && $submitted_checksum =~ /\A\d+\z/;
+
   # TODO: catch the queries return code
-  # Keeping few informations from hardware 
-  $dbh->do(" UPDATE hardware SET QUALITY=".$dbh->quote($quality).",
-             FIDELITY=".$dbh->quote($fidelity).",
-             CHECKSUM=(".(defined($checksum)?$checksum:CHECKSUM_MAX_VALUE)."|".(defined($result->{CONTENT}->{HARDWARE}->{CHECKSUM})?$result->{CONTENT}->{HARDWARE}->{CHECKSUM}:CHECKSUM_MAX_VALUE)."),
-             USERID=".$dbh->quote($userid)." 
-             WHERE ID=".$DeviceID
+  # Keeping few informations from hardware
+  $dbh->do("UPDATE hardware SET QUALITY=?, FIDELITY=?, CHECKSUM=(?|?), USERID=? WHERE ID=?",
+    {},
+    $quality,
+    $fidelity,
+    (defined($checksum) ? $checksum : CHECKSUM_MAX_VALUE),
+    $submitted_checksum,
+    $userid,
+    $DeviceID
   ) ;
   $dbh->do("DELETE FROM hardware WHERE ID=?", {}, $device) ;
 
