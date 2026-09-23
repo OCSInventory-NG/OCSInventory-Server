@@ -238,7 +238,7 @@ sub insert_snmp_inventory{
     } else {
       # no accountinfo entry and no link tag
       if(!defined $id) {
-        my $queryInsert = $dbh->prepare("INSERT INTO `snmp_accountinfo`(SNMP_TYPE, SNMP_RECONCILIATION_FIELD, SNMP_RECONCILIATION_VALUE, TAG) VALUES(?, ?, ?)");
+        my $queryInsert = $dbh->prepare("INSERT INTO `snmp_accountinfo`(SNMP_TYPE, SNMP_RECONCILIATION_FIELD, SNMP_RECONCILIATION_VALUE, TAG) VALUES(?, ?, ?, 'NA')");
         $queryInsert->bind_param(1, $key);
         $queryInsert->bind_param(2, $reconciliation_field);
         $queryInsert->bind_param(3, $value->{$reconciliation_field});
